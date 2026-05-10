@@ -1,0 +1,13 @@
+{
+  "extends": ["@commitlint/config-conventional"],
+  "rules": {
+    "type-enum": [
+      2,
+      "always",
+      ["feat", "fix", "docs", "chore", "refactor", "perf", "test", "build", "ci", "style", "release"]
+    ],
+    "subject-case": [0],
+    "header-max-length": [2, "always", 100]
+  },
+  "_comment": "Conventional Commits enforced for BeQuite (v0.15.0+). Required by release.yml + CHANGELOG generator."
+}

@@ -1,0 +1,124 @@
+# BeQuite Release — fires on every tag matching v*.*.* (v0.15.0+).
+#
+# Two jobs:
+#   1. publish-pypi — build sdist + wheel; upload to PyPI via OIDC trusted publisher.
+#   2. publish-github — create GitHub Release with attached signed receipts + dist.
+#
+# **Pending Ahmed sign-off:**
+#   - PyPI account ownership (one-way door — see docs/MAINTAINER.md).
+#   - PyPI trusted publisher configured for this repo (one-time setup).
+#   - npm thin shell publish (separate workflow when shell stabilizes).
+
+name: release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Tag to release (e.g. v1.0.0)"
+        required: true
+
+permissions:
+  contents: write   # for GitHub Releases
+  id-token: write   # for PyPI trusted publisher (OIDC)
+
+jobs:
+  validate:
+    name: Validate tag + tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install
+        run: cd cli/ && pip install -e ".[dev]"
+      - name: Verify tag matches package version
+        run: |
+          TAG_VERSION="${GITHUB_REF#refs/tags/v}"
+          PYPROJECT_VERSION=$(grep -m 1 '^version = ' cli/pyproject.toml | sed 's/version = "\(.*\)"/\1/')
+          if [ "$TAG_VERSION" != "$PYPROJECT_VERSION" ]; then
+            echo "::error::tag $TAG_VERSION does not match cli/pyproject.toml version $PYPROJECT_VERSION"
+            exit 1
+          fi
+          echo "tag $TAG_VERSION matches package version $PYPROJECT_VERSION"
+      - name: Run full integration suite
+        run: |
+          cd cli/
+          for test in ../tests/integration/*/test_*.py; do
+            echo "=== $test ==="
+            PYTHONIOENCODING=utf-8 python "$test"
+          done
+
+  publish-pypi:
+    name: Publish to PyPI
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment:
+      name: pypi
+      url: https://pypi.org/p/bequite
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Build sdist + wheel
+        run: |
+          cd cli/
+          pip install build
+          python -m build
+      - name: Publish via PyPI Trusted Publisher (OIDC)
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: cli/dist/
+          # No password / token needed; OIDC handshake.
+
+  publish-github:
+    name: Create GitHub Release
+    needs: [validate, publish-pypi]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Extract release notes from CHANGELOG
+        id: notes
+        run: |
+          TAG_VERSION="${GITHUB_REF#refs/tags/v}"
+          # Extract section between ## [VERSION] and the next ## [
+          awk -v v="$TAG_VERSION" '
+            /^## \[/ { if (in_section) exit; if (index($0, "[" v "]")) in_section=1; next }
+            in_section { print }
+          ' CHANGELOG.md > release-notes.md
+          cat release-notes.md
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: release-notes.md
+          generate_release_notes: false
+          fail_on_unmatched_files: false
+          files: |
+            CHANGELOG.md
+            LICENSE
+
+  npm-thin-shell:
+    name: Publish npm thin shell (placeholder)
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: false   # Disabled until npm package + Ahmed account ownership confirmed.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org/"
+      - run: |
+          # Future: cd npm/ && npm publish --provenance
+          echo "npm thin shell publish — gated until Ahmed's npm account is provisioned."

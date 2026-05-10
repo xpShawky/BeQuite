@@ -8,6 +8,37 @@ The full sub-version roadmap (`v0.1.0` → `v1.0.0`) lives in `docs/HOW-IT-WORKS
 
 ---
 
+## [0.7.0] — 2026-05-10
+
+### Added — Reproducibility receipts
+
+- **`cli/bequite/receipts.py`** (~510 lines) — Pydantic-style receipt module with stdlib-only runtime dependencies (no pydantic required at receipt-time; module is importable from `python -m bequite.receipts`).
+  - **Schema v1** (`Receipt` dataclass): `version` + `session_id` (UUID) + `phase` (P0..P7) + `timestamp_utc` (ISO 8601) + `model{name, reasoning_effort, fallback_model}` + `input{prompt_hash sha256, memory_snapshot_hash sha256}` + `output{diff_hash sha256, files_touched}` + `tools_invoked[{name, args_hash sha256, exit}]` + `tests{command, exit, stdout_hash sha256}` + `cost{input_tokens, output_tokens, usd}` + `doctrine[]` + `constitution_version` + `parent_receipt` (sha256 chain pointer).
+  - **`make_receipt()`** — constructor with computed hashes (sha256 of prompt text, sha256-of-files for memory snapshot dir skipping `.git/__pycache__/.venv/node_modules/.pytest_cache/.mypy_cache`, `git diff` for output + files-touched; UUID session_id; UTC timestamp).
+  - **`Receipt.content_hash()`** — deterministic sha256 of canonical-JSON encoding (sorted keys, no whitespace, None-stripped). Used as filename + chain pointer.
+  - **`ReceiptStore`** — local-filesystem store at `.bequite/receipts/<sha>-<phase>.json`. Methods: `write`, `list_all`, `get`.
+  - **`validate_chain()`** — walks parent_receipt links; reports missing-parent + causality (parent timestamp ≤ child) + cycle-detection.
+  - **`replay_check()`** — re-hashes prompt + memory snapshot; returns mismatches. Used by tests + future `bequite verify-receipts` (v0.7.1).
+  - **`roll_up_by_session/phase/day()`** — token + USD aggregations with first/last timestamps + active doctrines.
+  - **CLI surface:** `python -m bequite.receipts {emit,list,show,validate-chain,roll-up}` with full subcommand args (storage-dir, phase, model, prompt-file, diff-from/to, doctrines, constitution-version, input/output tokens, usd, parent-receipt, session-id, fallback-model).
+- **`cli/bequite/__main__.py`** — wired `bequite cost` to read local receipts first (Article III; offline-friendly), with skill-dispatch fallback only when no receipts exist. New `bequite receipts {list,show,validate-chain,roll-up}` Click group.
+- **`tests/integration/receipts/`** — 10-test integration suite covering: emit + list roundtrip; chain validation valid/invalid; replay pass/tamper-rejection; roll-ups by session/phase/day; content-hash determinism; full Receipt round-trip preservation. Runnable two ways: pytest (`python -m pytest tests/integration/receipts/`) or direct (`python tests/integration/receipts/test_receipts_smoke.py`). All 10 pass on local Python 3.14.
+- **`tests/integration/receipts/README.md`** — explains coverage + run modes + future v0.7.1 (signing) coverage path.
+
+### Changed
+
+- `cli/bequite/__init__.py::__version__` → `0.7.0`.
+- `cli/pyproject.toml::version` → `0.7.0`. Description updated to mention "reproducibility receipts (chain-hashed JSON; ed25519 signing in v0.7.1+)".
+
+### Notes
+
+- `ReceiptsConfig` (in `cli/bequite/config.py`) was already present from v0.5.0 (the schema slot existed; the emitter ships now).
+- Receipts are append-only; superseding requires emitting a NEW receipt with the old as `parent_receipt`. Article III binding.
+- ed25519 signing lands v0.7.1 — `verify-receipts` will validate chain + signature against `.bequite/keys/public.pem`.
+- Cycle-detection in chain validation is structurally robust: changing any receipt field changes its `content_hash`, so a literal A→B→A cycle is impossible without a hash collision. The test suite verifies missing-parent + tamper-rejection — the realistic failure modes.
+
+---
+
 ## [0.6.1] — 2026-05-10
 
 ### Added — Frontend Quality Module

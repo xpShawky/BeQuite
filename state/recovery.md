@@ -17,14 +17,14 @@
 
 ## Where we are
 
-- **Build phase:** phase-2 — Verification + design module COMPLETE (covers v0.6.0 + v0.6.1; both shipped).
-- **Sub-version in progress:** **v0.7.0** (next) — Reproducibility receipts: Pydantic-modeled receipt emitter + storage + chain-hash + cost roll-up.
-- **Last green sub-version:** **v0.6.1** (Frontend Quality Module — vendored Impeccable + tokens.css.tpl + frontend-stack + frontend-mcps + axe gate + default-web-saas v1.1.0).
-- **Last successful commit (pending):** `feat(v0.6.1): Frontend Quality Module — vendored Impeccable + tokens.css + frontend references + axe gate + default-web-saas v1.1.0`.
-- **Last successful tag (pending):** **v0.6.1**.
+- **Build phase:** phase-3 — Reproducibility + economics (covers v0.7.0 + v0.7.1 + v0.8.x).
+- **Sub-version in progress:** **v0.7.1** (next) — Signed receipts: ed25519 keypair on init + sign at emission + `bequite verify-receipts` validator.
+- **Last green sub-version:** **v0.7.0** (Reproducibility receipts — chain-hashed JSON receipts + emitter + store + chain validation + replay-check + roll-ups + 10-test integration suite all passing).
+- **Last successful commit (pending):** `feat(v0.7.0): Reproducibility receipts — chain-hashed JSON receipts + emitter + store + chain validation + replay + roll-ups + 10-test integration suite`.
+- **Last successful tag (pending):** **v0.7.0**.
 - **Branch:** `main`.
 - **Remote:** `origin = https://github.com/xpShawky/BeQuite.git` configured. **NOT pushed.** Push requires explicit owner authorization (Iron Law IV; one-way door).
-- **Real git counts (post-v0.6.1, pre-commit):** ~21 commits, 16 tags pending, ~167+ tracked files.
+- **Real git counts (post-v0.7.0, pre-commit):** ~22 commits, 17 tags pending, ~170+ tracked files.
 
 ## What is complete (verified by `git tag -l`)
 
@@ -46,11 +46,13 @@
 | v0.5.3 | URL casing fix (`xpshawky/bequite` → `xpShawky/BeQuite`); inflated-count corrections; remote configured |
 | v0.6.0 | Verification gates: walkthrough templates (admin/user) + seed.spec.ts + playwright.config.ts + self-walk + smoke + skill/references/playwright-walks.md + cli/bequite/verify.py |
 | v0.6.1 | Frontend Quality Module: vendored Impeccable bundle (.pinned-commit + ATTRIBUTION + SKILL.md + 3 reference files + commands/CATALOG.md + 4 marquee command dispatch contracts) + skill/templates/tokens.css.tpl + skill/references/frontend-stack.md + skill/references/frontend-mcps.md + axe-core gate (workflow tpl + a11y specs + playwright.config.ts axe-projects) + default-web-saas Doctrine v1.0.0 → v1.1.0 |
+| v0.7.0 | Reproducibility receipts: cli/bequite/receipts.py (~510 lines, dataclass-based schema v1, sha256 hashing, chain-hash, validate-chain, replay-check, roll-ups by session/phase/day) + bequite cost local-first + bequite receipts {list,show,validate-chain,roll-up} Click group + tests/integration/receipts/ 10-test smoke suite (all passing on Python 3.14) |
 
-**Three working Python modules** (smoke-tested via `python -m`; help output prints):
+**Four working Python modules** (smoke-tested via `python -m`; help output prints):
 - `python -m cli.bequite.audit` — rule-based, 7 rule packs
 - `python -m cli.bequite.freshness --all`
 - `python -m cli.bequite.verify` — 17-gate per-Mode matrix
+- `python -m cli.bequite.receipts {emit,list,show,validate-chain,roll-up}` — chain-hashed receipts
 
 ## What is incomplete
 
@@ -58,8 +60,7 @@ The remaining sub-versions to v1.0.0:
 
 | Sub-version | Scope |
 |---|---|
-| **v0.7.0** (next) | Receipts JSON schema + emitter + storage at `.bequite/receipts/<sha>-<phase>.json`; Pydantic schema (version + session_id + phase + timestamp_utc + model + input{prompt_hash, memory_snapshot_hash} + output{diff_hash, files_touched} + tools_invoked[] + tests + cost + doctrine[] + constitution_version + parent_receipt); `bequite cost` reads receipts and rolls up. |
-| v0.7.1 | ed25519 signing + `bequite verify-receipts` |
+| **v0.7.1** (next) | ed25519 signing: generate keypair on `bequite init` (private at `.bequite/.keys/private.pem` gitignored, public at `.bequite/keys/public.pem` committed). Add `signature` field to Receipt schema (additive). Sign at emission (base64-encoded ed25519 over canonical-JSON content_hash). `bequite verify-receipts` validates signature + chain. Tampered-body integration test. |
 | v0.8.0 | Live multi-model AiProvider adapters (Anthropic + OpenAI + Google + DeepSeek + Ollama) |
 | v0.8.1 | Pricing fetch + 24h cache + offline fallback |
 | v0.9.0 | 3 example projects (bookings-saas Next/Hono/Supabase + ai-tool-wrapper CLI + tauri-note-app desktop) |
@@ -86,9 +87,9 @@ Nothing structurally failed. Two minor session frictions worth noting:
 Until v0.7.0 ships the receipts system, evidence is the git history + this file + the snapshots.
 
 ```
-git log --oneline       # ~21 commits expected post-v0.6.1
-git tag -l              # 16 tags expected (through v0.6.1)
-find .bequite/memory/ skill/ template/ cli/ docs/ -type f | wc -l  # ~167+
+git log --oneline       # ~22 commits expected post-v0.7.0
+git tag -l              # 17 tags expected (through v0.7.0)
+find .bequite/memory/ skill/ template/ cli/ docs/ -type f | wc -l  # ~170+
 ```
 
 Snapshots:
@@ -99,50 +100,51 @@ Snapshots:
 
 ## What is the next safe task
 
-**Resume v0.7.0 — Reproducibility receipts.** Per the build plan §4 (`v0.7.0` row):
+**Resume v0.7.1 — Signed receipts (ed25519).** Per the build plan §4 (`v0.7.1` row):
 
-1. Author `cli/bequite/receipts.py` with a Pydantic model for the receipt schema.
-2. Schema fields:
-   - `version` (str, "1")
-   - `session_id` (UUID)
-   - `phase` (literal P0..P7)
-   - `timestamp_utc` (ISO 8601)
-   - `model` (object: name, reasoning_effort, fallback_model)
-   - `input` (object: prompt_hash sha256, memory_snapshot_hash sha256)
-   - `output` (object: diff_hash sha256, files_touched list)
-   - `tools_invoked` (list of: name, args_hash sha256, exit code)
-   - `tests` (object: command, exit, stdout_hash sha256)
-   - `cost` (object: input_tokens, output_tokens, usd)
-   - `doctrine` (list of active doctrines)
-   - `constitution_version` (semver)
-   - `parent_receipt` (sha256 chain pointer; null for first receipt of a session)
-3. Storage: `.bequite/receipts/<sha>-<phase>.json` (sha is the receipt's own content-hash).
-4. Update `bequite cost` to walk receipts and roll up by session / phase / day.
-5. Emit a receipt at every phase transition (currently no-op since auto-mode lands v0.10.0; but the emitter is ready).
-6. Add receipt-replay test that reconstructs prompt + memory state from receipt content.
-7. Update `cli/bequite/__init__.py::__version__` → `0.7.0` and `cli/pyproject.toml::version` → `0.7.0`.
-8. Update CHANGELOG, activeContext, progress, recovery; commit + tag v0.7.0.
+1. Author `cli/bequite/receipts_signing.py`:
+   - `generate_keypair(project_dir)` — Ed25519PrivateKey via `cryptography` lib (already in cli/pyproject.toml deps); writes `<project>/.bequite/.keys/private.pem` (mode 0600, gitignored) + `<project>/.bequite/keys/public.pem` (committed).
+   - `sign_receipt(receipt, private_key)` — adds `signature` field to receipt; base64-encoded ed25519 signature over canonical-JSON of receipt without the signature field.
+   - `verify_receipt(receipt, public_key)` — recovers signature; verifies against current canonical-JSON.
+2. Refresh `cli/bequite/receipts.py::Receipt` schema:
+   - Add optional `signature: Optional[str] = None` field (additive — schema v1 backward-compatible since field is Optional).
+3. Wire `bequite init` (in `cli/bequite/__main__.py`) to call `generate_keypair` if no keypair exists.
+4. Add `bequite verify-receipts` command:
+   - For each receipt in `.bequite/receipts/`: verify signature + verify chain (existing `validate_chain`).
+   - Exit 1 if any fails; surface which.
+5. Append `.bequite/.keys/` to `.gitignore` (private keys NEVER committed; Article IV).
+6. Add 3 integration tests at `tests/integration/receipts/`:
+   - `test_signing_roundtrip` — sign + verify same receipt; clean.
+   - `test_tampered_body_rejected` — flip a field after signing → verify fails.
+   - `test_unsigned_receipt_rejected_in_strict_mode` — receipt without signature is allowed in legacy mode but rejected in `--strict` mode (default `--strict` for v0.7.1+).
+7. Bump `cli/bequite/__init__.py::__version__` → `0.7.1` + `cli/pyproject.toml::version` → `0.7.1`.
+8. Update CHANGELOG, activeContext, progress, recovery; commit + tag v0.7.1.
 
-Acceptance for v0.7.0: receipts emitted on every phase transition; `bequite cost --since v0.6.0` returns a roll-up; receipt-replay test reconstructs prompt + memory state from receipt content.
+Acceptance for v0.7.1: sign+verify roundtrip green; tampered receipt rejected; per-project keypair generated on init.
 
 ## Commands to run first (on resume)
 
 ```bash
 # Orient
-cat .bequite/memory/activeContext.md       # most-recent state
+cat .bequite/memory/activeContext.md
 cat state/current_phase.md
-cat state/recovery.md                       # this file
+cat state/recovery.md
 
 # Verify git state
 git log --oneline | head -5
-git tag -l                                  # expect 16 tags through v0.6.1
+git tag -l                                  # expect 17 tags through v0.7.0
 git status                                  # expect clean
 
-# Smoke-test the three working Python modules
+# Smoke-test the four working Python modules
 cd cli/
 python -m bequite.audit --help
 python -m bequite.freshness --help
 python -m bequite.verify --help
+python -m bequite.receipts --help
+
+# Run the v0.7.0 test suite
+PYTHONIOENCODING=utf-8 python ../tests/integration/receipts/test_receipts_smoke.py
+# Expect: 10/10 tests passed
 ```
 
 ## Files to inspect before editing (Iron Law III)
@@ -160,9 +162,10 @@ For any agent resuming this build:
 9. `skill/agents/*.md` — 17 personas.
 10. `skill/doctrines/*.md` — 12 Doctrines.
 11. `skill/hooks/*.sh` — 14 hooks.
-12. `skill/references/*.md` — scraping + security + playwright-walks references + ai-automation bundled skill.
-13. `cli/bequite/{audit,freshness,verify}.py` — three runnable Python modules.
+12. `skill/references/*.md` — scraping + security + playwright-walks + frontend-stack + frontend-mcps + package-allowlist references + ai-automation + impeccable bundled skills.
+13. `cli/bequite/{audit,freshness,verify,receipts}.py` — four runnable Python modules.
 14. `cli/bequite/{__main__,commands,config,skill_loader,hooks}.py` — CLI thin wrapper.
+15. `tests/integration/receipts/test_receipts_smoke.py` — 10-test smoke suite for v0.7.0 (passing).
 
 ## Files to NOT touch
 
@@ -175,7 +178,7 @@ For any agent resuming this build:
 
 ## Suggested next phase
 
-Continue v0.7.0 → v0.7.1 → v0.8.0 → v0.8.1 → v0.9.0 → v0.9.1 → v0.10.0 → v0.10.1 → v0.11.0 → v0.12.0 → v0.13.0 → v0.14.0 → v0.15.0 → **v1.0.0** per the main plan at `.bequite/memory/prompts/v1/2026-05-10_initial-plan.md`. **13 sub-versions remain.**
+Continue v0.7.1 → v0.8.0 → v0.8.1 → v0.9.0 → v0.9.1 → v0.10.0 → v0.10.1 → v0.11.0 → v0.12.0 → v0.13.0 → v0.14.0 → v0.15.0 → **v1.0.0** per the main plan at `.bequite/memory/prompts/v1/2026-05-10_initial-plan.md`. **12 sub-versions remain.**
 
 After v1.0.0: pause. Layer 2 Studio (v2.0.0+) is a separate plan that requires Ahmed's authorization to begin (see ADR-008 / docs/merge/MASTER_MD_MERGE_AUDIT.md Bucket D).
 

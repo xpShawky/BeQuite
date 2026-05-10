@@ -18,6 +18,7 @@ import click
 # Re-export stable imports for tests + integration.
 from bequite import audit as audit_module
 from bequite import freshness as freshness_module
+from bequite import receipts as receipts_module
 from bequite import __version__
 
 
@@ -380,11 +381,84 @@ def auto(
 
 @cli.command()
 @click.option("--repo", default=".")
-def cost(repo: str) -> None:
-    """Token + dollar receipts roll-up."""
-    from bequite.commands import run_skill_command
+@click.option("--by", default="session", type=click.Choice(["session", "phase", "day"]))
+@click.option("--since", default=None, help="Filter receipts emitted on or after this date (YYYY-MM-DD).")
+def cost(repo: str, by: str, since: str | None) -> None:
+    """Token + dollar receipts roll-up.
 
-    sys.exit(run_skill_command("cost", Path(repo).resolve()))
+    Local-first: walks .bequite/receipts/ and rolls up. Falls through to the
+    skill-command dispatch only when no receipts exist (offline-friendly per
+    Article III). For roll-ups across multiple projects, use the receipts CLI
+    directly.
+    """
+    import json
+
+    repo_path = Path(repo).resolve()
+    receipts_dir = repo_path / ".bequite" / "receipts"
+
+    if not receipts_dir.exists():
+        click.echo(f"(no receipts at {receipts_dir} — receipts begin in v0.7.0+)")
+        click.echo("Falling through to skill-dispatch ...")
+        from bequite.commands import run_skill_command
+        sys.exit(run_skill_command("cost", repo_path))
+
+    store = receipts_module.ReceiptStore(str(receipts_dir))
+    receipts = store.list_all()
+    if since:
+        receipts = [r for r in receipts if r.timestamp_utc >= since]
+
+    if not receipts:
+        click.echo(f"(no receipts after {since})" if since else f"(no receipts in {receipts_dir})")
+        sys.exit(0)
+
+    if by == "session":
+        rollup = receipts_module.roll_up_by_session(receipts)
+    elif by == "phase":
+        rollup = receipts_module.roll_up_by_phase(receipts)
+    else:
+        rollup = receipts_module.roll_up_by_day(receipts)
+
+    click.echo(json.dumps(rollup, indent=2, sort_keys=True, default=str))
+
+
+# ----------------------------------------------------------------------------
+# bequite receipts <subcommand> — direct receipts ops
+# ----------------------------------------------------------------------------
+
+
+@cli.group(name="receipts")
+def receipts_group() -> None:
+    """Reproducibility receipts (v0.7.0+)."""
+
+
+@receipts_group.command("list")
+@click.option("--repo", default=".")
+def receipts_list(repo: str) -> None:
+    """List all receipts in chain order."""
+    sys.exit(receipts_module.main(["--storage-dir", str(Path(repo).resolve() / ".bequite" / "receipts"), "list"]))
+
+
+@receipts_group.command("show")
+@click.argument("sha")
+@click.option("--repo", default=".")
+def receipts_show(sha: str, repo: str) -> None:
+    """Show a single receipt's JSON."""
+    sys.exit(receipts_module.main(["--storage-dir", str(Path(repo).resolve() / ".bequite" / "receipts"), "show", sha]))
+
+
+@receipts_group.command("validate-chain")
+@click.option("--repo", default=".")
+def receipts_validate_chain(repo: str) -> None:
+    """Walk parent_receipt links; report any missing or out-of-order."""
+    sys.exit(receipts_module.main(["--storage-dir", str(Path(repo).resolve() / ".bequite" / "receipts"), "validate-chain"]))
+
+
+@receipts_group.command("roll-up")
+@click.option("--repo", default=".")
+@click.option("--by", default="session", type=click.Choice(["session", "phase", "day"]))
+def receipts_rollup(repo: str, by: str) -> None:
+    """Cost / token roll-up by session, phase, or day."""
+    sys.exit(receipts_module.main(["--storage-dir", str(Path(repo).resolve() / ".bequite" / "receipts"), "roll-up", "--by", by]))
 
 
 # ----------------------------------------------------------------------------

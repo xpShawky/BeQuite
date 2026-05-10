@@ -73,11 +73,34 @@ See [`docs/QUICKSTART.md`](docs/QUICKSTART.md) for the 5-minute path.
 
 ---
 
+## Architecture: two layers, one brain
+
+BeQuite is built in two layers sharing a single source of truth (`.bequite/memory/` + `state/` + `evidence/` + `receipts/`):
+
+- **Layer 1 — Harness** (current; v0.1.0 → v1.0.0). SKILL.md + Python CLI + repo template. Markdown + Python 3.11+ + bash hooks. Runs locally on a developer laptop or in CI. Distributable via `uvx`/`pipx`.
+- **Layer 2 — Studio** (planned; v2.0.0+). Next.js dashboard + NestJS API + Worker + Postgres. TypeScript pnpm + Turborepo. Reads what Layer 1 writes; the visual surface (project wizard, phase board, evidence viewer, recovery screen).
+
+Layer 1 is the kernel. Layer 2 is the operating system on top of the kernel. The CLI writes the truth; the dashboard displays it.
+
+Sources:
+- The original brief that initiated this project: [`BEQUITE_BOOTSTRAP_BRIEF.md`](BEQUITE_BOOTSTRAP_BRIEF.md).
+- The expanded master file (introduced post-`v0.1.1`, prescribing the Layer 2 stack): [`BeQuite_MASTER_PROJECT.md`](BeQuite_MASTER_PROJECT.md).
+- The merge audit reconciling the two: [`docs/merge/MASTER_MD_MERGE_AUDIT.md`](docs/merge/MASTER_MD_MERGE_AUDIT.md).
+
 ## Status
 
 🚧 **Pre-release.** Tracking toward `v1.0.0`. See [`CHANGELOG.md`](CHANGELOG.md) for the sub-version progress (`v0.1.0` → `v1.0.0`).
 
-The full [build plan](docs/HOW-IT-WORKS.md) lives under `docs/`. The original brief that initiated this project is preserved at `BEQUITE_BOOTSTRAP_BRIEF.md`.
+| Sub-version | Goal | Status |
+|---|---|---|
+| `v0.1.0` | Foundation & Constitution | ✅ tagged 2026-05-10 |
+| `v0.1.1` | Doctrines pack — 8 default Doctrines | ✅ tagged 2026-05-10 |
+| `v0.1.2` | Master-file merge integration | 🟡 in progress |
+| `v0.2.0` | Skill orchestrator (12 personas, 19 commands) | pending |
+| `v0.3.0` → `v1.0.0` | Hooks, commands, audit, freshness, CLI, verification, receipts, multi-model, examples, auto-mode, MENA, host adapters, vibe-handoff, docs, release | pending |
+| `v2.0.0+` | Studio (Next.js dashboard + API + Postgres + Worker) | planned post-`v1.0.0` |
+
+The original brief is preserved at [`BEQUITE_BOOTSTRAP_BRIEF.md`](BEQUITE_BOOTSTRAP_BRIEF.md). The master file (introduced mid-session, post-`v0.1.1`) is preserved at [`BeQuite_MASTER_PROJECT.md`](BeQuite_MASTER_PROJECT.md). The merge audit explaining what was adopted, what was kept, and what was deferred to Studio v2.0.0+ lives at [`docs/merge/MASTER_MD_MERGE_AUDIT.md`](docs/merge/MASTER_MD_MERGE_AUDIT.md).
 
 ---
 

@@ -1,0 +1,158 @@
+# state/project.yaml — current working state for BeQuite-itself.
+# This file is the lightweight, machine-readable view of the project.
+# Memory Bank (.bequite/memory/*.md) is the durable cross-session brain.
+# state/* files are current operational state (changes more often).
+
+project:
+  name: BeQuite
+  slug: bequite
+  owner: xpShawky
+  maintainer: Ahmed Shawky <bogyahmed24@gmail.com>
+  license: MIT
+  version: "0.1.2"          # current sub-version (see CHANGELOG.md)
+  target_release: "1.0.0"   # next major release
+
+# Mode (master §4) — drives gating rigour for BeQuite-itself
+mode: safe                  # fast | safe | enterprise
+                            # BeQuite-itself runs in Safe Mode: real users (engineers
+                            # + vibe-coders), security-sensitive (handles secrets +
+                            # source code via the harness), but not a regulated SaaS.
+
+# Audience flag (current direction; informs artifact polish)
+audience: engineer          # engineer | vibe-handoff (v2.0.0+)
+
+# Active doctrines for BeQuite-itself
+active_doctrines:
+  - library-package         # we publish a library; semver-strict, no telemetry
+  - cli-tool                # we ship a CLI; man-page, completions, exit-code discipline
+  - mena-bilingual          # we ship first-class MENA support (in v0.11.0)
+# Note: default-web-saas is bundled in skill/doctrines/ for downstream
+# projects, NOT loaded for BeQuite-itself (BeQuite has no frontend in
+# Layer 1; Layer 2 / Studio v2.0.0+ will add default-web-saas).
+
+# Constitution
+constitution:
+  version: "1.0.1"          # bumped from 1.0.0 in v0.1.2 (master merge amendments)
+  ratification_date: "2026-05-10"
+  amendments:
+    - id: amendment-001
+      from: "1.0.0"
+      to: "1.0.1"
+      adopted: "2026-05-10"
+      reason: "Merge master file additions: modes section, command-safety three-tier, prompt-injection rule, three-level definition-of-done, state/ files reference."
+      adr: "ADR-008-master-merge"  # to be drafted in v0.5.0
+
+# Architecture orientation (two-layer; see docs/merge/MASTER_MD_MERGE_AUDIT.md)
+architecture:
+  layer_1:
+    name: Harness
+    surface: [skill, cli, repo-template]
+    stack: [markdown, python-3.11+, bash]
+    sub_versions: ["v0.1.0", "v1.0.0"]
+    status: in_progress       # current focus
+  layer_2:
+    name: Studio
+    surface: [next.js-dashboard, nestjs-api, worker, postgres]
+    stack: [pnpm, turborepo, typescript, postgres-prisma, redis-bullmq, docker-compose]
+    sub_versions: ["v2.0.0", "v3.0.0"]
+    status: planned           # after v1.0.0 ships
+
+# Scale tier
+scale_tier: library_tool      # ≤1K | 1K-50K | 50K-500K | country | hyperscale | library_tool
+                              # BeQuite is a tool; no production hot path.
+
+# Compliance
+compliance:
+  bequite_itself: none
+  doctrines_shipped:          # for downstream projects
+    - none
+    - pci_dss_v4_0
+    - hipaa_security_privacy_breach
+    - fedramp_rev_5
+
+# Locales
+locales:
+  primary: en-US
+  bilingual: ar-EG            # MENA Arabic + Egyptian dialect (v0.11.0)
+  rtl_support: true
+
+# Session safety rails (auto-mode defaults; configurable per session)
+safety_rails:
+  cost_ceiling_usd: 20
+  wall_clock_ceiling_hours: 6
+  consecutive_failure_threshold: 3
+  banned_completion_phrases:
+    - should
+    - probably
+    - seems to
+    - appears to
+    - I think it works
+    - might work
+    - hopefully
+    - in theory
+
+# Phase model — applied to BeQuite-managed projects (P0–P7)
+project_phases:
+  - id: P0
+    name: Research
+    output: specs/<feature>/research.md
+    owner_persona: research-analyst
+  - id: P1
+    name: Stack
+    output: .bequite/memory/decisions/ADR-NNN-stack.md
+    owner_persona: software-architect
+  - id: P2
+    name: Plan
+    output: specs/<feature>/{spec.md, plan.md, data-model.md, contracts/}
+    owner_persona: software-architect
+  - id: P3
+    name: Phases
+    output: specs/<feature>/phases/*.md
+    owner_persona: product-owner
+  - id: P4
+    name: Tasks
+    output: specs/<feature>/phases/*/tasks.md
+    owner_persona: product-owner
+  - id: P5
+    name: Implement
+    output: source code + commits + receipts
+    owner_persona: backend-engineer | frontend-designer | database-architect
+  - id: P6
+    name: Verify
+    output: Playwright walks + smoke + audit + receipts
+    owner_persona: qa-engineer
+  - id: P7
+    name: Handoff
+    output: HANDOFF.md + screencast
+    owner_persona: devops-engineer
+
+# Build phases — for BeQuite-itself (master §23 framing)
+build_phases:
+  - id: phase-0
+    name: Repo foundation
+    sub_versions: ["v0.1.0", "v0.1.1", "v0.1.2"]
+    status: in_progress
+  - id: phase-1
+    name: Core domain + CLI
+    sub_versions: ["v0.2.0", "v0.3.0", "v0.4.0", "v0.4.1", "v0.4.2", "v0.4.3", "v0.5.0"]
+    status: pending
+  - id: phase-2
+    name: Verification + design module
+    sub_versions: ["v0.6.0", "v0.6.1"]
+    status: pending
+  - id: phase-3
+    name: Receipts + multi-model + examples
+    sub_versions: ["v0.7.0", "v0.7.1", "v0.8.0", "v0.8.1", "v0.9.0", "v0.9.1"]
+    status: pending
+  - id: phase-4
+    name: Auto mode + bilingual + universal entry + handoff + docs + release
+    sub_versions: ["v0.10.0", "v0.10.1", "v0.11.0", "v0.12.0", "v0.13.0", "v0.14.0", "v0.15.0", "v1.0.0"]
+    status: pending
+  # Layer 2 (master's monorepo stack) — separate plan, after v1.0.0
+  - id: studio-phase-1
+    name: Studio bootstrap (TypeScript monorepo + Postgres + API)
+    sub_versions: ["v2.0.0"]
+    status: planned
+
+# Updated by /recover and `bequite recover`
+recovery_path: state/recovery.md

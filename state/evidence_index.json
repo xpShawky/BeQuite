@@ -1,0 +1,74 @@
+{
+  "$schema": "https://bequite.dev/schemas/evidence_index.v1.json",
+  "version": "1",
+  "generated_at": "2026-05-10T00:00:00Z",
+  "project": "bequite",
+  "evidence": [
+    {
+      "id": "EV-001",
+      "task_id": "v0.1.0/foundation",
+      "phase": "phase-0",
+      "sub_version": "0.1.0",
+      "type": "file_creation",
+      "path": "git",
+      "command": "git log --oneline | head -1",
+      "summary": "Commit 22330e7 — feat(v0.1.0): bootstrap repo with Constitution v1.0.0, Memory Bank, and template scaffolding. 37 files, 4297 insertions.",
+      "status": "passed",
+      "created_at": "2026-05-10"
+    },
+    {
+      "id": "EV-002",
+      "task_id": "v0.1.0/article-i-grep",
+      "phase": "phase-0",
+      "sub_version": "0.1.0",
+      "type": "manual-check",
+      "path": "skill/templates/constitution.md.tpl:13",
+      "command": "grep 'Article I — Specification supremacy' skill/templates/constitution.md.tpl",
+      "summary": "Acceptance criterion for v0.1.0: Article I appears at line 13 of constitution.md.tpl. Verified.",
+      "status": "passed",
+      "created_at": "2026-05-10"
+    },
+    {
+      "id": "EV-003",
+      "task_id": "v0.1.0/memory-tree",
+      "phase": "phase-0",
+      "sub_version": "0.1.0",
+      "type": "manual-check",
+      "path": "template/.bequite/memory/",
+      "command": "find template/.bequite/ -type f",
+      "summary": "Acceptance criterion for v0.1.0: template/.bequite/memory/ contains the six Cline-pattern files + decisions/ + prompts/ + logs/ + receipts/ as .gitkeep'd dirs. Verified.",
+      "status": "passed",
+      "created_at": "2026-05-10"
+    },
+    {
+      "id": "EV-004",
+      "task_id": "v0.1.1/doctrines",
+      "phase": "phase-0",
+      "sub_version": "0.1.1",
+      "type": "file_creation",
+      "path": "skill/doctrines/",
+      "command": "ls skill/doctrines/",
+      "summary": "Eight default Doctrines created and tagged: default-web-saas, cli-tool, ml-pipeline, desktop-tauri, library-package, fintech-pci, healthcare-hipaa, gov-fedramp. mena-bilingual deferred to v0.11.0 per plan. Commit 50ebfe6 — feat(v0.1.1): doctrines pack. 8 files, 1447 insertions.",
+      "status": "passed",
+      "created_at": "2026-05-10"
+    },
+    {
+      "id": "EV-005",
+      "task_id": "v0.1.2/audit",
+      "phase": "phase-0",
+      "sub_version": "0.1.2",
+      "type": "file_creation",
+      "path": "docs/merge/MASTER_MD_MERGE_AUDIT.md",
+      "summary": "Master-file merge audit written. Two-layer architecture decision: Harness (current, v0.1.0 → v1.0.0) + Studio (master's monorepo stack, v2.0.0+). 17 master claims classified into Bucket A (adopt now), Bucket B (current wins), Bucket C (merge both), Bucket D (defer to v2.0.0), Bucket E (open items requiring Ahmed). 7 open items identified, none blocking.",
+      "status": "passed",
+      "created_at": "2026-05-10"
+    }
+  ],
+  "summary": {
+    "total": 5,
+    "passed": 5,
+    "failed": 0,
+    "pending": 0
+  },
+  "note": "Until v0.7.0 ships the signed-receipts system, evidence is recorded here as filesystem + git-history references. From v0.7.0 onward, every entry will also carry a `receipt_path` and `receipt_sha256`."
+}

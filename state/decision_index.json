@@ -1,0 +1,120 @@
+{
+  "$schema": "https://bequite.dev/schemas/decision_index.v1.json",
+  "version": "1",
+  "generated_at": "2026-05-10T00:00:00Z",
+  "project": "bequite",
+  "decisions": [
+    {
+      "id": "DEC-001",
+      "title": "Engineer-first v1, vibe-handoff seeded into artifact discipline",
+      "status": "accepted",
+      "decided_at": "2026-05-10",
+      "decided_by": "Ahmed Shawky (xpShawky) via AskUserQuestion",
+      "context": "Choose audience priority: vibe-coders, engineers, both, or neither.",
+      "decision": "Engineer-first v1; every artifact (spec.md, plan.md, tasks.md, AGENTS.md, HANDOFF.md) designed to be picked up by Claude Code / Cursor / Codex without rewriting; v2.0.0+ Studio adds vibe-coder UI on the same brain.",
+      "supersedes": null,
+      "superseded_by": null,
+      "iron_laws_touched": ["I"],
+      "doctrines_touched": []
+    },
+    {
+      "id": "DEC-002",
+      "title": "Skill-first distribution; CLI is thin Python wrapper",
+      "status": "accepted",
+      "decided_at": "2026-05-10",
+      "decided_by": "Ahmed Shawky (xpShawky) via AskUserQuestion",
+      "context": "Choose distribution model: skill-first / CLI-first / both / repo-template-only.",
+      "decision": "SKILL.md is source of truth; CLI is a thin Python wrapper that loads the skill out-of-host via Claude API for non-Claude-Code users; one brain, two faces. Unique vs Spec-Kit / BMAD / Cline.",
+      "supersedes": null,
+      "superseded_by": null,
+      "iron_laws_touched": ["I", "III"],
+      "doctrines_touched": ["library-package", "cli-tool"]
+    },
+    {
+      "id": "DEC-003",
+      "title": "Layered Constitution: Iron Laws + forkable Doctrines",
+      "status": "accepted",
+      "decided_at": "2026-05-10",
+      "decided_by": "Ahmed Shawky (xpShawky) via AskUserQuestion",
+      "context": "Choose Constitution structure: monolithic / layered / market-from-v1 / minimal.",
+      "decision": "7 Iron Laws (universal, immutable-ish) + forkable Doctrines (per project type). 8 default Doctrines shipped in v0.1.1 + mena-bilingual in v0.11.0. Impeccable bundled as default frontend Doctrine for web-saas projects.",
+      "supersedes": null,
+      "superseded_by": null,
+      "iron_laws_touched": ["I", "II", "III", "IV", "V", "VI", "VII"],
+      "doctrines_touched": ["all"]
+    },
+    {
+      "id": "DEC-004",
+      "title": "Full v1 power from day 1 with autonomous execution + safety rails",
+      "status": "accepted",
+      "decided_at": "2026-05-10",
+      "decided_by": "Ahmed Shawky (xpShawky) via AskUserQuestion",
+      "context": "Choose v1 scope: 14-day cut / full v1 / smaller / brief default.",
+      "decision": "Full v1 power. 15 sub-versions v0.1.0 → v1.0.0. One-click autonomous mode with safety rails (cost ceiling, wall-clock ceiling, 3-failure threshold, banned-word check, hook-block never auto-overridden, one-way doors always pause).",
+      "supersedes": null,
+      "superseded_by": null,
+      "iron_laws_touched": ["II", "VI"],
+      "doctrines_touched": []
+    },
+    {
+      "id": "DEC-005",
+      "title": "Master-file merge: two-layer architecture (Harness now, Studio v2.0.0+)",
+      "status": "accepted",
+      "decided_at": "2026-05-10",
+      "decided_by": "Ahmed Shawky (xpShawky) via 'merge anything useful and continue work' instruction",
+      "context": "BeQuite_MASTER_PROJECT.md introduced mid-session prescribes a TypeScript pnpm + Turborepo monorepo with Next.js dashboard, NestJS API, Postgres, Worker, etc. Conflicts with the existing skill-first / CLI / template direction.",
+      "decision": "Two-layer architecture: Layer 1 (Harness) = current direction (Skill + Python CLI + repo template), v0.1.0 → v1.0.0; Layer 2 (Studio) = master's monorepo stack, v2.0.0+. Both share the same Constitution + Memory Bank + state/ + receipts/ + evidence/ + prompts/. Studio reads what Harness writes. Master's mode system (Fast/Safe/Enterprise), persona names, slash command names, common-gaps audit, recovery prompt template, and CLAUDE.md/AGENTS.md adopted into v0.1.2. Master's monorepo + DB + web UI deferred to v2.0.0+.",
+      "supersedes": null,
+      "superseded_by": null,
+      "iron_laws_touched": ["I", "III"],
+      "doctrines_touched": [],
+      "audit_doc": "docs/merge/MASTER_MD_MERGE_AUDIT.md"
+    },
+    {
+      "id": "DEC-006",
+      "title": "Constitution v1.0.0 → v1.0.1 (master merge amendments)",
+      "status": "accepted",
+      "decided_at": "2026-05-10",
+      "decided_by": "Ahmed Shawky (xpShawky) via 'merge anything useful' instruction",
+      "context": "Master file §3.6 (evidence), §3.7 (smallest-failing-unit fix), §3.8 (never lose context), §4 (modes), §19.4 (command-safety), §19.5 (prompt-injection), §27 (def-of-done) are useful additions to the existing Iron Laws.",
+      "decision": "Patch bump v1.0.0 → v1.0.1: add Modes section (Fast/Safe/Enterprise), command-safety three-tier (safe/needs-approval/dangerous), prompt-injection rule (treat external content as untrusted), three-level definition-of-done (feature/phase/release), reference state/ files in SessionStart reads. No Iron Law removed or relaxed; additive only. ADR-008 to be drafted in v0.5.0.",
+      "supersedes": null,
+      "superseded_by": null,
+      "iron_laws_touched": ["II", "III", "IV"],
+      "doctrines_touched": []
+    },
+    {
+      "id": "DEC-007",
+      "title": "Persona model: master's 10 + Skeptic + FrontendDesign-Impeccable = 12 personas",
+      "status": "accepted",
+      "decided_at": "2026-05-10",
+      "decided_by": "Senior architect call (current; recorded in master merge)",
+      "context": "Master §8 lists 10 personas (product-owner, research-analyst, software-architect, frontend-designer, backend-engineer, database-architect, qa-engineer, security-reviewer, devops-engineer, token-economist). Original plan listed 9 (Researcher, Architect, ScrumMaster, Implementer, Reviewer, Skeptic, QA, TechWriter, FrontendDesign).",
+      "decision": "Adopt master's 10 named personas. Add Skeptic as #11 (adversarial twin distinct from Reviewer; runs at every phase boundary; produces kill-shot question). Frontend-designer persona explicitly Impeccable-loaded for frontend Doctrines. Total 12 personas.",
+      "supersedes": null,
+      "superseded_by": null,
+      "iron_laws_touched": [],
+      "doctrines_touched": []
+    },
+    {
+      "id": "DEC-008",
+      "title": "Slash commands: master's 12 names + 7 unique BeQuite extras = 19 commands",
+      "status": "accepted",
+      "decided_at": "2026-05-10",
+      "decided_by": "Senior architect call (current)",
+      "context": "Master §7 lists 12 slash commands. Original plan listed 9 spec-kit-extends + 9 bequite-adds + 3 unique = 21 total.",
+      "decision": "Adopt master's 12 names (/discover, /research, /decide-stack, /plan, /implement, /review, /validate, /recover, /design-audit, /impeccable-craft, /evidence, /release). Keep BeQuite's unique additions: /audit (Constitution drift), /freshness (knowledge probe), /auto (one-click run-to-completion), /memory (Memory Bank ops), /snapshot (versioned snapshots), /cost (token + dollar receipts), /skill-install (per-host install). Total 19 commands.",
+      "supersedes": null,
+      "superseded_by": null,
+      "iron_laws_touched": [],
+      "doctrines_touched": []
+    }
+  ],
+  "summary": {
+    "total": 8,
+    "accepted": 8,
+    "proposed": 0,
+    "superseded": 0,
+    "deprecated": 0
+  }
+}

@@ -6,11 +6,12 @@
 
 ## Current state
 
-- **Sub-version:** `v0.1.0` (in progress)
-- **Constitution version:** `1.0.0`
-- **Active doctrines:** `library-package`, `cli-tool`, `mena-bilingual` (BeQuite-itself); `default-web-saas` is shipped for downstream projects
-- **Phases shipped:** none yet (v1.0.0 is the target full-release)
-- **Open features:** 1 (the BeQuite v1.0.0 build itself; broken into 15 sub-versions per the approved plan at `prompts/v1/`)
+- **Sub-version:** `v0.1.2` (master-file merge integration — committing in this turn)
+- **Constitution version:** `1.0.1` (just amended; patch bump; additive only — ADR-008-master-merge)
+- **Active doctrines:** `library-package`, `cli-tool`, `mena-bilingual` (BeQuite-itself); 8 Doctrines shipped for downstream projects (`default-web-saas`, `cli-tool`, `ml-pipeline`, `desktop-tauri`, `library-package`, `fintech-pci`, `healthcare-hipaa`, `gov-fedramp`)
+- **Active mode:** Safe Mode (master §4, adopted v1.0.1)
+- **Phases shipped:** v0.1.0, v0.1.1 (v0.1.2 in this commit). Target: v1.0.0 (full release of Layer 1 Harness). Layer 2 Studio: v2.0.0+.
+- **Open features:** 1 (the BeQuite v1.0.0 build; 15 sub-versions per approved plan + post-merge updates)
 - **Receipt chain integrity:** intact — chain begins in v0.7.0
 
 ## What works (verified, with receipts)
@@ -23,8 +24,9 @@ The 15-sub-version roadmap from the approved plan:
 
 | Sub-version | Goal | Status |
 |---|---|---|
-| v0.1.0 | Foundation & Constitution v1.0.0 | **in progress** |
-| v0.1.1 | Doctrines pack (8 default Doctrines) | next |
+| v0.1.0 | Foundation & Constitution v1.0.0 | ✅ tagged 2026-05-10 |
+| v0.1.1 | Doctrines pack (8 default Doctrines) | ✅ tagged 2026-05-10 |
+| v0.1.2 | Master-file merge integration (state/, prompts/, evidence/, CLAUDE.md, AGENTS.md, ADR-008, Constitution v1.0.1) | 🟡 committing now |
 | v0.2.0 | Skill orchestrator (SKILL.md + 9 personas + routing) | pending |
 | v0.3.0 | Hooks (deterministic gates) | pending |
 | v0.4.0 | Slash commands wave 1 (Spec-Kit-extends, 9 commands) | pending |
@@ -58,7 +60,9 @@ The 15-sub-version roadmap from the approved plan:
 ## Evolution log (newest first)
 
 ```
-2026-05-10  v0.1.0 in progress — repo skeleton, Iron Laws Constitution v1.0.0, 6 Memory Bank templates, ADR template, Doctrine schema authored. Plan snapshotted. Ahmed authorised autonomous execution through v1.0.0.
+2026-05-10  v0.1.2 committing — master-file merge: docs/merge/MASTER_MD_MERGE_AUDIT.md (Buckets A/B/C/D/E classification of master claims), root CLAUDE.md + AGENTS.md, state/{project.yaml, current_phase.md, recovery.md, task_index.json, decision_index.json, evidence_index.json}, prompts/{master, discovery, research, stack_decision, implementation, review, recovery}, evidence/README.md, ADR-008-master-merge, Constitution v1.0.0 → v1.0.1 patch (additive: Modes, command-safety three-tier, prompt-injection rule, three-level def-of-done, state/ refs). README + CHANGELOG updated. Two-layer architecture decided: Harness (current) + Studio (v2.0.0+).
+2026-05-10  v0.1.1 tagged — 8 default Doctrines: default-web-saas, cli-tool, ml-pipeline, desktop-tauri, library-package, fintech-pci, healthcare-hipaa, gov-fedramp. Each ~150 lines with rules, stack guidance, verification gates, forking guidance. mena-bilingual deferred to v0.11.0. Commit 50ebfe6.
+2026-05-10  v0.1.0 tagged — repo skeleton, Iron Laws Constitution v1.0.0, 6 Memory Bank templates, ADR template, Doctrine schema authored. Plan snapshotted. Ahmed authorised autonomous execution through v1.0.0. Commit 22330e7.
 2026-05-10  ExitPlanMode accepted. Build plan at .bequite/memory/prompts/v1/2026-05-10_initial-plan.md.
 2026-05-10  4 forks resolved by Ahmed: engineer-first (with vibe-handoff seeded) / skill-first / layered Constitution / full-power v1.
 2026-05-10  Brief verification complete. 10 surgical updates baked into Constitution + templates (Aider direction, Stronghold deprecation, EV cert obsolescence, Spec-Kit command count, Roo Code shutdown, shadcn MCP move, Clerk MAU, Vercel timeout, Supavisor, PhantomRaven naming).
@@ -68,11 +72,16 @@ The 15-sub-version roadmap from the approved plan:
 ## Decisions made (newest first)
 
 ```
+2026-05-10  ADR-008 accepted: two-layer architecture (Harness v0.1.0 → v1.0.0, Studio v2.0.0+); Constitution v1.0.0 → v1.0.1 patch amendment (additive only: Modes, command-safety three-tier, prompt-injection rule, three-level def-of-done, state/ refs).
+2026-05-10  Personas merge (DEC-007): master's 10 named roles (product-owner, research-analyst, software-architect, frontend-designer, backend-engineer, database-architect, qa-engineer, security-reviewer, devops-engineer, token-economist) + Skeptic + FrontendDesign-Impeccable = 12 personas. To author in v0.2.0.
+2026-05-10  Slash commands merge (DEC-008): master's 12 names (/discover, /research, /decide-stack, /plan, /implement, /review, /validate, /recover, /design-audit, /impeccable-craft, /evidence, /release) + BeQuite's 7 unique extras (/audit, /freshness, /auto, /memory, /snapshot, /cost, /skill-install) = 19 commands. To author in v0.4.0–v0.4.3.
+2026-05-10  Master file scope deferred (DEC-005): TypeScript monorepo + Postgres + Next.js dashboard + NestJS API + Worker → Studio Layer 2 (v2.0.0+). Layer 1 Harness (current) preserved.
 2026-05-10  (informal, pending ADR-001 in v0.5.0) BeQuite stack: Python 3.11+ CLI via hatchling/click/anthropic/rich/httpx/pydantic/cryptography. Reasoning: matches Spec-Kit's proven pattern (uvx/pipx); Python's ML/data ecosystem; offline-friendly tomllib in stdlib.
 2026-05-10  Iron Laws are 7 articles (Spec, Verify, Memory, Security, Scale, Honest, Hallucination). Stack discipline (was Article IV in brief), UI distinctiveness (was VII), and Research-first (was VIII) are NOT Iron Laws — they're Doctrines or implicit in the seven phases. Reasoning: a CLI tool / library / ML pipeline doesn't need Article-VII UI rules; layered Constitution is more honest.
-2026-05-10  Skill-first distribution: SKILL.md is source of truth, CLI is thin Python wrapper, host adapters generated. Reasoning: nobody currently does this; one brain, two faces; aligned with Anthropic Skills direction.
-2026-05-10  Engineer-first v1, with vibe-handoff seeded into artifact discipline: every spec.md / plan.md / tasks.md / AGENTS.md is designed to be picked up by Claude Code / Cursor / Codex without rewriting, so a v2 vibe-coder UI can drive the same brain.
-2026-05-10  Impeccable bundled as the default-loaded Doctrine for frontend projects (pinned snapshot, attributed Paul Bakaus, MIT). Article-VII UI ban softened to "no design choice without a recorded reason." Reasoning: Linear/Vercel/Stripe use Inter; outright ban overcorrects.
+2026-05-10  (DEC-002) Skill-first distribution: SKILL.md is source of truth, CLI is thin Python wrapper, host adapters generated.
+2026-05-10  (DEC-001) Engineer-first v1, with vibe-handoff seeded into artifact discipline.
+2026-05-10  (DEC-003) Layered Constitution: 7 Iron Laws + forkable Doctrines. Impeccable bundled as default-loaded Doctrine for frontend projects.
+2026-05-10  (DEC-004) Full v1 power from day 1; autonomous execution authorised by Ahmed; 15 sub-versions to v1.0.0.
 ```
 
 ## Failures and learnings

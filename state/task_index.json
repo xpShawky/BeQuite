@@ -1,0 +1,165 @@
+{
+  "$schema": "https://bequite.dev/schemas/task_index.v1.json",
+  "version": "1",
+  "generated_at": "2026-05-10T00:00:00Z",
+  "project": "bequite",
+  "current_sub_version": "0.1.2",
+  "last_green_sub_version": "0.1.1",
+  "tasks": [
+    {
+      "id": "v0.1.2/audit",
+      "title": "Write docs/merge/MASTER_MD_MERGE_AUDIT.md (the merge plan)",
+      "phase": "phase-0",
+      "sub_version": "0.1.2",
+      "status": "completed",
+      "owner": "software-architect",
+      "evidence_path": "docs/merge/MASTER_MD_MERGE_AUDIT.md",
+      "completed_at": "2026-05-10"
+    },
+    {
+      "id": "v0.1.2/claude-md",
+      "title": "Add root CLAUDE.md (Claude-Code-specific extensions)",
+      "phase": "phase-0",
+      "sub_version": "0.1.2",
+      "status": "completed",
+      "owner": "software-architect",
+      "evidence_path": "CLAUDE.md",
+      "completed_at": "2026-05-10"
+    },
+    {
+      "id": "v0.1.2/agents-md",
+      "title": "Add root AGENTS.md (universal entry per Linux Foundation Agentic AI Foundation standard)",
+      "phase": "phase-0",
+      "sub_version": "0.1.2",
+      "status": "completed",
+      "owner": "software-architect",
+      "evidence_path": "AGENTS.md",
+      "completed_at": "2026-05-10"
+    },
+    {
+      "id": "v0.1.2/state-files",
+      "title": "Add state/ files (project.yaml, current_phase.md, recovery.md, task_index.json, decision_index.json, evidence_index.json)",
+      "phase": "phase-0",
+      "sub_version": "0.1.2",
+      "status": "in_progress",
+      "owner": "software-architect",
+      "evidence_path": "state/",
+      "started_at": "2026-05-10"
+    },
+    {
+      "id": "v0.1.2/prompts",
+      "title": "Add prompts/ files (master, discovery, research, stack_decision, implementation, review, recovery)",
+      "phase": "phase-0",
+      "sub_version": "0.1.2",
+      "status": "pending",
+      "owner": "research-analyst",
+      "depends_on": ["v0.1.2/state-files"]
+    },
+    {
+      "id": "v0.1.2/evidence-readme",
+      "title": "Add evidence/README.md",
+      "phase": "phase-0",
+      "sub_version": "0.1.2",
+      "status": "pending",
+      "owner": "qa-engineer",
+      "depends_on": ["v0.1.2/state-files"]
+    },
+    {
+      "id": "v0.1.2/constitution-amend",
+      "title": "Amend Constitution v1.0.0 → v1.0.1 (modes, command-safety, prompt-injection, def-of-done, state/ refs)",
+      "phase": "phase-0",
+      "sub_version": "0.1.2",
+      "status": "pending",
+      "owner": "software-architect",
+      "evidence_path": "skill/templates/constitution.md.tpl, .bequite/memory/constitution.md",
+      "depends_on": ["v0.1.2/audit"]
+    },
+    {
+      "id": "v0.1.2/readme-update",
+      "title": "Update README.md to reflect two-layer architecture (Harness now, Studio v2.0.0+)",
+      "phase": "phase-0",
+      "sub_version": "0.1.2",
+      "status": "pending",
+      "owner": "software-architect",
+      "evidence_path": "README.md",
+      "depends_on": ["v0.1.2/audit"]
+    },
+    {
+      "id": "v0.1.2/changelog-update",
+      "title": "Update CHANGELOG.md with v0.1.1 + v0.1.2 entries",
+      "phase": "phase-0",
+      "sub_version": "0.1.2",
+      "status": "pending",
+      "owner": "devops-engineer",
+      "evidence_path": "CHANGELOG.md"
+    },
+    {
+      "id": "v0.1.2/memory-refresh",
+      "title": "Update .bequite/memory/activeContext.md + progress.md per Article III",
+      "phase": "phase-0",
+      "sub_version": "0.1.2",
+      "status": "pending",
+      "owner": "software-architect"
+    },
+    {
+      "id": "v0.1.2/commit",
+      "title": "Stage v0.1.2 files; commit; tag v0.1.2",
+      "phase": "phase-0",
+      "sub_version": "0.1.2",
+      "status": "pending",
+      "owner": "devops-engineer",
+      "depends_on": [
+        "v0.1.2/audit", "v0.1.2/claude-md", "v0.1.2/agents-md",
+        "v0.1.2/state-files", "v0.1.2/prompts", "v0.1.2/evidence-readme",
+        "v0.1.2/constitution-amend", "v0.1.2/readme-update",
+        "v0.1.2/changelog-update", "v0.1.2/memory-refresh"
+      ]
+    },
+    {
+      "id": "v0.2.0/skill-orchestrator",
+      "title": "Author skill/SKILL.md (orchestrator persona, 7-phase router, mode selector)",
+      "phase": "phase-1",
+      "sub_version": "0.2.0",
+      "status": "pending",
+      "owner": "software-architect"
+    },
+    {
+      "id": "v0.2.0/personas",
+      "title": "Author 12 persona files (product-owner, research-analyst, software-architect, frontend-designer, backend-engineer, database-architect, qa-engineer, security-reviewer, devops-engineer, token-economist, skeptic, frontend-design-impeccable)",
+      "phase": "phase-1",
+      "sub_version": "0.2.0",
+      "status": "pending",
+      "owner": "software-architect"
+    },
+    {
+      "id": "v0.2.0/routing-json",
+      "title": "Author skill/routing.json (default model routing matrix)",
+      "phase": "phase-1",
+      "sub_version": "0.2.0",
+      "status": "pending",
+      "owner": "token-economist"
+    },
+    {
+      "id": "v0.2.0/config-tpl",
+      "title": "Author bequite.config.toml.tpl",
+      "phase": "phase-1",
+      "sub_version": "0.2.0",
+      "status": "pending",
+      "owner": "software-architect"
+    },
+    {
+      "id": "v0.2.0/wire-skill-into-template",
+      "title": "Wire skill into template/.claude/skills/bequite/ (symlink target)",
+      "phase": "phase-1",
+      "sub_version": "0.2.0",
+      "status": "pending",
+      "owner": "devops-engineer"
+    }
+  ],
+  "summary": {
+    "total": 17,
+    "completed": 3,
+    "in_progress": 1,
+    "pending": 13
+  }
+}

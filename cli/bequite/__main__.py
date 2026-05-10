@@ -89,6 +89,69 @@ def version() -> None:
 
 
 # ----------------------------------------------------------------------------
+# bequite quickstart  — friendly onboarding for first-time users
+# ----------------------------------------------------------------------------
+
+
+@cli.command()
+def quickstart() -> None:
+    """Show a first-time onboarding guide for new users."""
+    click.secho("", nl=True)
+    click.secho("  BeQuite quickstart", fg="yellow", bold=True)
+    click.secho("  Build it right the first time. No chatter. No debug spirals.", fg="bright_black")
+    click.secho("", nl=True)
+    click.secho(f"  Installed: bequite v{__version__}", fg="green")
+    click.secho("", nl=True)
+
+    click.secho("  What BeQuite does", fg="cyan", bold=True)
+    click.echo("    Runs the 7-phase workflow (Research -> Stack -> Plan -> Phases ->")
+    click.echo("    Tasks -> Implement -> Verify -> Handoff) with deterministic gates")
+    click.echo("    so AI agents ship real software instead of broken half-builds.")
+    click.secho("", nl=True)
+
+    click.secho("  Try these commands (in order)", fg="cyan", bold=True)
+    click.echo("")
+    click.secho("    1. Diagnose your environment", fg="bright_yellow")
+    click.echo("       bequite doctor")
+    click.echo("")
+    click.secho("    2. Scaffold a new project", fg="bright_yellow")
+    click.echo("       bequite init my-app --doctrine default-web-saas")
+    click.echo("       cd my-app")
+    click.echo("")
+    click.secho("    3. Run the full 7-phase workflow with safety rails", fg="bright_yellow")
+    click.echo('       bequite auto --feature "add health endpoint" --max-cost-usd 10')
+    click.echo("")
+    click.secho("    4. Or run each phase manually", fg="bright_yellow")
+    click.echo('       bequite research "what library should I use for X?"')
+    click.echo("       bequite stack")
+    click.echo("       bequite plan")
+    click.echo("       bequite verify")
+    click.echo("")
+
+    click.secho("  Useful background", fg="cyan", bold=True)
+    click.echo("    bequite --help                  list all 19+ commands")
+    click.echo("    bequite memory show             read the Memory Bank")
+    click.echo("    bequite receipts list           list signed reproducibility receipts")
+    click.echo("    bequite route providers         model routing status (Anthropic/OpenAI/etc.)")
+    click.echo("    bequite freshness --all         knowledge probe (catches deprecated packages)")
+    click.echo("")
+
+    click.secho("  Studio (optional visual surface)", fg="cyan", bold=True)
+    click.echo("    The dashboard + marketing site + API live in studio/. Run three terminals:")
+    click.echo("      cd studio/api       && bun run src/index.ts       # :3002")
+    click.echo("      cd studio/dashboard && npm run dev                # :3001")
+    click.echo("      cd studio/marketing && npm run dev                # :3000")
+    click.echo("")
+
+    click.secho("  Docs", fg="cyan", bold=True)
+    click.echo("    Install guide:     docs/INSTALL.md")
+    click.echo("    Release notes:     docs/RELEASES/v1.0.0.md")
+    click.echo("    Constitution:      .bequite/memory/constitution.md")
+    click.echo("    GitHub:            https://github.com/xpShawky/BeQuite")
+    click.echo("")
+
+
+# ----------------------------------------------------------------------------
 # bequite doctor  — environment check (master §17.2 — adapted)
 # ----------------------------------------------------------------------------
 

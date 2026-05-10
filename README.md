@@ -6,7 +6,65 @@ BeQuite is a host-portable harness that turns Claude (and any peer coding agent 
 
 By **xpShawky** ([Ahmed Shawky](https://github.com/xpShawky)).
 
-[![v1.0.0](https://img.shields.io/badge/release-v1.0.0-E5B547?style=flat&labelColor=0a0a0a)](docs/RELEASES/v1.0.0.md) [![v2.0.0-alpha.1](https://img.shields.io/badge/studio-v2.0.0--alpha.1-E5B547?style=flat&labelColor=0a0a0a)](docs/RELEASES/v2.0.0-alpha.1.md) [![Constitution v1.3.0](https://img.shields.io/badge/Constitution-v1.3.0-E5B547?style=flat&labelColor=0a0a0a)](.bequite/memory/constitution.md) [![License: MIT](https://img.shields.io/badge/License-MIT-E5B547?style=flat&labelColor=0a0a0a)](LICENSE)
+[![v1.0.3](https://img.shields.io/badge/release-v1.0.3-E5B547?style=flat&labelColor=0a0a0a)](docs/RELEASES/v1.0.0.md) [![v2.0.0-alpha.2](https://img.shields.io/badge/studio-v2.0.0--alpha.2-E5B547?style=flat&labelColor=0a0a0a)](docs/RELEASES/v2.0.0-alpha.1.md) [![Constitution v1.3.0](https://img.shields.io/badge/Constitution-v1.3.0-E5B547?style=flat&labelColor=0a0a0a)](.bequite/memory/constitution.md) [![License: MIT](https://img.shields.io/badge/License-MIT-E5B547?style=flat&labelColor=0a0a0a)](LICENSE)
+
+---
+
+## Install — one command (vibecoder-friendly)
+
+### Windows (PowerShell)
+
+```powershell
+irm https://raw.githubusercontent.com/xpShawky/BeQuite/main/scripts/bootstrap.ps1 | iex
+```
+
+### macOS / Linux
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/xpShawky/BeQuite/main/scripts/bootstrap.sh | bash
+```
+
+That's it. The bootstrap will:
+
+1. Check that **Python 3.11+** and **git** are installed — and tell you exactly how to install them if they're not (one-click installer links).
+2. Clone the repo into `./BeQuite/`.
+3. Create a Python venv inside the clone.
+4. Install the `bequite` CLI in editable mode.
+5. Verify everything works.
+6. Print the next-step commands.
+
+**Want the Studio (dashboard + marketing + API) too?**
+
+```powershell
+# Windows
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/xpShawky/BeQuite/main/scripts/bootstrap.ps1))) -Studio
+```
+
+```bash
+# macOS / Linux
+curl -fsSL https://raw.githubusercontent.com/xpShawky/BeQuite/main/scripts/bootstrap.sh | bash -s -- --studio
+```
+
+---
+
+## Run — three commands
+
+```bash
+# 1. Enter the project + activate the venv (every new shell)
+cd BeQuite
+# Windows:  .\.venv\Scripts\Activate.ps1
+# Unix:     source ./.venv/bin/activate
+
+# 2. Read the friendly first-time guide
+bequite quickstart
+
+# 3. Initialize a new project + run the full workflow
+bequite init my-app --doctrine default-web-saas
+cd my-app
+bequite auto --feature "add health endpoint" --max-cost-usd 10
+```
+
+`bequite auto` runs the **7-phase workflow** (Research → Stack → Plan → Phases → Tasks → Implement → Verify → Handoff) sequentially with phase-by-phase commits, Skeptic gates at every boundary, hard cost ceiling, hard wall-clock ceiling, and a 3-failure-threshold pause-for-human. It never bypasses hooks, never runs one-way-door operations, and never skips Phase 0.
 
 ---
 
@@ -14,31 +72,19 @@ By **xpShawky** ([Ahmed Shawky](https://github.com/xpShawky)).
 
 Two layers, one brain — both shipping today:
 
-### 🧠 Layer 1 Harness — `v1.0.0` (Production/Stable)
+### 🧠 Layer 1 Harness — `v1.0.3` (Production/Stable)
 
-The CLI + Skill + Memory Bank + Hooks + Doctrines + Templates. Markdown + Python 3.11+ + bash hooks. Distributable via `uvx`/`pipx`/`pip install`.
-
-```bash
-uvx bequite init my-app --doctrine default-web-saas --scale small_saas
-bequite auto --feature add-confirmation-flow --max-cost-usd 10
-```
+The CLI + Skill + Memory Bank + Hooks + Doctrines + Templates. Markdown + Python 3.11+ + bash hooks. Distributable via `uvx`/`pipx`/`pip install` (once PyPI publish lands).
 
 **[→ v1.0.0 release notes](docs/RELEASES/v1.0.0.md)**
 
-### 🎨 Layer 2 Studio — `v2.0.0-alpha.1` (First pre-release)
+### 🎨 Layer 2 Studio — `v2.0.0-alpha.2` (First pre-release)
 
 The visual surface — three Next.js + Hono apps sharing the gold-on-black brand:
 
-- **`studio/marketing/`** — cinematic landing page (Apple-grade scroll choreography) + 6 deep MDX vibecoder tutorials.
+- **`studio/marketing/`** — cinematic landing page (Apple-grade scroll choreography) + 6 deep MDX vibecoder tutorials at `/docs`.
 - **`studio/dashboard/`** — operations console with dual-mode loader (filesystem ↔ HTTP), live SSE updates, xterm.js terminal in HTTP mode.
 - **`studio/api/`** — Hono on Bun back-end. Three-mode auth, append-only writes, four SSE streams, terminal exec (allow-list-gated per ADR-016).
-
-```bash
-# Three-terminal dev
-cd studio/api && bun install && bun run src/index.ts             # :3002
-cd studio/dashboard && pnpm install && BEQUITE_DASHBOARD_MODE=http pnpm dev  # :3001
-cd studio/marketing && pnpm install && pnpm dev                   # :3000
-```
 
 **[→ v2.0.0-alpha.1 release notes](docs/RELEASES/v2.0.0-alpha.1.md)**
 

@@ -6,6 +6,52 @@ All notable changes to BeQuite are documented here. Format follows [Keep a Chang
 
 ---
 
+## [1.0.3] — 2026-05-11 — Vibecoder-friendly one-command install
+
+### Fixed
+
+- **`scripts/install.ps1` halted on benign `pip` stderr warnings.** Top-of-script `$ErrorActionPreference = "Stop"` treats ANY stderr from native commands as a fatal PowerShell error. The cache-deserialization warning from `python -m pip install --upgrade pip` (a no-op message, not a real failure) tripped this and aborted the script after creating the venv but before installing the CLI. Caught on fresh-clone testing.
+
+  **Fix:** Switched to `$ErrorActionPreference = "Continue"` and manually check `$LASTEXITCODE` after every critical native command. Added explicit `Exit-Fatal` helper that surfaces a clean error message instead of letting PowerShell dump a stack trace. Now harmless `pip`/`npm` stderr warnings don't halt the install.
+
+### Added — true one-command install
+
+- **`scripts/bootstrap.ps1`** — Windows one-liner. Detects missing prerequisites (Python, git) and prints **multiple install-hint options** (python.org link / winget / uv) — does NOT auto-install (those need a user click, and silent installs are sketchy). Clones the repo, runs `install.ps1`, prints next-step commands inside a green ASCII box. Designed to be `iex`'d from a fresh PowerShell:
+
+  ```powershell
+  irm https://raw.githubusercontent.com/xpShawky/BeQuite/main/scripts/bootstrap.ps1 | iex
+  ```
+
+- **`scripts/bootstrap.sh`** — Unix one-liner equivalent. Same flow for macOS / Linux:
+
+  ```bash
+  curl -fsSL https://raw.githubusercontent.com/xpShawky/BeQuite/main/scripts/bootstrap.sh | bash
+  ```
+
+  Both accept `-Studio` (Windows) / `--studio` (Unix) for the full Studio dependency install.
+
+- **`bequite quickstart`** command — friendly first-time onboarding guide. Prints the version, what BeQuite does, the four most useful next commands (with the 7-phase workflow), useful background commands, Studio quickstart, doc links. Brand-themed colors (gold/cyan).
+
+  This is the post-install equivalent of `claude /init` — one command to orient a new user.
+
+### Changed
+
+- `cli/bequite/__init__.py::__version__` → `1.0.3`.
+- `cli/pyproject.toml::version` → `1.0.3`.
+- `scripts/install.ps1` — rewritten with robust error handling + clean Exit-Fatal + better missing-prereq hints.
+- `README.md` — leads with the one-command install path; "Run — three commands" section right after; status table updated.
+
+### Verified
+
+- The new `install.ps1` was tested against `Test bequite/BeQuite/` (fresh clone). The previous version halted on `pip --upgrade` stderr; the rewrite proceeds through the full install cleanly.
+- The `bequite quickstart` command tested locally in the dev repo.
+
+### Honest reporting per Article VI
+
+This is the fourth install-path bug caught in two days (v1.0.1 missing README, v1.0.2 PowerShell quote escape, v2.0.0-alpha.2 React 19 peer-dep, v1.0.3 stderr-as-fatal). The pattern is clear: **install paths need clean-room verification per release**. The bootstrap.ps1 is the first script that's been tested by actually being `iex`'d from a clean PowerShell — that test happens immediately after this commit lands on origin.
+
+---
+
 ## [2.0.0-alpha.2] — 2026-05-11 — Marketing site React 19 peer-dep fix
 
 ### Fixed
@@ -1431,7 +1477,8 @@ Each regulated Doctrine carries a disclaimer: starting points, not substitutes f
 
 This release contains no executable code. It establishes the inviolate base layer (Constitution + Memory Bank + ADR + Doctrine schemas) on which every later sub-version depends.
 
-[Unreleased]: https://github.com/xpShawky/BeQuite/compare/v2.0.0-alpha.2...HEAD
+[Unreleased]: https://github.com/xpShawky/BeQuite/compare/v1.0.3...HEAD
+[1.0.3]: https://github.com/xpShawky/BeQuite/compare/v2.0.0-alpha.2...v1.0.3
 [2.0.0-alpha.2]: https://github.com/xpShawky/BeQuite/compare/v1.0.2...v2.0.0-alpha.2
 [1.0.2]: https://github.com/xpShawky/BeQuite/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/xpShawky/BeQuite/compare/v2.0.0-alpha.1...v1.0.1

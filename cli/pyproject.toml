@@ -1,0 +1,90 @@
+[build-system]
+requires = ["hatchling>=1.25.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "bequite"
+version = "0.5.0"
+description = "Project harness that turns Claude (and peer coding agents) into a senior tech-lead. Spec-driven, layered Constitution + Doctrines, deterministic gates, signed receipts, knowledge-freshness probe, MENA-bilingual support."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [
+  { name = "Ahmed Shawky (xpShawky)", email = "noreply@bequite.dev" },
+]
+keywords = [
+  "ai-coding-agent", "claude", "claude-code", "cursor", "codex",
+  "spec-driven", "constitution", "doctrine", "memory-bank",
+  "n8n", "make", "automation", "agents-md", "skill",
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development",
+  "Topic :: Software Development :: Code Generators",
+  "Topic :: Software Development :: Quality Assurance",
+]
+
+dependencies = [
+  "click>=8.1.0",
+  "rich>=13.7.0",
+  "httpx>=0.27.0",
+  "pydantic>=2.7.0",
+  "anthropic>=0.40.0",
+  "cryptography>=42.0.0",
+]
+
+[project.optional-dependencies]
+openai = ["openai>=1.50.0"]
+google = ["google-genai>=0.3.0"]
+dev = [
+  "pytest>=8.0.0",
+  "pytest-asyncio>=0.23.0",
+  "pytest-cov>=5.0.0",
+  "ruff>=0.5.0",
+  "mypy>=1.10.0",
+]
+
+[project.scripts]
+bequite = "bequite.__main__:cli"
+bq = "bequite.__main__:cli"
+
+[project.urls]
+Homepage = "https://github.com/xpshawky/bequite"
+Documentation = "https://github.com/xpshawky/bequite/blob/main/README.md"
+Repository = "https://github.com/xpshawky/bequite"
+"Bug Tracker" = "https://github.com/xpshawky/bequite/issues"
+Changelog = "https://github.com/xpshawky/bequite/blob/main/CHANGELOG.md"
+
+[tool.hatch.build.targets.wheel]
+packages = ["bequite"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "/bequite",
+  "/README.md",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM"]
+ignore = ["E501"]   # line length is fine when wrapping is awkward
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"

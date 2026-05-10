@@ -11,4 +11,4 @@ standalone Python modules pre-CLI:
 Once v0.5.0 ships, both are wired under `bequite audit` / `bequite freshness`.
 """
 
-__version__ = "0.18.0"
+__version__ = "0.19.0"

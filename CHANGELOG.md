@@ -4,7 +4,47 @@ All notable changes to BeQuite are documented here. Format follows [Keep a Chang
 
 ## [Unreleased] — tracking toward v1.0.0 + v2.0.0-alpha.1
 
-v0.18.0 ships the **Studio dashboard real implementation** per image 6 mock. v0.17.5 (3D astronaut GLB via Blender) parked — Blender MCP unresponsive. v0.19.0 next: Hono+Bun API back-end. Ahmed reviews before tagging v1.0.0 (Layer 1 Harness final) + v2.0.0-alpha.1 (Studio Edition first pre-release).
+v0.19.0 ships the **Studio API back-end (Hono on Bun)** — five HTTP endpoints, path-traversal guard, Zod schemas mirroring the dashboard's loader. v0.17.5 (3D astronaut GLB via Blender) still parked — Blender MCP went from timeout to `Cannot connect`. v0.19.5 next: Better-Auth (Doctrine Rule 9; ADR-011 Phase-3 device-code) + write endpoints with RoE gates. v2.0.0-alpha.1: swap dashboard `lib/projects.ts` from filesystem-mode to HTTP-mode against `studio/api/`. Ahmed reviews before tagging v1.0.0 (Layer 1 Harness final) + v2.0.0-alpha.1 (Studio Edition first pre-release).
+
+---
+
+## [0.19.0] — 2026-05-10
+
+### Added — Studio API back-end (Hono on Bun)
+
+**`studio/api/` is now a working HTTP service** that boots on http://localhost:3002 and reads any BeQuite-managed project at a configurable path. Same loader logic as the dashboard (`studio/dashboard/lib/projects.ts`), but exposed over HTTP so future multi-user / cloud / non-Node clients can read project state without filesystem access.
+
+- **`src/index.ts`** — Hono app with `logger()` + permissive dev CORS (`http://localhost:*` + `http://127.0.0.1:*` allowed in dev; production allow-list lands v0.19.x+) + route registration. Boots via `bun run src/index.ts` on port `process.env.PORT || 3002`.
+- **`src/schemas.ts`** — Zod schemas for `PhaseStatus`, `ReceiptSummary`, `ProjectSnapshot`, plus `ProjectQuerySchema` for path-bounded queries. Mirrors the dashboard `ProjectSnapshot` interface so future HTTP-mode swap is type-safe.
+- **`src/lib/fs-loader.ts`** — Filesystem-backed `loadProject(rootDir)` + `listProjects()` + `getWorkspaceRoot()`. **Path-traversal guard:** `BEQUITE_WORKSPACE_ROOT` env (defaults to two-levels-up from cwd) is the allow-list root; any `?path=` outside the root returns 403 (`path outside workspace root`). Reads constitution.md, projectbrief.md, activeContext.md, state/current_phase.md, state/recovery.md, `.bequite/receipts/*.json`, `.bequite/cache/cost-ledger.json`.
+- **`src/routes/health.ts`** — `GET /healthz` → `{ status, service, version, workspace_root, uptime_s }`.
+- **`src/routes/projects.ts`** — `GET /api/v1/projects` (list discoverable projects under workspace root) + `GET /api/v1/projects/snapshot?path=<abs-path>` (full snapshot for a project; Zod-validated query).
+- **`src/routes/receipts.ts`** — `GET /api/v1/receipts?path=<abs-path>` (last receipts summary list; sorted newest-first) + `GET /api/v1/receipts/:sha?path=<abs-path>` (full receipt content by 8-64-hex content-hash prefix; Zod-validated sha format).
+- **`package.json`** — Hono 4 + Zod 3; runs on Bun (`bun --hot src/index.ts`). TypeScript strict; `tsconfig.json` uses NodeNext modules.
+- **`README.md`** — endpoint surface + env vars + dev quickstart.
+
+### Endpoint surface
+
+| Verb | Path | Returns |
+|---|---|---|
+| `GET` | `/healthz` | `{ status, service, version, workspace_root, uptime_s }` |
+| `GET` | `/` | API metadata + endpoint catalog |
+| `GET` | `/api/v1/projects` | `{ items: [{ name, path }, ...] }` |
+| `GET` | `/api/v1/projects/snapshot?path=<abs-path>` | full `ProjectSnapshot` (constitution version, current phase, last green tag, doctrines, receipts summary, cost session, recovery preview) |
+| `GET` | `/api/v1/receipts?path=<abs-path>` | last receipts list per project |
+| `GET` | `/api/v1/receipts/:sha?path=<abs-path>` | full receipt JSON for a single sha-prefixed receipt |
+
+### Changed
+
+- `cli/bequite/__init__.py::__version__` → `0.19.0`. `cli/pyproject.toml::version` → `0.19.0`.
+
+### Notes
+
+- API **boots locally**: `cd studio/api && bun install && bun run src/index.ts` → http://localhost:3002. By default `BEQUITE_WORKSPACE_ROOT` is `cwd/../..` so when run from `studio/api/`, the BeQuite repo itself is the readable root.
+- v0.19.0 ships **read-only endpoints only**. v0.19.5 adds: auth (Better-Auth per Doctrine Rule 9; ADR-011 Phase-3 device-code flow when standing up the auth server) + write endpoints with RoE gates (per Article IV — no destructive ops without explicit ADR).
+- v2.0.0-alpha.1 swaps the dashboard's `lib/projects.ts` from filesystem-mode to HTTP-mode against `studio/api/`. v2.0.0+ adds a Postgres mirror for multi-user / cloud operation.
+- WebSocket for live receipt + cost stream + xterm.js terminal stream lands v0.20.0.
+- v0.17.5 (3D astronaut GLB via Blender) still parked — `localhost:9876` went from timeout to `Cannot connect`. Scaffold ready (`studio/marketing/public/3d/` + `AgentCharacter3D.tsx` drop-in API); the moment Blender's MCP responds, v0.17.5 is one iteration away.
 
 ---
 
@@ -987,7 +1027,30 @@ Each regulated Doctrine carries a disclaimer: starting points, not substitutes f
 
 This release contains no executable code. It establishes the inviolate base layer (Constitution + Memory Bank + ADR + Doctrine schemas) on which every later sub-version depends.
 
-[Unreleased]: https://github.com/xpShawky/BeQuite/compare/v0.5.2...HEAD
+[Unreleased]: https://github.com/xpShawky/BeQuite/compare/v0.19.0...HEAD
+[0.19.0]: https://github.com/xpShawky/BeQuite/compare/v0.18.0...v0.19.0
+[0.18.0]: https://github.com/xpShawky/BeQuite/compare/v0.17.0...v0.18.0
+[0.17.0]: https://github.com/xpShawky/BeQuite/compare/v0.16.0...v0.17.0
+[0.16.0]: https://github.com/xpShawky/BeQuite/compare/v0.15.0...v0.16.0
+[0.15.0]: https://github.com/xpShawky/BeQuite/compare/v0.14.0...v0.15.0
+[0.14.0]: https://github.com/xpShawky/BeQuite/compare/v0.13.0...v0.14.0
+[0.13.0]: https://github.com/xpShawky/BeQuite/compare/v0.12.0...v0.13.0
+[0.12.0]: https://github.com/xpShawky/BeQuite/compare/v0.11.0...v0.12.0
+[0.11.0]: https://github.com/xpShawky/BeQuite/compare/v0.10.7...v0.11.0
+[0.10.7]: https://github.com/xpShawky/BeQuite/compare/v0.10.6...v0.10.7
+[0.10.6]: https://github.com/xpShawky/BeQuite/compare/v0.10.5...v0.10.6
+[0.10.5]: https://github.com/xpShawky/BeQuite/compare/v0.10.0...v0.10.5
+[0.10.0]: https://github.com/xpShawky/BeQuite/compare/v0.9.2...v0.10.0
+[0.9.2]: https://github.com/xpShawky/BeQuite/compare/v0.9.1...v0.9.2
+[0.9.1]: https://github.com/xpShawky/BeQuite/compare/v0.9.0...v0.9.1
+[0.9.0]: https://github.com/xpShawky/BeQuite/compare/v0.8.1...v0.9.0
+[0.8.1]: https://github.com/xpShawky/BeQuite/compare/v0.8.0...v0.8.1
+[0.8.0]: https://github.com/xpShawky/BeQuite/compare/v0.7.1...v0.8.0
+[0.7.1]: https://github.com/xpShawky/BeQuite/compare/v0.7.0...v0.7.1
+[0.7.0]: https://github.com/xpShawky/BeQuite/compare/v0.6.1...v0.7.0
+[0.6.1]: https://github.com/xpShawky/BeQuite/compare/v0.6.0...v0.6.1
+[0.6.0]: https://github.com/xpShawky/BeQuite/compare/v0.5.3...v0.6.0
+[0.5.3]: https://github.com/xpShawky/BeQuite/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/xpShawky/BeQuite/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/xpShawky/BeQuite/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/xpShawky/BeQuite/compare/v0.4.3...v0.5.0

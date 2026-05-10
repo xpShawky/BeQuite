@@ -4,7 +4,26 @@ All notable changes to BeQuite are documented here. Format follows [Keep a Chang
 
 ## [Unreleased] — tracking toward v1.0.0
 
-The full sub-version roadmap (`v0.1.0` → `v1.0.0`) lives in `docs/HOW-IT-WORKS.md` (drafted in v0.14.0) and the approved plan at `.bequite/memory/prompts/v1/`. Layer 2 (Studio) is planned for `v2.0.0+`. **v0.9.2 reshape:** added v0.10.5 (multi-model planning manual-paste MVP) + v0.10.6 (CLI auth stubs). Old v0.10.1 renumbered to v0.10.7. Total sub-versions remaining to v1.0.0: 9.
+Full sub-version roadmap (`v0.1.0` → `v1.0.0`) lives in `docs/HOW-IT-WORKS.md` (v0.14.0) and the approved plan at `.bequite/memory/prompts/v1/`. Layer 2 (Studio) is planned for `v2.0.0+`. v0.9.2 reshape inserted v0.10.5 + v0.10.6. Now 8 sub-versions remain to v1.0.0.
+
+---
+
+## [0.10.0] — 2026-05-10
+
+### Added — Auto-mode state machine + safety rails + heartbeat
+
+- **`cli/bequite/auto.py`** (~270 lines) — state machine with 8 phases (P0..P7) + DONE/BLOCKED/FAILED/PAUSED. State persistence at `.bequite/auto-state/<session>.json`. Per-phase rail checks: cost ceiling, wall-clock ceiling, banned-words, consecutive-failure threshold. One-way-door pattern detection (PyPI/npm/git-push-main/terraform). Heartbeat writes activeContext.md every 5 minutes during long phases. CLI: `python -m bequite.auto run --feature X --max-cost-usd 20 --max-wall-clock-hours 6 --mode auto`.
+- **In v0.10.0 the actual model invocation is stubbed** (no-op completing each phase with a synthetic message). v0.10.5 will integrate multi-model planning at P2; v0.11.x+ wires real LLM calls per the v0.8.0 routing matrix.
+- **`tests/integration/auto/test_auto_smoke.py`** — 11 tests covering state roundtrip, all 4 rail checks, run_phase / run_all_phases, banned-word blocking, cost-ceiling blocking, transition bookkeeping. **All 11 pass.**
+
+### Changed
+
+- `cli/bequite/__init__.py::__version__` → `0.10.0`. `cli/pyproject.toml::version` → `0.10.0`.
+
+### Notes
+
+- Combined integration suite: 64 + 11 = **75/75 tests green** on Python 3.14.
+- Phase-5 (Auto-mode + new feature impls) begins here. Next: v0.10.5 (multi-model manual-paste working).
 
 ---
 

@@ -8,7 +8,7 @@
 
 - **Active feature:** `BeQuite v1.0.0` (the build of BeQuite itself)
 - **Active phase:** `phase-1` — Core domain + CLI (master §23 framing)
-- **Active sub-version:** v0.4.1 just tagged. Eight sub-versions tagged this session: v0.1.0 → v0.4.1.
+- **Active sub-version:** v0.5.0 just tagged. **Eleven sub-versions tagged this session: v0.1.0 → v0.5.0.** ~22,000+ lines committed across 14 commits.
 - **Active mode:** `auto` (Ahmed authorised autonomous execution; safety rails per `state/project.yaml::safety_rails`)
 - **Project mode (BeQuite-itself):** Safe Mode (newly named per Constitution v1.0.1)
 - **Skeptic gate state:** `cleared` — merge audit + ADR-008 reviewed; Constitution amendment rationale recorded

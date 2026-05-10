@@ -6,7 +6,7 @@
 
 ## Current state
 
-- **Sub-version:** v0.4.1 just tagged. Eight sub-versions tagged this session.
+- **Sub-version:** v0.5.0 just tagged. **Eleven sub-versions tagged this session: v0.1.0 / v0.1.1 / v0.1.2 / v0.2.0 / v0.2.1 / v0.3.0 / v0.4.0 / v0.4.1 / v0.4.2 / v0.4.3 / v0.5.0.** ~22,000+ lines across 14 commits.
 - **Constitution version:** `1.0.1` (amended in v0.1.2; patch bump; additive only — ADR-008-master-merge)
 - **Active doctrines:** `library-package`, `cli-tool`, `mena-bilingual` (BeQuite-itself); 8 Doctrines shipped for downstream projects (`default-web-saas`, `cli-tool`, `ml-pipeline`, `desktop-tauri`, `library-package`, `fintech-pci`, `healthcare-hipaa`, `gov-fedramp`)
 - **Active mode:** Safe Mode (master §4, adopted v1.0.1)

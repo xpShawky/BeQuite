@@ -8,6 +8,26 @@ The full sub-version roadmap (`v0.1.0` → `v1.0.0`) lives in `docs/HOW-IT-WORKS
 
 ---
 
+## [0.5.0] — 2026-05-10
+
+Python CLI thin wrapper. **Eleven sub-versions now tagged this session.** `bequite` + `bq` console scripts; 19 subcommands; Pydantic config; skill loader (v0.5.0 stub for live API dispatch in v0.6.0+); per-host hook runner. See full notes under v0.5.0 commit + the README architecture section.
+
+Key files: `cli/pyproject.toml`, `cli/bequite/__main__.py`, `cli/bequite/commands.py`, `cli/bequite/config.py`, `cli/bequite/skill_loader.py`, `cli/bequite/hooks.py`. All modules import cleanly.
+
+---
+
+## [0.4.3] — 2026-05-10
+
+`cli/bequite/freshness.py` — knowledge probe Python module. npm + PyPI + crates.io + GitHub probes. 24h cache. Verdict logic (fresh / stale-warn / stale-block). Supply-chain incident table. `skill/references/package-allowlist.md` — known-good packages list (~60 entries; ecosystem prefixes).
+
+---
+
+## [0.4.2] — 2026-05-10
+
+`cli/bequite/audit.py` — Constitution + Doctrine drift detector. 7 rule packs (Iron Law IV secrets + env-reads, default-web-saas Rules 2 & 4, library-package Rule 7, ai-automation Rules 1 & 4). Markdown + JSON render. CI workflow at `.github/workflows/audit.yml` (PR + push + manual + quarterly cron; PR comments on blockers; 30d artifacts). `tests/integration/audit/README.md` fixture map.
+
+---
+
 ## [0.4.1] — 2026-05-10
 
 ### Added
@@ -208,7 +228,10 @@ Each regulated Doctrine carries a disclaimer: starting points, not substitutes f
 
 This release contains no executable code. It establishes the inviolate base layer (Constitution + Memory Bank + ADR + Doctrine schemas) on which every later sub-version depends.
 
-[Unreleased]: https://github.com/xpshawky/bequite/compare/v0.4.1...HEAD
+[Unreleased]: https://github.com/xpshawky/bequite/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/xpshawky/bequite/compare/v0.4.3...v0.5.0
+[0.4.3]: https://github.com/xpshawky/bequite/compare/v0.4.2...v0.4.3
+[0.4.2]: https://github.com/xpshawky/bequite/compare/v0.4.1...v0.4.2
 [0.4.1]: https://github.com/xpshawky/bequite/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/xpshawky/bequite/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/xpshawky/bequite/compare/v0.2.1...v0.3.0

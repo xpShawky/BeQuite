@@ -2,9 +2,53 @@
 
 All notable changes to BeQuite are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Conventional Commits](https://www.conventionalcommits.org/). Versioning is [Semantic Versioning](https://semver.org/).
 
-## [Unreleased] — tracking toward v1.x point releases
+## [Unreleased] — tracking toward v1.x point releases + v2.0.0-alpha.2
 
 v1.0.0 + v2.0.0-alpha.1 both shipped 2026-05-11. The v1.x line tracks point releases (bug fixes, doc improvements, freshness probe tuning, additional Doctrines). v2.x tracks the Studio Edition graduation alpha → beta → stable.
+
+---
+
+## [2.0.0-alpha.1] — 2026-05-11 — Studio Edition First Pre-release
+
+**The first pre-release of Layer 2 Studio Edition.** Tagged at the same commit as the studio package.json bumps. Three Next.js + Hono apps sharing the gold-on-black brand:
+
+- **`studio/marketing/`** (`@bequite/marketing@2.0.0-alpha.1`) — Apple-grade cinematic landing + 6 deep MDX vibecoder tutorials + R3F starfield + brand system.
+- **`studio/dashboard/`** (`@bequite/dashboard@2.0.0-alpha.1`) — Next.js 15 operations console with dual-mode loader (filesystem ↔ HTTP), LiveIndicator (SSE-driven `router.refresh()`), live xterm.js terminal in HTTP mode.
+- **`studio/api/`** (`@bequite/api@2.0.0-alpha.1`) — Hono on Bun back-end. Three-mode auth, append-only writes, four SSE event streams, terminal exec surface (allow-list-gated per ADR-016).
+
+See [`docs/RELEASES/v2.0.0-alpha.1.md`](docs/RELEASES/v2.0.0-alpha.1.md) for the full release notes.
+
+### Changed
+
+- `studio/marketing/package.json::version` → `2.0.0-alpha.1` (was `0.17.0`).
+- `studio/dashboard/package.json::version` → `2.0.0-alpha.1` (was `0.20.5`).
+- `studio/api/package.json::version` → `2.0.0-alpha.1` (was `0.20.5`).
+
+### Companion release
+
+[`v1.0.0`](docs/RELEASES/v1.0.0.md) — Layer 1 Harness Final (Production/Stable). The CLI / skill / hooks / doctrines / templates surface stays on the Layer-1 trajectory; Studio Edition is opt-in.
+
+### Honest scope per Article VI
+
+What `v2.0.0-alpha.1` does **not** include:
+
+- **3D Blender pipeline.** Descoped per Ahmed's "without 3d model from blender" direction. R3F scaffold preserved at `studio/marketing/components/three/AgentCharacter3D.tsx` + `studio/marketing/public/3d/` for future contribution.
+- **Better-Auth integration.** Bearer-token MVP is in place (works for single-machine + multi-agent dev). Better-Auth (Doctrine `default-web-saas` Rule 9) lands `v2.0.0-alpha.3+` with the auth server.
+- **Postgres mirror.** Filesystem-backed today; Postgres lands `v2.0.0-beta.1+` for multi-user / cloud operation.
+- **Live stdin forwarding for the terminal.** Per ADR-016 §6 — POST-exec + SSE-output covers 95% of use cases.
+- **Bidirectional WebSocket transport.** SSE is the chosen mechanism for v2.x alpha line.
+- **Full Bun-equipped CI smoke.** All three Studio apps typecheck clean (`tsc --noEmit` exit 0); live-boot end-to-end smoke is `v2.0.0-alpha.2`'s verification step.
+- **Public-network deployment.** Single-machine dev or trusted-LAN only. TLS / IP-allow-list / K8s manifests land `v2.0.0-beta.2`.
+
+### v2.x roadmap
+
+| Version | Goal |
+|---|---|
+| `v2.0.0-alpha.2` | Live boot smoke from clean clone (Bun-equipped CI). Better-Auth integration design. |
+| `v2.0.0-alpha.3` | Better-Auth integration (Doctrine Rule 9; ADR-011 Phase-3 device-code). |
+| `v2.0.0-beta.1` | Postgres mirror for multi-user / cloud. Same endpoint surface; storage swap. |
+| `v2.0.0-beta.2` | Production deploy story: TLS, IP allow-list, K8s manifests. |
+| `v2.0.0` | Stable. Multi-user / cloud-capable. Layer 1 Harness v1.x keeps backward compatibility. |
 
 ---
 
@@ -1271,7 +1315,8 @@ Each regulated Doctrine carries a disclaimer: starting points, not substitutes f
 
 This release contains no executable code. It establishes the inviolate base layer (Constitution + Memory Bank + ADR + Doctrine schemas) on which every later sub-version depends.
 
-[Unreleased]: https://github.com/xpShawky/BeQuite/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/xpShawky/BeQuite/compare/v2.0.0-alpha.1...HEAD
+[2.0.0-alpha.1]: https://github.com/xpShawky/BeQuite/compare/v1.0.0...v2.0.0-alpha.1
 [1.0.0]: https://github.com/xpShawky/BeQuite/compare/v0.20.5...v1.0.0
 [0.20.5]: https://github.com/xpShawky/BeQuite/compare/v0.20.0...v0.20.5
 [0.20.0]: https://github.com/xpShawky/BeQuite/compare/v0.19.5...v0.20.0

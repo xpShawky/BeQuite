@@ -63,3 +63,26 @@ export interface LoaderConfig {
   /** Workspace path to scope reads. Both modes support it. */
   workspacePath?: string;
 }
+
+/**
+ * Event shape from the SSE stream (`/api/v1/streams/*`). Mirrors the API's
+ * `BusEvent` type from `studio/api/src/lib/event-bus.ts` — kept in sync by
+ * convention. v0.20.0+ adds richer payload typing as event consumers grow.
+ */
+export type StreamEventName =
+  | "hello"
+  | "heartbeat"
+  | "receipt"
+  | "cost"
+  | "phase"
+  | "active_context"
+  | "watcher_error"
+  | "watcher_started"
+  | "watcher_stopped";
+
+export interface BusEvent {
+  name: StreamEventName;
+  workspace: string;
+  ts: string;
+  data?: unknown;
+}

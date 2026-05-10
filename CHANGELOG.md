@@ -4,44 +4,67 @@ All notable changes to BeQuite are documented here. Format follows [Keep a Chang
 
 ## [Unreleased] — tracking toward v1.0.0 + v2.0.0-alpha.1
 
-### v2.0.0-alpha.1 CANDIDATE — dashboard dual-mode loader (filesystem ↔ HTTP)
+v0.20.0 ships the **SSE event-stream layer** — Server-Sent Events for live receipt / cost / phase / activeContext updates from `studio/api/` to `studio/dashboard/`, with reference-counted file watchers, 30-second heartbeats, and a `LiveIndicator` client component that triggers throttled `router.refresh()` on state-change events. The dashboard now reflects state changes without manual page reload (Iron Law X step 7 = "no" by construction).
 
-**Status: shipped to main, NOT tagged.** Awaiting Ahmed's explicit go/no-go on the v2.0.0-alpha.1 tag — the major-version jump signals the Layer-1 Harness (CLI / skill / memory bank) → Layer-2 Studio (HTTP-mode dashboard / API / multi-user-ready) transition and should not be auto-tagged.
+**v2.0.0-alpha.1 candidate** still on main at `a35dbfc` — dashboard dual-mode loader (filesystem ↔ HTTP). Awaiting Ahmed's explicit go/no-go on the major-version tag.
 
-**The swap:** `studio/dashboard/lib/projects.ts` is now a dual-mode dispatcher. Server components `await loadProject()` and get the same `ProjectSnapshot` shape whether the underlying mode is filesystem (v0.18.0 default) or HTTP (new — talks to `studio/api/` v0.19.5).
+v0.17.5 (3D astronaut GLB) still parked — Blender MCP unresponsive. v0.20.5 next: bidirectional WebSocket terminal stream for auto-mode (xterm.js + node-pty + RoE gates per Article IV — first endpoint that actually executes commands). Ahmed reviews before tagging v1.0.0 (Layer 1 Harness final) + v2.0.0-alpha.1 (Studio Edition first pre-release).
 
-- **`lib/projects.ts`** — dual-mode entry point. Reads `BEQUITE_DASHBOARD_MODE`; defaults to filesystem. Re-exports `ProjectSnapshot` types so all consumers import from one module.
-- **`lib/projects-types.ts`** — shared type definitions for both readers.
-- **`lib/projects-filesystem.ts`** — preserved v0.18.0 logic (verbatim — moved, not changed). Synchronous reader.
-- **`lib/projects-http.ts`** — new HTTP reader. Probes `/healthz` for reachability first; on failure returns a sentinel `ProjectSnapshot` with `recoveryPreview` describing the failure (no thrown errors into the render path).
-- **`lib/api-client.ts`** — `StudioApiClient`. Bearer-auth header support, Next.js `cache` + `next.revalidate` options, `getReachability()` health-check helper.
-- **`app/page.tsx`** — switched to `await loadProject()`. Footer chip surfaces `FS` or `HTTP` so the operator always knows what the page rendered against.
-- **`README.md`** — full HTTP-mode quickstart documented (two-terminal flow: API on :3002, dashboard with `BEQUITE_DASHBOARD_MODE=http` on :3001).
+---
 
-**Env switches:**
+## [0.20.0] — 2026-05-10
 
-```
-BEQUITE_DASHBOARD_MODE  filesystem (default) | http
-BEQUITE_API_BASE        http://localhost:3002 (default)
-BEQUITE_API_TOKEN       <hex>  (omit in local-dev API mode)
-```
+### Added — SSE event streams (live dashboard updates)
 
-**Iron Law X verification (partial):** `cd studio/dashboard && npx tsc --noEmit` returned exit 0 after npm install resolved 353 packages. Full boot + page-render smoke is deferred to the Bun/Next.js dev environment when Ahmed reviews — the dashboard build was not booted in-session.
+**API side (`studio/api/`):**
 
-**Why not auto-tag v2.0.0-alpha.1:** Per Article VI (honest reporting) + the standing commitment in every CHANGELOG entry since v0.16.0 — "Ahmed reviews before tagging v1.0.0 (Layer 1 Harness final) + v2.0.0-alpha.1 (Studio Edition first pre-release)." The work is on main and ready; the major-version jump is Ahmed's decision.
+- **`src/lib/event-bus.ts`** — Per-workspace pub/sub with reference counting. First subscribe lazily starts a filesystem watcher; last unsubscribe tears it down. Idle workspaces hold no watcher resources.
+- **`src/lib/file-watcher.ts`** — `WorkspaceWatcher` watches four paths and publishes events:
+  - `.bequite/receipts/` — new `*.json` file → `receipt` event
+  - `.bequite/cache/cost-ledger.json` — content change → `cost` event
+  - `.bequite/memory/activeContext.md` — content change → `active_context` event
+  - `state/current_phase.md` — content change → `phase` event
+  - 250ms coalesce window per channel (Windows fs.watch fires twice per change)
+  - Watch errors emit `watcher_error` events so the dashboard can surface "stream degraded" rather than silently going dark (Article VI).
+- **`src/routes/streams.ts`** — Four SSE endpoints under `/api/v1/streams/`:
+  - `GET /api/v1/streams/all` — combined firehose
+  - `GET /api/v1/streams/receipts` — `receipt` events only
+  - `GET /api/v1/streams/cost` — `cost` events only
+  - `GET /api/v1/streams/phase` — `phase` + `active_context` events
+  - All gated by `authMiddleware`; path-traversal guard preserved.
+  - 30-second heartbeat keeps proxy connections alive + lets the client detect a dead stream.
+  - Initial `hello` event includes workspace_root + auth_mode + identity + filter + server_version.
+  - Client disconnect handled via `stream.onAbort` — clean watcher unsubscribe, no orphan watchers.
+- **`src/lib/auth.ts`** — Auth middleware extended to accept `?token=<hex>` as a fallback to `Authorization: Bearer <hex>` **only on `/api/v1/streams/*`**. Browser EventSource cannot send custom headers; the query-param path is restricted to stream routes to narrow the URL-leak surface.
 
-### Recap of recent releases
+**Dashboard side (`studio/dashboard/`):**
 
-- **v0.19.5** — Studio API auth (Bearer-token MVP) + append-only writes (receipts + snapshots) + Iron Law X attestation block (per ADR-015). Also: **critical fix** for three Studio `lib/` files silently dropped by an over-broad `.gitignore` rule (Article VI).
-- **v0.19.0** — Studio API back-end (Hono on Bun) — five HTTP endpoints, path-traversal guard.
-- **v0.18.0** — Studio dashboard real implementation (per image 6 mock).
-- v0.17.5 (3D astronaut GLB via Blender) still parked — Blender MCP went from timeout to `Cannot connect`. Scaffold ready (`studio/marketing/public/3d/` + `AgentCharacter3D.tsx` drop-in API).
+- **`lib/streams.ts`** — `openStream()` client wrapper. Reconnects on transient failure (exponential backoff, 1s → 30s cap). Tracks last heartbeat; emits `onStale` when no heartbeat in 60s. Exposes `disconnect()` + `status()`.
+- **`components/LiveIndicator.tsx`** — Client component (`"use client"`). Top-right of the TopBar. Shows `LIVE` / `CONNECTING` / `STALE` / `OFFLINE` / `FS` pill. On `receipt` / `cost` / `phase` / `active_context` events, triggers a throttled `router.refresh()` (default: 2s throttle) so the server-component re-render reflects new state. Heartbeat / hello events skipped (they're noise).
+- **`components/TopBar.tsx`** — Now accepts `loaderMode`, `apiBase`, `workspacePath` props and renders `<LiveIndicator />` next to the AGENT ONLINE indicator.
+- **`app/page.tsx`** — Passes loader config + workspace path through to TopBar.
+- **`lib/projects-types.ts`** — Added `StreamEventName` + `BusEvent` types (mirrors API's bus events; kept in sync by convention).
 
-### Next planned
+### Changed
 
-- **v0.20.0** — WebSocket / SSE for live receipt + cost stream + xterm.js terminal stream for auto-mode.
-- **v0.20.x** — Better-Auth full integration (Doctrine Rule 9; per ADR-011 Phase-3 device-code).
-- **v1.0.0 + v2.0.0-alpha.1** — dual tag after Ahmed's review.
+- `cli/bequite/__init__.py::__version__` → `0.20.0`. `cli/pyproject.toml::version` → `0.20.0`.
+- `studio/api/package.json::version` → `0.20.0`. Description updated.
+- `studio/api/src/routes/health.ts::version` → `0.20.0`.
+- `studio/api/src/index.ts::version` → `0.20.0`. Endpoint catalog adds `authenticated_streams` group.
+- `studio/dashboard/package.json::version` → `0.20.0`.
+
+### Notes
+
+- API + dashboard both **typecheck clean** (`tsc --noEmit` exit 0 on both). Live boot smoke deferred to Ahmed's review (Bun runtime not installed in this developer's env; would need `bun run src/index.ts` + `BEQUITE_DASHBOARD_MODE=http pnpm dev` + a real receipt write to fire the event end-to-end).
+- **No new Iron Law.** v0.20.0 implements Article X step 7 ("did the user need to refresh?") at the dashboard layer — answer is now "no, the LiveIndicator triggered router.refresh() automatically."
+- **No bidirectional WebSocket in v0.20.0** — that lands v0.20.5. WS for the terminal needs node-pty (running real shells) + RoE gates per Article IV (first endpoint that executes user-supplied commands; explicit ADR required). Not appropriate to fold into the SSE-only release.
+- **EventSource auth caveat.** The `?token=<hex>` query-param fallback is restricted to `/api/v1/streams/*` and documented in `studio/api/README.md` § "EventSource auth." Production-grade alternative (signed short-lived cookie + refresh token) lands with Better-Auth integration in v0.20.x+.
+
+### v2.0.0-alpha.1 candidate (still on main, not tagged)
+
+`a35dbfc` — dashboard dual-mode loader (filesystem ↔ HTTP). Per the standing commitment ("Ahmed reviews before tagging v1.0.0 + v2.0.0-alpha.1"), the major-version tag remains explicitly Ahmed's decision. The work integrates cleanly with v0.20.0's LiveIndicator (which only activates in HTTP mode anyway).
+
+---
 
 ---
 
@@ -1145,7 +1168,8 @@ Each regulated Doctrine carries a disclaimer: starting points, not substitutes f
 
 This release contains no executable code. It establishes the inviolate base layer (Constitution + Memory Bank + ADR + Doctrine schemas) on which every later sub-version depends.
 
-[Unreleased]: https://github.com/xpShawky/BeQuite/compare/v0.19.5...HEAD
+[Unreleased]: https://github.com/xpShawky/BeQuite/compare/v0.20.0...HEAD
+[0.20.0]: https://github.com/xpShawky/BeQuite/compare/v0.19.5...v0.20.0
 [0.19.5]: https://github.com/xpShawky/BeQuite/compare/v0.19.0...v0.19.5
 [0.19.0]: https://github.com/xpShawky/BeQuite/compare/v0.18.0...v0.19.0
 [0.18.0]: https://github.com/xpShawky/BeQuite/compare/v0.17.0...v0.18.0

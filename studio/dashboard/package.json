@@ -1,6 +1,6 @@
 {
   "name": "@bequite/dashboard",
-  "version": "0.18.0",
+  "version": "0.20.0",
   "private": true,
   "description": "BeQuite Studio dashboard — operations console for BeQuite-managed projects. Reads .bequite/, state/, receipts. Visual target: studio/brand/raw/06-studio-dashboard-mock.png.",
   "scripts": {

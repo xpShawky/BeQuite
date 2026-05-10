@@ -21,6 +21,9 @@ export default async function DashboardHome() {
         workspace="personal"
         signedInUser="xpShawky (local)"
         agentOnline
+        loaderMode={loaderConfig.mode}
+        apiBase={loaderConfig.apiBase}
+        workspacePath={snapshot.root}
       />
 
       <div className="flex flex-1 overflow-hidden">
@@ -71,7 +74,7 @@ export default async function DashboardHome() {
               </span>
             </div>
             <div>
-              <span className="font-mono">BeQuite Studio v2.0.0-alpha.1 (candidate)</span>
+              <span className="font-mono">BeQuite Studio v0.20.0 / v2.0.0-alpha.1 (candidate)</span>
             </div>
           </footer>
         </main>

@@ -5,6 +5,7 @@ import { health } from "./routes/health.js";
 import { projects } from "./routes/projects.js";
 import { receipts } from "./routes/receipts.js";
 import { snapshots } from "./routes/snapshots.js";
+import { streams } from "./routes/streams.js";
 import { auth as authRoutes } from "./routes/auth.js";
 import { authMiddleware, getAuthMode } from "./lib/auth.js";
 import { getWorkspaceRoot } from "./lib/fs-loader.js";
@@ -42,15 +43,17 @@ app.route("/api/v1/auth", authRoutes);
 app.use("/api/v1/projects/*", authMiddleware);
 app.use("/api/v1/receipts/*", authMiddleware);
 app.use("/api/v1/snapshots/*", authMiddleware);
+app.use("/api/v1/streams/*", authMiddleware);
 
 app.route("/api/v1/projects", projects);
 app.route("/api/v1/receipts", receipts);
 app.route("/api/v1/snapshots", snapshots);
+app.route("/api/v1/streams", streams);
 
 app.get("/", (c) =>
   c.json({
     name: "BeQuite Studio API",
-    version: "0.19.5",
+    version: "0.20.0",
     docs: "See studio/api/README.md for endpoint surface.",
     workspace_root: getWorkspaceRoot(),
     auth_mode: getAuthMode(),
@@ -73,6 +76,12 @@ app.get("/", (c) =>
         "POST /api/v1/receipts (append-only; idempotent on content-hash)",
         "POST /api/v1/snapshots (append-only; refuses overwrite)",
       ],
+      authenticated_streams: [
+        "GET /api/v1/streams/all?path=<abs-path>      (SSE; all events)",
+        "GET /api/v1/streams/receipts?path=<abs-path> (SSE; receipt events)",
+        "GET /api/v1/streams/cost?path=<abs-path>     (SSE; cost-ledger events)",
+        "GET /api/v1/streams/phase?path=<abs-path>    (SSE; phase + activeContext events)",
+      ],
     },
   }),
 );
@@ -88,7 +97,8 @@ export default {
 
 // Log on startup (Bun runs this file as the entry point).
 if (typeof Bun !== "undefined") {
-  console.log(`BeQuite Studio API v0.19.5 listening on http://localhost:${port}`);
+  console.log(`BeQuite Studio API v0.20.0 listening on http://localhost:${port}`);
   console.log(`Workspace root: ${getWorkspaceRoot()}`);
   console.log(`Auth mode: ${getAuthMode()}`);
+  console.log(`SSE streams: /api/v1/streams/{all,receipts,cost,phase}`);
 }

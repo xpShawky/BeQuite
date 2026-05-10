@@ -184,16 +184,28 @@ export const authMiddleware: MiddlewareHandler = async (c, next) => {
   }
 
   // mode === "token"
+  // Primary: Authorization: Bearer <token>. Fallback: ?token=<hex> (used by
+  // browser EventSource on /api/v1/streams/* — EventSource cannot send custom
+  // headers). The query-param path is only honored on stream routes to narrow
+  // the URL-leak surface (logs, referrers).
+  let rawToken = "";
   const header = c.req.header("authorization") || c.req.header("Authorization");
-  if (!header || !header.toLowerCase().startsWith("bearer ")) {
+  if (header && header.toLowerCase().startsWith("bearer ")) {
+    rawToken = header.slice(7).trim();
+  } else if (c.req.path.startsWith("/api/v1/streams/")) {
+    const queryToken = c.req.query("token");
+    if (queryToken) rawToken = queryToken.trim();
+  }
+  if (!rawToken) {
     return c.json(
-      { error: "missing Authorization: Bearer <token> header", auth_mode: mode },
+      {
+        error: c.req.path.startsWith("/api/v1/streams/")
+          ? "missing Authorization: Bearer <token> header (or ?token= query for SSE clients)"
+          : "missing Authorization: Bearer <token> header",
+        auth_mode: mode,
+      },
       401,
     );
-  }
-  const rawToken = header.slice(7).trim();
-  if (!rawToken) {
-    return c.json({ error: "empty bearer token", auth_mode: mode }, 401);
   }
   const { ok, id } = validateBearerToken(rawToken);
   if (!ok) {

@@ -2,7 +2,7 @@
 
 > The Studio operations console. Visual layout matches `../brand/raw/06-studio-dashboard-mock.png`. Reads `.bequite/` from any BeQuite-managed project.
 >
-> **v0.18.0** = filesystem-mode (direct reads). **v2.0.0-alpha.1 candidate** = dual-mode dispatcher — filesystem OR HTTP via `BEQUITE_DASHBOARD_MODE` env. Server-component callers see the same `ProjectSnapshot` shape either way.
+> **v0.18.0** = filesystem-mode (direct reads). **v2.0.0-alpha.1 candidate** = dual-mode dispatcher — filesystem OR HTTP via `BEQUITE_DASHBOARD_MODE` env. Server-component callers see the same `ProjectSnapshot` shape either way. **v0.20.0** adds live SSE updates via the `LiveIndicator` (HTTP mode only).
 
 ## Run
 
@@ -120,10 +120,25 @@ studio/dashboard/
 └── public/brand/          ← astronaut + logo
 ```
 
-## What's still missing (lands v0.20.0 / v2.0.0)
+## Live updates (v0.20.0)
 
-- **Live terminal stream (xterm.js)** when authenticated (v0.20.0).
-- **WebSocket heartbeat** for auto-mode live updates (v0.20.0).
+The dashboard subscribes to SSE streams from `studio/api/` when running in HTTP mode. The `LiveIndicator` component (top-right of the TopBar) shows the current stream status:
+
+| Pill | Meaning |
+|---|---|
+| ● LIVE | SSE connected; heartbeat fresh (≤60s old) |
+| ○ CONNECTING | Initial connection in progress / reconnecting |
+| ◐ STALE | No heartbeat received in 60s; may have lost the stream |
+| ✕ OFFLINE | Transport error / API unreachable / closed |
+| — FS | Filesystem mode — no stream to subscribe to |
+
+When a `receipt` / `cost` / `phase` / `active_context` event arrives, the indicator triggers a throttled `router.refresh()` (default: 2s throttle) so the server-component re-render shows the new state without a manual page reload. This is the "operationally complete" piece for the dashboard side — Iron Law X step 7 ("did the user need to refresh?") is answered "no" by construction.
+
+**For token-mode APIs:** set `NEXT_PUBLIC_BEQUITE_API_TOKEN` in the dashboard's `.env.local` before running `pnpm dev`. The token is sent as `?token=<hex>` in the SSE URL (browser EventSource can't send custom headers; the API auth middleware accepts the query-param fallback only on `/api/v1/streams/*`).
+
+## What's still missing (lands v0.20.5 / v2.0.0)
+
+- **Bidirectional WebSocket terminal stream (xterm.js)** for auto-mode (v0.20.5; needs node-pty + RoE gates per Article IV).
 - **Project picker** (currently hardcoded to `../..`) (v2.0.0).
 - **Authenticated views** with per-project ACL (per ADR-011 Phase-3 + ADR-015) (v0.20.x+).
 - **3D astronaut** in the AgentPanel (post-Blender pipeline; see `../marketing/components/three/AgentCharacter3D.tsx`).

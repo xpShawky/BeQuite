@@ -2,7 +2,7 @@
 
 > Hono-on-Bun HTTP back-end serving `studio/dashboard/`. Reads any BeQuite-managed project's filesystem (Memory Bank + state + receipts + cost ledger) and exposes it over HTTP so the dashboard (and future multi-user clients) can render without direct filesystem access.
 
-**Current version: v0.19.5** (Bearer-token auth + append-only write surface)
+**Current version: v0.20.0** (Bearer-token auth + append-only write surface + SSE event streams)
 
 ## Quickstart
 
@@ -79,6 +79,30 @@ POST   /api/v1/receipts?path=<abs-path>          — emit a receipt (idempotent 
 POST   /api/v1/snapshots?path=<abs-path>         — emit a Memory Bank snapshot (refuses overwrite)
 ```
 
+### Authenticated — event streams (Server-Sent Events; v0.20.0)
+
+```
+GET    /api/v1/streams/all?path=<abs-path>       — combined firehose (all events)
+GET    /api/v1/streams/receipts?path=<abs-path>  — receipt events only
+GET    /api/v1/streams/cost?path=<abs-path>      — cost-ledger events only
+GET    /api/v1/streams/phase?path=<abs-path>     — phase + activeContext events
+```
+
+Every stream sends a `hello` event on connect (with workspace_root + auth_mode + identity), then state-change events (`receipt` / `cost` / `phase` / `active_context`) as the underlying file watcher fires. Heartbeat every 30 seconds. Watcher errors arrive as `watcher_error` events so the client can surface "stream degraded" rather than silently going dark (Article VI honest reporting).
+
+**EventSource auth.** Browser `EventSource` cannot send custom headers, so on `/api/v1/streams/*` only, the auth middleware also accepts `?token=<hex>` as a fallback to `Authorization: Bearer <hex>`. The query-param path is restricted to stream routes to narrow the URL-leak surface (logs, referrers).
+
+```javascript
+// Browser client (in token mode):
+const es = new EventSource(
+  `http://localhost:3002/api/v1/streams/all?token=${apiToken}`,
+);
+es.addEventListener("receipt", (e) => console.log("new receipt", e.data));
+es.addEventListener("heartbeat", (e) => console.log("alive", e.data));
+```
+
+**Reference-counted file watcher.** Streams share one `fs.watch` per workspace under the hood — the first SSE subscriber starts the watcher, the last unsubscriber tears it down. Idle workspaces hold no watcher resources.
+
 Both write endpoints return an `iron_law_x` block (Constitution v1.3.0, Article X) confirming the change is operationally complete:
 
 ```json
@@ -121,7 +145,7 @@ Every endpoint that accepts a `?path=` query validates the resolved path is unde
 
 ## What's next
 
-- **v0.20.0** — WebSocket for live receipt + cost stream + xterm.js terminal stream for auto-mode.
+- **v0.20.5** — Bidirectional WebSocket terminal stream (xterm.js) for auto-mode. Needs node-pty + RoE gates (per Article IV) since it's the first endpoint that actually executes commands.
 - **v0.20.x** — Better-Auth integration (per Doctrine Rule 9 + ADR-011 Phase-3 device-code).
-- **v2.0.0-alpha.1** — dashboard `lib/projects.ts` swap from filesystem-mode to HTTP-mode against this API.
+- **v2.0.0-alpha.1** — dashboard `lib/projects.ts` swap from filesystem-mode to HTTP-mode against this API. (CANDIDATE shipped to main at commit `a35dbfc`; awaiting Ahmed's review for the major-version tag.)
 - **v2.0.0** — Postgres mirror for multi-user / cloud operation; same endpoint surface.

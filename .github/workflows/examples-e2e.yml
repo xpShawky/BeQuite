@@ -1,0 +1,142 @@
+# BeQuite end-to-end harness — runs on every PR + nightly cron (v0.9.1+).
+#
+# This workflow exercises:
+#   - The full integration suite (receipts + signing + router + pricing + e2e)
+#   - The doctrine-loading invariants (12 Doctrines present + frontmatter
+#     + per-Doctrine rule structure).
+#   - The seven-phase walk smoke (CLI surface + key commands return cleanly).
+#   - The three example-project scaffolds (each one's .bequite/ tree + ADR
+#     + README is well-formed).
+#
+# It does NOT:
+#   - Spin up Supabase / Vercel / Tauri build chains (out-of-scope for the
+#     harness; example-specific CI lives per-example).
+#   - Make live API calls (auto-mode lands v0.10.0).
+#   - Sign or push anything to remote.
+
+name: examples-e2e
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # 04:00 UTC nightly to catch dependency-driven regressions
+    - cron: "0 4 * * *"
+  workflow_dispatch:
+
+jobs:
+  python-suite:
+    name: Python integration suite (5 modules, 56 tests)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install BeQuite (dev extras)
+        run: |
+          cd cli/
+          pip install -e ".[dev]"
+      - name: Receipts integration suite (10 tests)
+        run: |
+          cd cli/
+          PYTHONIOENCODING=utf-8 python ../tests/integration/receipts/test_receipts_smoke.py
+      - name: Signing integration suite (9 tests)
+        run: |
+          cd cli/
+          PYTHONIOENCODING=utf-8 python ../tests/integration/receipts/test_signing_smoke.py
+      - name: Router integration suite (15 tests)
+        run: |
+          cd cli/
+          PYTHONIOENCODING=utf-8 python ../tests/integration/router/test_router_smoke.py
+      - name: Pricing integration suite (14 tests)
+        run: |
+          cd cli/
+          PYTHONIOENCODING=utf-8 python ../tests/integration/pricing/test_pricing_smoke.py
+      - name: E2E seven-phase walk (8 tests)
+        run: |
+          cd cli/
+          PYTHONIOENCODING=utf-8 python ../tests/integration/e2e/test_seven_phase_walk.py
+      - name: E2E doctrine loading (8 tests)
+        run: |
+          cd cli/
+          PYTHONIOENCODING=utf-8 python ../tests/integration/e2e/test_doctrine_loading.py
+
+  example-scaffolds:
+    name: Example scaffold structural check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify each example has .bequite/ tree + README + ADR
+        run: |
+          set -euo pipefail
+          for ex in examples/01-bookings-saas examples/02-ai-tool-wrapper examples/03-tauri-note-app; do
+            echo "Checking: $ex"
+            test -f "$ex/README.md" || (echo "MISSING: $ex/README.md" && exit 1)
+            test -d "$ex/.bequite/memory" || (echo "MISSING: $ex/.bequite/memory" && exit 1)
+            test -f "$ex/.bequite/memory/decisions/ADR-001-stack.md" || (echo "MISSING: $ex/.bequite/memory/decisions/ADR-001-stack.md" && exit 1)
+          done
+          echo "All 3 example scaffolds well-formed."
+      - name: Verify example 01 ships full HANDOFF
+        run: |
+          test -f "examples/01-bookings-saas/HANDOFF.md" || (echo "MISSING: HANDOFF.md" && exit 1)
+          test -f "examples/01-bookings-saas/specs/bookings-flow/spec.md" || (echo "MISSING: spec.md" && exit 1)
+          test -f "examples/01-bookings-saas/specs/bookings-flow/phases.md" || (echo "MISSING: phases.md" && exit 1)
+          echo "Example 01 fully spec'd."
+
+  audit-self:
+    name: BeQuite eats its own food
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install
+        run: cd cli/ && pip install -e ".[dev]"
+      - name: bequite audit (against BeQuite-itself)
+        run: |
+          cd cli/
+          python -m bequite.audit --repo .. || echo "audit findings (non-fatal in CI)"
+      - name: bequite freshness probe self-check
+        run: |
+          cd cli/
+          python -m bequite.freshness --help
+
+  pr-comment:
+    needs: [python-suite, example-scaffolds, audit-self]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Comment on PR with summary
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const allGreen =
+              '${{ needs.python-suite.result }}' === 'success' &&
+              '${{ needs.example-scaffolds.result }}' === 'success' &&
+              '${{ needs.audit-self.result }}' === 'success';
+            const status = allGreen ? '✅' : '❌';
+            const body = `### BeQuite e2e harness — ${status}
+
+            - python-suite: ${{ needs.python-suite.result }}
+            - example-scaffolds: ${{ needs.example-scaffolds.result }}
+            - audit-self: ${{ needs.audit-self.result }}
+
+            See workflow run for details.`;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body,
+            });

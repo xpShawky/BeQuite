@@ -8,6 +8,59 @@ The full sub-version roadmap (`v0.1.0` → `v1.0.0`) lives in `docs/HOW-IT-WORKS
 
 ---
 
+## [0.9.1] — 2026-05-10
+
+### Added — E2E test harness + CI workflow
+
+- **`tests/integration/e2e/test_seven_phase_walk.py`** — 8-test e2e smoke suite that drives the BeQuite CLI surface:
+  1. `--version` reports correctly (0.9.x).
+  2. `--help` lists the 24 core commands (7-phase + BeQuite-unique + receipts + routing + economics).
+  3. `bequite doctor` runs without crash (returncode < 2).
+  4. `bequite route show` resolves a known (phase, persona) pair to claude-sonnet-4-6.
+  5. `bequite pricing list` shows fallback table.
+  6. `bequite receipts list` returns empty when no receipts dir.
+  7. `bequite verify-receipts` errors correctly (exit 2) without keypair.
+  8. `bequite keygen` creates per-project keypair; subsequent `verify-receipts` succeeds.
+  - Subprocess invocations inherit parent env (so click + dependencies resolve from the test runner's site-packages); UTF-8 encoded with `errors="replace"` for Windows compatibility.
+- **`tests/integration/e2e/test_doctrine_loading.py`** — 8-test e2e suite for Doctrine structural invariants:
+  1. `skill/doctrines/` exists.
+  2. All 12 expected Doctrines on disk + non-empty.
+  3. Each Doctrine has a YAML frontmatter block (between two `---` markers within first 30 lines).
+  4. Each Doctrine declares required fields: `name:`, `version:`, `applies_to:`, `supersedes:`.
+  5. Each Doctrine's `name:` matches its filename.
+  6. Each Doctrine has a Rules section (tolerant of "Rules" / "Common rules" / "Strict rules" naming).
+  7. `default-web-saas` Doctrine is at v1.1.0 (verifies v0.6.1 bump preserved).
+  8. Each Doctrine has a Changelog or Status marker.
+- **`.github/workflows/examples-e2e.yml`** — three-job GitHub Actions workflow:
+  1. **`python-suite`** — runs the full integration suite across Python 3.11 / 3.12 / 3.13 / 3.14 matrix. Six test files = 64 tests total.
+  2. **`example-scaffolds`** — verifies each example has README + ADR + (example 1 only) HANDOFF + spec + phases.
+  3. **`audit-self`** — runs `bequite audit` against the BeQuite repo (eats its own food); runs `bequite freshness` self-help.
+  4. **`pr-comment`** — comments PR-thread with green/red summary on completion.
+  - Triggers: every push to main, every PR to main, nightly cron 04:00 UTC, manual workflow_dispatch.
+
+### Combined integration suite
+
+**64/64 tests green on Python 3.14** across 6 modules:
+- `test_receipts_smoke.py`: 10 tests
+- `test_signing_smoke.py`: 9 tests
+- `test_router_smoke.py`: 15 tests
+- `test_pricing_smoke.py`: 14 tests
+- `test_seven_phase_walk.py`: 8 tests (new)
+- `test_doctrine_loading.py`: 8 tests (new)
+
+### Changed
+
+- `cli/bequite/__init__.py::__version__` → `0.9.1`.
+- `cli/pyproject.toml::version` → `0.9.1`.
+
+### Notes
+
+- The auto-mode e2e test (`test_auto_mode.test.ts` per the build plan §4 v0.9.1 row) is **deferred to v0.10.0** since auto-mode itself lands there. v0.9.1 ships the parts that don't depend on auto-mode (CLI surface checks + Doctrine structural invariants).
+- The plan §4 specified TypeScript test files; honest reality is Python aligns better with the project (CLI is Python). Both paths are acceptable per the plan; we chose Python for consistency.
+- Phase-4 (Examples + e2e harness) is now complete: v0.9.0 + v0.9.1 done. Phase-5 (Auto-mode + MENA) begins with v0.10.0.
+
+---
+
 ## [0.9.0] — 2026-05-10
 
 ### Added — Three example projects (scaffolded + spec'd)

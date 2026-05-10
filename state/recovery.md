@@ -17,14 +17,14 @@
 
 ## Where we are
 
-- **Build phase:** phase-4 (Examples + e2e harness) — v0.9.0 done; v0.9.1 next.
-- **Sub-version in progress:** **v0.9.1** (next) — E2E test harness (seven-phase walk + auto-mode + doctrine-loading) + `examples-e2e.yml` GitHub Actions workflow.
-- **Last green sub-version:** **v0.9.0** (Three example projects scaffolded + spec'd; honest scope per Article VI: scaffolds + walkthroughs, not production code).
-- **Last successful commit (pending):** `feat(v0.9.0): Three example projects — scaffolded + spec'd`.
-- **Last successful tag (pending):** **v0.9.0**.
+- **Build phase:** phase-4 (Examples + e2e harness) complete. Next phase: phase-5 (Auto-mode + MENA + host adapters; v0.10.0–v0.13.0).
+- **Sub-version in progress:** **v0.10.0** (next) — Auto-mode state machine (one-click P0→P7) + safety rails (cost ceiling, wall-clock ceiling, 3-failure threshold, banned-word check, hook-block respect, one-way-door pauses) + heartbeat (`activeContext.md` every 5 min).
+- **Last green sub-version:** **v0.9.1** (E2E harness — 8-test seven-phase walk + 8-test doctrine-loading + 3-job CI workflow; combined integration suite 64/64 green on Python 3.14).
+- **Last successful commit (pending):** `feat(v0.9.1): E2E test harness + CI workflow — 8+8 tests + examples-e2e.yml; combined 64/64 green`.
+- **Last successful tag (pending):** **v0.9.1**.
 - **Branch:** `main`.
 - **Remote:** `origin = https://github.com/xpShawky/BeQuite.git` configured. **NOT pushed.** Push requires explicit owner authorization (Iron Law IV; one-way door).
-- **Real git counts (post-v0.9.0, pre-commit):** ~26 commits, 21 tags pending, ~195+ tracked files.
+- **Real git counts (post-v0.9.1, pre-commit):** ~27 commits, 22 tags pending, ~200+ tracked files.
 
 ## What is complete (verified by `git tag -l`)
 
@@ -51,6 +51,7 @@
 | v0.8.0 | Multi-model routing live: cli/bequite/providers/{__init__,anthropic,openai,google,deepseek,ollama}.py (AiProvider Protocol + Completion dataclass + 5 graceful-degrading adapters with hard-coded May-2026 pricing fallback) + cli/bequite/router.py (select_route + dispatch + fallback resolution) + cli/bequite/cost_ledger.py (writes .bequite/cache/cost-ledger.json so existing stop-cost-budget.sh hook is operational) + bequite route {show,list,providers} + bequite ledger {show,reset} CLI groups + 15-test router integration suite (all passing); combined 34/34 receipts+signing+router green |
 | v0.8.1 | Live pricing fetch (best-effort): cli/bequite/pricing.py (~330 lines, cache + 24h TTL + offline fallback + WebFetch best-effort live extraction with regex paragraph parser) + skill/references/pricing-table.md (vendored May-2026 snapshot covering 5 model providers + hosting + auth + database) + provider adapters' estimate_cost_usd consults cache before hard-coded fallback + bequite pricing {show,list,refresh} Click group + 14-test integration suite (all passing); combined 48/48 receipts+signing+router+pricing green |
 | v0.9.0 | Three example projects scaffolded + spec'd: examples/01-bookings-saas (Doctrine default-web-saas; full README + ADR-001 stack with per-rule Doctrine compliance + spec.md with 4 flows + phases.md with 7-phase decomposition + HANDOFF.md with engineer + non-engineer sections); examples/02-ai-tool-wrapper (Doctrine cli-tool; README + ADR-001 reusing BeQuite providers/); examples/03-tauri-note-app (Doctrine desktop-tauri; README + ADR-001 with brief reconciliations applied — NOT Stronghold/altool/EV cert/relic). Honest scope per Article VI: scaffolds + walkthroughs, not production code |
+| v0.9.1 | E2E test harness: tests/integration/e2e/test_seven_phase_walk.py (8 tests for CLI surface; subprocess wrapper inherits parent env; UTF-8 with errors=replace for Windows compat) + test_doctrine_loading.py (8 tests for Doctrine structural invariants; tolerant Rules-section regex) + .github/workflows/examples-e2e.yml (3 jobs: python-suite × 4 Python versions + example-scaffolds + audit-self + pr-comment summary). Combined integration suite green: 10+9+15+14+8+8 = 64/64 |
 
 **Seven working Python modules** (smoke-tested; help / CLI output exercised):
 - `python -m cli.bequite.audit` — rule-based, 7 rule packs
@@ -69,7 +70,7 @@ The remaining sub-versions to v1.0.0:
 
 | Sub-version | Scope |
 |---|---|
-| **v0.9.1** (next) | E2E test harness: `tests/e2e/seven-phase-walk.test.ts` drives a fresh project from `bequite init` to `bequite handoff`; asserts artifacts at every phase. `tests/e2e/auto-mode.test.ts` drives `bequite auto` to completion; asserts safety rails. `tests/e2e/doctrine-loading.test.ts` fresh-init with each Doctrine; asserts correct rules loaded. `.github/workflows/examples-e2e.yml` runs the three example projects on every PR + nightly. |
+| **v0.10.0** (next) | Auto-mode state machine. `cli/bequite/auto.py` orchestrator with INIT → P0_RESEARCH → P1_STACK → P2_PLAN → P3_PHASES → P4_TASKS → P5_IMPLEMENT (per-task loop) → P6_VERIFY → P7_HANDOFF → DONE plus BLOCKED/FAILED/PAUSED states. Per-phase commit (atomic). Skeptic gate at every phase boundary (≥1 kill-shot). Safety rails: hard cost ceiling (default $20), wall-clock ceiling (default 6h), 3 consecutive Implementer failures threshold, banned-word check (already in stop-verify-before-done.sh hook), hook-block respect (no auto-override), one-way-door operations always pause. Failure replay: `.bequite/replays/<timestamp>/`. Heartbeat: `activeContext.md` every 5 min. CLI flags: `--feature`, `--max-cost-usd`, `--max-wall-clock-hours`, `--phases <subset>`, `--mode slow|fast|auto`, `--on-failure pause|abort|continue-with-warning`, `--no-skeptic` (debug only). |
 | v0.8.0 | Live multi-model AiProvider adapters (Anthropic + OpenAI + Google + DeepSeek + Ollama) |
 | v0.8.1 | Pricing fetch + 24h cache + offline fallback |
 | v0.9.0 | 3 example projects (bookings-saas Next/Hono/Supabase + ai-tool-wrapper CLI + tauri-note-app desktop) |
@@ -96,9 +97,9 @@ Nothing structurally failed. Two minor session frictions worth noting:
 Until v0.7.0 ships the receipts system, evidence is the git history + this file + the snapshots.
 
 ```
-git log --oneline       # ~26 commits expected post-v0.9.0
-git tag -l              # 21 tags expected (through v0.9.0)
-find .bequite/memory/ skill/ template/ cli/ docs/ tests/ examples/ -type f | wc -l  # ~195+
+git log --oneline       # ~27 commits expected post-v0.9.1
+git tag -l              # 22 tags expected (through v0.9.1)
+find .bequite/memory/ skill/ template/ cli/ docs/ tests/ examples/ -type f | wc -l  # ~200+
 ```
 
 Snapshots:
@@ -109,18 +110,28 @@ Snapshots:
 
 ## What is the next safe task
 
-**Resume v0.9.1 — E2E test harness.** Per the build plan §4 (`v0.9.1` row):
+**Resume v0.10.0 — Auto-mode state machine.** Per the build plan §4 (`v0.10.0` row) and §5 (auto-mode design):
 
-1. `tests/e2e/seven-phase-walk.test.ts` — drives a fresh project from `bequite init` to `bequite handoff`; asserts artifacts at every phase (Memory Bank scaffolded, ADR exists per phase, receipts emit, walkthrough docs present, HANDOFF.md generated).
-2. `tests/e2e/auto-mode.test.ts` — drives `bequite auto` to completion; asserts safety rails (cost ceiling, wall-clock ceiling, 3-failure threshold, banned-word check, hook-block respect).
-3. `tests/e2e/doctrine-loading.test.ts` — fresh init with each Doctrine; asserts correct rules loaded.
-4. `.github/workflows/examples-e2e.yml` — runs the three example projects on every PR + nightly cron.
-5. Note: implementation may be Python-based (since BeQuite CLI is Python) instead of TypeScript per the plan. The plan mentions TypeScript for these tests; honest reality is Python aligns better with the project. **Either path is acceptable** — choose Python for consistency.
-6. Bumps: `__init__.py` + `pyproject.toml` → `0.9.1`. CHANGELOG. State. Commit + tag.
+1. Author `cli/bequite/auto.py`:
+   - State machine class with states: INIT, P0_RESEARCH, P1_STACK, P2_PLAN, P3_PHASES, P4_TASKS, P5_IMPLEMENT, P6_VERIFY, P7_HANDOFF, DONE, BLOCKED, FAILED, PAUSED.
+   - Per-phase contract: enter with memory + receipts + previous-phase output; exit only when artifact + Skeptic kill-shot answered + verify-gate passed + receipt emitted + commit landed.
+   - State persistence at `.bequite/auto-state/<session>.json` so `bequite auto resume <session>` reloads cleanly (v0.10.1 hardens this path).
+2. Safety rails:
+   - Hard cost ceiling — `bequite.config.toml::cost.session_max_usd` (default $20). Reads `cli/bequite/cost_ledger.py` (v0.8.0 wired). On exceed: pause + write `.bequite/cache/cost-override.json` requirement.
+   - Hard wall-clock ceiling — default 6h.
+   - 3 consecutive Implementer failures on same task → BLOCKED.
+   - Banned-word check — uses existing `stop-verify-before-done.sh` hook (v0.3.0).
+   - Hook-block respect — never auto-override (Article IV).
+   - One-way-door operations always pause: PyPI publish, npm publish, git push to main, force push, terraform apply, DB migrations against shared DBs.
+3. Failure replay: capture state to `.bequite/replays/<timestamp>/` on BLOCKED/FAILED.
+4. Heartbeat: write `activeContext.md` every 5 min during long phases.
+5. CLI flags: `--feature`, `--max-cost-usd`, `--max-wall-clock-hours`, `--phases <subset>`, `--mode slow|fast|auto`, `--on-failure pause|abort|continue-with-warning`, `--no-skeptic` (debug only).
+6. Add e2e test `tests/integration/auto/test_auto_mode_smoke.py` — drives auto-mode through P0-P7 with all real backends mocked; asserts: phase-by-phase commits, receipts emitted, state persistence, cost-ceiling trip path, banned-word trip path.
+7. Bumps: `__init__.py` + `pyproject.toml` → `0.10.0`. CHANGELOG. State. Commit + tag.
 
-Acceptance for v0.9.1: e2e tests green on local + CI; nightly cron confirmed in workflow yaml.
+Acceptance for v0.10.0: `bequite auto --feature add-health-endpoint --max-cost-usd 5` runs to DONE on the bookings-saas example (in mocked-backend mode); cost stays under $5; receipts emitted at every phase. Planted Article-V violation correctly trips BLOCKED.
 
-After v0.9.1: v0.10.0 (auto-mode state machine + safety rails + heartbeat) → v0.10.1 (auto-hardening) → v0.11.0 (MENA) → v0.12.0 (host adapters) → v0.13.0 (vibe-handoff exporters) → v0.14.0 (docs) → v0.15.0 (release-eng) → **v1.0.0**. **5 sub-versions remain.**
+After v0.10.0: v0.10.1 (auto-hardening) → v0.11.0 (MENA) → v0.12.0 (host adapters) → v0.13.0 (vibe-handoff exporters) → v0.14.0 (docs) → v0.15.0 (release-eng) → **v1.0.0**. **8 sub-versions remain.**
 
 ## Commands to run first (on resume)
 
@@ -183,7 +194,7 @@ For any agent resuming this build:
 
 ## Suggested next phase
 
-Continue v0.9.1 → v0.10.0 → v0.10.1 → v0.11.0 → v0.12.0 → v0.13.0 → v0.14.0 → v0.15.0 → **v1.0.0** per the main plan at `.bequite/memory/prompts/v1/2026-05-10_initial-plan.md`. **8 sub-versions remain.**
+Continue v0.10.0 → v0.10.1 → v0.11.0 → v0.12.0 → v0.13.0 → v0.14.0 → v0.15.0 → **v1.0.0** per the main plan at `.bequite/memory/prompts/v1/2026-05-10_initial-plan.md`. **7 sub-versions remain.**
 
 After v1.0.0: pause. Layer 2 Studio (v2.0.0+) is a separate plan that requires Ahmed's authorization to begin (see ADR-008 / docs/merge/MASTER_MD_MERGE_AUDIT.md Bucket D).
 

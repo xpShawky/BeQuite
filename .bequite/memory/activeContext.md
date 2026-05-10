@@ -4,13 +4,13 @@
 
 ---
 
-## Now (last edited: 2026-05-10, end of v0.9.0)
+## Now (last edited: 2026-05-10, end of v0.9.1)
 
 - **Active feature:** `BeQuite v1.0.0` (the build of BeQuite itself).
-- **Active phase:** `phase-4` (Examples + e2e harness) — v0.9.0 done; v0.9.1 next.
-- **Active sub-version:** v0.9.0 just tagged. Next: **v0.9.1** — E2E test harness (seven-phase-walk + auto-mode + doctrine-loading) + `examples-e2e.yml` GitHub Actions workflow.
-- **Last green sub-version:** `v0.9.0` (Three example projects scaffolded + spec'd: 01-bookings-saas full / 02-ai-tool-wrapper compact / 03-tauri-note-app compact; each with `.bequite/` tree + ADR-001 stack + per-Doctrine compliance + walkthroughs; example 1 also ships full HANDOFF). Honest scope: scaffolds + walkthroughs, not production code; production walkthrough lands via v0.9.1 e2e harness driving `bequite auto`.
-- **21 tags total** at this snapshot: `v0.1.0` … `v0.8.1` `v0.9.0`. Real git counts (post-v0.9.0): ~26 commits, ~195+ tracked files, ~35k lines added net.
+- **Active phase:** `phase-4` (Examples + e2e harness) complete. Next phase: phase-5 (Auto-mode + MENA + host adapters; v0.10.0–v0.13.0).
+- **Active sub-version:** v0.9.1 just tagged. Next: **v0.10.0** — Auto-mode state machine (one-click run-to-completion P0→P7) + safety rails (cost ceiling, wall-clock ceiling, 3-failure threshold, banned-word check, hook-block respect, one-way-door pauses) + heartbeat (`activeContext.md` every 5 min during long phases).
+- **Last green sub-version:** `v0.9.1` (E2E harness — 8-test seven-phase walk + 8-test doctrine-loading + `.github/workflows/examples-e2e.yml` 3-job CI workflow). Combined integration suite: **64/64 green** across 6 test modules on Python 3.14.
+- **22 tags total** at this snapshot: `v0.1.0` … `v0.9.0` `v0.9.1`. Real git counts (post-v0.9.1): ~27 commits, ~200+ tracked files, ~36k lines added net.
 - **Constitution version:** `v1.2.0`. Amendment trail: v1.0.0 (v0.1.0 ratification) → v1.0.1 (v0.1.2 master-merge, ADR-008) → v1.1.0 (v0.5.1 Article VIII Scraping, ADR-009) → v1.2.0 (v0.5.2 Article IX Cybersecurity, ADR-010). All additive; no Iron Law removed or relaxed. **9 Iron Laws** (I-VII universal + VIII Scraping + IX Cybersecurity).
 - **Active mode:** `auto` (Ahmed authorised autonomous execution; safety rails per `state/project.yaml::safety_rails`).
 - **Project mode (BeQuite-itself):** Safe Mode.

@@ -4,7 +4,63 @@ All notable changes to BeQuite are documented here. Format follows [Keep a Chang
 
 ## [Unreleased] — tracking toward v1.0.0
 
-The full sub-version roadmap (`v0.1.0` → `v1.0.0`) lives in `docs/HOW-IT-WORKS.md` (drafted in v0.14.0) and the approved plan at `.bequite/memory/prompts/v1/`. Layer 2 (Studio) is planned for `v2.0.0+`.
+The full sub-version roadmap (`v0.1.0` → `v1.0.0`) lives in `docs/HOW-IT-WORKS.md` (drafted in v0.14.0) and the approved plan at `.bequite/memory/prompts/v1/`. Layer 2 (Studio) is planned for `v2.0.0+`. **v0.9.2 reshape:** added v0.10.5 (multi-model planning manual-paste MVP) + v0.10.6 (CLI auth stubs). Old v0.10.1 renumbered to v0.10.7. Total sub-versions remaining to v1.0.0: 9.
+
+---
+
+## [0.9.2] — 2026-05-10
+
+### Added — Phase-1 architecture docs for two new feature modules
+
+Per Ahmed's explicit "add two major features to BeQuite" prompt: (1) CLI authentication (browser-based / device-code login, NOT API key as primary), and (2) Multi-Model Planning where models like ChatGPT 5.5 + Claude Opus 4.7 think together before implementation. **Phase-1 (this release) is docs-only** per Ahmed's instruction. Implementation lands v0.10.5+ (multi-model) and v0.10.6+ (CLI auth).
+
+#### Decision records (ADRs)
+
+- **`.bequite/memory/decisions/ADR-011-cli-authentication.md`** — CLI authentication. Recommended MVP: **device-code login (RFC 8628)** because it works headless / SSH / Docker / CI, and supports phone-completion. Browser-OAuth-callback deferred to v0.12.x+ (when BeQuite-cloud auth server stands up). Magic-link rejected as MVP (slowest UX). Token storage via Python `keyring` package (OS keychain on macOS / Windows / Linux). Session refresh / logout / offline-mode / CI-mode (`BEQUITE_API_KEY` separate from human login) all designed. Threat model + 7 failure-state recovery paths documented. **No new Iron Law** — extends Article IV.
+- **`.bequite/memory/decisions/ADR-012-multi-model-planning.md`** — Multi-Model Planning. Recommended MVP: **manual-paste mode** (ToS-clean; works with Claude Pro + ChatGPT Plus subscriptions immediately; zero provider auth complexity). Direct-API mode lands v0.11.x+ reusing v0.8.0 provider adapters. **Browser-session reuse of consumer subscriptions explicitly NOT recommended** (Anthropic + OpenAI ToS prohibit driving endpoints from non-API session cookies; brittle to UI changes; rate-limit + detection-fingerprinting risk). 5 collaboration modes (Parallel default + Specialist + Debate + Judge + Red-Team). 12 roles (Lead Architect / Product Strategist / Frontend / Backend / Database / Security Reviewer / Testing / DevOps / UX / Scraping / Cost Optimizer / Final Judge). Conflict resolution: Iron Law beats Doctrine beats freshness beats user-pick. Storage at `docs/planning_runs/RUN-<datetime>/`. **No new Iron Law** — fulfills Articles I + VI + VII.
+
+#### Architecture strategy docs
+
+- **`docs/architecture/CLI_AUTHENTICATION_STRATEGY.md`** (~480 lines) — full operational reference: 3-option comparison table, Mermaid sequence diagram for device-code flow, polling rules with RFC 8628 backoff, secure local token storage strategy (per-OS backend + headless-Linux fallback with mode 0600 file), token shape, read-path code sketch, session refresh strategy, logout (single-device + all-devices), offline-mode rules, CI-mode rules, threat model with 7 mitigations, 6 failure states with recovery paths, test plan, CLI command surface, TUI panel design (color-coded green/yellow/red).
+- **`docs/architecture/MULTI_MODEL_PLANNING_STRATEGY.md`** (~510 lines) — full operational reference: why multi-model planning exists (3 single-model failure modes), MVP manual-paste workflow with 6-step sequence, future direct-API mode, **explicit non-recommendation of browser-session reuse with reasoning**, ManualPasteProvider Python sketch (conforms to v0.8.0 AiProvider Protocol), 12-role table with default-model assignments, 5 collaboration modes (each with best-for / mode mechanics), plan merge algorithm (8 steps), 5-priority conflict resolution rules, comparison-table schema, model-contribution log shape, token saving strategy, 6 failure scenarios, security/privacy concerns, cost concerns ($0 manual-paste / $0.05-$0.30 direct-API per run), 3 example workflows.
+
+#### Specifications
+
+- **`docs/specs/MULTI_MODEL_PLANNING_REQUIREMENTS.md`** (~370 lines) — F-1 through F-10 functional requirements + NFR-1 through NFR-5 non-functional + CLI surface table + slash-command table + run-directory data model + run-state JSON shape + state-file layout + 13 prompt-template list + acceptance criteria for v0.10.5 ship + 5 deferred questions with default decisions. Defines exactly what v0.10.5 must implement.
+
+#### New personas (3 — total persona count → 20)
+
+- **`skill/agents/multi-model-planning-orchestrator.md`** — owns the per-run lifecycle (scaffold → independent drafting → compare → merge → confirm). 8 hard rules (independence-first / per-model prompts / no silent failures / Iron Law beats / Doctrine beats / freshness beats / user picks final / receipts-per-call). Anti-patterns + Skeptic kill-shot for own behavior.
+- **`skill/agents/model-judge.md`** — final synthesizer in Judge mode. 6 hard rules (read all peer plans / explain rejections / never invent / mark user-decision points / Article VI honest reporting / no silent confirmations). Decision-format template with Skeptic kill-shot per topic. **Mandatory self-attestation block** at end of `merge_report.md`.
+- **`skill/agents/red-team-reviewer.md`** — adversarial post-plan review. 8 attack angles (security / architecture / testing / deployment / scalability / UX / token-waste / hidden-assumptions). Severity-tagged findings (block / warn / nit). Auto-loaded when Doctrine `vibe-defense` is active.
+
+#### Master-doc updates
+
+- **`CLAUDE.md`** — added 3 new persona names to the "you must act like" list; added 6 new path entries to the quick-reference table.
+- **`AGENTS.md`** — added 5 new path entries (multi-model runs / strategy / requirements / CLI auth strategy / both ADRs).
+- **`.bequite/memory/constitution.md`** — preamble updated with v0.9.2 line documenting both ADRs accepted Phase-1 docs-only with no new Iron Law (operational frameworks fulfilling existing Articles).
+- **`.bequite/memory/activeContext.md`** — modules 12 + 13 added (CLI auth + multi-model planning architectures); persona count 17 → 20; next-actions reshaped.
+- **`.bequite/memory/progress.md`** — v0.9.2 row tagged ✅; v0.10.5 + v0.10.6 + v0.10.7 inserted; old v0.10.1 renumbered to v0.10.7; evolution log entry.
+- **`state/recovery.md`** — pickup instructions for v0.10.0 (auto-mode unchanged) + v0.10.5 (multi-model) + v0.10.6 (CLI auth) + v0.10.7 (auto-hardening).
+- **`state/current_phase.md`** — phase-4 complete + phase-5 upcoming.
+
+### Changed
+
+- `cli/bequite/__init__.py::__version__` → `0.9.2`.
+- `cli/pyproject.toml::version` → `0.9.2`.
+- Roadmap to v1.0.0: 9 sub-versions remaining (was 7; +v0.10.5 + v0.10.6 for new feature modules).
+
+### Notes
+
+- This release is **Phase-1 docs only** per Ahmed's "Implementation order: Phase 1: Docs and architecture only." instruction. No code changes (other than version bumps).
+- Default decisions baked in (Ahmed can amend via ADR later — these don't block):
+  - **CLI auth MVP = device-code login** (works in SSH / Docker / CI; phone-completion).
+  - **Multi-model MVP = manual-paste mode** (ToS-clean, works with subscriptions today).
+  - **Browser-session reuse of consumer subscriptions = NOT recommended** (ToS + brittleness; reasoned in ADR-012 §Part 3 + strategy doc §3).
+  - **Default planning mode = Parallel** (independence preserved; Debate + Judge + Red-Team modes available via `--mode`).
+  - **Default judge model = Claude Opus 4.7** (configurable per project).
+  - **Token storage = Python `keyring` package** (OS keychain on macOS/Windows/Linux; gitignored file fallback for headless Linux).
+- Implementation order per Ahmed: Phase 1 (docs — DONE) → Phase 2 (CLI command stubs — v0.10.5/v0.10.6) → Phase 3 (manual-paste workflow working — v0.10.5) → Phase 4 (auth prototype — v0.10.6+) → Phase 5 (direct provider adapters — v0.11.x+).
 
 ---
 

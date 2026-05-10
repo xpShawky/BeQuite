@@ -17,14 +17,14 @@
 
 ## Where we are
 
-- **Build phase:** phase-4 (Examples + e2e harness) complete. Next phase: phase-5 (Auto-mode + MENA + host adapters; v0.10.0–v0.13.0).
-- **Sub-version in progress:** **v0.10.0** (next) — Auto-mode state machine (one-click P0→P7) + safety rails (cost ceiling, wall-clock ceiling, 3-failure threshold, banned-word check, hook-block respect, one-way-door pauses) + heartbeat (`activeContext.md` every 5 min).
-- **Last green sub-version:** **v0.9.1** (E2E harness — 8-test seven-phase walk + 8-test doctrine-loading + 3-job CI workflow; combined integration suite 64/64 green on Python 3.14).
-- **Last successful commit (pending):** `feat(v0.9.1): E2E test harness + CI workflow — 8+8 tests + examples-e2e.yml; combined 64/64 green`.
-- **Last successful tag (pending):** **v0.9.1**.
+- **Build phase:** phase-4 (Examples + e2e harness) complete; **Phase-1 docs for two new feature modules shipped v0.9.2**. Next phase: phase-5 (Auto-mode + Multi-Model Planning impl + CLI Auth stubs + MENA + host adapters; v0.10.0–v0.13.0).
+- **Sub-version in progress:** **v0.10.0** (next) — Auto-mode state machine (one-click P0→P7). Then v0.10.5 multi-model manual-paste MVP (per ADR-012) + v0.10.6 CLI auth stubs (per ADR-011) + v0.10.7 auto-mode hardening.
+- **Last green sub-version:** **v0.9.2** (Phase-1 docs for ADR-011 CLI Authentication + ADR-012 Multi-Model Planning; 2 strategy docs + 1 requirements doc + 3 new personas; no new Iron Laws).
+- **Last successful commit (pending):** `feat(v0.9.2): Phase-1 docs — ADR-011 CLI Auth + ADR-012 Multi-Model Planning + 2 strategy docs + 1 requirements doc + 3 personas`.
+- **Last successful tag (pending):** **v0.9.2**.
 - **Branch:** `main`.
 - **Remote:** `origin = https://github.com/xpShawky/BeQuite.git` configured. **NOT pushed.** Push requires explicit owner authorization (Iron Law IV; one-way door).
-- **Real git counts (post-v0.9.1, pre-commit):** ~27 commits, 22 tags pending, ~200+ tracked files.
+- **Real git counts (post-v0.9.2, pre-commit):** ~28 commits, 23 tags pending, ~210+ tracked files.
 
 ## What is complete (verified by `git tag -l`)
 
@@ -52,6 +52,7 @@
 | v0.8.1 | Live pricing fetch (best-effort): cli/bequite/pricing.py (~330 lines, cache + 24h TTL + offline fallback + WebFetch best-effort live extraction with regex paragraph parser) + skill/references/pricing-table.md (vendored May-2026 snapshot covering 5 model providers + hosting + auth + database) + provider adapters' estimate_cost_usd consults cache before hard-coded fallback + bequite pricing {show,list,refresh} Click group + 14-test integration suite (all passing); combined 48/48 receipts+signing+router+pricing green |
 | v0.9.0 | Three example projects scaffolded + spec'd: examples/01-bookings-saas (Doctrine default-web-saas; full README + ADR-001 stack with per-rule Doctrine compliance + spec.md with 4 flows + phases.md with 7-phase decomposition + HANDOFF.md with engineer + non-engineer sections); examples/02-ai-tool-wrapper (Doctrine cli-tool; README + ADR-001 reusing BeQuite providers/); examples/03-tauri-note-app (Doctrine desktop-tauri; README + ADR-001 with brief reconciliations applied — NOT Stronghold/altool/EV cert/relic). Honest scope per Article VI: scaffolds + walkthroughs, not production code |
 | v0.9.1 | E2E test harness: tests/integration/e2e/test_seven_phase_walk.py (8 tests for CLI surface; subprocess wrapper inherits parent env; UTF-8 with errors=replace for Windows compat) + test_doctrine_loading.py (8 tests for Doctrine structural invariants; tolerant Rules-section regex) + .github/workflows/examples-e2e.yml (3 jobs: python-suite × 4 Python versions + example-scaffolds + audit-self + pr-comment summary). Combined integration suite green: 10+9+15+14+8+8 = 64/64 |
+| v0.9.2 | Phase-1 docs for two new feature modules per Ahmed's "add two major features" prompt: ADR-011 CLI Authentication (`.bequite/memory/decisions/ADR-011-cli-authentication.md`; device-code login MVP; Python keyring storage; CI-mode separate from human login) + ADR-012 Multi-Model Planning (`.bequite/memory/decisions/ADR-012-multi-model-planning.md`; manual-paste MVP; Parallel mode default; Claude Opus 4.7 default judge; browser-session reuse of consumer subscriptions NOT recommended) + `docs/architecture/CLI_AUTHENTICATION_STRATEGY.md` + `docs/architecture/MULTI_MODEL_PLANNING_STRATEGY.md` + `docs/specs/MULTI_MODEL_PLANNING_REQUIREMENTS.md` + 3 new personas at `skill/agents/{multi-model-planning-orchestrator,model-judge,red-team-reviewer}.md` (total persona count → 20). Master-doc updates: CLAUDE.md + AGENTS.md (paths) + Constitution preamble (v0.9.2 update line) + activeContext + progress (roadmap reshape). No new Iron Laws — operational frameworks. |
 
 **Seven working Python modules** (smoke-tested; help / CLI output exercised):
 - `python -m cli.bequite.audit` — rule-based, 7 rule packs
@@ -71,6 +72,9 @@ The remaining sub-versions to v1.0.0:
 | Sub-version | Scope |
 |---|---|
 | **v0.10.0** (next) | Auto-mode state machine. `cli/bequite/auto.py` orchestrator with INIT → P0_RESEARCH → P1_STACK → P2_PLAN → P3_PHASES → P4_TASKS → P5_IMPLEMENT (per-task loop) → P6_VERIFY → P7_HANDOFF → DONE plus BLOCKED/FAILED/PAUSED states. Per-phase commit (atomic). Skeptic gate at every phase boundary (≥1 kill-shot). Safety rails: hard cost ceiling (default $20), wall-clock ceiling (default 6h), 3 consecutive Implementer failures threshold, banned-word check (already in stop-verify-before-done.sh hook), hook-block respect (no auto-override), one-way-door operations always pause. Failure replay: `.bequite/replays/<timestamp>/`. Heartbeat: `activeContext.md` every 5 min. CLI flags: `--feature`, `--max-cost-usd`, `--max-wall-clock-hours`, `--phases <subset>`, `--mode slow|fast|auto`, `--on-failure pause|abort|continue-with-warning`, `--no-skeptic` (debug only). |
+| v0.10.5 | Multi-model planning Phase-3 (manual-paste mode working) per ADR-012: cli/bequite/multi_model.py (render_prompt + compare + merge + extract_final_plan) + cli/bequite/providers/manual_paste.py (ManualPasteProvider conforming to AiProvider Protocol) + bequite plan --multi-model + bequite models {list,configure,roles,compare,merge} Click groups + ≥4 prompt templates + 10-test integration suite. End-to-end manual-paste run on examples/01-bookings-saas as proof-of-life. |
+| v0.10.6 | CLI auth Phase-2 (command stubs that gracefully degrade until auth server stands up) per ADR-011: bequite auth {login,logout,whoami,status,refresh} commands + Python `keyring` integration for OS keychain storage (with file fallback) + offline-mode (`BEQUITE_OFFLINE=true`) + CI-mode (`BEQUITE_API_KEY` + `BEQUITE_CI_MODE=true`) + sessionstart-load-auth.sh hook + 8-test integration suite. |
+| v0.10.7 | Auto-mode hardening (was v0.10.1 in original plan; renumbered v0.9.2): resume from BLOCKED, parallel-task fan-out per AkitaOnRails 2026 N>5 rule, idempotent reruns, state persistence at .bequite/auto-state/<session>.json, integration with v0.10.5 multi-model planning + v0.10.6 auth. |
 | v0.8.0 | Live multi-model AiProvider adapters (Anthropic + OpenAI + Google + DeepSeek + Ollama) |
 | v0.8.1 | Pricing fetch + 24h cache + offline fallback |
 | v0.9.0 | 3 example projects (bookings-saas Next/Hono/Supabase + ai-tool-wrapper CLI + tauri-note-app desktop) |
@@ -97,9 +101,9 @@ Nothing structurally failed. Two minor session frictions worth noting:
 Until v0.7.0 ships the receipts system, evidence is the git history + this file + the snapshots.
 
 ```
-git log --oneline       # ~27 commits expected post-v0.9.1
-git tag -l              # 22 tags expected (through v0.9.1)
-find .bequite/memory/ skill/ template/ cli/ docs/ tests/ examples/ -type f | wc -l  # ~200+
+git log --oneline       # ~28 commits expected post-v0.9.2
+git tag -l              # 23 tags expected (through v0.9.2)
+find .bequite/memory/ skill/ template/ cli/ docs/ tests/ examples/ -type f | wc -l  # ~210+
 ```
 
 Snapshots:
@@ -194,7 +198,7 @@ For any agent resuming this build:
 
 ## Suggested next phase
 
-Continue v0.10.0 → v0.10.1 → v0.11.0 → v0.12.0 → v0.13.0 → v0.14.0 → v0.15.0 → **v1.0.0** per the main plan at `.bequite/memory/prompts/v1/2026-05-10_initial-plan.md`. **7 sub-versions remain.**
+Continue v0.10.0 → v0.10.5 → v0.10.6 → v0.10.7 → v0.11.0 → v0.12.0 → v0.13.0 → v0.14.0 → v0.15.0 → **v1.0.0** per the main plan at `.bequite/memory/prompts/v1/2026-05-10_initial-plan.md` and the v0.9.2 reshape. **9 sub-versions remain (added 2 for new feature modules per Ahmed's request).**
 
 After v1.0.0: pause. Layer 2 Studio (v2.0.0+) is a separate plan that requires Ahmed's authorization to begin (see ADR-008 / docs/merge/MASTER_MD_MERGE_AUDIT.md Bucket D).
 

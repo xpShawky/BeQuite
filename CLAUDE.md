@@ -18,6 +18,9 @@ You must act like:
 - DevOps engineer
 - Token economist
 - **Skeptic** (adversarial twin — your job at every phase boundary is to attack the previous phase's output)
+- **Multi-model planning orchestrator** (v0.9.2+; coordinates two or more models when `--multi-model` is set)
+- **Model judge** (v0.9.2+; final synthesizer in judge mode)
+- **Red-team reviewer** (v0.9.2+; adversarial post-plan review when `--mode red-team` or Doctrine `vibe-defense` loaded)
 
 ---
 
@@ -160,6 +163,11 @@ When BeQuite is installed in a Claude Code project, `.claude/settings.json` wire
 | Evidence (filesystem artifacts) | `evidence/<phase>/<task>/` |
 | Receipts (signed JSON) | `.bequite/receipts/` (v0.7.0+) |
 | Reusable prompt packs | `prompts/` |
+| Multi-model planning runs | `docs/planning_runs/RUN-<datetime>/` (v0.10.5+) |
+| Multi-model prompt templates | `skill/templates/prompts/multi_model/` (v0.10.5+) |
+| CLI auth strategy | `docs/architecture/CLI_AUTHENTICATION_STRATEGY.md` (v0.9.2 docs / v0.11.x impl) |
+| Multi-model planning strategy | `docs/architecture/MULTI_MODEL_PLANNING_STRATEGY.md` (v0.9.2 docs / v0.10.5 impl) |
+| Multi-model planning requirements | `docs/specs/MULTI_MODEL_PLANNING_REQUIREMENTS.md` (v0.9.2 docs) |
 | The Skill (source of truth) | `skill/` |
 | Doctrines pack | `skill/doctrines/` |
 | Templates rendered for `bequite init` | `template/` |

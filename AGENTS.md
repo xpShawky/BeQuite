@@ -153,6 +153,12 @@ Each mode has required minimum gates. See `CLAUDE.md` for details. Doctrines (`d
 | Cryptographic receipts (v0.7.0+) | `.bequite/receipts/` |
 | Reusable prompt packs | `prompts/` |
 | Versioned snapshots | `.bequite/memory/prompts/v<N>/` |
+| Multi-model planning runs (v0.10.5+) | `docs/planning_runs/RUN-<datetime>/` |
+| Multi-model strategy (v0.9.2 docs) | `docs/architecture/MULTI_MODEL_PLANNING_STRATEGY.md` |
+| Multi-model requirements (v0.9.2 docs) | `docs/specs/MULTI_MODEL_PLANNING_REQUIREMENTS.md` |
+| CLI authentication strategy (v0.9.2 docs) | `docs/architecture/CLI_AUTHENTICATION_STRATEGY.md` |
+| ADR-011 CLI authentication | `.bequite/memory/decisions/ADR-011-cli-authentication.md` |
+| ADR-012 multi-model planning | `.bequite/memory/decisions/ADR-012-multi-model-planning.md` |
 | BeQuite skill (source of truth) | `skill/` |
 | Doctrines pack | `skill/doctrines/` |
 | Hooks | `skill/hooks/` |

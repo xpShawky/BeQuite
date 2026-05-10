@@ -1,6 +1,8 @@
 # BeQuite Constitution v1.2.0 — operating under BeQuite
 
-> Drafted: 2026-05-10 · Amended: 2026-05-10 (v1.0.0 → v1.0.1, ADR-008-master-merge; v1.0.1 → v1.1.0, ADR-009-article-viii-scraping; v1.1.0 → v1.2.0, ADR-010-article-ix-cybersecurity) · Maintainer: Ahmed Shawky (xpShawky) · BeQuite version: 0.5.2
+> Drafted: 2026-05-10 · Amended: 2026-05-10 (v1.0.0 → v1.0.1, ADR-008-master-merge; v1.0.1 → v1.1.0, ADR-009-article-viii-scraping; v1.1.0 → v1.2.0, ADR-010-article-ix-cybersecurity) · Maintainer: Ahmed Shawky (xpShawky) · BeQuite version: 0.9.2
+>
+> **v0.9.2 update:** ADR-011 (CLI Authentication) and ADR-012 (Multi-Model Planning) both **accepted Phase-1 docs-only**. Neither introduces a new Iron Law — both are operational frameworks fulfilling existing Articles. ADR-011 extends Article IV (auth surface). ADR-012 fulfills Articles I + VI + VII (multi-model planning artifact discipline). Implementation lands v0.10.5 (multi-model) + v0.10.x+ (CLI auth stubs) + v0.11.x+ (auth server + direct-API multi-model).
 >
 > This Constitution governs every action taken inside this repository — by humans, by AI agents, by automation. It is layered: **Iron Laws** are universal and immutable-ish (amendable only via ADR + version bump); **Doctrines** are forkable rule packs loaded per project type (`@doctrines/<active>.md`); **Modes** (Fast / Safe / Enterprise) gate which rigour level applies.
 >

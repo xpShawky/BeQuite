@@ -8,6 +8,30 @@ The full sub-version roadmap (`v0.1.0` → `v1.0.0`) lives in `docs/HOW-IT-WORKS
 
 ---
 
+## [0.4.0] — 2026-05-10
+
+### Added
+
+- **12 master-aligned slash commands at `skill/commands/`** (each one Markdown with frontmatter — name, description, phase, persona, prompt-pack reference; body specifies workflow + stop condition + anti-patterns + related commands):
+  - `discover.md` — P0 product discovery interview (product-owner; 8 question groups; recommended-defaults; risk register).
+  - `research.md` — P0 research scan (research-analyst; source-authority-ranked; 5 output files; cited URLs only).
+  - `decide-stack.md` — P1 stack ADR (software-architect; freshness-probe + Skeptic + Doctrine alignment + audit clean as pre-sign mandatory checks; encodes the 12 brief reconciliations).
+  - `plan.md` — P2 spec + plan + data-model + contracts (software-architect; analyse adversarial review).
+  - `implement.md` — P5 TDD discipline (RED-GREEN-REFACTOR; per-task commit; receipt; dispatches to backend-engineer / frontend-designer / database-architect / automation-architect).
+  - `review.md` — P5 senior review (13 review categories per master §7.6; Skeptic + security-reviewer; verdict Approved / Approved-with-comments / Blocked).
+  - `validate.md` — P6 validation mesh (per-Mode gate matrix; Playwright walks at viewport 360+1440 and locale en/ar; self-walk + smoke + audit + freshness; phase summary).
+  - `recover.md` — generate paste-able recovery prompt for new sessions (master §25; reads state/recovery.md + Memory Bank + receipts; computes 7 answers; chain-integrity check).
+  - `design-audit.md` — detect AI-looking UI (15 anti-patterns from master §7.9 + Impeccable cross-reference; report at evidence/<phase>/design-audit-<date>.md).
+  - `impeccable-craft.md` — invoke specific Impeccable command (23 commands documented; before/after screenshots; per-task commit).
+  - `evidence.md` — surface evidence + cross-reference receipts (chain integrity check).
+  - `release.md` — P7 handoff + release prep (master §27 release DoD; HANDOFF.md hand-runnable bar; semver discipline; one-way-door pauses for owner).
+
+### Notes
+
+These 12 commands are dispatch instructions to the relevant persona; they do NOT duplicate persona content. Each command's body fits in ~80-120 lines (concise; the personas + prompt-packs do the heavy lifting). All 12 are ported into `template/.claude/commands/` on `bequite skill install` (v0.12.0+). `bequite.recover` works in any host that loads AGENTS.md.
+
+---
+
 ## [0.3.0] — 2026-05-10
 
 ### Added
@@ -164,7 +188,8 @@ Each regulated Doctrine carries a disclaimer: starting points, not substitutes f
 
 This release contains no executable code. It establishes the inviolate base layer (Constitution + Memory Bank + ADR + Doctrine schemas) on which every later sub-version depends.
 
-[Unreleased]: https://github.com/xpshawky/bequite/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/xpshawky/bequite/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/xpshawky/bequite/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/xpshawky/bequite/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/xpshawky/bequite/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/xpshawky/bequite/compare/v0.1.2...v0.2.0

@@ -1,6 +1,6 @@
 {
   "name": "@bequite/marketing",
-  "version": "2.0.0-alpha.4",
+  "version": "2.0.0-alpha.5",
   "private": true,
   "description": "BeQuite marketing site — Apple-grade cinematic landing for vibecoders. Layer 2 Studio Edition.",
   "scripts": {

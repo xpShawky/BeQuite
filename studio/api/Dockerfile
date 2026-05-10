@@ -31,9 +31,10 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/package.json ./package.json
 
 # Copy source code (filtered by .dockerignore).
+# README.md intentionally NOT copied — .dockerignore excludes *.md to keep
+# the runtime image minimal. Docs live in the repo, not the container.
 COPY src ./src
 COPY tsconfig.json ./tsconfig.json
-COPY README.md ./README.md
 
 # Default ports + env. Override via docker-compose.yml or `docker run -e ...`.
 ENV PORT=3002
@@ -48,8 +49,9 @@ ENV BEQUITE_WORKSPACE_ROOT=/workspace
 EXPOSE 3002
 
 # Healthcheck so docker-compose can know when the API is up before
-# starting dashboard.
-HEALTHCHECK --interval=10s --timeout=3s --start-period=10s --retries=3 \
-  CMD wget -q --spider http://localhost:3002/healthz || exit 1
+# starting dashboard. Uses Bun's built-in fetch (no wget/curl required;
+# oven/bun base images don't include them).
+HEALTHCHECK --interval=10s --timeout=3s --start-period=15s --retries=5 \
+  CMD bun -e "fetch('http://localhost:3002/healthz').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"
 
 CMD ["bun", "run", "src/index.ts"]

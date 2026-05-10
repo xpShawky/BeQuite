@@ -2,7 +2,54 @@
 
 All notable changes to BeQuite are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Conventional Commits](https://www.conventionalcommits.org/). Versioning is [Semantic Versioning](https://semver.org/).
 
-## [Unreleased] — tracking toward v1.x point releases + v2.0.0-alpha.5
+## [Unreleased] — tracking toward v1.x point releases + v2.0.0-alpha.6
+
+---
+
+## [2.0.0-alpha.5] — 2026-05-11 — Docker build fixes (caught on first real `docker compose up`)
+
+### Fixed (2 bugs caught by your live Docker test)
+
+**Bug 1: API build failed at `COPY README.md ./README.md`.**
+
+```
+ERROR [api runner 7/7] COPY README.md ./README.md
+target api: failed to solve: ... "/README.md": not found
+```
+
+Root cause: `studio/api/.dockerignore` excludes `*.md` (image-hygiene heuristic), but the Dockerfile then explicitly tried to COPY README.md. The .dockerignore wins; the file wasn't in the build context. README isn't needed at runtime anyway.
+
+**Fix:** Removed the `COPY README.md` line from `studio/api/Dockerfile`. The .dockerignore exclusion stands; docs live in the repo, not the runtime image.
+
+**Bug 2 (preempted): healthchecks used `wget`, which isn't in any of the base images.**
+
+`oven/bun:1.1`, `node:20-bookworm-slim` — none ship `wget` or `curl` by default. All three healthchecks would have silently failed → containers marked unhealthy → dashboard waits forever for `api: condition: service_healthy`.
+
+**Fix:** Replaced all three `HEALTHCHECK CMD wget ...` with native one-liners:
+
+- **API** (`oven/bun:1.1`): `bun -e "fetch('http://localhost:3002/healthz').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"`
+- **Dashboard + marketing** (`node:20-bookworm-slim`): same shape using Node 20's built-in `fetch`.
+
+Bun and Node 20 both have `fetch` as a global. No image bloat from adding wget/curl. Also bumped retries from 3 → 5 and start-period to 15s/25s to be kinder on slow first-boot cold starts.
+
+### Verified
+
+- `docker compose config --quiet` → exit 0 (YAML + refs still valid).
+- The fix targets the exact failure the user reported: `COPY README.md` line removed; healthchecks now use Bun/Node fetch (always available in their respective base images).
+- **Still no live `docker compose up --build` from my session** (daemon was down for me). The user's daemon hit the README bug; the fix removes that step entirely so it CAN'T fail there again. The healthcheck fix is preemptive but verified by reading the base-image docs.
+
+### Changed
+
+- `studio/api/Dockerfile` — removed `COPY README.md` line; replaced wget healthcheck with bun fetch.
+- `studio/dashboard/Dockerfile` — replaced wget healthcheck with node fetch.
+- `studio/marketing/Dockerfile` — replaced wget healthcheck with node fetch.
+- `studio/api/package.json::version` → `2.0.0-alpha.5`.
+- `studio/dashboard/package.json::version` → `2.0.0-alpha.5`.
+- `studio/marketing/package.json::version` → `2.0.0-alpha.5`.
+
+### Honest reporting per Article VI
+
+Two install-path bugs that I previously called out as "first release without live attestation" — the v2.0.0-alpha.4 caveat about "I didn't run `docker compose up --build` myself" caught exactly these two issues on first real use. Iron Law X exists for this. Next Docker-related release (v2.0.0-alpha.6+) should include a live `docker compose up --build` smoke as part of attestation.
 
 ---
 
@@ -1595,7 +1642,8 @@ Each regulated Doctrine carries a disclaimer: starting points, not substitutes f
 
 This release contains no executable code. It establishes the inviolate base layer (Constitution + Memory Bank + ADR + Doctrine schemas) on which every later sub-version depends.
 
-[Unreleased]: https://github.com/xpShawky/BeQuite/compare/v2.0.0-alpha.4...HEAD
+[Unreleased]: https://github.com/xpShawky/BeQuite/compare/v2.0.0-alpha.5...HEAD
+[2.0.0-alpha.5]: https://github.com/xpShawky/BeQuite/compare/v2.0.0-alpha.4...v2.0.0-alpha.5
 [2.0.0-alpha.4]: https://github.com/xpShawky/BeQuite/compare/v2.0.0-alpha.3...v2.0.0-alpha.4
 [2.0.0-alpha.3]: https://github.com/xpShawky/BeQuite/compare/v1.0.3...v2.0.0-alpha.3
 [1.0.3]: https://github.com/xpShawky/BeQuite/compare/v2.0.0-alpha.2...v1.0.3

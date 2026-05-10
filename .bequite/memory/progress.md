@@ -6,7 +6,7 @@
 
 ## Current state
 
-- **Sub-version:** `v0.2.0` (Skill orchestrator — committing in this turn)
+- **Sub-version:** `v0.2.1` (AI automation skill module — committing this turn; v0.2.0 tagged)
 - **Constitution version:** `1.0.1` (amended in v0.1.2; patch bump; additive only — ADR-008-master-merge)
 - **Active doctrines:** `library-package`, `cli-tool`, `mena-bilingual` (BeQuite-itself); 8 Doctrines shipped for downstream projects (`default-web-saas`, `cli-tool`, `ml-pipeline`, `desktop-tauri`, `library-package`, `fintech-pci`, `healthcare-hipaa`, `gov-fedramp`)
 - **Active mode:** Safe Mode (master §4, adopted v1.0.1)
@@ -27,7 +27,8 @@ The 15-sub-version roadmap from the approved plan:
 | v0.1.0 | Foundation & Constitution v1.0.0 | ✅ tagged 2026-05-10 |
 | v0.1.1 | Doctrines pack (8 default Doctrines) | ✅ tagged 2026-05-10 |
 | v0.1.2 | Master-file merge integration (state/, prompts/, evidence/, CLAUDE.md, AGENTS.md, ADR-008, Constitution v1.0.1) | ✅ tagged 2026-05-10 |
-| v0.2.0 | Skill orchestrator (SKILL.md + 11 personas + routing.json + bequite.config.toml.tpl + skill-install template) | 🟡 committing now |
+| v0.2.0 | Skill orchestrator (SKILL.md + 11 personas + routing.json + bequite.config.toml.tpl + skill-install template) | ✅ tagged 2026-05-10 |
+| v0.2.1 | AI automation skill module (ai-automation Doctrine + automation-architect 12th persona + bundled n8n/Make/Zapier/Temporal/Inngest expertise + patterns) | 🟡 committing now |
 | v0.3.0 | Hooks (deterministic gates) | pending |
 | v0.4.0 | Slash commands wave 1 (Spec-Kit-extends, 9 commands) | pending |
 | v0.4.1 | Slash commands wave 2 (BeQuite-adds, 9 commands) | pending |
@@ -60,7 +61,8 @@ The 15-sub-version roadmap from the approved plan:
 ## Evolution log (newest first)
 
 ```
-2026-05-10  v0.2.0 committing — Skill orchestrator. skill/SKILL.md (Anthropic Skills frontmatter, 7-phase router, Fast/Safe/Enterprise mode selector, 19-command surface). 11 personas (master's 10 + Skeptic): product-owner, research-analyst, software-architect, frontend-designer (Impeccable-loaded), backend-engineer, database-architect, qa-engineer, security-reviewer, devops-engineer, token-economist, skeptic. skill/routing.json (provider abstraction, AkitaOnRails 2026 split-only-when-parallel rule, Aider architect-mode review pattern). bequite.config.toml.tpl (per-project config schema). template/.claude/skills/bequite/README.md (skill-install target).
+2026-05-10  v0.2.1 committing — AI automation skill module per Ahmed's request to "add AI automation features and be expert in n8n and Make." `skill/doctrines/ai-automation.md` (12 binding rules); `skill/agents/automation-architect.md` (12th persona); `skill/skills-bundled/ai-automation/` with README + 6 references (n8n + Make deep, Zapier/Temporal/Inngest brief, patterns cross-platform). SKILL.md + routing.json + bequite.config.toml.tpl updated for the 12th persona and the bundled skill loading rules.
+2026-05-10  v0.2.0 tagged — Skill orchestrator. skill/SKILL.md (Anthropic Skills frontmatter, 7-phase router, Fast/Safe/Enterprise mode selector, 19-command surface). 11 personas (master's 10 + Skeptic): product-owner, research-analyst, software-architect, frontend-designer (Impeccable-loaded), backend-engineer, database-architect, qa-engineer, security-reviewer, devops-engineer, token-economist, skeptic. skill/routing.json (provider abstraction, AkitaOnRails 2026 split-only-when-parallel rule, Aider architect-mode review pattern). bequite.config.toml.tpl (per-project config schema). template/.claude/skills/bequite/README.md (skill-install target).
 2026-05-10  v0.1.2 tagged — master-file merge: docs/merge/MASTER_MD_MERGE_AUDIT.md (Buckets A/B/C/D/E classification), root CLAUDE.md + AGENTS.md, state/{project.yaml, current_phase.md, recovery.md, task_index.json, decision_index.json, evidence_index.json}, prompts/{master, discovery, research, stack_decision, implementation, review, recovery}, evidence/README.md, ADR-008-master-merge, Constitution v1.0.0 → v1.0.1 patch (additive: Modes, command-safety three-tier, prompt-injection rule, three-level def-of-done, state/ refs). README + CHANGELOG updated. Two-layer architecture decided: Harness (current) + Studio (v2.0.0+). Commit 64c6a74.
 2026-05-10  v0.1.1 tagged — 8 default Doctrines: default-web-saas, cli-tool, ml-pipeline, desktop-tauri, library-package, fintech-pci, healthcare-hipaa, gov-fedramp. Each ~150 lines with rules, stack guidance, verification gates, forking guidance. mena-bilingual deferred to v0.11.0. Commit 50ebfe6.
 2026-05-10  v0.1.0 tagged — repo skeleton, Iron Laws Constitution v1.0.0, 6 Memory Bank templates, ADR template, Doctrine schema authored. Plan snapshotted. Ahmed authorised autonomous execution through v1.0.0. Commit 22330e7.

@@ -24,7 +24,8 @@ audience = "{{AUDIENCE}}"
 # Active Doctrines — order matters; on conflict, earlier wins.
 # Available shipped Doctrines:
 #   default-web-saas, cli-tool, ml-pipeline, desktop-tauri, library-package,
-#   mena-bilingual, fintech-pci, healthcare-hipaa, gov-fedramp
+#   mena-bilingual, fintech-pci, healthcare-hipaa, gov-fedramp,
+#   ai-automation (n8n / Make / Zapier / Temporal / Inngest expert)
 # Or list a fork at .bequite/doctrines/<your-name>.md
 doctrines = [{{ACTIVE_DOCTRINES}}]
 
@@ -152,6 +153,30 @@ generate_adapters_for = [{{HOST_LIST}}]
 path = "skill/skills-bundled/impeccable"
 loaded_when_doctrine = ["default-web-saas", "mena-bilingual"]
 attribution = "Paul Bakaus (pbakaus/impeccable, MIT)"
+
+[skills.ai_automation]
+path = "skill/skills-bundled/ai-automation"
+loaded_when_doctrine = ["ai-automation"]
+attribution = "BeQuite contributors (MIT)"
+covers_platforms = ["n8n", "make", "zapier", "temporal", "inngest", "trigger.dev", "pipedream", "aws-step-functions"]
+
+
+[ai_automation]
+# Active only when ai-automation Doctrine is loaded.
+# Cost alarm thresholds.
+cost_alarm_daily_ops_per_scenario = 10000          # Make scenarios
+cost_alarm_daily_executions_per_workflow = 5000    # n8n workflows
+cost_alarm_daily_tasks_per_zap = 500               # Zapier zaps
+cost_alarm_daily_runs_per_function = 5000          # Inngest functions
+cost_alarm_daily_actions_per_workflow = 1000       # Temporal Cloud actions
+
+# Error notification routing.
+error_routing = { slack_channel = "#automation-alerts", sentry_project = "automation", pagerduty_service_id = "" }
+
+# AI agent guardrails.
+agent_max_iterations_default = 10
+agent_max_cost_usd_per_run_default = 1.00
+agent_circuit_breaker_consecutive_failures = 3
 
 
 [telemetry]

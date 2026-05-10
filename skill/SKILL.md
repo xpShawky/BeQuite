@@ -106,11 +106,13 @@ Each persona lives at `skill/agents/<name>.md` and loads on demand. Routing matr
 9. **devops-engineer** — owns Docker, CI, deployment, environment variables, observability, release gates, rollbacks.
 10. **token-economist** — owns context budget, prompt compression, skill loading, avoiding repeated work, Fast vs Safe mode routing, model routing.
 
-**BeQuite's addition (1):**
+**BeQuite's additions (2):**
 
 11. **skeptic** — adversarial twin. Distinct from reviewer. Runs at every phase boundary. Produces ≥ 1 kill-shot question whose answer the primary must produce in writing before the phase exits. Catches the optimism that AI vibe-coding produces.
 
-12 personas total when frontend-designer is split into `frontend-designer` (master role) + Impeccable-loaded sub-persona — for v0.2.0 we collapse to **11** personas; the Impeccable sub-persona is a tooling overlay on frontend-designer, not a separate agent.
+12. **automation-architect** — automation expert. Loaded with the bundled `ai-automation` skill (`skill/skills-bundled/ai-automation/`) when the `ai-automation` Doctrine is active. Owns workflow design, platform selection (n8n / Make / Zapier / Temporal / Inngest / Trigger.dev / AWS Step Functions / Pipedream), idempotency + retry + DLQ + observability + AI-agent budget discipline. Cross-pollinates with backend-engineer, frontend-designer (for admin UIs), security-reviewer (connector secrets, prompt-injection paths), token-economist (LLM-call cost in agent chains).
+
+12 personas total. The Impeccable-loaded "FrontendDesign" tooling overlay is a property of frontend-designer (loaded skill), not a separate agent.
 
 ---
 
@@ -132,6 +134,7 @@ Defaults at `skill/routing.json`. Per master §8 + AkitaOnRails 2026 finding ("f
 | devops-engineer | Claude Sonnet 4.6 | medium |
 | token-economist | Claude Haiku 4.5 | low |
 | skeptic | Claude Opus 4.7 | xhigh |
+| automation-architect | Claude Opus 4.7 | high |
 | Doc writer (P7 final pass) | Claude Haiku 4.5 OR Gemini Flash | low |
 
 Override per project in `.bequite/bequite.config.toml::routing`.

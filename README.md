@@ -117,6 +117,7 @@ The original brief is preserved at [`BEQUITE_BOOTSTRAP_BRIEF.md`](BEQUITE_BOOTST
 | `fintech-pci` | PCI DSS controls, audit log retention, cardholder data segregation |
 | `healthcare-hipaa` | PHI handling, BAA list, audit trail |
 | `gov-fedramp` | FedRAMP control families, FIPS-validated crypto |
+| `ai-automation` | n8n / Make / Zapier / Temporal / Inngest expertise; idempotency + retry + DLQ + observability + AI-agent budget discipline |
 
 Doctrines are forkable. See [`docs/DOCTRINE-AUTHORING.md`](docs/DOCTRINE-AUTHORING.md).
 

@@ -221,6 +221,18 @@
       "max_input_tokens": 20000,
       "max_output_tokens": 4000,
       "note": "Reads receipts; rolls up cost. Cheapest model is correct here."
+    },
+    {
+      "phase": "any",
+      "persona": "automation-architect",
+      "model": "claude-opus-4-7",
+      "reasoning_effort": "high",
+      "fallback_model": "gpt-5",
+      "max_input_tokens": 100000,
+      "max_output_tokens": 16000,
+      "loaded_when_doctrine": ["ai-automation"],
+      "loaded_skills": ["ai-automation"],
+      "note": "Owns workflow design across n8n / Make / Zapier / Temporal / Inngest / Trigger.dev / Pipedream / Step Functions. Bundled skill at skill/skills-bundled/ai-automation/ provides per-platform expertise."
     }
   ],
   "parallelism_rules": {

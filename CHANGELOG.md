@@ -8,6 +8,33 @@ The full sub-version roadmap (`v0.1.0` → `v1.0.0`) lives in `docs/HOW-IT-WORKS
 
 ---
 
+## [0.2.1] — 2026-05-10
+
+### Added
+
+- **`ai-automation` Doctrine** — for projects whose primary deliverable is an automation pipeline (n8n / Make / Zapier / Temporal / Inngest / Trigger.dev / Pipedream / AWS Step Functions). 12 rules covering: workflows-as-versioned-source, idempotency, retry+backoff+jitter+DLQ, secrets via connectors not flow JSON, observability with trace propagation, test fixtures + dry-run, error notification routing, schema validation at the edge, AI-agent budget + circuit breaker, rate-limit awareness, versioned upgrades, daily cost roll-up. Stack guidance per platform, 10-gate verification, forking guidance.
+- **`automation-architect` persona** (12th persona) at `skill/agents/automation-architect.md`. Owns workflow design across all named platforms; cross-pollinates with backend-engineer, frontend-designer (admin UIs), security-reviewer (connector secrets, prompt-injection paths), token-economist (LLM-call cost in agent chains).
+- **Bundled `ai-automation` skill** at `skill/skills-bundled/ai-automation/`:
+  - `README.md` — overview + when this skill loads + layering with Impeccable.
+  - `references/n8n.md` — deep n8n expertise (architecture, JSON shape, CI deploy, idempotency, retry+DLQ, observability, AI patterns, self-host docker-compose, 12-rule verification checklist).
+  - `references/make.md` — deep Make.com expertise (operations meter as cost killer, scenario JSON shape, error handlers, AI patterns without native agent primitive, 12-rule checklist).
+  - `references/zapier.md` — Zapier brief (per-task pricing, Paths, Code by Zapier, 12-rule checklist).
+  - `references/temporal.md` — Temporal brief (workflows vs activities, durable execution, replay debugging, signals + queries, AI agent loop pattern, 12-rule checklist).
+  - `references/inngest.md` — Inngest brief (TS-first, event-driven, step.run, step.parallel, step.ai.infer, 12-rule checklist) + adjacent (Trigger.dev, Pipedream).
+  - `references/patterns.md` — 8 cross-platform patterns: idempotency, retry+backoff+jitter, dead-letter queue, fan-out+fan-in, circuit breaker for AI-agent loops, schema validation at the edge, trace propagation, prompt-injection guardrails. Maps each to per-platform implementations.
+
+### Changed
+
+- **`skill/SKILL.md`** — adds 12th persona (automation-architect); Skeptic kept as 11th (the two BeQuite additions on top of master's 10).
+- **`skill/routing.json`** — adds automation-architect routing (Opus 4.7 high; loaded with the bundled `ai-automation` skill when the Doctrine is active).
+- **`skill/templates/bequite.config.toml.tpl`** — adds `ai-automation` to the available-Doctrines list; adds `[skills.ai_automation]` block; adds `[ai_automation]` section with cost-alarm thresholds per platform + agent guardrails (max iterations, max cost USD/run, circuit-breaker thresholds).
+
+### Notes
+
+This release is responsive to the user's request to "add AI automation features" with explicit n8n + Make expertise. The Doctrine + persona + bundled skill are decoupled: any project can opt in by adding `ai-automation` to its `doctrines` list. Active automation-architect cross-pollinates with the existing 10 + Skeptic personas (12 total). No conflict with existing Doctrines.
+
+---
+
 ## [0.2.0] — 2026-05-10
 
 ### Added
@@ -111,7 +138,8 @@ Each regulated Doctrine carries a disclaimer: starting points, not substitutes f
 
 This release contains no executable code. It establishes the inviolate base layer (Constitution + Memory Bank + ADR + Doctrine schemas) on which every later sub-version depends.
 
-[Unreleased]: https://github.com/xpshawky/bequite/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/xpshawky/bequite/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/xpshawky/bequite/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/xpshawky/bequite/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/xpshawky/bequite/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/xpshawky/bequite/compare/v0.1.0...v0.1.1

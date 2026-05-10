@@ -4,7 +4,88 @@ All notable changes to BeQuite are documented here. Format follows [Keep a Chang
 
 ## [Unreleased] — tracking toward v1.0.0 + v2.0.0-alpha.1
 
-v0.19.0 ships the **Studio API back-end (Hono on Bun)** — five HTTP endpoints, path-traversal guard, Zod schemas mirroring the dashboard's loader. v0.17.5 (3D astronaut GLB via Blender) still parked — Blender MCP went from timeout to `Cannot connect`. v0.19.5 next: Better-Auth (Doctrine Rule 9; ADR-011 Phase-3 device-code) + write endpoints with RoE gates. v2.0.0-alpha.1: swap dashboard `lib/projects.ts` from filesystem-mode to HTTP-mode against `studio/api/`. Ahmed reviews before tagging v1.0.0 (Layer 1 Harness final) + v2.0.0-alpha.1 (Studio Edition first pre-release).
+v0.19.5 ships the **Studio API auth layer + append-only write surface** — Bearer-token middleware with three modes (local-dev / token / device-code), POST receipts (idempotent on content-hash), POST snapshots (refuses overwrite), Iron Law X attestation block on every write. ADR-015 documents the auth + write surface. **Critical fix:** v0.19.5 also recovered three Studio `lib/` files silently dropped by an over-broad `.gitignore` rule that affected v0.17.0 + v0.18.0 + v0.19.0 — all three Studio apps now actually boot from a fresh clone (Article VI honest reporting). v0.17.5 (3D astronaut GLB via Blender) still parked. v2.0.0-alpha.1 next: swap dashboard `lib/projects.ts` from filesystem-mode to HTTP-mode against `studio/api/`. Ahmed reviews before tagging v1.0.0 (Layer 1 Harness final) + v2.0.0-alpha.1 (Studio Edition first pre-release).
+
+---
+
+## [0.19.5] — 2026-05-10
+
+### Added — Studio API auth layer + append-only write surface (per ADR-015)
+
+**Auth (three modes selected by `BEQUITE_AUTH_MODE`):**
+
+- `local-dev` (default) — pass-through. `X-BeQuite-Auth-Mode` response header surfaces the mode so the dashboard can warn.
+- `token` — Bearer tokens stored as sha256 hashes at `<workspace>/.bequite/.auth/tokens.json` (gitignored; chmod 0600 best-effort). Raw token returned by `POST /api/v1/auth/token` once; never again.
+- `device-code` — RFC 8628 stub returning 503 until the auth server stands up v0.20.0+ per ADR-011 Phase-3.
+
+**New auth endpoints:**
+
+- `GET /api/v1/auth/status` — current mode + identity + token count.
+- `POST /api/v1/auth/token` — mint a fresh token (returns raw token + 8-char id once).
+- `DELETE /api/v1/auth/token/:id` — revoke by 8-char id.
+- `GET /api/v1/auth/tokens` — list tokens (no hashes).
+
+**New write endpoints (append-only per Article IV):**
+
+- `POST /api/v1/receipts?path=<abs-path>` — persists a Zod-validated receipt to `.bequite/receipts/<sha>-<phase>.json`. Idempotent on content-hash. Returns `iron_law_x` block.
+- `POST /api/v1/snapshots?path=<abs-path>` — copies the six Memory Bank files into `.bequite/memory/prompts/v<N>/<timestamp>_<phase>_<reason>/`. Refuses overwrite (409 with retry-with-bumped-timestamp guidance). Returns `iron_law_x` block.
+- `GET /api/v1/snapshots/:version?path=<abs-path>` — list snapshots under that version.
+
+**Iron Law X attestation block (Constitution v1.3.0, Article X):** Every successful write returns:
+
+```typescript
+{
+  persisted_path: string,        // absolute path
+  file_readable: boolean,        // re-read after write
+  file_size_bytes: number,
+  file_sha256: string,           // content fingerprint
+  api_route_alive: boolean | "n/a", // sibling probe
+  attestation: string,           // never contains banned weasel words
+  caller_must: string[],         // Article X step 7
+}
+```
+
+If the re-read fails or the sibling probe returns non-ok, the helper **throws** and the route returns 500. No "should work" path.
+
+**Files added in v0.19.5:**
+
+- `studio/api/src/lib/auth.ts` — Hono middleware + token store + sha256 hashing + mint/revoke/list.
+- `studio/api/src/lib/iron-law-x.ts` — `buildIronLawXBlock()` verification helper with banned-weasel-word enforcement.
+- `studio/api/src/routes/auth.ts` — status + mint + revoke + list endpoints.
+- `studio/api/src/routes/snapshots.ts` — POST snapshot + GET list.
+- `studio/api/src/routes/receipts.ts` — extended with POST (append-only) on top of v0.19.0 reads.
+- `studio/api/src/index.ts` — wires middleware mount at `/api/v1/projects/*`, `/api/v1/receipts/*`, `/api/v1/snapshots/*`. Auth routes mount publicly at `/api/v1/auth/*`. Exposes `X-BeQuite-Auth-Mode` via CORS.
+- `studio/api/README.md` — full v0.19.5 surface documented + bootstrap-into-token-mode flow.
+- `.bequite/memory/decisions/ADR-015-studio-api-auth-and-write-surface.md` — full decision record.
+
+**Critical Article VI fix shipped in this release:**
+
+The `.gitignore` rule `lib/` (line 27, intended for Python venv install dirs) was over-broad and silently dropped:
+
+- `studio/marketing/lib/docs.ts` from the v0.17.0 commit
+- `studio/dashboard/lib/projects.ts` from the v0.18.0 commit
+- `studio/api/src/lib/fs-loader.ts` from the v0.19.0 commit
+
+All three published tags shipped Studio apps that would not boot from a fresh clone (Next.js compile error / Hono module-not-found). The CHANGELOG entries falsely claimed "boots locally" — true on the developer's disk where the files were present, false for GitHub clones. The v0.19.5 release:
+
+1. Anchors Python venv install dirs to repo root in `.gitignore` (`lib/` → `/lib/`, `lib64/` → `/lib64/`, `build/` → `/build/`, etc.). Application source dirs named `lib/` are no longer matched.
+2. Stages and commits all three previously-silently-ignored files (they exist on disk in their fully-functional shape; recovery is additive).
+3. Adds `.bequite/.auth/` to gitignore alongside `.bequite/.keys/`.
+
+v0.19.0 tag was force-updated to include the recovery. v0.17.0 + v0.18.0 tags remain at their historical (broken) commits — main + v0.19.0+ is the recommended pointer.
+
+### Changed
+
+- `cli/bequite/__init__.py::__version__` → `0.19.5`. `cli/pyproject.toml::version` → `0.19.5`.
+- `studio/api/package.json::version` → `0.19.5`. Description updated to mention auth + write surface.
+
+### Notes
+
+- API **typechecks clean** in this release (`cd studio/api && npx tsc --noEmit` → exit 0). Full Iron Law X attestation (boot + curl) is deferred to v0.19.x verification — Bun runtime is not installed in this developer's environment, so the live-boot smoke could not be performed in-session. The README's quickstart (`bun install && bun run src/index.ts`) is unchanged.
+- **No new Iron Law.** v0.19.5 implements Article X (added in v0.16.0 via Constitution v1.3.0) at the HTTP layer.
+- **No Better-Auth in v0.19.5.** Doctrine Rule 9 (Better-Auth / Clerk / Supabase Auth — no custom auth) is forward-compatible: the MVP Bearer validator swaps for Better-Auth session verification without touching route handlers. Full integration lands v0.20.x+.
+- v0.20.0 — WebSocket for live receipt + cost stream + xterm.js terminal stream.
+- v2.0.0-alpha.1 — swap dashboard `lib/projects.ts` from filesystem-mode to HTTP-mode against `studio/api/`.
 
 ---
 
@@ -1027,7 +1108,8 @@ Each regulated Doctrine carries a disclaimer: starting points, not substitutes f
 
 This release contains no executable code. It establishes the inviolate base layer (Constitution + Memory Bank + ADR + Doctrine schemas) on which every later sub-version depends.
 
-[Unreleased]: https://github.com/xpShawky/BeQuite/compare/v0.19.0...HEAD
+[Unreleased]: https://github.com/xpShawky/BeQuite/compare/v0.19.5...HEAD
+[0.19.5]: https://github.com/xpShawky/BeQuite/compare/v0.19.0...v0.19.5
 [0.19.0]: https://github.com/xpShawky/BeQuite/compare/v0.18.0...v0.19.0
 [0.18.0]: https://github.com/xpShawky/BeQuite/compare/v0.17.0...v0.18.0
 [0.17.0]: https://github.com/xpShawky/BeQuite/compare/v0.16.0...v0.17.0

@@ -11,6 +11,7 @@
 *.p12
 *.pfx
 .bequite/.keys/
+.bequite/.auth/
 
 # --- Python ---
 # Note: virtualenv install dirs anchored to root with leading slash so they

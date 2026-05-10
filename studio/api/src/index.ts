@@ -4,6 +4,9 @@ import { logger } from "hono/logger";
 import { health } from "./routes/health.js";
 import { projects } from "./routes/projects.js";
 import { receipts } from "./routes/receipts.js";
+import { snapshots } from "./routes/snapshots.js";
+import { auth as authRoutes } from "./routes/auth.js";
+import { authMiddleware, getAuthMode } from "./lib/auth.js";
 import { getWorkspaceRoot } from "./lib/fs-loader.js";
 
 const app = new Hono();
@@ -20,36 +23,61 @@ app.use(
         origin.startsWith("http://127.0.0.1:")
       )
         return origin;
-      // Production allow-list lands v0.19.x+ once domain is registered.
+      // Production allow-list lands v0.20.x+ once domain is registered.
       return null;
     },
     credentials: true,
+    allowHeaders: ["Authorization", "Content-Type", "X-Requested-With"],
+    exposeHeaders: ["X-BeQuite-Auth-Mode"],
   }),
 );
 
+// Public surface (no auth required) — health + auth/status
 app.route("/healthz", health);
+app.route("/api/v1/auth", authRoutes);
+
+// Authenticated surface — every /api/v1/* route below this line goes through
+// authMiddleware. In local-dev mode the middleware passes through; in token
+// mode it enforces Bearer auth.
+app.use("/api/v1/projects/*", authMiddleware);
+app.use("/api/v1/receipts/*", authMiddleware);
+app.use("/api/v1/snapshots/*", authMiddleware);
+
 app.route("/api/v1/projects", projects);
 app.route("/api/v1/receipts", receipts);
+app.route("/api/v1/snapshots", snapshots);
 
 app.get("/", (c) =>
   c.json({
     name: "BeQuite Studio API",
-    version: "0.19.0",
+    version: "0.19.5",
     docs: "See studio/api/README.md for endpoint surface.",
     workspace_root: getWorkspaceRoot(),
-    endpoints: [
-      "GET /healthz",
-      "GET /api/v1/projects",
-      "GET /api/v1/projects/snapshot?path=<abs-path>",
-      "GET /api/v1/receipts?path=<abs-path>",
-      "GET /api/v1/receipts/:sha?path=<abs-path>",
-    ],
+    auth_mode: getAuthMode(),
+    endpoints: {
+      public: [
+        "GET /healthz",
+        "GET /api/v1/auth/status",
+        "POST /api/v1/auth/token (local-dev bootstrap)",
+        "DELETE /api/v1/auth/token/:id",
+        "GET /api/v1/auth/tokens",
+      ],
+      authenticated_read: [
+        "GET /api/v1/projects",
+        "GET /api/v1/projects/snapshot?path=<abs-path>",
+        "GET /api/v1/receipts?path=<abs-path>",
+        "GET /api/v1/receipts/:sha?path=<abs-path>",
+        "GET /api/v1/snapshots/:version?path=<abs-path>",
+      ],
+      authenticated_write: [
+        "POST /api/v1/receipts (append-only; idempotent on content-hash)",
+        "POST /api/v1/snapshots (append-only; refuses overwrite)",
+      ],
+    },
   }),
 );
 
-app.notFound((c) =>
-  c.json({ error: "not found", path: c.req.path }, 404),
-);
+app.notFound((c) => c.json({ error: "not found", path: c.req.path }, 404));
 
 const port = Number(process.env.PORT || 3002);
 
@@ -60,6 +88,7 @@ export default {
 
 // Log on startup (Bun runs this file as the entry point).
 if (typeof Bun !== "undefined") {
-  console.log(`BeQuite Studio API v0.19.0 listening on http://localhost:${port}`);
+  console.log(`BeQuite Studio API v0.19.5 listening on http://localhost:${port}`);
   console.log(`Workspace root: ${getWorkspaceRoot()}`);
+  console.log(`Auth mode: ${getAuthMode()}`);
 }

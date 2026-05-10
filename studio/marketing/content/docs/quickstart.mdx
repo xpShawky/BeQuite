@@ -1,0 +1,189 @@
+---
+title: Quickstart — zero to first project in 10 minutes
+slug: quickstart
+order: 1
+description: Install BeQuite, scaffold your first project, walk it through phases, and ship a verified feature. No prior knowledge required.
+---
+
+# Quickstart
+
+> Zero to a verified, shipped feature in 10 minutes. No prior CLI experience required. We'll go slow and explain every step.
+
+## What you'll do
+
+1. Install BeQuite on your machine
+2. Scaffold a fresh project tree with the right doctrine
+3. Plan a feature using two AI models (manual-paste mode — works with your Claude + ChatGPT subscriptions)
+4. Implement the feature
+5. Verify it's actually operational (not just committed)
+6. Read your first signed receipt
+
+## What you need
+
+- A computer with **Python 3.11 or newer**. Check with: `python --version`. If it says 3.11.x or higher, you're good.
+- **Git** installed. Check: `git --version`. If not, install from https://git-scm.com.
+- **A terminal**: PowerShell or Windows Terminal on Windows, Terminal.app on macOS, anything on Linux.
+- *(Optional but highly recommended)* A Claude Pro or Claude Free account + a ChatGPT Free or Plus account. We'll use these for multi-model planning.
+
+That's it. No Docker. No cloud signup. No payment.
+
+## Step 1 — Install BeQuite (2 minutes)
+
+Open your terminal and paste these three lines:
+
+```bash
+git clone https://github.com/xpShawky/BeQuite.git ~/BeQuite
+cd ~/BeQuite/cli
+pip install -e .
+```
+
+When done, verify:
+
+```bash
+bequite --version
+```
+
+You should see something like `0.17.0` or higher. If not, see [troubleshooting](/docs/troubleshooting).
+
+## Step 2 — Scaffold your first project (1 minute)
+
+Pick a name (we'll use `my-bookings-app` here) and a project type. The most common is `default-web-saas`.
+
+```bash
+cd ~                # or wherever you want the project to live
+bequite init my-bookings-app \
+  --doctrine default-web-saas \
+  --mode safe \
+  --scale small_saas
+```
+
+What just happened:
+
+```
+~/my-bookings-app/
+├── .bequite/
+│   ├── memory/                ← the brain (read on every session)
+│   │   ├── constitution.md    ← Iron Laws + Doctrines
+│   │   ├── projectbrief.md    ← what this project is
+│   │   ├── productContext.md  ← who it's for
+│   │   ├── systemPatterns.md  ← architecture patterns
+│   │   ├── techContext.md     ← stack decisions
+│   │   ├── activeContext.md   ← what's in flight RIGHT NOW
+│   │   ├── progress.md        ← evolution log
+│   │   └── decisions/         ← ADRs (one per architectural decision)
+│   ├── keys/                  ← public ed25519 key (committed)
+│   ├── .keys/                 ← private ed25519 key (gitignored)
+│   └── receipts/              ← signed JSON receipts (created as you work)
+├── state/                     ← operational state
+├── specs/                     ← spec.md / plan.md / tasks.md per feature
+└── ... (template files)
+```
+
+Don't worry about reading every file. **BeQuite reads them for you** — that's the entire point.
+
+## Step 3 — Plan a feature with two models (3 minutes)
+
+Most planning bugs come from one model committing to a stack or pattern early and never contradicting itself. Multi-model planning fixes that: two models think independently, then BeQuite compares + merges.
+
+```bash
+cd ~/my-bookings-app
+bequite plan --multi-model "Build a customer booking flow with admin dashboard"
+```
+
+BeQuite scaffolds:
+
+```
+docs/planning_runs/RUN-2026-05-10T15-30/
+├── input_brief.md
+├── prompts/
+│   ├── plan_claude-opus-4-7.md      ← paste into Claude
+│   └── plan_gpt-5.md                 ← paste into ChatGPT
+└── state.json
+```
+
+Now do this:
+
+1. Open https://claude.ai (or Claude Code, or your Claude desktop app).
+2. Open `docs/planning_runs/RUN-.../prompts/plan_claude-opus-4-7.md` in any text editor.
+3. **Copy** the entire contents. **Paste** into Claude.
+4. Wait for Claude's response.
+5. **Save** Claude's response to `docs/planning_runs/RUN-.../claude-opus-4-7_plan.md`.
+6. Repeat steps 1-5 with **ChatGPT** (https://chat.openai.com) and the `plan_gpt-5.md` prompt, saving to `docs/planning_runs/RUN-.../gpt-5_plan.md`.
+
+> **Why manual paste?** Claude.ai and ChatGPT.com forbid automated CLI access to your subscription session (TOS). Manual paste is ToS-clean: you're a human reading and pasting. No API keys needed. Your subscriptions cover it.
+
+When both responses are saved:
+
+```bash
+bequite models compare
+```
+
+This produces `comparison.md` — a side-by-side decision table for every planning topic (stack, auth, database, etc.) showing where Claude and GPT agreed, where they conflicted, and which option is better per the loaded Doctrine + freshness probe.
+
+```bash
+bequite models merge --judge claude
+```
+
+BeQuite asks Claude to be the Final Judge. It scaffolds `prompts/merge_judge.md` — paste it into Claude one more time, save the response to `merge_report.md`. Then:
+
+```bash
+bequite models merge --confirm
+```
+
+Final plan written to `specs/<feature>/plan.md` with full provenance back to the planning run + receipts archived for every model invocation.
+
+## Step 4 — Implement (3 minutes)
+
+```bash
+bequite tasks                          # generate atomic ≤5-min tasks
+bequite implement <first-task-id>      # work on the first one
+```
+
+For each task, BeQuite walks you through Read → Edit → Format → Test → Commit. The agent enforces:
+
+- **No banned weasel words** in the completion message ("should", "probably", "I think it works" = exit code 2).
+- **Operational completeness** (Iron Law X): the running system reflects your change before it reports complete. No "added — restart your server" gotchas.
+- **Receipt emitted** for every model call.
+
+## Step 5 — Verify (1 minute)
+
+```bash
+bequite verify
+```
+
+Runs the full validation mesh: lint + typecheck + unit + Playwright walks (admin + user, viewport 360 + 1440) + axe-core gate + smoke test + secret scan + audit + freshness. Per-Mode rigour (you're in Safe Mode by default).
+
+If anything is red, BeQuite tells you which gate failed and points you at the evidence file.
+
+## Step 6 — Read your first receipt
+
+```bash
+bequite receipts list
+bequite receipts show <sha>             # full JSON
+bequite verify-receipts                 # validate ed25519 signatures + chain
+bequite cost                            # session cost roll-up
+```
+
+Every receipt is a chain-hashed JSON record of: who, what model, what reasoning effort, what input prompt (sha256), what memory snapshot (sha256), what diff hash, what files touched, what tools invoked, what tests ran, what cost. Signed with your project's per-project ed25519 keypair. Replay-able. Auditable.
+
+## What just happened
+
+You went from zero to a verified, planned, implemented, receipt-tracked feature **without ever stepping outside discipline**:
+
+- Spec → plan → tasks → implement → verify → handoff (the seven phases).
+- Two AI models thought independently and merged.
+- Every change is operationally complete (the running system reflects it).
+- Every model call is signed + receipt-tracked.
+- Constitution Iron Laws enforced via PreToolUse hooks (no secrets in commits, no destructive ops, no hallucinated packages, no banned weasel words).
+
+## What to do next
+
+| If you want to... | Read |
+|---|---|
+| Start a brand-new project from a fresh idea | [From scratch](/docs/from-scratch) |
+| Add BeQuite to an existing project (retrofit) | [Retrofit](/docs/retrofit) |
+| Use multi-model planning more deeply (debate / red-team / specialist modes) | [Multi-model planning](/docs/multi-model-planning) |
+| Run BeQuite on autopilot (P0 → P7) | [Auto-mode](/docs/auto-mode) |
+| When something breaks and you need to recover | [Troubleshooting](/docs/troubleshooting) |
+
+Welcome aboard. Be quiet. Ship.

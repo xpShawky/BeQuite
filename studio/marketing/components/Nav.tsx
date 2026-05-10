@@ -38,7 +38,7 @@ export function Nav() {
           <li>
             <Link
               className="transition-colors duration-cinematic ease-cinematic hover:text-silver"
-              href="#how-it-works"
+              href="/#how-it-works"
             >
               How it works
             </Link>
@@ -46,7 +46,7 @@ export function Nav() {
           <li>
             <Link
               className="transition-colors duration-cinematic ease-cinematic hover:text-silver"
-              href="#features"
+              href="/#features"
             >
               Features
             </Link>
@@ -54,9 +54,9 @@ export function Nav() {
           <li>
             <Link
               className="transition-colors duration-cinematic ease-cinematic hover:text-silver"
-              href="#demo"
+              href="/docs"
             >
-              Demo
+              Docs
             </Link>
           </li>
           <li>
@@ -72,10 +72,10 @@ export function Nav() {
         </ul>
 
         <Link
-          href="#cta"
+          href="/docs/quickstart"
           className="rounded-full bg-gold px-5 py-2 text-sm font-medium text-ink transition-all duration-cinematic ease-cinematic hover:bg-gold-bright hover:shadow-glint"
         >
-          Get BeQuite
+          Get started
         </Link>
       </nav>
     </motion.header>

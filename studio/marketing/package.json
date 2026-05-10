@@ -1,6 +1,6 @@
 {
   "name": "@bequite/marketing",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "private": true,
   "description": "BeQuite marketing site — Apple-grade cinematic landing for vibecoders. Layer 2 Studio Edition.",
   "scripts": {
@@ -19,6 +19,8 @@
     "three": "^0.169.0",
     "@react-three/fiber": "^8.17.0",
     "@react-three/drei": "^9.114.0",
+    "next-mdx-remote": "^5.0.0",
+    "gray-matter": "^4.0.3",
     "lucide-react": "^0.460.0",
     "clsx": "^2.1.1",
     "tailwind-merge": "^2.5.4"

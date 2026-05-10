@@ -1,0 +1,228 @@
+---
+title: Troubleshooting — when something breaks
+slug: troubleshooting
+order: 6
+description: Common pain points + recovery procedures. Vibecoder-friendly. No magic. No "have you tried turning it off and on again."
+---
+
+# Troubleshooting
+
+> The vibecoder's most-frequent failure modes + how to recover. None of these need you to read source code or "ask a backend dev".
+
+## "bequite: command not found"
+
+You installed but the shell can't find the binary.
+
+```bash
+# Verify install location
+pip show bequite
+
+# Add the bin to PATH (one-time)
+# macOS / Linux:
+export PATH="$HOME/.local/bin:$PATH"
+# Windows PowerShell:
+$env:PATH = "$env:USERPROFILE\AppData\Local\Programs\Python\Python313\Scripts;$env:PATH"
+
+# OR: invoke explicitly
+python -m bequite --version
+```
+
+If that works, add the line to your shell profile (`~/.bashrc`, `~/.zshrc`, or PowerShell `$PROFILE`).
+
+## "A hook fails on commit and I don't know why"
+
+BeQuite's hooks block bad behavior at exit code 2. The stderr explains exactly what.
+
+Common ones:
+
+### `pretooluse-secret-scan.sh` blocks
+
+The agent tried to write something matching the secret regex (API keys, JWTs, AWS access patterns). **Read the line it flagged.** If it's a real secret: rotate it; never commit; let the agent retry without that line. If it's a false positive: the agent will add a redacted version (e.g. `process.env.API_KEY` instead of literal value).
+
+### `pretooluse-block-destructive.sh` blocks
+
+The agent tried `rm -rf`, `DROP DATABASE`, `git push -f`, etc. **Never bypass.** If you actually need this op, do it manually with full awareness.
+
+### `pretooluse-verify-package.sh` blocks (PhantomRaven defense)
+
+The agent tried to import a package not in your lockfile. The package may not exist (hallucination). **Verify the package on the registry before installing.** If it's real, run the install command yourself + commit the lockfile + retry.
+
+### `stop-verify-before-done.sh` blocks
+
+The agent's completion message contained a banned weasel word. Common ones: "should work", "probably fine", "I think it works", "appears to". **Ask the agent to verify concretely + restate.**
+
+## "I see 'should' / 'probably' in the output"
+
+That's Constitution Article II + Article VI enforcement. The agent **can't** report completion with hedge language. If you see hedge language, it means the work isn't actually done.
+
+What to do: re-prompt the agent with "Verify concretely: what command ran? what was the output? what passed? what failed?" and let it regenerate the report without weasel words.
+
+## "Iron Law X: my feature was added but the dev server didn't pick it up"
+
+Per Constitution Article X (Operational completeness), the agent is responsible for restarting the build / service when a change requires it. If the agent missed this, the change is **not actually complete** and the agent should have reported BLOCKED, not done.
+
+Recovery:
+```bash
+# Find what was changed
+git log --oneline -1
+
+# For Next.js / React projects
+pnpm dev      # restart
+# OR if dev was running, stop + start
+
+# For Python projects
+# (depends on framework — uvicorn / flask / django)
+# stop the service + start
+
+# For Docker
+docker compose up -d --build  # rebuild + restart
+
+# For Vite / Astro
+pnpm dev      # restart
+
+# Then verify the change is operationally live
+curl http://localhost:3000/<your-route>     # for backend changes
+# OR: visit the page in browser for frontend changes
+```
+
+If Article X failures keep happening, file an issue at https://github.com/xpShawky/BeQuite/issues — the auto-mode integration of operational-checks may need tightening.
+
+## "bequite verify is red and I don't know which gate"
+
+```bash
+bequite verify --verbose
+```
+
+The verbose flag prints each gate's exit code + stderr tail. The first non-green gate is the failing one.
+
+Per-gate troubleshooting:
+
+| Gate | Common failure | Fix |
+|---|---|---|
+| **lint** | unused import, missing semicolon | `pnpm lint --fix` (or `ruff format` for Python) |
+| **typecheck** | type mismatch | The error message is the fix; read it carefully |
+| **unit / integration** | actual test failure | `<test-runner> --reporter verbose` to see what failed |
+| **playwright** | Selector drift | Check `evidence/P6/playwright-html/` for the trace; update the selector in `tests/walkthroughs/<role>-walk.md` |
+| **axe-core** | WCAG violation | `evidence/P6/axe/<role>/<route>.json` lists the violations; fix per axe's recommendation |
+| **smoke** | Endpoint returned wrong status | Verify the endpoint exists; run the curl manually; check service logs |
+| **audit** | Doctrine rule violation | Read the audit findings — it tells you which file:line + which rule + how to fix |
+| **freshness** | Dep is stale or pricing changed | `bequite freshness --refresh` after ack-ing the change |
+| **secret-scan** | Secret pattern in source | Move the secret to env var; never hardcode |
+
+## "I want to undo the last change auto-mode made"
+
+```bash
+# View what the last commit did
+git log --oneline -1
+git show HEAD
+
+# Revert (keeps the history, just inverses the diff)
+git revert HEAD
+
+# OR (only if you definitely don't want this commit and haven't pushed)
+git reset --hard HEAD~1
+```
+
+After reverting, run `bequite recover` to update `state/recovery.md` so future sessions know.
+
+## "auto-mode is stuck in BLOCKED / PAUSED"
+
+```bash
+# Inspect
+bequite auto status <session-id>
+cat .bequite/auto-state/<session-id>.json | jq '.blocked_reason'
+```
+
+Common reasons + fixes:
+
+| `blocked_reason` | Fix |
+|---|---|
+| `cost ceiling reached: $X.XX >= $Y.YY` | Decide: bump ceiling (`bequite auto run --max-cost-usd <n>`) or stop |
+| `wall-clock ceiling reached` | Same — bump or stop |
+| `3 consecutive failures on task T-N` | Manually fix the task or split it into smaller tasks |
+| `banned weasel word in completion: 'should'` | Re-prompt the failing task; ask for concrete report |
+| `hook block: pretooluse-block-destructive` | Real destructive op was attempted; never bypass |
+| `one-way-door: git push origin main` | Approve manually: `git push origin main` outside auto-mode |
+
+After fixing:
+```bash
+bequite auto resume <session-id>
+```
+
+## "I lost my session. Where's my work?"
+
+`state/recovery.md` is the master pickup document. It tells you:
+- Last completed task
+- Last green build
+- Next safe task
+- Files to read first
+
+```bash
+cat state/recovery.md
+bequite recover    # generates a paste-able recovery prompt
+```
+
+For receipts (signed history of every model call):
+```bash
+bequite receipts list     # all receipts
+bequite cost              # session cost rollup
+```
+
+## "Multi-model planning is awkward — too many paste steps"
+
+It is. That's the tradeoff for ToS-clean (no automation against subscription endpoints) + zero API cost.
+
+Your options:
+
+1. **Accept the friction** for the cross-checked output. 2-3 paste cycles per planning run = ~5 minutes of paste work for hours of saved planning errors.
+2. **Use direct-API mode** (post-v0.11.x): `bequite plan --multi-model --direct-api`. Costs $0.05-$0.30 per run via Anthropic + OpenAI APIs. No paste. Requires API keys configured in `bequite.config.toml::providers`.
+3. **Skip multi-model planning for small features.** It shines on big architectural decisions. For a 1-task tweak, single-model is fine.
+
+## "I get rate-limited by Claude.ai or ChatGPT.com"
+
+That's your subscription's rate limit, not BeQuite. Two paths:
+
+- Wait it out (usually 15-60 minutes for Claude Pro; varies for ChatGPT).
+- Switch to direct-API mode for that run (uses your API key billing, separate quota).
+
+## "I want BeQuite to do less / more"
+
+BeQuite has 3 modes: `fast`, `safe` (default), `enterprise`.
+
+- **fast**: small tools, demos, throwaways. Skips deep research + load testing.
+- **safe**: real apps. Full discipline.
+- **enterprise**: regulated work. Adds threat model + audit logs + access matrix + observability + IR runbook.
+
+Set it once: `state/project.yaml::mode`.
+
+You can also customize per-Doctrine which rules apply. See [Doctrine authoring](/docs/doctrine-authoring).
+
+## "I want to nuke BeQuite and start over"
+
+```bash
+# Inside the project (this is destructive — be sure)
+rm -rf .bequite state docs/planning_runs evidence
+git checkout -- AGENTS.md CLAUDE.md .gitignore     # restore the originals or just delete
+git rm --cached AGENTS.md CLAUDE.md                # unstage
+```
+
+But honestly — **don't.** BeQuite is purely additive. If something's wrong, it's almost always a config tweak, not a "burn it down" situation.
+
+## When all else fails
+
+```bash
+bequite doctor                # environment check (Python version, git, etc.)
+bequite audit --repo .        # constitution + doctrine drift
+bequite freshness             # dependency freshness
+bequite recover               # generate recovery prompt
+```
+
+And: file an issue at https://github.com/xpShawky/BeQuite/issues with the output of `bequite doctor` + your error message + your OS + your Python version.
+
+## Cross-references
+
+- [Quickstart](/docs/quickstart)
+- [From scratch](/docs/from-scratch)
+- [Retrofit](/docs/retrofit)
+- [Multi-model planning](/docs/multi-model-planning)
+- [Auto-mode](/docs/auto-mode)

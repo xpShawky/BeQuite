@@ -1,0 +1,180 @@
+---
+title: Auto-mode — one-click P0 → P7 with safety rails
+slug: auto-mode
+order: 5
+description: Run the entire seven-phase walk on autopilot. Cost ceiling. Wall-clock ceiling. Banned-word detection. One-way-door pauses. Heartbeat updates every 5 minutes.
+---
+
+# Auto-mode
+
+> One command. P0 → P7. Stops only at safety rails or the human-in-the-loop pauses you've configured. Resume from any blocked state.
+
+## When to use it
+
+- ✅ Small or well-scoped features in a BeQuite-managed project that's been around for a while
+- ✅ Repeating a workflow you've done dozens of times (e.g. "add a CRUD endpoint")
+- ✅ Overnight runs where you want progress without supervision
+- ❌ Brand-new projects where you haven't decided the stack (let `decide-stack` settle first)
+- ❌ Production deploys (one-way doors always pause)
+- ❌ Anything regulated (HIPAA / PCI / FedRAMP) without explicit ADR override
+
+## The basic command
+
+```bash
+cd ~/my-project
+bequite auto run \
+  --feature "add-health-endpoint" \
+  --max-cost-usd 5 \
+  --max-wall-clock-hours 2 \
+  --mode auto
+```
+
+Auto-mode walks: INIT → P0_RESEARCH → P1_STACK → P2_PLAN → P3_PHASES → P4_TASKS → P5_IMPLEMENT (per-task loop) → P6_VERIFY → P7_HANDOFF → DONE.
+
+State persists at `.bequite/auto-state/<session-id>.json` (so you can resume after an interruption).
+
+## What auto-mode pauses for (the eight safety rails)
+
+Per Constitution Article IV + Article X. Auto-mode **never** auto-overrides these:
+
+| Trigger | Action |
+|---|---|
+| **Cost ceiling reached** (`max-cost-usd`) | PAUSED — human must approve continuation via `.bequite/cache/cost-override.json` |
+| **Wall-clock ceiling reached** (`max-wall-clock-hours`) | PAUSED |
+| **3 consecutive Implementer failures on same task** | BLOCKED |
+| **Banned weasel word** in completion message ("should", "probably", "I think it works") | BLOCKED via `stop-verify-before-done.sh` hook |
+| **PreToolUse hook blocks** (secret scan, destructive op, hallucinated package) | BLOCKED — never auto-overrides |
+| **One-way-door operations** | Always pause: PyPI publish, npm publish, git push to main, force push, terraform apply, DB migration against shared DB |
+| **First HANDOFF generation** | PAUSED for human review of the engineer-handoff doc |
+| **Stack ADR sign-off** | PAUSED unless `--auto-sign-stack` flag (default off) |
+
+## CLI flags
+
+| Flag | Default | Meaning |
+|---|---|---|
+| `--feature <name>` | (required) | Feature being implemented |
+| `--max-cost-usd <n>` | 20 | Hard ceiling — PAUSED on hit |
+| `--max-wall-clock-hours <n>` | 6 | Hard ceiling — PAUSED on hit |
+| `--phases <subset>` | all | Run subset (e.g. `P5,P6`) |
+| `--mode <slow\|fast\|auto>` | auto | Slow = wait for human at every phase; fast = skip optional gates |
+| `--on-failure <pause\|abort\|continue-with-warning>` | pause | What to do on a failure |
+| `--no-skeptic` | false | Debug only — disable Skeptic gates |
+
+## A typical auto-mode session
+
+```
+$ bequite auto run --feature "add SMS reminders" --max-cost-usd 5
+
+[INIT] Session a3f12c... starting on feature: add SMS reminders
+[INIT] Loaded Memory Bank (6 files), active doctrines (default-web-saas, ai-automation), Constitution v1.3.0
+[P0]   Discovery interview... (skipped — existing project; using activeContext.md)
+[P1]   Stack decision... (skipped — existing ADRs; checking freshness)
+[P1]   bequite freshness on Twilio + Resend + Inngest... ✓ all fresh
+[P2]   Planning + contracts...
+       multi-model planning would activate here, but flag --mode=fast → skipping
+       Generated specs/sms-reminders/{spec,plan}.md
+[P2]   Skeptic kill-shot: "What happens if Twilio is down at delivery time?"
+       Answer: Inngest dead-letter queue + retry; documented in plan.md
+[P3]   Phases: phase-1 (twilio integration) + phase-2 (booking webhook + cron)
+[P4]   Tasks: 7 total, all atomic (≤5 min)
+[P5]   T-1.1 Add @twilio dep ......................... ✓ (12s, $0.04, dep installed)
+[P5]   T-1.2 Wire env var TWILIO_AUTH_TOKEN .......... ✓ ( 8s, $0.03)
+[P5]   T-1.3 Implement sendSms() helper .............. ✓ (24s, $0.09)
+       Operational completeness: build refresh ✓ typecheck ✓ unit test ✓
+[P5]   T-1.4 Wire booking webhook .................... ✓ (31s, $0.12)
+[P5]   T-1.5 Implement reminder cron ................. ✓ (28s, $0.10)
+[P5]   T-1.6 Add Playwright walks .................... ✓ (45s, $0.16)
+[P5]   T-1.7 Update HANDOFF .......................... ✓ (15s, $0.05)
+[P6]   bequite verify ................................. ✓ (47s)
+       lint ✓ typecheck ✓ unit ✓ playwright ✓ axe ✓ smoke ✓ audit ✓
+       17 receipts emitted; 17 signatures verified; chain green
+[P7]   bequite handoff ................................ ✓
+       PAUSED for first HANDOFF generation review.
+       Read: HANDOFF.md
+       Approve with: bequite auto resume a3f12c...
+
+Total: 7 tasks, $0.59, 4m 30s, 17 receipts emitted ✓ signed ✓
+```
+
+You read HANDOFF.md, optionally edit, and:
+
+```bash
+bequite auto resume a3f12c
+```
+
+→ DONE.
+
+## Heartbeat
+
+During long phases (P5, P6), auto-mode writes a heartbeat marker into `activeContext.md` every 5 minutes:
+
+```
+<!-- auto-mode heartbeat 2026-05-10T14:23:01Z session a3f12c... phase P5 -->
+```
+
+So you can run `bequite memory show activeContext` from another terminal at any time to see what's in flight.
+
+## Resume from anywhere
+
+```bash
+bequite auto status <session-id>     # show current state
+bequite auto resume <session-id>     # resume after BLOCKED / PAUSED
+```
+
+`resume` clears the BLOCKED/PAUSED markers, resets the failure counter, advances to the next phase after the last completed.
+
+## Idempotency
+
+- `bequite auto run` for a feature already in flight detects the conflict (via `detect_double_commit`) and refuses, returning the conflicting session_id.
+- Phases already completed in a session don't re-run on resume.
+
+## Parallel-task fan-out (v0.10.7+)
+
+When ScrumMaster (P4) marks tasks as `parallel: true` in `tasks.md`, BeQuite checks the AkitaOnRails 2026 N>5 threshold:
+
+- **≤5 parallel-eligible tasks** → solo frontier model (no fan-out; coupled tasks lose to solo per benchmark)
+- **>5 parallel-eligible tasks AND each task is independent** → fan out to subagents
+
+This is automatic. You don't need to think about it.
+
+## What auto-mode does NOT do
+
+- ❌ Skip Phase 0 research (even on existing projects, P0 reads the Memory Bank)
+- ❌ Silently change doctrines mid-run (a doctrine swap requires an ADR + your approval)
+- ❌ Bypass hooks under any flag (the brief was explicit; auto-mode keeps that contract)
+- ❌ Generate marketing or press content without a pause
+- ❌ Run any one-way-door operation without explicit human approval
+
+## When auto-mode breaks
+
+```bash
+# 1. Inspect
+bequite auto status <session-id>
+
+# 2. Read why it blocked
+cat .bequite/auto-state/<session>.json
+
+# 3. Fix the underlying issue
+#    (cost ceiling? read current_phase.md and decide; banned word? rephrase)
+
+# 4. Resume
+bequite auto resume <session-id>
+```
+
+If you can't fix it, run `bequite recover` to generate a paste-able recovery prompt for a fresh session.
+
+## Cost expectations
+
+- A small feature (1-3 tasks): $0.20-$1.00
+- A medium feature (5-10 tasks): $1-$5
+- A large feature (20+ tasks): $5-$15
+- An entire P0 → P7 from-scratch project: $20-$100 depending on size
+
+The cost ceiling defaults to $20 per session. Increase via `--max-cost-usd` if you know the work is worth it.
+
+## Cross-references
+
+- [Quickstart](/docs/quickstart) — manual mode first; auto-mode after
+- [Multi-model planning](/docs/multi-model-planning) — auto-mode integrates this at P2
+- [Troubleshooting](/docs/troubleshooting) — when auto-mode breaks
+- [From scratch](/docs/from-scratch) — manual workflow if you prefer step-by-step control

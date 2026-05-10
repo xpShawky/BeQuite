@@ -8,6 +8,25 @@ Full sub-version roadmap (`v0.1.0` → `v1.0.0`) lives in `docs/HOW-IT-WORKS.md`
 
 ---
 
+## [0.10.5] — 2026-05-10
+
+### Added — Multi-Model Planning (manual-paste working) per ADR-012
+
+- **`cli/bequite/multi_model.py`** (~310 lines) — `scaffold_run` (creates `docs/planning_runs/RUN-<datetime>/`), `render_plan_prompt` (per-model role-flavored prompt with brief + doctrines + Constitution version), `render_judge_prompt`, `parse_plan_sections` (coarse keyword-based section extraction), `compare_plans` (per-section agreement / risk / per-model recommendation), `render_comparison_md`, `render_final_plan`. CLI: `python -m bequite.multi_model {scaffold,compare,merge}`.
+- **`cli/bequite/providers/manual_paste.py`** — ManualPasteProvider conforming to v0.8.0 AiProvider Protocol. `complete()` writes prompt to file + polls for response (sync) or returns `awaiting_user` (async). `is_available()` always True; cost always $0 (subscription human-cost, not API).
+- **`tests/integration/multi_model/test_multi_model_smoke.py`** — 12 tests: prompt rendering / section parsing / agreement detection (all-mention vs all-omitted) / comparison.md generation / final_plan generation with user_decisions / scaffold_run tree / ManualPasteProvider Protocol conformance / async-mode awaiting / judge prompt / token estimation / slug normalization. **All 12 pass.**
+
+### Changed
+
+- `cli/bequite/__init__.py::__version__` → `0.10.5`. `cli/pyproject.toml::version` → `0.10.5`.
+
+### Notes
+
+- v0.10.5 implements ADR-012 §Part 1 (manual-paste MVP). Direct-API mode lands v0.11.x+ (reuses v0.8.0 router).
+- Combined integration suite: 75 + 12 = **87/87 tests green** on Python 3.14.
+
+---
+
 ## [0.10.0] — 2026-05-10
 
 ### Added — Auto-mode state machine + safety rails + heartbeat

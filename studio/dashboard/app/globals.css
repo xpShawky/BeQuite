@@ -1,0 +1,32 @@
+@import "tailwindcss";
+@import "../../brand/tokens.css";
+
+@theme {
+  --color-gold: #E5B547;
+  --color-gold-bright: #F2C76A;
+  --color-gold-deep: #B8861E;
+  --color-ink: #000000;
+  --color-ink-stage: #0A0A0A;
+  --color-ink-velvet: #141414;
+  --color-ink-edge: #1F1F1F;
+  --color-silver: #D4D4D4;
+  --color-silver-soft: #A3A3A3;
+  --color-silver-dim: #6B6B6B;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--fg);
+  min-height: 100dvh;
+  font-family: var(--font-sans);
+}
+
+::selection { background: var(--gold-primary); color: var(--black-pure); }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--black-stage); }
+::-webkit-scrollbar-thumb { background: var(--black-edge); border-radius: 5px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold-deep); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0ms !important; transition-duration: 0ms !important; }
+}

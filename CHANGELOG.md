@@ -8,6 +8,26 @@ The full sub-version roadmap (`v0.1.0` → `v1.0.0`) lives in `docs/HOW-IT-WORKS
 
 ---
 
+## [0.4.1] — 2026-05-10
+
+### Added
+
+7 BeQuite-unique slash commands at `skill/commands/` (each Markdown with frontmatter + workflow + stop condition + anti-patterns + related-commands):
+
+- `audit.md` — Constitution + Doctrine drift detector. Walks Iron Laws + active Doctrines + ADRs; surfaces violations (block/warn/recommend) with file:line + remediation. Cross-references `posttooluse-audit.sh` (lightweight per-edit subset). Implementation: `cli/bequite/audit.py` (v0.4.2).
+- `freshness.md` — knowledge probe. Verifies stack candidates aren't deprecated / EOL'd / replaced / open-CVE'd / pricing-tier-mismatched / supply-chain-incident-flagged. Per-package: last commit < 6mo + fresh release + no unfixed criticals + license unchanged + maintainer status. 24h cache TTL. Wires into `/bequite.decide-stack` pre-sign mandatory checks. Implementation: `cli/bequite/freshness.py` (v0.4.3).
+- `auto.md` — one-click run-to-completion P0 → P7. State machine: INIT → P0_RESEARCH → ... → DONE with explicit BLOCKED/FAILED/PAUSED states. Per-phase commits + signed receipts. Safety rails: cost ceiling, wall-clock ceiling, 3-failure threshold, banned-word check, hook block (never auto-overridden), one-way doors always pause. Failure replay to `.bequite/replays/`. Heartbeat every 5 min. Implementation: `cli/bequite/auto.py` (v0.10.0).
+- `memory.md` — Memory Bank operations: show / show <file> / show doctrine <name> / show adr <id> / refresh / validate / snapshot / diff. Schema-validates every Memory Bank + state file per the v0.1.0 templates.
+- `snapshot.md` — versioned snapshot to `.bequite/memory/prompts/v<N>/<timestamp>_<phase>_<reason>/` per Article III phase-end discipline. Auto-fires at end-of-phase + before one-way doors + on Stop with non-trivial work + on `bequite release`.
+- `cost.md` — token + dollar receipts roll-up. Per-phase / per-persona / per-day / per-feature breakdowns. Anomaly detection (>2× routing.json estimate; >1.5× rolling-7-day avg; cache-hit ratio <50%). Wires into `state/project.yaml::safety_rails.cost_ceiling_usd`. Implementation lands with v0.7.0 receipts.
+- `skill-install.md` — install BeQuite into a host (Claude Code / Cursor 3.0+ / Codex CLI / Gemini CLI / Windsurf / Cline / Kilo Code / Continue.dev / Aider). Detects host; copies skill content to host's discovery path; merges hooks into `.claude/settings.json` without overwriting user customisation; runs per-host smoke test. Implementation: `cli/bequite/skill_install.py` (v0.12.0).
+
+### Notes
+
+19 commands total surface (12 master-aligned in v0.4.0 + 7 unique in v0.4.1). Five commands have implementations that ship in later sub-versions: `audit` (v0.4.2), `freshness` (v0.4.3), `auto` (v0.10.0), `cost` (v0.7.0+), `skill-install` (v0.12.0). The Markdown specs in v0.4.1 commit to the contract those implementations satisfy.
+
+---
+
 ## [0.4.0] — 2026-05-10
 
 ### Added
@@ -188,7 +208,8 @@ Each regulated Doctrine carries a disclaimer: starting points, not substitutes f
 
 This release contains no executable code. It establishes the inviolate base layer (Constitution + Memory Bank + ADR + Doctrine schemas) on which every later sub-version depends.
 
-[Unreleased]: https://github.com/xpshawky/bequite/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/xpshawky/bequite/compare/v0.4.1...HEAD
+[0.4.1]: https://github.com/xpshawky/bequite/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/xpshawky/bequite/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/xpshawky/bequite/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/xpshawky/bequite/compare/v0.2.0...v0.2.1

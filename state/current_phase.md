@@ -7,8 +7,8 @@
 ## Build phase
 
 - **Phase:** `phase-1` — Core domain + CLI (master §23 framing)
-- **Sub-version:** `v0.2.1` (AI automation skill module — committing this turn)
-- **Last green sub-version:** `v0.2.0` (Skill orchestrator; committed + tagged 2026-05-10)
+- **Sub-version:** Just tagged `v0.4.1`. Next: `v0.4.2` (bequite audit Python implementation).
+- **Last green sub-version:** `v0.4.1` (BeQuite-unique commands; committed + tagged 2026-05-10)
 - **Mode:** Safe Mode (master §4)
 - **Active doctrines:** `library-package`, `cli-tool`, `mena-bilingual`
 - **Constitution version:** `v1.0.1`

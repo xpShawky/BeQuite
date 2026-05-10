@@ -6,7 +6,7 @@
 
 ## Current state
 
-- **Sub-version:** `v0.3.0` (Hooks — committing this turn; v0.2.1 tagged)
+- **Sub-version:** v0.4.1 just tagged. Eight sub-versions tagged this session.
 - **Constitution version:** `1.0.1` (amended in v0.1.2; patch bump; additive only — ADR-008-master-merge)
 - **Active doctrines:** `library-package`, `cli-tool`, `mena-bilingual` (BeQuite-itself); 8 Doctrines shipped for downstream projects (`default-web-saas`, `cli-tool`, `ml-pipeline`, `desktop-tauri`, `library-package`, `fintech-pci`, `healthcare-hipaa`, `gov-fedramp`)
 - **Active mode:** Safe Mode (master §4, adopted v1.0.1)
@@ -29,7 +29,9 @@ The 15-sub-version roadmap from the approved plan:
 | v0.1.2 | Master-file merge integration (state/, prompts/, evidence/, CLAUDE.md, AGENTS.md, ADR-008, Constitution v1.0.1) | ✅ tagged 2026-05-10 |
 | v0.2.0 | Skill orchestrator (SKILL.md + 11 personas + routing.json + bequite.config.toml.tpl + skill-install template) | ✅ tagged 2026-05-10 |
 | v0.2.1 | AI automation skill module (ai-automation Doctrine + automation-architect 12th persona + bundled n8n/Make/Zapier/Temporal/Inngest expertise + patterns) | ✅ tagged 2026-05-10 |
-| v0.3.0 | Hooks (10 deterministic-gate shell scripts + template/.claude/settings.json + integration test scaffolding) | 🟡 committing now |
+| v0.3.0 | Hooks (10 deterministic-gate shell scripts + template/.claude/settings.json + integration test scaffolding) | ✅ tagged 2026-05-10 |
+| v0.4.0 | Slash commands wave 1 (12 master-aligned: discover, research, decide-stack, plan, implement, review, validate, recover, design-audit, impeccable-craft, evidence, release) | ✅ tagged 2026-05-10 |
+| v0.4.1 | Slash commands wave 2 (7 BeQuite-unique: audit, freshness, auto, memory, snapshot, cost, skill-install) | ✅ tagged 2026-05-10 |
 | v0.3.0 | Hooks (deterministic gates) | pending |
 | v0.4.0 | Slash commands wave 1 (Spec-Kit-extends, 9 commands) | pending |
 | v0.4.1 | Slash commands wave 2 (BeQuite-adds, 9 commands) | pending |

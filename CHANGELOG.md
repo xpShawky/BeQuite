@@ -4,7 +4,48 @@ All notable changes to BeQuite are documented here. Format follows [Keep a Chang
 
 ## [Unreleased] — tracking toward v1.0.0 + v2.0.0-alpha.1
 
-v0.16.0 begins **Layer 2 Studio Edition** work alongside the v1.0.0 review pause. Ahmed reviews everything before tagging v1.0.0 (Layer 1 Harness final) + v2.0.0-alpha.1 (Studio Edition first pre-release).
+v0.17.0 ships the deep vibecoder tutorials + docs route + cinematic Chapter primitive + R3F starfield. v0.17.5 (3D astronaut GLB via Blender) deferred — Blender's MCP add-on is timing out at `localhost:9876`. Ahmed reviews before tagging v1.0.0 (Layer 1 Harness final) + v2.0.0-alpha.1 (Studio Edition first pre-release).
+
+---
+
+## [0.17.0] — 2026-05-10
+
+### Added — Vibecoder tutorials + docs route + cinematic primitives
+
+**6 deep MDX tutorials** at `studio/marketing/content/docs/`:
+
+- **`quickstart.mdx`** (~250 lines) — zero to first verified feature in 10 minutes. No prior CLI experience required. Install → init → multi-model planning → implement → verify → first signed receipt.
+- **`from-scratch.mdx`** (~290 lines) — complete worked example (salon-bookings). All seven phases with realistic time + cost expectations + what-you-avoided-by-discipline.
+- **`retrofit.mdx`** (~270 lines) — installing BeQuite into an existing project. Survey → init `--retrofit` → audit → freshness → small feature → gradual Doctrine adoption. Common retrofit pain points table.
+- **`multi-model-planning.mdx`** (~290 lines) — making Claude + ChatGPT think together via manual-paste mode (ToS-clean). 5 collaboration modes (Parallel / Specialist / Debate / Judge / Red-Team). Cost expectations.
+- **`auto-mode.mdx`** (~270 lines) — one-click P0 → P7. 8 safety rails. CLI flags. Heartbeat. Resume. Idempotency. Parallel-task fan-out. Recovery runbook.
+- **`troubleshooting.mdx`** (~280 lines) — vibecoder pain points + recovery. "command not found" / hooks blocking / weasel words / Iron Law X failures / verify red gates / undo last change / stuck auto-mode / lost session / multi-model paste fatigue.
+
+**Docs route in Next.js App Router:**
+
+- `studio/marketing/lib/docs.ts` — reads MDX from `content/docs/`, parses frontmatter via `gray-matter`.
+- `studio/marketing/app/docs/layout.tsx` — sticky sidebar + content area.
+- `studio/marketing/app/docs/page.tsx` — index card grid.
+- `studio/marketing/app/docs/[slug]/page.tsx` — per-tutorial page using `<MDXRemote>` with brand-styled components (gold links, ink-stage code blocks, silver text, prev/next navigation footer).
+- `studio/marketing/components/DocsSidebar.tsx` — sticky left sidebar with active-link highlight.
+
+**Cinematic primitives:**
+
+- `studio/marketing/components/Chapter.tsx` — pinned-scroll chapter wrapper using `useScroll` + `MotionValue<number>` render-prop pattern (Apple's macbook-pro frame-by-frame style, drop-in 3D-ready).
+- `studio/marketing/components/three/Starfield.tsx` — R3F particle starfield (800 gold motes drifting through 3D space). Respects `prefers-reduced-motion: reduce`.
+
+**Nav update:** "Docs" link added; "Get started" CTA → `/docs/quickstart`.
+
+### Changed
+
+- `cli/bequite/__init__.py::__version__` → `0.17.0`. `cli/pyproject.toml::version` → `0.17.0`.
+- `studio/marketing/package.json` adds `next-mdx-remote ^5.0.0` + `gray-matter ^4.0.3`.
+
+### Notes
+
+- Marketing site **boots locally** with docs route working: `cd studio/marketing && pnpm install && pnpm dev` → http://localhost:3000/docs.
+- v0.17.5 (3D astronaut GLB via Blender pipeline) **deferred** — Blender's MCP add-on at `localhost:9876` is accepting the TCP connection but the Python addon isn't responding (timeout, not refused). The Studio scaffold is 3D-ready (R3F + drei installed; `Chapter` primitive accepts a 3D scene drop-in) — the moment Blender's MCP becomes responsive, v0.17.5 is a single iteration away.
+- Combined integration suite still 125/125 (Layer-1 Python tests; the marketing site's own test suite lands v0.17.x+).
 
 ---
 

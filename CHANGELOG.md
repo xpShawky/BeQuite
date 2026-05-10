@@ -8,6 +8,25 @@ Full sub-version roadmap (`v0.1.0` → `v1.0.0`) lives in `docs/HOW-IT-WORKS.md`
 
 ---
 
+## [0.12.0] — 2026-05-10
+
+### Added — Per-host adapters (universal entry + 9 hosts)
+
+- **`template/AGENTS.md.tpl`** — Linux Foundation Agentic AI Foundation universal entry for fresh `bequite init` projects. References Constitution + Memory Bank + state/recovery + active Doctrines + banned weasel words + per-host extension table.
+- **`template/.cursor/rules/bequite-constitution.mdc.tpl`** — Cursor-specific rules file with `alwaysApply: true` + Iron Laws summary + required reads.
+- **`cli/bequite/skill_install.py`** (~125 lines) — host detection + per-host config installer. 9 supported hosts: `claude-code` (CLAUDE.md), `cursor` (.cursor/rules/), `codex` (.codex/AGENTS.md), `cline` (.clinerules/), `kilo` (.kilocode/), `continue` (.continuerules/), `aider` (.aider/AGENTS.md), `windsurf` (.windsurf/cascades/), `gemini` (.gemini/memory.md). CLI: `python -m bequite.skill_install detect` (probes which hosts are present) + `install [--host <name>]` (writes config; idempotent).
+- **`tests/integration/skill_install/test_skill_install_smoke.py`** — 9 tests covering host registry / detect for each host / install creates file / install idempotent / unknown host raises / content includes banned-words. **All 9 pass.**
+
+### Changed
+
+- Versions bumped to `0.12.0`.
+
+### Notes
+
+- Combined integration suite: 108 + 9 = **117/117 tests green** on Python 3.14.
+
+---
+
 ## [0.11.0] — 2026-05-10
 
 ### Added — MENA bilingual Doctrine + RTL walkthrough

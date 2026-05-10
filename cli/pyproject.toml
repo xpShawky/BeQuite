@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "bequite"
-version = "1.0.1"
+version = "1.0.2"
 description = "Project harness that turns Claude (and peer coding agents) into a senior tech-lead. Spec-driven, layered Constitution + Doctrines, deterministic gates, reproducibility receipts (chain-hashed + ed25519-signed), multi-model routing (Anthropic + OpenAI + Google + DeepSeek + Ollama with cost-aware fallback), knowledge-freshness probe, MENA-bilingual support, Frontend Quality Module."
 readme = "README.md"
 requires-python = ">=3.11"

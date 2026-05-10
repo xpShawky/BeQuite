@@ -77,7 +77,10 @@ if ($Studio) {
     Write-Host "  pnpm:   $(pnpm --version)"
   }
   if (-not (Test-Command bun)) {
-    Write-Host "  bun:    not on PATH (needed for Studio API). Install via 'powershell -c \"irm bun.sh/install.ps1 | iex\"'." -ForegroundColor Yellow
+    Write-Host '  bun:    not on PATH (needed for Studio API).' -ForegroundColor Yellow
+    Write-Host '          Install with this one-liner:' -ForegroundColor Yellow
+    Write-Host '            powershell -c "irm bun.sh/install.ps1 | iex"' -ForegroundColor Yellow
+    Write-Host '          Then close + reopen PowerShell to refresh PATH.' -ForegroundColor Yellow
   } else {
     Write-Host "  Bun:    $(bun --version)"
   }

@@ -6,6 +6,30 @@ All notable changes to BeQuite are documented here. Format follows [Keep a Chang
 
 ---
 
+## [1.0.2] — 2026-05-11 — Studio install-script PowerShell quote-escape fix
+
+### Fixed
+
+- **`scripts/install.ps1 -Studio` crashed on Windows with `"The module 'iex' could not be loaded"`.** Line 80 used `\"` to try to escape double quotes inside a double-quoted PowerShell string — but PowerShell uses backtick (`` ` ``) for escapes, NOT backslash. `\` is a literal character; the `"` immediately after it terminated the string. PowerShell then parsed the rest (`irm bun.sh/install.ps1 | iex...`) as actual commands and tried to invoke `iex` as a cmdlet, failing on auto-loading. Rewrote the three "Bun not on PATH" hint lines using **single-quoted strings** (no expansion, no escaping required for double quotes inside).
+
+  This was caught by fresh-clone testing on Windows; would NOT have shown up on macOS / Linux (`scripts/install.sh` is unaffected — it never used the broken escape).
+
+### Verified
+
+The CLI install path (`.\scripts\install.ps1` without `-Studio`) was already verified to work end-to-end in v1.0.1. The `-Studio` branch now also runs cleanly through the prereq-check section.
+
+### Changed
+
+- `cli/bequite/__init__.py::__version__` → `1.0.2`.
+- `cli/pyproject.toml::version` → `1.0.2`.
+- `scripts/install.ps1` line 80 — three single-quoted lines replace one broken double-quoted line.
+
+### Honest reporting per Article VI
+
+I wrote the install script in this session and pushed it as v1.0.1 without running it on Windows. The CLI-only path happened to work because no broken-escape line was hit; the `-Studio` path tripped the bug on its first real-world use. This is exactly the kind of Iron Law X failure ("did you actually run the script you just shipped?") that the doctrine targets. Verification step now added: on every install-script change, run both `.\install.ps1` and `.\install.ps1 -Studio` against a fresh `Test-bequite\` folder before pushing.
+
+---
+
 ## [1.0.1] — 2026-05-11 — Fresh-clone install fixes (critical)
 
 **Article VI failure caught by fresh-clone testing.** Two install-path bugs were silently shipping since v0.5.0 and v0.20.0 respectively. Every CHANGELOG since then that claimed "the CLI is installable via `pip install -e ./cli`" was technically false — the path errored from a clean clone. v1.0.1 fixes both, adds verified one-command install scripts, and ships a proper `docs/INSTALL.md`.
@@ -1361,7 +1385,8 @@ Each regulated Doctrine carries a disclaimer: starting points, not substitutes f
 
 This release contains no executable code. It establishes the inviolate base layer (Constitution + Memory Bank + ADR + Doctrine schemas) on which every later sub-version depends.
 
-[Unreleased]: https://github.com/xpShawky/BeQuite/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/xpShawky/BeQuite/compare/v1.0.2...HEAD
+[1.0.2]: https://github.com/xpShawky/BeQuite/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/xpShawky/BeQuite/compare/v2.0.0-alpha.1...v1.0.1
 [2.0.0-alpha.1]: https://github.com/xpShawky/BeQuite/compare/v1.0.0...v2.0.0-alpha.1
 [1.0.0]: https://github.com/xpShawky/BeQuite/compare/v0.20.5...v1.0.0

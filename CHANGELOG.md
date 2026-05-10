@@ -4,7 +4,52 @@ All notable changes to BeQuite are documented here. Format follows [Keep a Chang
 
 ## [Unreleased] — tracking toward v1.0.0
 
-Full sub-version roadmap (`v0.1.0` → `v1.0.0`) lives in `docs/HOW-IT-WORKS.md` (v0.14.0) and the approved plan at `.bequite/memory/prompts/v1/`. Layer 2 (Studio) is planned for `v2.0.0+`. v0.9.2 reshape inserted v0.10.5 + v0.10.6. Now 8 sub-versions remain to v1.0.0.
+v0.15.0 was the last sub-version before v1.0.0 final release. Ahmed reviews everything before tagging v1.0.0.
+
+---
+
+## [0.15.0] — 2026-05-10
+
+### Added — Release engineering
+
+- **`.github/workflows/ci.yml`** — five-job pipeline runs on every push + PR + manual: (1) **lint** (ruff + mypy advisory), (2) **test** matrix across Python 3.11/3.12/3.13/3.14 running all 12 integration test files (125+ tests total), (3) **audit** (`bequite audit` + `bequite freshness` self-check; eat-our-own-food), (4) **license-audit** (osv-scanner advisory), (5) **pr-summary** comments PR with status grid.
+- **`.github/workflows/release.yml`** — fires on tag `v*.*.*`. Three jobs: (1) **validate** (tag matches `cli/pyproject.toml::version` + full integration suite green), (2) **publish-pypi** via PyPI Trusted Publisher OIDC (no long-lived secrets), (3) **publish-github** (extracts release notes from CHANGELOG between `## [VERSION]` markers; creates GitHub Release with attached LICENSE + CHANGELOG). npm thin shell job present but `if: false` (gated until Ahmed provisions npm account).
+- **`.github/workflows/commitlint.yml`** — enforces Conventional Commits on every PR via `@commitlint/config-conventional`.
+- **`.commitlintrc.json`** — Conventional Commits rules.
+
+### Changed
+
+- Versions bumped to `0.15.0` (the last sub-version before v1.0.0).
+
+### Notes
+
+- Combined integration suite still 125/125 (v0.15.0 is CI-pipeline only; no new application code).
+- Ahmed reviews everything before the final v1.0.0 tag.
+- One-way doors that auto-mode never auto-runs (per Constitution Article IV): PyPI publish, npm publish, git push to main, force push, terraform apply, DB migrations against shared DBs. release.yml requires a human-pushed tag to fire.
+
+---
+
+## [0.14.0] — 2026-05-10
+
+### Added — Documentation (8 docs + 2 templates)
+
+- **`docs/README.md`** — navigation for the documentation tree.
+- **`docs/QUICKSTART.md`** — 5-minute path from zero to working project.
+- **`docs/HOW-IT-WORKS.md`** — architecture overview. Two-layer (Harness + Studio). Seven phases. Iron Laws. 13 Doctrines. 14 hooks. Receipts. Multi-model. CLI auth. Auto-mode.
+- **`docs/DOCTRINE-AUTHORING.md`** — fork or write a new Doctrine.
+- **`docs/HOSTS.md`** — per-host install + behavior notes for 9 hosts.
+- **`docs/AUTONOMOUS-MODE.md`** — auto-mode CLI flags + state machine + 8 safety rails + heartbeat + idempotency + recovery runbook.
+- **`docs/SECURITY.md`** — threat model + OWASP Web Top 10 + OWASP LLM Top 10 (2025) coverage + Article IX cybersecurity + Doctrine vibe-defense + vulnerability reporting.
+- **`docs/MAINTAINER.md`** — release process + PyPI account ownership + npm thin shell + ed25519 signing keys + license audit + contributor checklist.
+- **`template/HANDOFF.md.tpl`** — engineer + non-engineer handoff template.
+
+### Changed
+
+- Versions bumped to `0.14.0`.
+
+### Notes
+
+- Combined integration suite still 125/125 (v0.14.0 is docs-only).
 
 ---
 

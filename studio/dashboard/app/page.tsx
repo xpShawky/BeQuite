@@ -4,11 +4,15 @@ import { CommandConsole } from "@/components/CommandConsole";
 import { PlanTasksTests } from "@/components/PlanTasksTests";
 import { AgentPanel } from "@/components/AgentPanel";
 import { ReceiptsList } from "@/components/ReceiptsList";
-import { loadProject } from "@/lib/projects";
+import { loadProject, getLoaderConfig } from "@/lib/projects";
 
-export default function DashboardHome() {
-  // Server-component reads from .bequite/ on every request.
-  const snapshot = loadProject();
+export default async function DashboardHome() {
+  // Server-component reads project state on every request. The dispatcher
+  // in `lib/projects` picks filesystem or HTTP mode based on
+  // BEQUITE_DASHBOARD_MODE (v2.0.0-alpha.1 candidate). Either way the
+  // returned shape is the same.
+  const snapshot = await loadProject();
+  const loaderConfig = getLoaderConfig();
 
   return (
     <div className="flex h-screen flex-col bg-ink">
@@ -50,9 +54,24 @@ export default function DashboardHome() {
               <span>Doctrines: {snapshot.doctrineList.join(", ") || "none active"}</span>
               <span>·</span>
               <span>Last green: {snapshot.lastGreenTag ?? "(none)"}</span>
+              <span>·</span>
+              <span
+                className={
+                  loaderConfig.mode === "http"
+                    ? "rounded border border-gold-deep px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-gold-bright"
+                    : "rounded border border-ink-edge px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-silver-dim"
+                }
+                title={
+                  loaderConfig.mode === "http"
+                    ? `HTTP mode — API ${loaderConfig.apiBase}${loaderConfig.hasToken ? " (token)" : " (no token)"}`
+                    : "Filesystem mode — direct .bequite/ reads"
+                }
+              >
+                {loaderConfig.mode === "http" ? "HTTP" : "FS"}
+              </span>
             </div>
             <div>
-              <span className="font-mono">BeQuite Studio v0.18.0</span>
+              <span className="font-mono">BeQuite Studio v2.0.0-alpha.1 (candidate)</span>
             </div>
           </footer>
         </main>

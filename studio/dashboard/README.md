@@ -2,17 +2,40 @@
 
 > The Studio operations console. Visual layout matches `../brand/raw/06-studio-dashboard-mock.png`. Reads `.bequite/` from any BeQuite-managed project.
 >
-> **v0.18.0 = working app** (filesystem-backed; reads receipts + state + Memory Bank). **v0.19.0** swaps filesystem for HTTP calls to `../api/` for multi-user / cloud operation.
+> **v0.18.0** = filesystem-mode (direct reads). **v2.0.0-alpha.1 candidate** = dual-mode dispatcher — filesystem OR HTTP via `BEQUITE_DASHBOARD_MODE` env. Server-component callers see the same `ProjectSnapshot` shape either way.
 
 ## Run
 
 ```bash
 cd studio/dashboard
-pnpm install
+pnpm install      # or: npm install
 pnpm dev          # → http://localhost:3001
 ```
 
 By default the dashboard targets `../..` (the BeQuite repo itself) — perfect for dogfooding.
+
+## Loader modes (v2.0.0-alpha.1 candidate)
+
+| Env | Default | Behavior |
+|---|---|---|
+| `BEQUITE_DASHBOARD_MODE=filesystem` | yes | Server components read `.bequite/` directly from disk. Single-machine dev. |
+| `BEQUITE_DASHBOARD_MODE=http` | no | Server components fetch from `BEQUITE_API_BASE` (default `http://localhost:3002`). Required for multi-user/cloud. |
+| `BEQUITE_API_BASE=http://...` | `http://localhost:3002` | Base URL when in HTTP mode. |
+| `BEQUITE_API_TOKEN=<hex>` | (none) | Bearer token when the API runs with `BEQUITE_AUTH_MODE=token`. Omit in local-dev mode. |
+
+The footer shows the active mode as a chip (`FS` or `HTTP`) so you always know what the page rendered against.
+
+### HTTP-mode quickstart
+
+```bash
+# Terminal 1 — start the API
+cd studio/api
+bun install && bun run src/index.ts   # → http://localhost:3002 (local-dev auth)
+
+# Terminal 2 — start the dashboard in HTTP mode
+cd studio/dashboard
+BEQUITE_DASHBOARD_MODE=http pnpm dev  # → http://localhost:3001 talks to :3002
+```
 
 ## Information architecture (matches image 6)
 
@@ -39,7 +62,9 @@ By default the dashboard targets `../..` (the BeQuite repo itself) — perfect f
        v0.18.0 footer: Constitution v1.3.0 · Doctrines · Last green tag
 ```
 
-## What it reads (v0.18.0 filesystem-mode)
+## What it reads
+
+### Filesystem mode (`BEQUITE_DASHBOARD_MODE=filesystem`, default)
 
 - `<project>/.bequite/memory/constitution.md` — Constitution version
 - `<project>/.bequite/memory/projectbrief.md` — project name
@@ -49,7 +74,17 @@ By default the dashboard targets `../..` (the BeQuite repo itself) — perfect f
 - `<project>/state/current_phase.md` — current phase
 - `<project>/state/recovery.md` — last green tag + summary
 
-All reads are **server-component synchronous** — `lib/projects.ts::loadProject(rootDir)` is called from `app/page.tsx`. No client-side JS for data loading in v0.18.0.
+### HTTP mode (`BEQUITE_DASHBOARD_MODE=http`)
+
+The dashboard hits these endpoints on `studio/api/`:
+
+- `GET /healthz` — reachability probe
+- `GET /api/v1/auth/status` — auth mode badge
+- `GET /api/v1/projects/snapshot?path=<workspace>` — full `ProjectSnapshot`
+- `GET /api/v1/projects` — project list
+- `GET /api/v1/receipts?path=<workspace>` — receipt list (delivered as part of the snapshot today; separate call lands when receipts pagination ships)
+
+Server components `await loadProject()` in either mode — the return shape is identical. The HTTP loader degrades gracefully on API unreachability (returns a sentinel snapshot with `recoveryPreview` describing the failure rather than throwing into the render path).
 
 ## Stack
 
@@ -77,17 +112,20 @@ studio/dashboard/
 │   ├── AgentPanel.tsx     ← right-side astronaut + status message
 │   └── ReceiptsList.tsx   ← signed-receipt rows from .bequite/receipts/
 ├── lib/
-│   └── projects.ts        ← filesystem loader (loadProject + listKnownProjects)
+│   ├── projects.ts             ← dual-mode dispatcher (await loadProject())
+│   ├── projects-types.ts       ← shared ProjectSnapshot types
+│   ├── projects-filesystem.ts  ← filesystem reader
+│   ├── projects-http.ts        ← HTTP reader (fetch via api-client)
+│   └── api-client.ts           ← StudioApiClient (Bearer auth, reachability probe)
 └── public/brand/          ← astronaut + logo
 ```
 
-## What's still missing (lands v0.18.5+ / v0.19.0)
+## What's still missing (lands v0.20.0 / v2.0.0)
 
-- **Live terminal stream (xterm.js)** when authenticated.
-- **HTTP to `../api/`** instead of filesystem (so the dashboard can read remote projects, not just local).
-- **WebSocket heartbeat** for auto-mode live updates.
-- **Project picker** (currently hardcoded to `../..`).
-- **Authenticated views** (per ADR-011 Phase-3 device-code auth).
+- **Live terminal stream (xterm.js)** when authenticated (v0.20.0).
+- **WebSocket heartbeat** for auto-mode live updates (v0.20.0).
+- **Project picker** (currently hardcoded to `../..`) (v2.0.0).
+- **Authenticated views** with per-project ACL (per ADR-011 Phase-3 + ADR-015) (v0.20.x+).
 - **3D astronaut** in the AgentPanel (post-Blender pipeline; see `../marketing/components/three/AgentCharacter3D.tsx`).
 
 ## Cross-references

@@ -4,7 +4,44 @@ All notable changes to BeQuite are documented here. Format follows [Keep a Chang
 
 ## [Unreleased] — tracking toward v1.0.0 + v2.0.0-alpha.1
 
-v0.19.5 ships the **Studio API auth layer + append-only write surface** — Bearer-token middleware with three modes (local-dev / token / device-code), POST receipts (idempotent on content-hash), POST snapshots (refuses overwrite), Iron Law X attestation block on every write. ADR-015 documents the auth + write surface. **Critical fix:** v0.19.5 also recovered three Studio `lib/` files silently dropped by an over-broad `.gitignore` rule that affected v0.17.0 + v0.18.0 + v0.19.0 — all three Studio apps now actually boot from a fresh clone (Article VI honest reporting). v0.17.5 (3D astronaut GLB via Blender) still parked. v2.0.0-alpha.1 next: swap dashboard `lib/projects.ts` from filesystem-mode to HTTP-mode against `studio/api/`. Ahmed reviews before tagging v1.0.0 (Layer 1 Harness final) + v2.0.0-alpha.1 (Studio Edition first pre-release).
+### v2.0.0-alpha.1 CANDIDATE — dashboard dual-mode loader (filesystem ↔ HTTP)
+
+**Status: shipped to main, NOT tagged.** Awaiting Ahmed's explicit go/no-go on the v2.0.0-alpha.1 tag — the major-version jump signals the Layer-1 Harness (CLI / skill / memory bank) → Layer-2 Studio (HTTP-mode dashboard / API / multi-user-ready) transition and should not be auto-tagged.
+
+**The swap:** `studio/dashboard/lib/projects.ts` is now a dual-mode dispatcher. Server components `await loadProject()` and get the same `ProjectSnapshot` shape whether the underlying mode is filesystem (v0.18.0 default) or HTTP (new — talks to `studio/api/` v0.19.5).
+
+- **`lib/projects.ts`** — dual-mode entry point. Reads `BEQUITE_DASHBOARD_MODE`; defaults to filesystem. Re-exports `ProjectSnapshot` types so all consumers import from one module.
+- **`lib/projects-types.ts`** — shared type definitions for both readers.
+- **`lib/projects-filesystem.ts`** — preserved v0.18.0 logic (verbatim — moved, not changed). Synchronous reader.
+- **`lib/projects-http.ts`** — new HTTP reader. Probes `/healthz` for reachability first; on failure returns a sentinel `ProjectSnapshot` with `recoveryPreview` describing the failure (no thrown errors into the render path).
+- **`lib/api-client.ts`** — `StudioApiClient`. Bearer-auth header support, Next.js `cache` + `next.revalidate` options, `getReachability()` health-check helper.
+- **`app/page.tsx`** — switched to `await loadProject()`. Footer chip surfaces `FS` or `HTTP` so the operator always knows what the page rendered against.
+- **`README.md`** — full HTTP-mode quickstart documented (two-terminal flow: API on :3002, dashboard with `BEQUITE_DASHBOARD_MODE=http` on :3001).
+
+**Env switches:**
+
+```
+BEQUITE_DASHBOARD_MODE  filesystem (default) | http
+BEQUITE_API_BASE        http://localhost:3002 (default)
+BEQUITE_API_TOKEN       <hex>  (omit in local-dev API mode)
+```
+
+**Iron Law X verification (partial):** `cd studio/dashboard && npx tsc --noEmit` returned exit 0 after npm install resolved 353 packages. Full boot + page-render smoke is deferred to the Bun/Next.js dev environment when Ahmed reviews — the dashboard build was not booted in-session.
+
+**Why not auto-tag v2.0.0-alpha.1:** Per Article VI (honest reporting) + the standing commitment in every CHANGELOG entry since v0.16.0 — "Ahmed reviews before tagging v1.0.0 (Layer 1 Harness final) + v2.0.0-alpha.1 (Studio Edition first pre-release)." The work is on main and ready; the major-version jump is Ahmed's decision.
+
+### Recap of recent releases
+
+- **v0.19.5** — Studio API auth (Bearer-token MVP) + append-only writes (receipts + snapshots) + Iron Law X attestation block (per ADR-015). Also: **critical fix** for three Studio `lib/` files silently dropped by an over-broad `.gitignore` rule (Article VI).
+- **v0.19.0** — Studio API back-end (Hono on Bun) — five HTTP endpoints, path-traversal guard.
+- **v0.18.0** — Studio dashboard real implementation (per image 6 mock).
+- v0.17.5 (3D astronaut GLB via Blender) still parked — Blender MCP went from timeout to `Cannot connect`. Scaffold ready (`studio/marketing/public/3d/` + `AgentCharacter3D.tsx` drop-in API).
+
+### Next planned
+
+- **v0.20.0** — WebSocket / SSE for live receipt + cost stream + xterm.js terminal stream for auto-mode.
+- **v0.20.x** — Better-Auth full integration (Doctrine Rule 9; per ADR-011 Phase-3 device-code).
+- **v1.0.0 + v2.0.0-alpha.1** — dual tag after Ahmed's review.
 
 ---
 

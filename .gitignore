@@ -58,6 +58,7 @@ yarn-error.log*
 .turbo/
 .parcel-cache/
 .cache/
+*.tsbuildinfo
 
 # --- Rust / Tauri ---
 target/

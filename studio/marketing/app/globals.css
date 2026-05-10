@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+/* Import the brand tokens (single source of truth from studio/brand/) */
+@import "../../brand/tokens.css";
+
+/* Tailwind v4 theme: surface our brand colors as utility classes */
+@theme {
+  --color-gold-50:  #FBF3E0;
+  --color-gold-100: #F7E5B5;
+  --color-gold-200: #F2D27D;
+  --color-gold-300: #ECC050;
+  --color-gold-bright: #F2C76A;
+  --color-gold:     #E5B547;
+  --color-gold-deep: #B8861E;
+  --color-gold-shadow: #6B4F11;
+
+  --color-ink:        #000000;
+  --color-ink-stage:  #0A0A0A;
+  --color-ink-velvet: #141414;
+  --color-ink-edge:   #1F1F1F;
+
+  --color-silver:      #D4D4D4;
+  --color-silver-soft: #A3A3A3;
+  --color-silver-dim:  #6B6B6B;
+}
+
+/* Set the page background to ink + silver text */
+html, body {
+  background: var(--bg);
+  color: var(--fg);
+  min-height: 100dvh;
+  scroll-behavior: smooth;
+}
+
+/* Mark prefers-reduced-motion explicitly */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0ms !important;
+    transition-duration: 0ms !important;
+  }
+}
+
+/* Custom utilities */
+.text-balance { text-wrap: balance; }
+.text-pretty  { text-wrap: pretty; }
+
+/* Selection color = gold */
+::selection {
+  background: var(--gold-primary);
+  color: var(--black-pure);
+}
+
+/* Scrollbar (subtle, gold accent) */
+::-webkit-scrollbar         { width: 12px; height: 12px; }
+::-webkit-scrollbar-track   { background: var(--black-pure); }
+::-webkit-scrollbar-thumb   { background: var(--black-edge); border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold-deep); }

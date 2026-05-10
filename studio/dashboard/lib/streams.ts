@@ -17,7 +17,7 @@
 
 "use client";
 
-import type { BusEvent } from "./projects-types.js";
+import type { BusEvent } from "./projects-types";
 
 export interface StreamOptions {
   /** API base URL. Default: BEQUITE_API_BASE env or http://localhost:3002 */

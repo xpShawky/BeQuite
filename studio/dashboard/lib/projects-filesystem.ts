@@ -20,7 +20,7 @@ import type {
   PhaseStatus,
   ProjectSnapshot,
   ReceiptSummary,
-} from "./projects-types.js";
+} from "./projects-types";
 
 // Default workspace = the BeQuite repo itself (the dashboard dogfoods)
 const DEFAULT_WORKSPACE = path.resolve(process.cwd(), "..", "..");

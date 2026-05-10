@@ -17,7 +17,7 @@ import type {
   PhaseStatus,
   ProjectSnapshot,
   ReceiptSummary,
-} from "./projects-types.js";
+} from "./projects-types";
 
 export interface ApiClientOptions {
   baseUrl?: string;

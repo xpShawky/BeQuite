@@ -12,8 +12,8 @@
  * server-component render path).
  */
 
-import { StudioApiClient } from "./api-client.js";
-import type { ProjectSnapshot } from "./projects-types.js";
+import { StudioApiClient } from "./api-client";
+import type { ProjectSnapshot } from "./projects-types";
 
 const PHASES_ORDER = [
   { id: "P0", name: "Research" },

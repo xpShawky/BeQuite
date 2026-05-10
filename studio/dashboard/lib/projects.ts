@@ -25,21 +25,21 @@
 import {
   loadProjectFilesystem,
   listProjectsFilesystem,
-} from "./projects-filesystem.js";
-import { loadProjectHttp, listProjectsHttp } from "./projects-http.js";
+} from "./projects-filesystem";
+import { loadProjectHttp, listProjectsHttp } from "./projects-http";
 import type {
   ProjectSnapshot,
   PhaseStatus,
   ReceiptSummary,
   DashboardMode,
-} from "./projects-types.js";
+} from "./projects-types";
 
 export type {
   ProjectSnapshot,
   PhaseStatus,
   ReceiptSummary,
   DashboardMode,
-} from "./projects-types.js";
+} from "./projects-types";
 
 function getDashboardMode(): DashboardMode {
   const raw = (process.env.BEQUITE_DASHBOARD_MODE || "filesystem").toLowerCase();

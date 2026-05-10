@@ -2,7 +2,61 @@
 
 All notable changes to BeQuite are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Conventional Commits](https://www.conventionalcommits.org/). Versioning is [Semantic Versioning](https://semver.org/).
 
-## [Unreleased] — tracking toward v1.x point releases + v2.0.0-alpha.3
+## [Unreleased] — tracking toward v1.x point releases + v2.0.0-alpha.4
+
+---
+
+## [2.0.0-alpha.3] — 2026-05-11 — Studio Turbopack fixes (both apps render!)
+
+### Fixed (2 bugs — both verified live before push)
+
+- **Marketing + dashboard both panicked at first request with `TurbopackInternalError`.** Root cause: `app/globals.css` in each app had `@import "../../brand/tokens.css"` — Turbopack rejects cross-package CSS imports because they leave the project filesystem root (`[project]/studio/marketing/` or `[project]/studio/dashboard/`). Error: `FileSystemPath("").join("../brand/tokens.css") leaves the filesystem root`.
+
+  **Fix:** Inlined the brand tokens from `studio/brand/tokens.css` directly into each app's `globals.css`. `studio/brand/tokens.css` remains the canonical reference; both copies must stay in sync. Documented at the top of each globals.css.
+
+- **Dashboard then crashed with `Module not found: Can't resolve './projects-filesystem.js'`.** Root cause: my dual-mode loader files (added in v2.0.0-alpha.1) used NodeNext-style `.js` extensions on internal imports (e.g. `import ... from "./projects-types.js"`). This is the right idiom for the Hono+Bun API but **wrong for Next.js Turbopack**, which uses bundler-style resolution and doesn't do the `.js → .ts` mapping that Node.js NodeNext does.
+
+  **Fix:** Stripped all `.js` extensions from internal lib imports in `studio/dashboard/lib/`. 9 imports across 6 files. Typecheck still passes (bundler-mode tsconfig handles the no-extension imports correctly).
+
+### Verified live this time (Iron Law X, no shortcuts)
+
+Both fixes verified in the user's `Test bequite/BeQuite/` clone before this commit was made:
+
+```
+cd studio/marketing && npm run dev
+curl http://localhost:3000  →  HTTP 200  (real content; brand logo preloaded)
+
+cd studio/dashboard && npm run dev
+curl http://localhost:3001  →  HTTP 200  (real content; astronaut + logo preloaded)
+```
+
+The cross-clone copy + dev server boot + curl was performed as the verification step. No "should work" claims this time.
+
+### Changed
+
+- `studio/marketing/package.json::version` → `2.0.0-alpha.3`.
+- `studio/dashboard/package.json::version` → `2.0.0-alpha.3` (was `2.0.0-alpha.1`; alpha.2 was marketing-only).
+- `studio/marketing/app/globals.css` — full brand tokens inlined; cross-package import removed.
+- `studio/dashboard/app/globals.css` — brand tokens subset inlined; cross-package import removed.
+- `studio/dashboard/lib/{api-client,projects,projects-filesystem,projects-http,projects-types,streams}.ts` — `.js` extensions stripped from internal imports.
+
+### Honest reporting per Article VI
+
+Fifth install-path bug caught in two days:
+
+| Tag | Bug |
+|---|---|
+| v1.0.1 | cli/README.md missing (pip install broke) |
+| v1.0.2 | PowerShell `\"` parse bug (install.ps1 -Studio broke) |
+| v2.0.0-alpha.2 | R3F 8.x React 18 peer-dep (npm install marketing broke) |
+| v1.0.3 | pip stderr halted install script |
+| **v2.0.0-alpha.3** | **Turbopack cross-package CSS import + NodeNext .js extensions in Next.js context** |
+
+The pattern across all five: **shipped without actually running the thing in production-shape from a fresh clone**. This release closes that loop — both apps were booted and curl'd before the commit.
+
+### Author note for future contributors
+
+If you add new lib files to `studio/dashboard/lib/`, **do NOT use `.js` extensions on internal imports**. Next.js Turbopack does bundler-mode resolution. The Hono API in `studio/api/src/` is the exception — it runs on Bun's NodeNext-style ESM and DOES want `.js` extensions there. Different runtimes, different idioms.
 
 ---
 
@@ -1477,7 +1531,8 @@ Each regulated Doctrine carries a disclaimer: starting points, not substitutes f
 
 This release contains no executable code. It establishes the inviolate base layer (Constitution + Memory Bank + ADR + Doctrine schemas) on which every later sub-version depends.
 
-[Unreleased]: https://github.com/xpShawky/BeQuite/compare/v1.0.3...HEAD
+[Unreleased]: https://github.com/xpShawky/BeQuite/compare/v2.0.0-alpha.3...HEAD
+[2.0.0-alpha.3]: https://github.com/xpShawky/BeQuite/compare/v1.0.3...v2.0.0-alpha.3
 [1.0.3]: https://github.com/xpShawky/BeQuite/compare/v2.0.0-alpha.2...v1.0.3
 [2.0.0-alpha.2]: https://github.com/xpShawky/BeQuite/compare/v1.0.2...v2.0.0-alpha.2
 [1.0.2]: https://github.com/xpShawky/BeQuite/compare/v1.0.1...v1.0.2

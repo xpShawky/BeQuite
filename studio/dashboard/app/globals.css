@@ -1,5 +1,11 @@
 @import "tailwindcss";
 @import "../../brand/tokens.css";
+@import "@xterm/xterm/css/xterm.css";
+
+/* ink-pure for the xterm.js Terminal background (v0.20.5) */
+:root {
+  --color-ink-pure: #0a0a0a;
+}
 
 @theme {
   --color-gold: #E5B547;

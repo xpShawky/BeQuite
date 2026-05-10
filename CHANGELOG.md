@@ -4,11 +4,59 @@ All notable changes to BeQuite are documented here. Format follows [Keep a Chang
 
 ## [Unreleased] — tracking toward v1.0.0 + v2.0.0-alpha.1
 
-v0.20.0 ships the **SSE event-stream layer** — Server-Sent Events for live receipt / cost / phase / activeContext updates from `studio/api/` to `studio/dashboard/`, with reference-counted file watchers, 30-second heartbeats, and a `LiveIndicator` client component that triggers throttled `router.refresh()` on state-change events. The dashboard now reflects state changes without manual page reload (Iron Law X step 7 = "no" by construction).
+v0.20.5 ships the **terminal exec surface** — POST `/api/v1/terminal/exec` + SSE stream + xterm.js renderer in the dashboard, allow-list-gated to `bequite` and `bq` only per ADR-016. Iron Law X attestation on every exec start. Per-execution receipt to `.bequite/receipts/<sha>-EXEC.json`. The dashboard's CommandConsole is now a **live terminal** in HTTP mode; static mock preserved for filesystem mode.
 
-**v2.0.0-alpha.1 candidate** still on main at `a35dbfc` — dashboard dual-mode loader (filesystem ↔ HTTP). Awaiting Ahmed's explicit go/no-go on the major-version tag.
+**v1.0.0 + v2.0.0-alpha.1** are scheduled to tag next — Ahmed authorized "continue until finishing all things and give me final version (without 3d model from blender)." v0.17.5 (Blender 3D astronaut) is permanently descoped per that direction; everything else lands.
 
-v0.17.5 (3D astronaut GLB) still parked — Blender MCP unresponsive. v0.20.5 next: bidirectional WebSocket terminal stream for auto-mode (xterm.js + node-pty + RoE gates per Article IV — first endpoint that actually executes commands). Ahmed reviews before tagging v1.0.0 (Layer 1 Harness final) + v2.0.0-alpha.1 (Studio Edition first pre-release).
+---
+
+## [0.20.5] — 2026-05-11
+
+### Added — Terminal exec + SSE stream + xterm.js renderer (per ADR-016)
+
+**The first endpoint that executes user-supplied commands.** Article IV + Article IX demand explicit Rules of Engagement; ADR-016 documents the full RoE.
+
+**API side (`studio/api/`):**
+
+- **`src/lib/exec-allowlist.ts`** — Hardcoded allow-list (`bequite`, `bq`). No env override; no config flag. Widening requires an ADR amendment + code change. Includes `parseCommandLine()` (whitespace-only splitter; never honors quotes — `spawn` runs with `shell: false` so quoting wouldn't apply anyway) and `checkAllowed()` with binary-on-PATH enforcement (rejects path separators).
+- **`src/lib/exec-session.ts`** — `startSession()` / `cancelSession()` / `getSession()` / `subscribe()`. Owns one `ChildProcess` per session. 10MB ring buffer; subscriber fanout (line-by-line); auto SIGTERM-then-SIGKILL on cancel/timeout (5-second grace); session GC 5 minutes after exit.
+- **`src/routes/terminal.ts`** — Five endpoints:
+  - `POST /api/v1/terminal/exec` — start a command. Requires `X-BeQuite-RoE-Ack: ADR-016` header (per ADR-016 §11; `412` if missing). Allow-list check (`403` on rejection). cwd guard (`403` on path-traversal). Iron Law X attestation block on success.
+  - `GET /api/v1/terminal/sessions` — list active sessions.
+  - `GET /api/v1/terminal/sessions/:id` — session status.
+  - `GET /api/v1/terminal/sessions/:id/stream` — SSE of stdout/stderr lines + exit event. Replays ring-buffer content on subscribe so late-joiners see history. 30-second heartbeat. Clean teardown on client abort.
+  - `POST /api/v1/terminal/sessions/:id/cancel` — SIGTERM + auto-SIGKILL after 5s.
+- **Per-execution receipt** at `<workspace>/.bequite/receipts/<sha>-EXEC.json`. Schema includes `exec.binary`, `exec.args`, `exec.cwd`, `exec.session_id`, `exec.exit_reason`, `exec.duration_ms`, `exec.stdout_sha256`, `exec.stderr_sha256`, `exec.output_truncated`, `identity`, `adr: ADR-016`. Full audit trail of every dashboard-issued command.
+- **Endpoint catalog** in `GET /` updated with `authenticated_terminal` group.
+
+**Dashboard side (`studio/dashboard/`):**
+
+- **`lib/terminal.ts`** — Client-side wrapper. `execCommand()` POSTs with the RoE-Ack header + auth. `streamSession()` opens an EventSource against the SSE route (uses `?token=<hex>` for token-mode auth). `cancelCommand()` POSTs the cancel.
+- **`components/Terminal.tsx`** — `"use client"` xterm.js component. Mounts via `useEffect` with `ResizeObserver` for live fit. Brand-themed (gold cursor on ink-pure background; gold prompt arrow). Stdin disabled (per ADR-016 §6). Run / Cancel / Clear toolbar. Footer surfaces `session_id` + `exit_reason` + `ADR-016 · allow-list` reminder. Dynamic-imports xterm to avoid SSR pitfalls.
+- **`app/page.tsx`** — In HTTP mode, the static `<CommandConsole />` is replaced by `<Terminal />` (live). Filesystem mode keeps the static mock (no remote process to spawn).
+- **`app/globals.css`** — imports `@xterm/xterm/css/xterm.css` so the renderer's stylesheet is included.
+- **`package.json`** — adds `@xterm/xterm ^5.5.0` + `@xterm/addon-fit ^0.10.0`.
+
+**ADR added:**
+
+- **`.bequite/memory/decisions/ADR-016-terminal-execution-rules-of-engagement.md`** — full RoE (~10 sections + alternatives + consequences + verification + what-this-doesn't-authorize).
+
+### Changed
+
+- `cli/bequite/__init__.py::__version__` → `0.20.5`. `cli/pyproject.toml::version` → `0.20.5`.
+- `studio/api/package.json::version` → `0.20.5`. `studio/api/src/routes/health.ts::version` → `0.20.5`.
+- `studio/dashboard/package.json::version` → `0.20.5`.
+
+### Notes
+
+- API + dashboard both **typecheck clean** (`tsc --noEmit` exit 0). Live boot smoke deferred to verification (Bun runtime not installed locally; full live exec end-to-end requires Bun + dashboard with `BEQUITE_DASHBOARD_MODE=http`).
+- **No new Iron Law.** v0.20.5 implements the exec layer of Article IV + Article IX with explicit RoE (ADR-016).
+- **EventSource auth** for the terminal SSE sub-route uses the same `?token=<hex>` fallback established in v0.20.0 (browser EventSource cannot send custom headers; query-param path is restricted to stream routes).
+- v0.21.0+ — Live stdin forwarding for interactive shells (deferred per ADR-016 §6).
+
+### v2.0.0-alpha.1 candidate (still on main, awaiting tag)
+
+`a35dbfc` — dashboard dual-mode loader. v0.20.0 + v0.20.5 both build on top. The major-version tag remains Ahmed's call.
 
 ---
 
@@ -1168,7 +1216,8 @@ Each regulated Doctrine carries a disclaimer: starting points, not substitutes f
 
 This release contains no executable code. It establishes the inviolate base layer (Constitution + Memory Bank + ADR + Doctrine schemas) on which every later sub-version depends.
 
-[Unreleased]: https://github.com/xpShawky/BeQuite/compare/v0.20.0...HEAD
+[Unreleased]: https://github.com/xpShawky/BeQuite/compare/v0.20.5...HEAD
+[0.20.5]: https://github.com/xpShawky/BeQuite/compare/v0.20.0...v0.20.5
 [0.20.0]: https://github.com/xpShawky/BeQuite/compare/v0.19.5...v0.20.0
 [0.19.5]: https://github.com/xpShawky/BeQuite/compare/v0.19.0...v0.19.5
 [0.19.0]: https://github.com/xpShawky/BeQuite/compare/v0.18.0...v0.19.0

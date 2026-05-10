@@ -1,6 +1,7 @@
 import { TopBar } from "@/components/TopBar";
 import { PhasesSidebar } from "@/components/PhasesSidebar";
 import { CommandConsole } from "@/components/CommandConsole";
+import { Terminal } from "@/components/Terminal";
 import { PlanTasksTests } from "@/components/PlanTasksTests";
 import { AgentPanel } from "@/components/AgentPanel";
 import { ReceiptsList } from "@/components/ReceiptsList";
@@ -34,9 +35,17 @@ export default async function DashboardHome() {
         />
 
         <main className="flex flex-1 flex-col gap-3 overflow-y-auto bg-ink p-4">
-          {/* Top row: command console */}
+          {/* Top row: live terminal (HTTP mode) or static mock (filesystem mode) */}
           <div className="h-[40vh] min-h-[280px]">
-            <CommandConsole />
+            {loaderConfig.mode === "http" ? (
+              <Terminal
+                mode={loaderConfig.mode}
+                apiBase={loaderConfig.apiBase}
+                workspacePath={snapshot.root}
+              />
+            ) : (
+              <CommandConsole />
+            )}
           </div>
 
           {/* Middle row: plan / tasks / tests */}

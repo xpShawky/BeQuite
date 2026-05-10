@@ -6,6 +6,7 @@ import { projects } from "./routes/projects.js";
 import { receipts } from "./routes/receipts.js";
 import { snapshots } from "./routes/snapshots.js";
 import { streams } from "./routes/streams.js";
+import { terminal } from "./routes/terminal.js";
 import { auth as authRoutes } from "./routes/auth.js";
 import { authMiddleware, getAuthMode } from "./lib/auth.js";
 import { getWorkspaceRoot } from "./lib/fs-loader.js";
@@ -44,16 +45,18 @@ app.use("/api/v1/projects/*", authMiddleware);
 app.use("/api/v1/receipts/*", authMiddleware);
 app.use("/api/v1/snapshots/*", authMiddleware);
 app.use("/api/v1/streams/*", authMiddleware);
+app.use("/api/v1/terminal/*", authMiddleware);
 
 app.route("/api/v1/projects", projects);
 app.route("/api/v1/receipts", receipts);
 app.route("/api/v1/snapshots", snapshots);
 app.route("/api/v1/streams", streams);
+app.route("/api/v1/terminal", terminal);
 
 app.get("/", (c) =>
   c.json({
     name: "BeQuite Studio API",
-    version: "0.20.0",
+    version: "0.20.5",
     docs: "See studio/api/README.md for endpoint surface.",
     workspace_root: getWorkspaceRoot(),
     auth_mode: getAuthMode(),
@@ -82,6 +85,13 @@ app.get("/", (c) =>
         "GET /api/v1/streams/cost?path=<abs-path>     (SSE; cost-ledger events)",
         "GET /api/v1/streams/phase?path=<abs-path>    (SSE; phase + activeContext events)",
       ],
+      authenticated_terminal: [
+        "POST /api/v1/terminal/exec                              (X-BeQuite-RoE-Ack: ADR-016 required; allow-list-gated)",
+        "GET  /api/v1/terminal/sessions                          (list sessions)",
+        "GET  /api/v1/terminal/sessions/:id                      (session status)",
+        "GET  /api/v1/terminal/sessions/:id/stream               (SSE; output + exit)",
+        "POST /api/v1/terminal/sessions/:id/cancel               (SIGTERM, then SIGKILL after 5s)",
+      ],
     },
   }),
 );
@@ -97,8 +107,9 @@ export default {
 
 // Log on startup (Bun runs this file as the entry point).
 if (typeof Bun !== "undefined") {
-  console.log(`BeQuite Studio API v0.20.0 listening on http://localhost:${port}`);
+  console.log(`BeQuite Studio API v0.20.5 listening on http://localhost:${port}`);
   console.log(`Workspace root: ${getWorkspaceRoot()}`);
   console.log(`Auth mode: ${getAuthMode()}`);
   console.log(`SSE streams: /api/v1/streams/{all,receipts,cost,phase}`);
+  console.log(`Terminal: POST /api/v1/terminal/exec (RoE: ADR-016)`);
 }

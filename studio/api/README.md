@@ -2,7 +2,7 @@
 
 > Hono-on-Bun HTTP back-end serving `studio/dashboard/`. Reads any BeQuite-managed project's filesystem (Memory Bank + state + receipts + cost ledger) and exposes it over HTTP so the dashboard (and future multi-user clients) can render without direct filesystem access.
 
-**Current version: v0.20.0** (Bearer-token auth + append-only write surface + SSE event streams)
+**Current version: v0.20.5** (Bearer-token auth + append-only write surface + SSE event streams + terminal exec)
 
 ## Quickstart
 
@@ -79,6 +79,49 @@ POST   /api/v1/receipts?path=<abs-path>          — emit a receipt (idempotent 
 POST   /api/v1/snapshots?path=<abs-path>         — emit a Memory Bank snapshot (refuses overwrite)
 ```
 
+### Authenticated — terminal exec (allow-list-gated per ADR-016; v0.20.5)
+
+```
+POST   /api/v1/terminal/exec                          (X-BeQuite-RoE-Ack: ADR-016 required)
+GET    /api/v1/terminal/sessions                      (list sessions)
+GET    /api/v1/terminal/sessions/:id                  (session status)
+GET    /api/v1/terminal/sessions/:id/stream           (SSE; output lines + exit)
+POST   /api/v1/terminal/sessions/:id/cancel           (SIGTERM; SIGKILL after 5s)
+```
+
+The terminal endpoint is the **first endpoint that executes user-supplied commands.** Per Article IV + ADR-016 it ships with strict Rules of Engagement:
+
+- **Hardcoded allow-list.** Only `bequite` and `bq` are accepted. No env override, no config flag — widening requires a code change + ADR amendment.
+- **No shell interpolation.** `spawn(... { shell: false })`. Args parsed as an array; `; rm -rf /` would just be a literal argument string.
+- **cwd guard.** `cwd` must resolve under `BEQUITE_WORKSPACE_ROOT`. Path-traversal returns `403`.
+- **Per-execution timeout.** Default 30 minutes, max 6 hours. SIGTERM at deadline, SIGKILL 5 seconds later.
+- **10MB output ring buffer.** Prevents OOM on misbehaving commands. Truncation visible in the receipt.
+- **No live stdin** in v0.20.5. (Optional one-shot `stdin` in the POST body. Live forwarding deferred to v0.21.0+.)
+- **Per-execution receipt** at `.bequite/receipts/<sha>-EXEC.json` — full audit trail.
+- **Iron Law X attestation** on every exec start: PID alive, receipt persisted, sibling probe.
+- **RoE acknowledgment header.** `POST /api/v1/terminal/exec` requires `X-BeQuite-RoE-Ack: ADR-016`. Missing → `412`.
+
+```javascript
+// Browser client example (token mode):
+const res = await fetch("http://localhost:3002/api/v1/terminal/exec", {
+  method: "POST",
+  headers: {
+    "content-type": "application/json",
+    "authorization": `Bearer ${token}`,
+    "x-bequite-roe-ack": "ADR-016",
+  },
+  body: JSON.stringify({ command: "bequite verify", timeout_seconds: 600 }),
+});
+const { session: { session_id } } = await res.json();
+
+// Open SSE for live output
+const es = new EventSource(
+  `http://localhost:3002/api/v1/terminal/sessions/${session_id}/stream?token=${token}`,
+);
+es.addEventListener("line", e => console.log(JSON.parse(e.data)));
+es.addEventListener("exit", e => { console.log("done", e.data); es.close(); });
+```
+
 ### Authenticated — event streams (Server-Sent Events; v0.20.0)
 
 ```
@@ -145,7 +188,7 @@ Every endpoint that accepts a `?path=` query validates the resolved path is unde
 
 ## What's next
 
-- **v0.20.5** — Bidirectional WebSocket terminal stream (xterm.js) for auto-mode. Needs node-pty + RoE gates (per Article IV) since it's the first endpoint that actually executes commands.
+- **v0.21.0+** — Live stdin forwarding from the dashboard (interactive shells, REPL flows). Deferred per ADR-016 §6.
 - **v0.20.x** — Better-Auth integration (per Doctrine Rule 9 + ADR-011 Phase-3 device-code).
 - **v2.0.0-alpha.1** — dashboard `lib/projects.ts` swap from filesystem-mode to HTTP-mode against this API. (CANDIDATE shipped to main at commit `a35dbfc`; awaiting Ahmed's review for the major-version tag.)
 - **v2.0.0** — Postgres mirror for multi-user / cloud operation; same endpoint surface.

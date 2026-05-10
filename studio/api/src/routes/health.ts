@@ -7,7 +7,7 @@ health.get("/", (c) =>
   c.json({
     status: "ok",
     service: "bequite-api",
-    version: "0.20.0",
+    version: "0.20.5",
     workspace_root: getWorkspaceRoot(),
     uptime_s: Math.round(process.uptime()),
   }),

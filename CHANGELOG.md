@@ -2,9 +2,55 @@
 
 All notable changes to BeQuite are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Conventional Commits](https://www.conventionalcommits.org/). Versioning is [Semantic Versioning](https://semver.org/).
 
-## [Unreleased] — tracking toward v1.0.0
+## [Unreleased] — tracking toward v1.0.0 + v2.0.0-alpha.1
 
-v0.15.0 was the last sub-version before v1.0.0 final release. Ahmed reviews everything before tagging v1.0.0.
+v0.16.0 begins **Layer 2 Studio Edition** work alongside the v1.0.0 review pause. Ahmed reviews everything before tagging v1.0.0 (Layer 1 Harness final) + v2.0.0-alpha.1 (Studio Edition first pre-release).
+
+---
+
+## [0.16.0] — 2026-05-10
+
+### Added — Studio Edition Phase-1 + Constitution v1.3.0
+
+- **ADR-013** (`.bequite/memory/decisions/ADR-013-studio-v2-architecture.md`) — Studio v2.0.0 architecture: 3 surfaces (`studio/marketing/` Next.js cinematic landing + `studio/dashboard/` Next.js operations console + `studio/api/` Hono-on-Bun back-end) sharing one brand system. 3D-ready scaffold (R3F + drei installed) so Blender pipeline integrates without restructuring.
+- **ADR-014** (`.bequite/memory/decisions/ADR-014-iron-law-x-operational-completeness.md`) — **Iron Law X — Operational completeness**. The "restart-the-build" rule. Bumps Constitution to v1.3.0. 7 operational steps every change must satisfy + 6 banned report patterns + mandatory self-attestation block.
+- **Constitution v1.3.0** (`.bequite/memory/constitution.md`) — Article X added (full text). Default-model bump documented (Opus 4.7 with `reasoning_effort: xhigh` for orchestrator + Skeptic + multi-model judge + reviewer roles). Specs-numbered-folders convention noted (`specs/001-feature-slug/`, `specs/002-other/`, etc. — Spec-Kit-aligned).
+- **`studio/brand/`** — Brand system foundation:
+  - `tokens.css` (~180 lines) — gold + black palette (`--gold-primary: #E5B547`, `--gold-bright`, `--gold-deep`, `--black-pure`, `--black-stage`, `--black-velvet`, silver/white scale) + Apple-inspired type scale (Geist + Geist Mono) + cinematic motion easings (never bouncy per Doctrine Rule 6) + reduced-motion handling.
+  - `tokens.json` — machine-readable equivalent (Design Tokens Format).
+  - `README.md` — usage rules, type, motion, asset table.
+  - `ATTRIBUTION.md` — Ahmed's brand assets + third-party (Geist, Inter, Tailwind).
+  - `raw/` — 6 ranked source PNGs (hero zen + character zen + character pointing + hero wordmark + horizontal logo + dashboard mock).
+- **`studio/marketing/`** — Apple-grade cinematic landing site (Next.js 15 + Tailwind v4 + Framer Motion 11 + R3F-ready):
+  - `package.json` + `tsconfig.json` + `next.config.ts` + `postcss.config.mjs` + `tailwind.config.ts`.
+  - `app/layout.tsx` (root + metadata + viewport).
+  - `app/page.tsx` (composes 6 sections).
+  - `app/globals.css` (imports brand tokens + Tailwind v4 theme).
+  - `components/Nav.tsx` — scroll-aware nav with backdrop-blur transition.
+  - `components/Hero.tsx` — pinned cinematic hero (Apple-style; `useScroll` + `useTransform` driving scale + opacity).
+  - `components/PhasesScroll.tsx` — 7-phase scroll-driven reveal (each phase activates as user scrolls; opacity/x/scale transforms per phase index).
+  - `components/Features.tsx` — 6-feature card grid with hover gold glints.
+  - `components/Demo.tsx` — terminal-mock CLI walkthrough beside the pointing astronaut.
+  - `components/CTA.tsx` — final call-to-action with gradient + radial-gold glow.
+  - `components/Footer.tsx` — three-column footer.
+  - `components/AgentCharacter.tsx` — astronaut with breathing-idle motion (drop-in 3D upgrade-ready).
+  - `public/brand/` — 6 brand PNGs copied for Next.js Image.
+- **`studio/dashboard/`** — README + directory only (full impl v0.18.0+ per ADR-013). Visual target: image 6 mock.
+- **`studio/api/`** — README + directory only (full impl v0.19.0+).
+- **`studio/README.md`** — Studio overview + roadmap table.
+- **Default model bump** — `skill/routing.json` orchestrator + product-owner reasoning_effort: high → **xhigh** (per Constitution v1.3.0).
+
+### Changed
+
+- Versions bumped to `0.16.0`.
+- Constitution v1.2.0 → v1.3.0.
+
+### Notes
+
+- Combined integration suite still 125/125 (v0.16.0 is architecture + brand + marketing scaffold; no new test modules — the marketing app's own test suite lands v0.17.x+).
+- The marketing site **boots locally**: `cd studio/marketing && pnpm install && pnpm dev`.
+- **Honest scope per Article VI:** v0.16.0 ships the Apple-grade foundation. Frame-by-frame video reveals + GLB-loaded 3D character + R3F particle starfield + MDX vibecoder tutorials all land v0.17.0+ (subsequent commits build cinematic chapters on top of this scaffold).
+- Constitution Article X (Iron Law X) is **Iron Law text only** in this commit. Hook extension + posttooluse-operational-check.sh + auto-mode integration land v0.16.x+.
 
 ---
 

@@ -65,10 +65,10 @@
   "phase_routing": [
     {
       "phase": "orchestrator",
-      "description": "The SKILL.md itself; routes work and gates phase exits.",
+      "description": "The SKILL.md itself; routes work and gates phase exits. v0.16.0+ default = xhigh effort (Constitution v1.3.0 default-model bump per Ahmed).",
       "persona": "orchestrator",
       "model": "claude-opus-4-7",
-      "reasoning_effort": "high",
+      "reasoning_effort": "xhigh",
       "fallback_model": "gpt-5",
       "max_input_tokens": 100000,
       "max_output_tokens": 16000
@@ -77,7 +77,7 @@
       "phase": "P0",
       "persona": "product-owner",
       "model": "claude-opus-4-7",
-      "reasoning_effort": "high",
+      "reasoning_effort": "xhigh",
       "fallback_model": "gpt-5",
       "max_input_tokens": 80000,
       "max_output_tokens": 12000

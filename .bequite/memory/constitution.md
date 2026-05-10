@@ -1,8 +1,14 @@
-# BeQuite Constitution v1.2.0 — operating under BeQuite
+# BeQuite Constitution v1.3.0 — operating under BeQuite
 
-> Drafted: 2026-05-10 · Amended: 2026-05-10 (v1.0.0 → v1.0.1, ADR-008-master-merge; v1.0.1 → v1.1.0, ADR-009-article-viii-scraping; v1.1.0 → v1.2.0, ADR-010-article-ix-cybersecurity) · Maintainer: Ahmed Shawky (xpShawky) · BeQuite version: 0.9.2
+> Drafted: 2026-05-10 · Amended: 2026-05-10 (v1.0.0 → v1.0.1, ADR-008-master-merge; v1.0.1 → v1.1.0, ADR-009-article-viii-scraping; v1.1.0 → v1.2.0, ADR-010-article-ix-cybersecurity; **v1.2.0 → v1.3.0, ADR-014-iron-law-x-operational-completeness**) · Maintainer: Ahmed Shawky (xpShawky) · BeQuite version: 0.16.0
 >
 > **v0.9.2 update:** ADR-011 (CLI Authentication) and ADR-012 (Multi-Model Planning) both **accepted Phase-1 docs-only**. Neither introduces a new Iron Law — both are operational frameworks fulfilling existing Articles. ADR-011 extends Article IV (auth surface). ADR-012 fulfills Articles I + VI + VII (multi-model planning artifact discipline). Implementation lands v0.10.5 (multi-model) + v0.10.x+ (CLI auth stubs) + v0.11.x+ (auth server + direct-API multi-model).
+>
+> **v0.16.0 update:** **Iron Law X — Operational completeness** added (ADR-014). Bumps Constitution to v1.3.0. The "restart-the-build" rule: when the agent reports a change as complete, the running system must reflect the change. Banned report patterns: "added — restart your server to use it" / "updated schema — run the migration" / "edited config — rebuild docker image" etc. The agent's job is to send the user the **final working version**, not a half-applied change. Implementation: Article X amendment text (this commit) + hook extension + auto-mode integration (v0.16.x+).
+>
+> **v0.16.0 conventions update (project-level, not Iron Law):**
+> - **Default model = Claude Opus 4.7 with `reasoning_effort: xhigh` for orchestrator + Skeptic + multi-model judge + reviewer roles.** Lower-tier roles (token-economist, doc-writing) stay on Haiku 4.5. The default applies until a project's `bequite.config.toml::routing` overrides + the model is verified at full power.
+> - **Specs live in numbered, ordered folders:** `specs/001-feature-slug/`, `specs/002-other-feature/`, etc. (Spec-Kit-aligned convention). Existing unnumbered `specs/<feature>/` paths in v0.9.0 examples remain; new specs from v0.16.0+ use the numbered convention.
 >
 > This Constitution governs every action taken inside this repository — by humans, by AI agents, by automation. It is layered: **Iron Laws** are universal and immutable-ish (amendable only via ADR + version bump); **Doctrines** are forkable rule packs loaded per project type (`@doctrines/<active>.md`); **Modes** (Fast / Safe / Enterprise) gate which rigour level applies.
 >
@@ -147,6 +153,53 @@ BeQuite is a defensive-first harness. When a project involves security testing, 
 - **ALWAYS coordinate findings**: vendor first (per chosen framework's window), CVE second, public disclosure third. No "drop on Twitter for clout" behavior.
 
 The hooks (`pretooluse-pentest-authorization`, `pretooluse-no-malware`, `pretooluse-cve-poc-context`) enforce these rules deterministically. Bypassing a hook by disabling it requires a Constitutional amendment, not just an ADR.
+
+### Article X — Operational completeness
+
+> Adopted v1.3.0 (ADR-014). The "restart-the-build" rule.
+
+When the agent reports a change as complete, the running system **must reflect the change**. The agent is responsible for the post-edit operational steps:
+
+1. **Build refresh.** If the change requires a build step (`next build` / `vite build` / `cargo build` / `tsc` / `docker build` / etc.), the build MUST be re-run before reporting completion. If the build fails, the work is NOT complete.
+2. **Service restart.** If the change touches a running service (web server, API server, worker, queue consumer, docker compose stack, k8s deployment), the service MUST be restarted (or the agent MUST verify hot-reload took effect) before reporting completion.
+3. **Wire-up confirmation.** If a backend endpoint is added or changed, the agent MUST hit the endpoint and verify the response (curl / fetch from a test) before reporting completion. If a frontend component calls a new endpoint, the agent MUST verify the call succeeds end-to-end.
+4. **Migration applied.** Database schema changes mean the migration MUST run against the current dev DB before reporting completion. Production migrations are one-way doors (Article IV); pause + ask.
+5. **Dependencies installed.** When `package.json` / `pyproject.toml` / `Cargo.toml` / `go.mod` is edited, the matching install command MUST run (and lockfile commit) before reporting completion.
+6. **Config refreshed.** Environment variables, nginx configs, systemd units, etc. MUST be hot-reloaded or the service restarted before reporting completion.
+7. **Cache busted.** If a CDN or browser cache is in front of the change, the cache MUST be invalidated (or the resource fingerprinted) before reporting completion.
+
+**Banned report patterns** (Article VI extension):
+
+The agent is FORBIDDEN to use these phrasings when the named follow-up step is the user's responsibility:
+
+- ❌ "Added the route — restart your server to use it"
+- ❌ "Updated the schema — run the migration"
+- ❌ "Edited the config — rebuild the docker image"
+- ❌ "Installed the package — run `npm install`"
+- ❌ "Changed the env — restart the dev server"
+- ❌ "Ready once you redeploy"
+
+If the agent CANNOT complete the operational step (one-way door, missing credentials, remote host the agent can't reach), the agent MUST: (1) pause + report exactly what the user must do; (2) NOT report the change as complete; (3) stay in `BLOCKED` state until the user signals completion.
+
+For one-way doors (Article IV): prepare the change such that the human's single approval action delivers an operationally-complete result (local + staging are operationally complete; the single human action is well-documented).
+
+**Self-attestation block** (mandatory for every "change complete" report):
+
+```markdown
+## Operational completeness (Article X)
+
+- [x] Build refresh: <command + exit code> OR (n/a — no build needed)
+- [x] Service restart: <command run> OR (n/a — auto-reloads)
+- [x] Wire-up confirmed: <test command + status>
+- [x] Migration applied: <command run> OR (n/a — no migration)
+- [x] Dependencies installed: <command run> OR (n/a — no dep change)
+- [x] Config refreshed: <command run> OR (n/a — no config change)
+- [x] Cache busted: <command run> OR (n/a — no cache layer)
+
+The running system reflects this change. The vibecoder can use it immediately.
+```
+
+When ANY box is unchecked AND not-`n/a`, the agent MUST NOT report the change as complete. Implementation: hook extension + posttooluse-operational-check.sh + auto-mode integration land v0.16.x+.
 
 ---
 

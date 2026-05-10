@@ -4,13 +4,43 @@
 
 BeQuite is a host-portable harness that turns Claude (and any peer coding agent — GPT-5, Codex, Cursor, Cline, Roo, Kilo) into a senior tech-lead capable of shipping software projects from research to handoff **without producing the broken half-builds that dominate today's "vibe coding" output.**
 
-It ships as three artifacts that share one brain:
+By **xpShawky** ([Ahmed Shawky](https://github.com/xpShawky)).
 
-1. **A Claude Skill** (`skill/SKILL.md` + agents + commands + hooks + templates) — works inside Claude Code, Claude.ai, Cursor with skills enabled, Codex CLI, OpenCode, Gemini CLI, Kiro, Trae, Rovo, and any SKILL.md-compatible host.
-2. **A standalone CLI** (`bequite`, distributable via `uvx` / `pipx`) — modeled on Spec-Kit, with 18 commands (`init, research, constitution, specify, stack, clarify, plan, phases, tasks, analyze, implement, verify, review, handoff, resume, doctor, audit, freshness, auto`) plus the design alias surface from Impeccable.
-3. **A GitHub repo template** — `.bequite/{constitution, memory, specs, phases, tasks, prompts, logs, receipts}/`, `AGENTS.md`, `CLAUDE.md`, per-host adapters under `.cursor/`, `.codex/`, `.gemini/`, `.windsurf/`. The same project moves seamlessly between hosts.
+[![v1.0.0](https://img.shields.io/badge/release-v1.0.0-E5B547?style=flat&labelColor=0a0a0a)](docs/RELEASES/v1.0.0.md) [![v2.0.0-alpha.1](https://img.shields.io/badge/studio-v2.0.0--alpha.1-E5B547?style=flat&labelColor=0a0a0a)](docs/RELEASES/v2.0.0-alpha.1.md) [![Constitution v1.3.0](https://img.shields.io/badge/Constitution-v1.3.0-E5B547?style=flat&labelColor=0a0a0a)](.bequite/memory/constitution.md) [![License: MIT](https://img.shields.io/badge/License-MIT-E5B547?style=flat&labelColor=0a0a0a)](LICENSE)
 
-By **xpShawky** (Ahmed Shawky).
+---
+
+## What ships
+
+Two layers, one brain — both shipping today:
+
+### 🧠 Layer 1 Harness — `v1.0.0` (Production/Stable)
+
+The CLI + Skill + Memory Bank + Hooks + Doctrines + Templates. Markdown + Python 3.11+ + bash hooks. Distributable via `uvx`/`pipx`/`pip install`.
+
+```bash
+uvx bequite init my-app --doctrine default-web-saas --scale small_saas
+bequite auto --feature add-confirmation-flow --max-cost-usd 10
+```
+
+**[→ v1.0.0 release notes](docs/RELEASES/v1.0.0.md)**
+
+### 🎨 Layer 2 Studio — `v2.0.0-alpha.1` (First pre-release)
+
+The visual surface — three Next.js + Hono apps sharing the gold-on-black brand:
+
+- **`studio/marketing/`** — cinematic landing page (Apple-grade scroll choreography) + 6 deep MDX vibecoder tutorials.
+- **`studio/dashboard/`** — operations console with dual-mode loader (filesystem ↔ HTTP), live SSE updates, xterm.js terminal in HTTP mode.
+- **`studio/api/`** — Hono on Bun back-end. Three-mode auth, append-only writes, four SSE streams, terminal exec (allow-list-gated per ADR-016).
+
+```bash
+# Three-terminal dev
+cd studio/api && bun install && bun run src/index.ts             # :3002
+cd studio/dashboard && pnpm install && BEQUITE_DASHBOARD_MODE=http pnpm dev  # :3001
+cd studio/marketing && pnpm install && pnpm dev                   # :3000
+```
+
+**[→ v2.0.0-alpha.1 release notes](docs/RELEASES/v2.0.0-alpha.1.md)**
 
 ---
 
@@ -32,10 +62,11 @@ BeQuite **prevents these errors with deterministic gates** instead of fixing the
 - **A six-file Memory Bank** (Cline pattern) — durable cross-session brain.
 - **PreToolUse hooks** that block destructive operations, secret writes, and hallucinated package imports.
 - **Skeptic-as-adversary** at every phase boundary — distinct from the Reviewer; produces kill-shot questions before phases exit.
-- **Reproducibility receipts** — every phase emits a signed JSON receipt (model, prompt hash, memory snapshot, diff, tests, cost). Auditable AI-generated code.
-- **Knowledge-freshness probes** — before any stack pick, `bequite freshness` verifies candidates aren't deprecated, EOL'd, or replaced (catches Stronghold, Roo Code, EV cert obsolescence in 2026).
+- **Reproducibility receipts** — every phase emits an ed25519-signed JSON receipt (model, prompt hash, memory snapshot, diff, tests, cost). Auditable AI-generated code.
+- **Knowledge-freshness probes** — before any stack pick, `bequite freshness` verifies candidates aren't deprecated, EOL'd, or replaced.
 - **The verification gate** — Playwright walks (admin + user), smoke tests, `axe-core`, secret-scan. No phase exits "done" without acceptance evidence executed in this session.
 - **Banned weasel-words** — `should`, `probably`, `seems to`, `appears to`, `I think it works` are exit-code-2 violations in completion messages.
+- **Iron Law X — operational completeness** (v0.16.0+). Every change reports the *fully working* state — build re-run, docker-compose'd, frontend wired to backend. The "feature added but needs restart" pain is solved by construction.
 
 ---
 
@@ -48,118 +79,58 @@ BeQuite **prevents these errors with deterministic gates** instead of fixing the
 | **P2 Plan** | `specs/<feature>/{spec.md, plan.md, data-model.md, contracts/}` | Architect | Skeptic adversarial review; analyze passes |
 | **P3 Phases** | `specs/<feature>/phases/*.md` | ScrumMaster | Each phase has acceptance evidence defined |
 | **P4 Tasks** | `specs/<feature>/phases/*/tasks.md` | ScrumMaster | Tasks atomic (≤5 min each), dependency-ordered |
-| **P5 Implement** | source code + commits + receipts | Implementer + Reviewer | All tests in this phase green; receipt signed |
-| **P6 Verify** | Playwright walks, smoke test, secret scan | QA + Security Auditor | App boots, every route walked admin & user, zero console errors |
+| **P5 Implement** | source code + commits + signed receipts | Implementer + Reviewer | All tests in this phase green; receipt signed |
+| **P6 Verify** | Playwright walks, smoke test, secret scan, axe-core | QA + Security Auditor | App boots, every route walked admin & user, zero console errors |
 | **P7 Handoff** | `HANDOFF.md` + screencast | TechWriter | A second engineer can run locally + deploy from docs alone |
 
 ---
 
 ## Quickstart
 
-> **Status (May 2026):** the GitHub remote at `https://github.com/xpShawky/BeQuite` exists but is **not yet populated** — the local repo has 13 tags committed but the first push is owner-gated. The CLI is runnable today from a local checkout (`python -m cli.bequite.audit`, `python -m cli.bequite.freshness`); `uvx --from git+...` and `pip install bequite` activate after the first push + the v1.0.0 PyPI publish (`docs/MAINTAINER.md`, drafted v0.14.0).
-
-### Today (from a local checkout)
-
 ```bash
-git clone https://github.com/xpShawky/BeQuite   # post-first-push
-cd BeQuite
-
-# Run the working Python modules directly (v0.4.2 + v0.4.3):
-python -m cli.bequite.audit              # Constitution + Doctrine drift detector
-python -m cli.bequite.freshness --all    # Knowledge probe (npm/PyPI/crates.io/GitHub)
-
-# Once dependencies are installed (`pip install -e ./cli`):
-bequite --version                         # bequite 0.5.0
-bequite doctor                            # environment + scaffolding check
-bequite memory show                       # print Memory Bank
-```
-
-### After v1.0.0 ships
-
-```bash
-# Install (post-first-push + v1.0.0 PyPI publish)
-uvx --from git+https://github.com/xpShawky/BeQuite bequite --version
+# Install (post-PyPI publish; one-way door — Ahmed-gated)
+uvx bequite --version
 # or
 pipx install bequite
+# or
+pip install bequite
 
 # Initialize a project
 bequite init my-app --doctrine default-web-saas --scale small_saas
 
-# One-click run-to-completion with safety rails (v0.10.0+)
+# One-click run-to-completion with safety rails
 bequite auto --feature add-confirmation-flow --max-cost-usd 10
 ```
 
-`bequite auto` will run P0 → P7 sequentially with phase-by-phase commits, Skeptic gates at every boundary, hard cost ceiling, hard wall-clock ceiling, and 3-failure-threshold pause-for-human. Auto-mode never bypasses hooks, never auto-runs one-way-door operations (PyPI publish, git push, terraform apply), and never skips Phase 0.
+`bequite auto` runs P0 → P7 sequentially with phase-by-phase commits, Skeptic gates at every boundary, hard cost ceiling, hard wall-clock ceiling, and a 3-failure-threshold pause-for-human. Auto-mode never bypasses hooks, never auto-runs one-way-door operations (PyPI publish, git push, terraform apply), and never skips Phase 0.
 
-See [`docs/QUICKSTART.md`](docs/QUICKSTART.md) (drafted v0.14.0) for the 5-minute path.
-
----
-
-## Architecture: two layers, one brain
-
-BeQuite is built in two layers sharing a single source of truth (`.bequite/memory/` + `state/` + `evidence/` + `receipts/`):
-
-- **Layer 1 — Harness** (current; v0.1.0 → v1.0.0). SKILL.md + Python CLI + repo template. Markdown + Python 3.11+ + bash hooks. Runs locally on a developer laptop or in CI. Distributable via `uvx`/`pipx`.
-- **Layer 2 — Studio** (planned; v2.0.0+). Next.js dashboard + NestJS API + Worker + Postgres. TypeScript pnpm + Turborepo. Reads what Layer 1 writes; the visual surface (project wizard, phase board, evidence viewer, recovery screen).
-
-Layer 1 is the kernel. Layer 2 is the operating system on top of the kernel. The CLI writes the truth; the dashboard displays it.
-
-Sources:
-- The original brief that initiated this project: [`BEQUITE_BOOTSTRAP_BRIEF.md`](BEQUITE_BOOTSTRAP_BRIEF.md).
-- The expanded master file (introduced post-`v0.1.1`, prescribing the Layer 2 stack): [`BeQuite_MASTER_PROJECT.md`](BeQuite_MASTER_PROJECT.md).
-- The merge audit reconciling the two: [`docs/merge/MASTER_MD_MERGE_AUDIT.md`](docs/merge/MASTER_MD_MERGE_AUDIT.md).
-
-## Status
-
-🚧 **Pre-release.** Tracking toward `v1.0.0`. **13 sub-versions tagged** (`v0.1.0` → `v0.5.2`). 24,132 lines across 16 commits, 153 tracked files. **Constitution at v1.2.0** (3 amendments via ADR-008/009/010). Five operational modules: skill orchestrator + AI automation + hooks + scraping (Article VIII) + cybersecurity (Article IX). See [`CHANGELOG.md`](CHANGELOG.md) for per-version detail.
-
-| Sub-version | Goal | Status |
-|---|---|---|
-| `v0.1.0` | Foundation & Constitution v1.0.0 (7 Iron Laws) | ✅ tagged 2026-05-10 |
-| `v0.1.1` | Doctrines pack — 8 default Doctrines | ✅ tagged 2026-05-10 |
-| `v0.1.2` | Master-file merge — two-layer architecture; Constitution v1.0.1 | ✅ tagged 2026-05-10 |
-| `v0.2.0` | Skill orchestrator + 11 personas + routing.json + config TOML | ✅ tagged 2026-05-10 |
-| `v0.2.1` | AI automation skill (n8n/Make/Zapier/Temporal/Inngest; automation-architect persona) | ✅ tagged 2026-05-10 |
-| `v0.3.0` | 10 deterministic-gate hook scripts | ✅ tagged 2026-05-10 |
-| `v0.4.0` | 12 master-aligned slash commands | ✅ tagged 2026-05-10 |
-| `v0.4.1` | 7 BeQuite-unique slash commands (audit, freshness, auto, memory, snapshot, cost, skill-install) | ✅ tagged 2026-05-10 |
-| `v0.4.2` | `bequite audit` Python — Constitution + Doctrine drift detector | ✅ tagged 2026-05-10 |
-| `v0.4.3` | `bequite freshness` Python — knowledge probe | ✅ tagged 2026-05-10 |
-| `v0.5.0` | Python CLI thin wrapper (`bequite` + `bq`; 19 subcommands wired) | ✅ tagged 2026-05-10 |
-| `v0.5.1` | Article VIII Scraping & automation discipline (Constitution v1.1.0) | ✅ tagged 2026-05-10 |
-| `v0.5.2` | Article IX Cybersecurity & authorized-testing discipline (Constitution v1.2.0) | ✅ tagged 2026-05-10 |
-| `v0.6.0` → `v1.0.0` | Verification (Playwright), Impeccable bundle, signed receipts, multi-model, 3 example projects, auto-mode, MENA bilingual, per-host adapters, vibe-handoff exporters, docs, release engineering | 🟡 in progress |
-| `v2.0.0+` | Studio (Next.js dashboard + NestJS API + Postgres + Worker) | planned post-`v1.0.0` |
-
-The original brief is preserved at [`BEQUITE_BOOTSTRAP_BRIEF.md`](BEQUITE_BOOTSTRAP_BRIEF.md). The master file (introduced mid-session, post-`v0.1.1`) is preserved at [`BeQuite_MASTER_PROJECT.md`](BeQuite_MASTER_PROJECT.md). The merge audit explaining what was adopted, what was kept, and what was deferred to Studio v2.0.0+ lives at [`docs/merge/MASTER_MD_MERGE_AUDIT.md`](docs/merge/MASTER_MD_MERGE_AUDIT.md).
+See [`docs/QUICKSTART.md`](docs/QUICKSTART.md) for the 5-minute path.
 
 ---
 
-## Doctrine packs
+## Doctrine packs (13)
 
-12 Doctrines shipped (mena-bilingual at v0.11.0). Loaded per project via `bequite.config.toml::doctrines`.
+Loaded per project via `bequite.config.toml::doctrines`. Forkable. See [`docs/DOCTRINE-AUTHORING.md`](docs/DOCTRINE-AUTHORING.md).
 
-| Doctrine | Use case | Shipped in |
-|---|---|---|
-| `default-web-saas` | Web SaaS with shadcn/ui, tokens.css, Playwright walks, axe-core gate | v0.1.1 |
-| `cli-tool` | Pure-CLI tools — semver-strict, man-page generation, bash completions | v0.1.1 |
-| `ml-pipeline` | Reproducible training, dataset versioning, GPU-cost discipline | v0.1.1 |
-| `desktop-tauri` | Tauri v2 + OS keychain (NOT Stronghold) + notarytool + AzureSignTool + Keygen | v0.1.1 |
-| `library-package` | Public-API freezing, semver-strict, no telemetry without opt-in | v0.1.1 |
-| `fintech-pci` | PCI DSS controls, audit log retention, cardholder data segregation | v0.1.1 |
-| `healthcare-hipaa` | PHI handling, BAA list, audit trail | v0.1.1 |
-| `gov-fedramp` | FedRAMP control families, FIPS-validated crypto | v0.1.1 |
-| `ai-automation` | n8n / Make / Zapier / Temporal / Inngest expertise; idempotency + retry + DLQ + observability + AI-agent budget discipline | v0.2.1 |
-| `vibe-defense` | **Default for `audience: vibe-handoff`.** Extra-strict response to Veracode 2025's 45% OWASP-Top-10 hit rate on AI-generated code. 15 rules: HIGH-SAST blocks merge with 90d-expiring-ADR-override, exact-pinned prod deps, RLS deny-by-default, locked-down CSP, secret-scan on every commit, axe-core every deploy, mandatory `bequite audit` clean. | v0.5.2 |
-| `mena-pdpl` | Egyptian PDPL (Law 151/2020), Saudi PDPL (SDAIA), UAE Federal PDPL (Decree-Law 45/2021). Jurisdiction-branched (UAE Federal vs DIFC vs ADGM vs DHCC). | v0.5.2 |
-| `eu-gdpr` | GDPR 2016/679 — Art. 6 lawful basis, data subject rights, DPIA, RoPA, breach 72h, DPO, ePrivacy cookie consent, Schrems II + SCCs 2021. Stacks with `mena-pdpl`. | v0.5.2 |
-| `mena-bilingual` | Arabic + Egyptian dialect, RTL-by-default, Tajawal/Cairo/Readex Pro | v0.11.0 (planned) |
-
-Doctrines are forkable. See [`docs/DOCTRINE-AUTHORING.md`](docs/DOCTRINE-AUTHORING.md).
+| Doctrine | Use case |
+|---|---|
+| `default-web-saas` | Web SaaS with shadcn/ui, tokens.css, Playwright walks, axe-core gate |
+| `cli-tool` | Pure-CLI tools — semver-strict, man-page generation, bash completions |
+| `ml-pipeline` | Reproducible training, dataset versioning, GPU-cost discipline |
+| `desktop-tauri` | Tauri v2 + OS keychain (NOT Stronghold) + notarytool + AzureSignTool + Keygen |
+| `library-package` | Public-API freezing, semver-strict, no telemetry without opt-in |
+| `fintech-pci` | PCI DSS controls, audit log retention, cardholder data segregation |
+| `healthcare-hipaa` | PHI handling, BAA list, audit trail |
+| `gov-fedramp` | FedRAMP control families, FIPS-validated crypto |
+| `ai-automation` | n8n / Make / Zapier / Temporal / Inngest expertise; idempotency + retry + DLQ |
+| `vibe-defense` | **Default for `audience: vibe-handoff`.** 15 extra-strict rules — HIGH-SAST blocks merge, exact-pinned prod deps, RLS deny-by-default, locked-down CSP, mandatory `bequite audit` clean. |
+| `mena-pdpl` | Egyptian PDPL (Law 151/2020), Saudi PDPL (SDAIA), UAE Federal PDPL. Jurisdiction-branched (UAE Federal vs DIFC vs ADGM vs DHCC). |
+| `eu-gdpr` | GDPR 2016/679 — Art. 6, data subject rights, DPIA, RoPA, breach 72h, Schrems II + SCCs 2021. Stacks with `mena-pdpl`. |
+| `mena-bilingual` | Arabic + Egyptian dialect, RTL-by-default, Tajawal/Cairo/Readex Pro |
 
 ---
 
-## Hosts
+## Hosts (9)
 
 BeQuite runs first-class in:
 
@@ -177,6 +148,45 @@ Per-host install is one command: `bequite skill install`. See [`docs/HOSTS.md`](
 
 ---
 
+## Architecture: two layers, one brain
+
+BeQuite is built in two layers sharing a single source of truth (`.bequite/memory/` + `state/` + `evidence/` + `receipts/`):
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     Source of truth                         │
+│  .bequite/memory/  +  state/  +  evidence/  +  receipts/    │
+└──────────────┬──────────────────────────┬───────────────────┘
+               │                          │
+       ┌───────▼────────┐         ┌───────▼─────────────┐
+       │  Layer 1       │         │  Layer 2            │
+       │  Harness       │         │  Studio Edition     │
+       │  (v1.0.0)      │         │  (v2.0.0-alpha.1)   │
+       │                │         │                     │
+       │  • SKILL.md    │         │  • marketing/  :3000│
+       │  • bequite CLI │         │  • dashboard/  :3001│
+       │  • Hooks       │         │  • api/        :3002│
+       │  • Doctrines   │         │                     │
+       │  • Templates   │         │  Reads what Layer 1 │
+       └────────────────┘         │  writes; the visual │
+       Writes the truth.          │  surface.           │
+                                  └─────────────────────┘
+```
+
+Layer 1 is the kernel. Layer 2 is the operating system on top of the kernel.
+
+---
+
+## Status
+
+**v1.0.0 = Production/Stable.** All sub-versions from `v0.1.0` through `v0.20.5` consolidated into v1.0.0. See [`CHANGELOG.md`](CHANGELOG.md) for per-version detail. Sources:
+
+- The original brief that initiated this project: [`BEQUITE_BOOTSTRAP_BRIEF.md`](BEQUITE_BOOTSTRAP_BRIEF.md).
+- The expanded master file (introduced post-`v0.1.1`, prescribing the Layer 2 stack): [`BeQuite_MASTER_PROJECT.md`](BeQuite_MASTER_PROJECT.md).
+- The merge audit reconciling the two: [`docs/merge/MASTER_MD_MERGE_AUDIT.md`](docs/merge/MASTER_MD_MERGE_AUDIT.md).
+
+---
+
 ## Acknowledgements
 
 BeQuite stands on the shoulders of:
@@ -191,6 +201,8 @@ BeQuite stands on the shoulders of:
 - **[AGENTS.md](https://agents.md/)** — universal coding-agent entry, stewarded by the Linux Foundation Agentic AI Foundation
 - **[Playwright MCP (Microsoft)](https://github.com/microsoft/playwright-mcp)** — accessibility-first verification
 - **[shadcn/ui](https://ui.shadcn.com/)** + **[tweakcn](https://tweakcn.com/)** + **[21st.dev Magic](https://21st.dev/)** + **[context7](https://github.com/upstash/context7)** — frontend module
+- **[Hono](https://hono.dev/)** — the smallest possible TS edge backend, powering the Studio API
+- **[xterm.js](https://xtermjs.org/)** — live terminal renderer
 
 ---
 
@@ -200,4 +212,4 @@ MIT. See [`LICENSE`](LICENSE).
 
 ## Maintainer
 
-**Ahmed Shawky** ([@xpshawky](https://github.com/xpshawky)).
+**Ahmed Shawky** ([@xpShawky](https://github.com/xpShawky)).

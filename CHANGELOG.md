@@ -2,11 +2,66 @@
 
 All notable changes to BeQuite are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Conventional Commits](https://www.conventionalcommits.org/). Versioning is [Semantic Versioning](https://semver.org/).
 
-## [Unreleased] — tracking toward v1.0.0 + v2.0.0-alpha.1
+## [Unreleased] — tracking toward v1.x point releases
 
-v0.20.5 ships the **terminal exec surface** — POST `/api/v1/terminal/exec` + SSE stream + xterm.js renderer in the dashboard, allow-list-gated to `bequite` and `bq` only per ADR-016. Iron Law X attestation on every exec start. Per-execution receipt to `.bequite/receipts/<sha>-EXEC.json`. The dashboard's CommandConsole is now a **live terminal** in HTTP mode; static mock preserved for filesystem mode.
+v1.0.0 + v2.0.0-alpha.1 both shipped 2026-05-11. The v1.x line tracks point releases (bug fixes, doc improvements, freshness probe tuning, additional Doctrines). v2.x tracks the Studio Edition graduation alpha → beta → stable.
 
-**v1.0.0 + v2.0.0-alpha.1** are scheduled to tag next — Ahmed authorized "continue until finishing all things and give me final version (without 3d model from blender)." v0.17.5 (Blender 3D astronaut) is permanently descoped per that direction; everything else lands.
+---
+
+## [1.0.0] — 2026-05-11 — Layer 1 Harness Final
+
+**The first stable release.** Consolidates everything from `v0.1.0` (foundation + Constitution v1.0.0) through `v0.20.5` (terminal exec surface) into a single Production/Stable release. See [`docs/RELEASES/v1.0.0.md`](docs/RELEASES/v1.0.0.md) for the full release notes.
+
+### What v1.0.0 stabilizes
+
+- **Constitution v1.3.0** with 10 Articles (Iron Laws). Article X — Operational completeness — is the final addition.
+- **17 ADRs**, the operational record of every architectural decision.
+- **13 Doctrines** (forkable per-project rule packs).
+- **14 deterministic-gate hooks** (PreToolUse / PostToolUse / Stop / SessionStart).
+- **Python CLI** — `bequite` + `bq` console scripts; 19+ subcommands; `uvx`/`pipx`/`pip install` distributable; 125-test integration suite green on Python 3.14.
+- **20 personas** in the orchestrator's "you must act like" list.
+- **Reproducibility receipts** — chain-hashed JSON, ed25519-signed, validated via `bequite verify-receipts`.
+- **Three example projects** (`bookings-saas`, `ai-tool-wrapper`, `tauri-note-app`) — complete `.bequite/` tree + ADR + spec + phases + HANDOFF.
+- **Documentation** (8 docs).
+- **CI/release pipeline** — `ci.yml` (5-job matrix Python 3.11–3.14), `release.yml` (PyPI Trusted Publisher OIDC + GitHub Release), `commitlint.yml`.
+
+### Changed
+
+- `cli/bequite/__init__.py::__version__` → `1.0.0`.
+- `cli/pyproject.toml::version` → `1.0.0`. **Development Status classifier** bumped from `4 - Beta` → `5 - Production/Stable`.
+- Root `README.md` — rewritten as the v1.0.0 + v2.0.0-alpha.1 dual-release landing.
+- `docs/RELEASES/v1.0.0.md` — full release notes added.
+
+### Migration / breaking-change notes
+
+v1.0.0 is the first stable release; no breaking changes from v0.20.5. The 1.0 tag marks "API surface stabilized for the v1.x line." Downstream projects forked from pre-1.0:
+
+- **Constitution version**: bump 1.0.0 → 1.3.0; changes are additive (Articles VIII / IX / X added; nothing removed or relaxed).
+- **Receipt schema**: stable since v0.7.0.
+- **CLI command surface**: stable since v0.10.7.
+- **Doctrine schema**: stable since v0.1.1.
+- **Hook surface**: stable since v0.5.2.
+
+### Companion release
+
+[`v2.0.0-alpha.1`](docs/RELEASES/v2.0.0-alpha.1.md) — first pre-release of the Layer 2 Studio Edition (marketing site + dashboard + API). Tagged at the same commit as v1.0.0's successor.
+
+### Honest scope per Article VI
+
+What v1.0.0 does **not** include (per Ahmed's "without 3d model from blender" direction):
+
+- 3D Blender pipeline. R3F scaffold preserved at `studio/marketing/components/three/AgentCharacter3D.tsx` for future contribution.
+- Bidirectional WebSocket terminal (live stdin forwarding) — POST-exec + SSE-output works for the 90% case; live stdin lands v0.21.0+ if needed.
+- Better-Auth full integration — Bearer-token MVP is in place; Better-Auth lands v0.20.x+ with the auth server.
+- Postgres mirror — filesystem-backed today; Postgres lands v2.0.0 with multi-user / cloud operation.
+- PyPI + npm publishes — `release.yml` is wired and tag-triggered. Ahmed pushes the v1.0.0 wheel to PyPI manually (one-way door per Article IV).
+
+### Verification
+
+- API + dashboard both `tsc --noEmit` exit 0.
+- 125/125 Python integration tests green on Python 3.14.
+- Constitution v1.3.0 + 17 ADRs + 13 Doctrines + 14 hooks + 20 personas all consistent across CLAUDE.md / AGENTS.md / activeContext.md / progress.md.
+- Live boot smoke for the Studio surfaces deferred (Bun runtime not in this developer's environment; full smoke = post-PyPI-publish + Bun-equipped CI).
 
 ---
 
@@ -1216,7 +1271,8 @@ Each regulated Doctrine carries a disclaimer: starting points, not substitutes f
 
 This release contains no executable code. It establishes the inviolate base layer (Constitution + Memory Bank + ADR + Doctrine schemas) on which every later sub-version depends.
 
-[Unreleased]: https://github.com/xpShawky/BeQuite/compare/v0.20.5...HEAD
+[Unreleased]: https://github.com/xpShawky/BeQuite/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/xpShawky/BeQuite/compare/v0.20.5...v1.0.0
 [0.20.5]: https://github.com/xpShawky/BeQuite/compare/v0.20.0...v0.20.5
 [0.20.0]: https://github.com/xpShawky/BeQuite/compare/v0.19.5...v0.20.0
 [0.19.5]: https://github.com/xpShawky/BeQuite/compare/v0.19.0...v0.19.5

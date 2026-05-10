@@ -8,6 +8,23 @@ Full sub-version roadmap (`v0.1.0` → `v1.0.0`) lives in `docs/HOW-IT-WORKS.md`
 
 ---
 
+## [0.13.0] — 2026-05-10
+
+### Added — Vibe-handoff exporters (spec-kit-zip + claude-code-skill)
+
+- **`cli/bequite/exporters.py`** (~165 lines) — Two export formats: `spec-kit-zip` (specs/ + .bequite/memory/ + AGENTS.md + CLAUDE.md → zip with manifest) and `claude-code-skill` (skill/ + AGENTS.md + CLAUDE.md → zip with manifest). JSON-frontmatter validation for spec.md (feature/version/status) / plan.md (feature/scale_tier/stack_decided) / tasks.md (feature/phase/task_count) / phases.md (feature/phase_count). CLI: `python -m bequite.exporters {validate,spec-kit-zip,claude-skill}`.
+- **`tests/integration/exporters/test_exporters_smoke.py`** — 8 tests: frontmatter parsing / validation complete + missing keys + unknown-filename / spec-kit-zip creates valid zip with manifest + included files / claude-skill creates valid zip / required-frontmatter-keys complete. **All 8 pass.**
+
+### Changed
+
+- Versions bumped to `0.13.0`.
+
+### Notes
+
+- Combined integration suite: 117 + 8 = **125/125 tests green** on Python 3.14.
+
+---
+
 ## [0.12.0] — 2026-05-10
 
 ### Added — Per-host adapters (universal entry + 9 hosts)

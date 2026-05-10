@@ -8,6 +8,44 @@ The full sub-version roadmap (`v0.1.0` → `v1.0.0`) lives in `docs/HOW-IT-WORKS
 
 ---
 
+## [0.6.0] — 2026-05-10
+
+### Added — Verification gates (Playwright walks)
+
+- `skill/templates/tests/walkthroughs/README.md.tpl` — explains the planner → spec writer → generator → healer pattern + per-Mode rigour table + anti-patterns.
+- `skill/templates/tests/walkthroughs/admin-walk.md.tpl` + `user-walk.md.tpl` — natural-language walkthroughs per role; mobile + RTL + negative-paths + Skeptic kill-shot + evidence to capture.
+- `skill/templates/tests/seed.spec.ts.tpl` — Playwright `setup` project; resets DB, applies migrations, seeds admin + regular users, verifies sign-in via API. Article IV — TEST_*_PASSWORD env vars required.
+- `skill/templates/playwright.config.ts.tpl` — projects per `role × viewport × locale`. CI: 2 retries, 1 worker, JUnit + HTML + JSON reporters; output to `evidence/P6/`.
+- `skill/templates/scripts/self-walk.sh.tpl` — boots app + curl-sweeps every public route. Cheap-curl complement to Playwright.
+- `skill/templates/scripts/smoke.sh.tpl` — API-level smoke; per-endpoint expected status table.
+- `skill/references/playwright-walks.md` — canonical reference for the qa-engineer's pattern. Four-step walk + per-Mode rigour matrix + per-Doctrine standard fixtures + example flow + receipt schema (cross-ref v0.7.0) + forking guidance.
+- `cli/bequite/verify.py` — Phase 6 validation mesh orchestrator. 17-gate matrix per Constitution v1.0.1 (format / lint / typecheck / unit / integration / api / db-migration / seed / e2e / accessibility / build / docker-compose / security-scan / audit / freshness / self-walk / smoke / restore-drill). Per-stack command detection. Stops on first required-gate failure. Saves JSON to `evidence/P6/verify-<timestamp>.json`. Runnable: `python -m cli.bequite.verify`.
+- `cli/bequite/__init__.py::__version__` → `0.6.0`. `cli/pyproject.toml::version` → `0.6.0`.
+
+### Notes
+
+The qa-engineer persona (v0.2.0) prescribed the planner→generator→healer pattern; v0.6.0 ships the templates that pattern operates on + the verify.py orchestrator that wires the gate matrix. Live Playwright planner orchestration (auto-generating .spec.ts via Claude API + MCPs) lands in v0.6.1 alongside the Impeccable bundle.
+
+`tfsec` removed (officially retired into Trivy per repo description).
+
+---
+
+## [0.5.3] — 2026-05-10
+
+### Changed
+
+Repo URL casing fixed across 10 writable files: `xpshawky/bequite` / `xpShawky/bequite` / `xpshawky/BeQuite` → `xpShawky/BeQuite` (matches actual repo at `https://github.com/xpShawky/BeQuite` Ahmed created). `BEQUITE_BOOTSTRAP_BRIEF.md` and `prompts/v1/*` snapshots preserved verbatim (immutable history).
+
+Line-count claims corrected per Article VI (honest reporting): real git counts = 24,132 lines added across 16 commits (now 19+), 153 tracked files. Earlier "30,000+ / 22,000+" estimates were inflated; replaced with git-verified numbers.
+
+README status table refreshed (was stuck showing v0.2.0 as "🟡 committing now"; now reflects all 13 tags through v0.5.2). Doctrine table updated for v0.5.2's three new Doctrines (vibe-defense / mena-pdpl / eu-gdpr).
+
+Quickstart reframed honestly: today vs after-first-push. The `uvx --from git+...` install command works only after the repo is pushed (one-way door; awaits owner authorization). Today's path is `python -m cli.bequite.audit` + `python -m cli.bequite.freshness` from a local checkout.
+
+Remote configured: `origin = https://github.com/xpShawky/BeQuite.git` (fetch + push). NOT pushed.
+
+---
+
 ## [0.5.2] — 2026-05-10
 
 ### Added

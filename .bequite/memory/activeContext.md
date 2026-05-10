@@ -8,7 +8,7 @@
 
 - **Active feature:** `BeQuite v1.0.0` (the build of BeQuite itself)
 - **Active phase:** `phase-1` — Core domain + CLI (master §23 framing)
-- **Active sub-version:** `v0.2.1` (AI automation skill module — committing now; v0.2.0 tagged)
+- **Active sub-version:** `v0.3.0` (Hooks — committing now; v0.2.1 tagged)
 - **Active mode:** `auto` (Ahmed authorised autonomous execution; safety rails per `state/project.yaml::safety_rails`)
 - **Project mode (BeQuite-itself):** Safe Mode (newly named per Constitution v1.0.1)
 - **Skeptic gate state:** `cleared` — merge audit + ADR-008 reviewed; Constitution amendment rationale recorded

@@ -8,6 +8,32 @@ The full sub-version roadmap (`v0.1.0` → `v1.0.0`) lives in `docs/HOW-IT-WORKS
 
 ---
 
+## [0.3.0] — 2026-05-10
+
+### Added
+
+- **10 hook scripts at `skill/hooks/`** (Constitution v1.0.1 Article IV — deterministic gates):
+  - `pretooluse-secret-scan.sh` — regex secrets (AWS / GitHub / Anthropic / OpenAI / Stripe / Slack / JWT / SSH private keys / generic API key shapes) in Edit / Write / Bash. Exit 2.
+  - `pretooluse-block-destructive.sh` — Tier-3 commands per master §19.4 (`rm -rf` outside `/tmp`, `git push --force`, `git reset --hard`, `DROP DATABASE`, `TRUNCATE`, `DELETE` without WHERE, `terraform destroy`, `pulumi destroy`, `kubectl delete namespace`, fork bombs, `mkfs.*`, `dd of=/dev/sd*`). Exit 2.
+  - `pretooluse-verify-package.sh` — diffs new imports / dependencies in `package.json`, `pyproject.toml`, `requirements.txt`, `Cargo.toml`. Verifies via `npm view` / `pypi.org` / `crates.io`. PhantomRaven defense. Allowlist at `skill/references/package-allowlist.md` (drafted v0.4.3). `BEQUITE_OFFLINE=1` escape hatch. Exit 2 on hallucinated package.
+  - `posttooluse-format.sh` — auto-formats by extension (biome / prettier for TS/JS, ruff/black for Python, rustfmt for Rust, gofmt for Go, jq for JSON, prettier for MD/CSS/HTML). Warn-only.
+  - `posttooluse-lint.sh` — biome / eslint / ruff / clippy / `go vet`. Warn-only.
+  - `posttooluse-audit.sh` — lightweight subset of `bequite audit`: hardcoded `font-family: Inter` outside tokens (Doctrine `default-web-saas` Rule 2), `.env*` reads in code (Iron Law IV), telemetry-shaped fetch outside opt-in gate (Doctrine `library-package` Rule 7). Warn-only.
+  - `stop-verify-before-done.sh` — banned-weasel-words check (`should`, `probably`, `seems to`, `appears to`, `I think it works`, `might work`, `hopefully`, `in theory`, etc. — Constitution v1.0.1 Article II). Plus `state/task_index.json` `in_progress` check. Exit 2.
+  - `sessionstart-load-memory.sh` — prints the Memory Bank + ADR + state/ paths the agent must read on session start (Iron Law III).
+  - `sessionstart-cost-budget.sh` — prints active safety rails (cost ceiling, wall-clock ceiling, failure threshold) from `state/project.yaml`.
+  - `stop-cost-budget.sh` — enforces cost ceiling. Reads `.bequite/cache/cost-ledger.json` (token-economist writes; v0.7.0+). 80% warn; 100% block until human override at `.bequite/cache/cost-override.json`. Exit 2 at 100% without override.
+- **`template/.claude/settings.json`** — wires all 10 hooks under their event matchers (PreToolUse / PostToolUse / Stop / SessionStart). Per-hook timeouts. Inline `_comment_bequite` documenting binding Constitution articles.
+- **`tests/integration/hooks/README.md`** — fixture layout + smoke-test commands + hook-to-fixture map + v0.3.0 acceptance criteria + v0.6.0 CI integration plan.
+
+### Notes
+
+All hooks read JSON from stdin (Claude Code hook protocol), parse with `jq`, exit 0 / 2 with reason on stderr. Cross-platform — Linux + macOS bash; Windows via Git Bash. Per Constitution v1.0.1 + master §19.4, **no flag bypasses any hook**. Auto-mode never auto-overrides. Override paths are explicit (ADR amendment, allowlist file, ENV escape, human-approved override file) — none are silent.
+
+`bequite freshness` (v0.4.3+) and `bequite audit` (v0.4.2+) ride on top of these hooks once they ship; the hook scripts contain the safety-critical subset.
+
+---
+
 ## [0.2.1] — 2026-05-10
 
 ### Added
@@ -138,7 +164,8 @@ Each regulated Doctrine carries a disclaimer: starting points, not substitutes f
 
 This release contains no executable code. It establishes the inviolate base layer (Constitution + Memory Bank + ADR + Doctrine schemas) on which every later sub-version depends.
 
-[Unreleased]: https://github.com/xpshawky/bequite/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/xpshawky/bequite/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/xpshawky/bequite/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/xpshawky/bequite/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/xpshawky/bequite/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/xpshawky/bequite/compare/v0.1.1...v0.1.2

@@ -13,23 +13,26 @@
 .bequite/.keys/
 
 # --- Python ---
+# Note: virtualenv install dirs anchored to root with leading slash so they
+# don't silently swallow application source dirs named `lib/` (e.g.
+# studio/api/src/lib/, studio/dashboard/lib/). Same applies to build/dist.
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
+/build/
+/develop-eggs/
+/dist/
+/downloads/
+/eggs/
+/.eggs/
+/lib/
+/lib64/
+/parts/
+/sdist/
+/var/
+/wheels/
 *.egg-info/
 .installed.cfg
 *.egg

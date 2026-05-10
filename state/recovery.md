@@ -17,14 +17,14 @@
 
 ## Where we are
 
-- **Build phase:** phase-3 — Reproducibility + economics complete (v0.7.0 + v0.7.1 + v0.8.0 + v0.8.1 done). Next phase: phase-4 (Examples + e2e harness; v0.9.0 + v0.9.1).
-- **Sub-version in progress:** **v0.9.0** (next) — Three example projects (bookings-saas + ai-tool-wrapper + tauri-note-app) with full seven-phase walks executed; receipts archived; HANDOFFs generated.
-- **Last green sub-version:** **v0.8.1** (Live pricing fetch — pricing.py + vendored fallback + adapter wiring + 14-test integration suite all passing; combined suites 48/48 green on Python 3.14).
-- **Last successful commit (pending):** `feat(v0.8.1): Live pricing fetch — pricing.py + vendored fallback + adapter wiring + 14-test suite`.
-- **Last successful tag (pending):** **v0.8.1**.
+- **Build phase:** phase-4 (Examples + e2e harness) — v0.9.0 done; v0.9.1 next.
+- **Sub-version in progress:** **v0.9.1** (next) — E2E test harness (seven-phase walk + auto-mode + doctrine-loading) + `examples-e2e.yml` GitHub Actions workflow.
+- **Last green sub-version:** **v0.9.0** (Three example projects scaffolded + spec'd; honest scope per Article VI: scaffolds + walkthroughs, not production code).
+- **Last successful commit (pending):** `feat(v0.9.0): Three example projects — scaffolded + spec'd`.
+- **Last successful tag (pending):** **v0.9.0**.
 - **Branch:** `main`.
 - **Remote:** `origin = https://github.com/xpShawky/BeQuite.git` configured. **NOT pushed.** Push requires explicit owner authorization (Iron Law IV; one-way door).
-- **Real git counts (post-v0.8.1, pre-commit):** ~25 commits, 20 tags pending, ~183+ tracked files.
+- **Real git counts (post-v0.9.0, pre-commit):** ~26 commits, 21 tags pending, ~195+ tracked files.
 
 ## What is complete (verified by `git tag -l`)
 
@@ -50,6 +50,7 @@
 | v0.7.1 | Signed receipts: cli/bequite/receipts_signing.py (ed25519 via cryptography lib; per-project keypair: private at .bequite/.keys/private.pem 0600 gitignored, public at .bequite/keys/public.pem 0644 committed; sign_dict + verify_dict + verify_receipts_directory + strict mode) + Receipt.signature additive field + ReceiptStore.write(sign_with=) opt-in signing + bequite verify-receipts [--strict] + bequite keygen + bequite init auto-keygen + 9-test signing suite (all passing); combined 19/19 receipts+signing green |
 | v0.8.0 | Multi-model routing live: cli/bequite/providers/{__init__,anthropic,openai,google,deepseek,ollama}.py (AiProvider Protocol + Completion dataclass + 5 graceful-degrading adapters with hard-coded May-2026 pricing fallback) + cli/bequite/router.py (select_route + dispatch + fallback resolution) + cli/bequite/cost_ledger.py (writes .bequite/cache/cost-ledger.json so existing stop-cost-budget.sh hook is operational) + bequite route {show,list,providers} + bequite ledger {show,reset} CLI groups + 15-test router integration suite (all passing); combined 34/34 receipts+signing+router green |
 | v0.8.1 | Live pricing fetch (best-effort): cli/bequite/pricing.py (~330 lines, cache + 24h TTL + offline fallback + WebFetch best-effort live extraction with regex paragraph parser) + skill/references/pricing-table.md (vendored May-2026 snapshot covering 5 model providers + hosting + auth + database) + provider adapters' estimate_cost_usd consults cache before hard-coded fallback + bequite pricing {show,list,refresh} Click group + 14-test integration suite (all passing); combined 48/48 receipts+signing+router+pricing green |
+| v0.9.0 | Three example projects scaffolded + spec'd: examples/01-bookings-saas (Doctrine default-web-saas; full README + ADR-001 stack with per-rule Doctrine compliance + spec.md with 4 flows + phases.md with 7-phase decomposition + HANDOFF.md with engineer + non-engineer sections); examples/02-ai-tool-wrapper (Doctrine cli-tool; README + ADR-001 reusing BeQuite providers/); examples/03-tauri-note-app (Doctrine desktop-tauri; README + ADR-001 with brief reconciliations applied — NOT Stronghold/altool/EV cert/relic). Honest scope per Article VI: scaffolds + walkthroughs, not production code |
 
 **Seven working Python modules** (smoke-tested; help / CLI output exercised):
 - `python -m cli.bequite.audit` — rule-based, 7 rule packs
@@ -68,7 +69,7 @@ The remaining sub-versions to v1.0.0:
 
 | Sub-version | Scope |
 |---|---|
-| **v0.9.0** (next) | Three example projects: (1) `examples/01-bookings-saas/` Next.js + Hono + Supabase + Clerk + Vercel (Doctrine `default-web-saas`, scale 5K, bookings flow with admin + customer roles); (2) `examples/02-ai-tool-wrapper/` Python CLI + Anthropic SDK + click (Doctrine `cli-tool`, scale solo, markdown summariser); (3) `examples/03-tauri-note-app/` Tauri v2 + SvelteKit + SQLite (Doctrine `desktop-tauri`, local-first note app with OS keychain). Each ships full `.bequite/` tree + specs + receipts archived + HANDOFF.md hand-runnable. |
+| **v0.9.1** (next) | E2E test harness: `tests/e2e/seven-phase-walk.test.ts` drives a fresh project from `bequite init` to `bequite handoff`; asserts artifacts at every phase. `tests/e2e/auto-mode.test.ts` drives `bequite auto` to completion; asserts safety rails. `tests/e2e/doctrine-loading.test.ts` fresh-init with each Doctrine; asserts correct rules loaded. `.github/workflows/examples-e2e.yml` runs the three example projects on every PR + nightly. |
 | v0.8.0 | Live multi-model AiProvider adapters (Anthropic + OpenAI + Google + DeepSeek + Ollama) |
 | v0.8.1 | Pricing fetch + 24h cache + offline fallback |
 | v0.9.0 | 3 example projects (bookings-saas Next/Hono/Supabase + ai-tool-wrapper CLI + tauri-note-app desktop) |
@@ -95,9 +96,9 @@ Nothing structurally failed. Two minor session frictions worth noting:
 Until v0.7.0 ships the receipts system, evidence is the git history + this file + the snapshots.
 
 ```
-git log --oneline       # ~25 commits expected post-v0.8.1
-git tag -l              # 20 tags expected (through v0.8.1)
-find .bequite/memory/ skill/ template/ cli/ docs/ tests/ -type f | wc -l  # ~183+
+git log --oneline       # ~26 commits expected post-v0.9.0
+git tag -l              # 21 tags expected (through v0.9.0)
+find .bequite/memory/ skill/ template/ cli/ docs/ tests/ examples/ -type f | wc -l  # ~195+
 ```
 
 Snapshots:
@@ -108,27 +109,18 @@ Snapshots:
 
 ## What is the next safe task
 
-**Resume v0.9.0 — Three example projects.** Per the build plan §4 (`v0.9.0` row):
+**Resume v0.9.1 — E2E test harness.** Per the build plan §4 (`v0.9.1` row):
 
-1. `examples/01-bookings-saas/` — Next.js (App Router) + Hono backend + Supabase + Clerk + Vercel. Doctrine: `default-web-saas`. Scale: 5K. Bookings flow with admin + customer roles. Full seven-phase walk: P0 discovery → P1 stack ADR → P2 plan + contracts → P3 phases → P4 tasks → P5 implementation → P6 verify (Playwright admin + user walks; axe-core gate; smoke) → P7 HANDOFF + screencast checklist.
-2. `examples/02-ai-tool-wrapper/` — Python CLI + Anthropic SDK + click. Doctrine: `cli-tool`. Scale: solo. CLI that summarises markdown.
-3. `examples/03-tauri-note-app/` — Tauri v2 + SvelteKit + SQLite. Doctrine: `desktop-tauri`. Local-first note app with OS keychain secrets.
+1. `tests/e2e/seven-phase-walk.test.ts` — drives a fresh project from `bequite init` to `bequite handoff`; asserts artifacts at every phase (Memory Bank scaffolded, ADR exists per phase, receipts emit, walkthrough docs present, HANDOFF.md generated).
+2. `tests/e2e/auto-mode.test.ts` — drives `bequite auto` to completion; asserts safety rails (cost ceiling, wall-clock ceiling, 3-failure threshold, banned-word check, hook-block respect).
+3. `tests/e2e/doctrine-loading.test.ts` — fresh init with each Doctrine; asserts correct rules loaded.
+4. `.github/workflows/examples-e2e.yml` — runs the three example projects on every PR + nightly cron.
+5. Note: implementation may be Python-based (since BeQuite CLI is Python) instead of TypeScript per the plan. The plan mentions TypeScript for these tests; honest reality is Python aligns better with the project. **Either path is acceptable** — choose Python for consistency.
+6. Bumps: `__init__.py` + `pyproject.toml` → `0.9.1`. CHANGELOG. State. Commit + tag.
 
-Each example ships:
-- Full `.bequite/` tree (memory + decisions + receipts + keys).
-- Specs at `specs/<feature>/{spec,plan,phases,tasks}.md`.
-- Receipts archived at `.bequite/receipts/`.
-- HANDOFF.md hand-runnable by a second engineer.
-- Per-example `README.md` with what was built + how to run.
-- Optional: `docs/screencasts/<example>.mp4` (deferred to v1.0.0 release prep).
+Acceptance for v0.9.1: e2e tests green on local + CI; nightly cron confirmed in workflow yaml.
 
-Implementation strategy:
-- Use `bequite init` (now augmented v0.7.1+) to scaffold each example tree.
-- Drive each through phases manually (auto-mode lands v0.10.0; until then this is supervised execution).
-- The exercise validates: scaffolding correctness, doctrine loading, hooks firing, receipts emitting (manual emit via `bequite receipts emit`), bequite verify executing, HANDOFF generating.
-- Acceptance: each example's `bequite verify` returns green; HANDOFF.md is hand-runnable.
-
-After v0.9.0: v0.9.1 (e2e harness) → v0.10.0 (auto-mode state machine) → ... → v1.0.0.
+After v0.9.1: v0.10.0 (auto-mode state machine + safety rails + heartbeat) → v0.10.1 (auto-hardening) → v0.11.0 (MENA) → v0.12.0 (host adapters) → v0.13.0 (vibe-handoff exporters) → v0.14.0 (docs) → v0.15.0 (release-eng) → **v1.0.0**. **5 sub-versions remain.**
 
 ## Commands to run first (on resume)
 
@@ -191,7 +183,7 @@ For any agent resuming this build:
 
 ## Suggested next phase
 
-Continue v0.9.0 → v0.9.1 → v0.10.0 → v0.10.1 → v0.11.0 → v0.12.0 → v0.13.0 → v0.14.0 → v0.15.0 → **v1.0.0** per the main plan at `.bequite/memory/prompts/v1/2026-05-10_initial-plan.md`. **9 sub-versions remain.**
+Continue v0.9.1 → v0.10.0 → v0.10.1 → v0.11.0 → v0.12.0 → v0.13.0 → v0.14.0 → v0.15.0 → **v1.0.0** per the main plan at `.bequite/memory/prompts/v1/2026-05-10_initial-plan.md`. **8 sub-versions remain.**
 
 After v1.0.0: pause. Layer 2 Studio (v2.0.0+) is a separate plan that requires Ahmed's authorization to begin (see ADR-008 / docs/merge/MASTER_MD_MERGE_AUDIT.md Bucket D).
 

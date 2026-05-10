@@ -8,6 +8,46 @@ The full sub-version roadmap (`v0.1.0` → `v1.0.0`) lives in `docs/HOW-IT-WORKS
 
 ---
 
+## [0.9.0] — 2026-05-10
+
+### Added — Three example projects (scaffolded + spec'd)
+
+- **`examples/README.md`** — entry point + forking guidance.
+- **`examples/01-bookings-saas/`** (Doctrine: `default-web-saas`):
+  - `README.md` — what was built / how to run / phases.
+  - `.bequite/memory/decisions/ADR-001-stack.md` — full stack ADR (Next.js + Hono + Supabase + Better-Auth + Vercel + Zod + TanStack + Playwright + axe; per-rule Doctrine compliance check).
+  - `specs/bookings-flow/spec.md` — 4 flows (sign-up + book / admin availability / admin dashboard / tenant invite); non-goals; constraints; Skeptic kill-shot ("concurrent-booking race condition").
+  - `specs/bookings-flow/phases.md` — phase-1 through phase-7 decomposition with exit gates + per-phase Skeptic kill-shots.
+  - `HANDOFF.md` — engineer + non-engineer ("vibe-handoff") sections; how to run locally + deploy + add a feature; risk register; cost estimate ($45-90/mo at 5k MAU); Skeptic kill-shot for the handoff itself.
+- **`examples/02-ai-tool-wrapper/`** (Doctrine: `cli-tool`):
+  - `README.md` — `mdsum` CLI summarizes Markdown via Claude. Stack table + per-phase walkthrough inline + cost-per-invocation analysis.
+  - `.bequite/memory/decisions/ADR-001-stack.md` — Python 3.11+ / hatchling / click / rich / httpx / anthropic SDK; reuses BeQuite's `cli/bequite/providers/` adapters; full per-rule Doctrine compliance.
+- **`examples/03-tauri-note-app/`** (Doctrine: `desktop-tauri`):
+  - `README.md` — `vault-notes` local-first encrypted note app. Tauri v2 + SvelteKit + SQLite + AES-GCM + OS keychain. Per-phase walkthrough inline.
+  - `.bequite/memory/decisions/ADR-001-stack.md` — full stack ADR with brief reconciliations baked in (NOT Stronghold; NOT altool; NOT EV cert; NOT relic; per BeQuite v0.1.0 brief verification). Codesigning matrix (notarytool macOS + AzureSignTool Windows). Risk register includes AKV cert 1-yr cap.
+
+### What v0.9.0 explicitly does not ship
+
+Per Article VI honest reporting: production-quality code for each example is **not** in this commit. Each example ships:
+- The `.bequite/` tree shape (proves the harness scaffolds correctly).
+- A defensible stack ADR per Doctrine.
+- A seven-phase walkthrough document.
+- A HANDOFF (engineer + vibe-handoff sections, for example 1; README-as-handoff for examples 2 + 3).
+
+The code walkthroughs land via v0.9.1's e2e harness (which drives `bequite auto` on each example) and downstream example iterations post-v1.0.0. **Three full Production apps in one autonomous commit would not be honest.**
+
+### Changed
+
+- `cli/bequite/__init__.py::__version__` → `0.9.0`.
+- `cli/pyproject.toml::version` → `0.9.0`.
+
+### Notes
+
+- All three examples cross-reference: parent BeQuite repo, Doctrine, frontend-stack reference (where relevant), and the v0.7.0+v0.7.1 receipts/signing system that they will use post-implementation.
+- Phase-4 of the master plan (Examples + e2e harness) begins here; v0.9.1 closes it.
+
+---
+
 ## [0.8.1] — 2026-05-10
 
 ### Added — Live pricing fetch (best-effort)

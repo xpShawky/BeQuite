@@ -17,14 +17,14 @@
 
 ## Where we are
 
-- **Build phase:** phase-2 — Verification + design module (covers v0.6.0 + v0.6.1).
-- **Sub-version in progress:** **v0.6.1** — Frontend Quality Module (Impeccable bundle + shadcn/Magic/context7 MCP wiring + tokens.css.tpl + axe-core gate).
-- **Last green sub-version:** **v0.6.0** (Verification gates; tagged 2026-05-10).
-- **Last successful commit:** `8e088e4 feat(v0.6.0): Verification gates — Playwright walks + verify.py orchestrator` + a memory-snapshot chore commit follows.
-- **Last successful tag:** **v0.6.0**.
+- **Build phase:** phase-2 — Verification + design module COMPLETE (covers v0.6.0 + v0.6.1; both shipped).
+- **Sub-version in progress:** **v0.7.0** (next) — Reproducibility receipts: Pydantic-modeled receipt emitter + storage + chain-hash + cost roll-up.
+- **Last green sub-version:** **v0.6.1** (Frontend Quality Module — vendored Impeccable + tokens.css.tpl + frontend-stack + frontend-mcps + axe gate + default-web-saas v1.1.0).
+- **Last successful commit (pending):** `feat(v0.6.1): Frontend Quality Module — vendored Impeccable + tokens.css + frontend references + axe gate + default-web-saas v1.1.0`.
+- **Last successful tag (pending):** **v0.6.1**.
 - **Branch:** `main`.
 - **Remote:** `origin = https://github.com/xpShawky/BeQuite.git` configured. **NOT pushed.** Push requires explicit owner authorization (Iron Law IV; one-way door).
-- **Real git counts:** 19 commits, 15 tags, 153 tracked files.
+- **Real git counts (post-v0.6.1, pre-commit):** ~21 commits, 16 tags pending, ~167+ tracked files.
 
 ## What is complete (verified by `git tag -l`)
 
@@ -45,6 +45,7 @@
 | v0.5.2 | **Article IX Cybersecurity** (Constitution v1.2.0; ADR-010): security-auditor + pentest-engineer + cve-watcher + disclosure-timer (4 new personas; total 17) + 3 hooks (pentest-authorization / no-malware / cve-poc-context) + scan-and-trigger template + RoE template + 3 Doctrines (vibe-defense / mena-pdpl / eu-gdpr) |
 | v0.5.3 | URL casing fix (`xpshawky/bequite` → `xpShawky/BeQuite`); inflated-count corrections; remote configured |
 | v0.6.0 | Verification gates: walkthrough templates (admin/user) + seed.spec.ts + playwright.config.ts + self-walk + smoke + skill/references/playwright-walks.md + cli/bequite/verify.py |
+| v0.6.1 | Frontend Quality Module: vendored Impeccable bundle (.pinned-commit + ATTRIBUTION + SKILL.md + 3 reference files + commands/CATALOG.md + 4 marquee command dispatch contracts) + skill/templates/tokens.css.tpl + skill/references/frontend-stack.md + skill/references/frontend-mcps.md + axe-core gate (workflow tpl + a11y specs + playwright.config.ts axe-projects) + default-web-saas Doctrine v1.0.0 → v1.1.0 |
 
 **Three working Python modules** (smoke-tested via `python -m`; help output prints):
 - `python -m cli.bequite.audit` — rule-based, 7 rule packs
@@ -57,8 +58,7 @@ The remaining sub-versions to v1.0.0:
 
 | Sub-version | Scope |
 |---|---|
-| **v0.6.1** (next) | Frontend Quality Module: vendor `pbakaus/impeccable` (verified ~26.6k stars, 23 commands; pinned snapshot at `skill/skills-bundled/impeccable/`); shadcn registry MCP wiring (built into shadcn CLI v3+); `@21st-dev/magic` MCP; `context7` MCP (Upstash); `tokens.css.tpl`; axe-core gate config; update `default-web-saas` Doctrine |
-| v0.7.0 | Receipts JSON schema + emitter + storage |
+| **v0.7.0** (next) | Receipts JSON schema + emitter + storage at `.bequite/receipts/<sha>-<phase>.json`; Pydantic schema (version + session_id + phase + timestamp_utc + model + input{prompt_hash, memory_snapshot_hash} + output{diff_hash, files_touched} + tools_invoked[] + tests + cost + doctrine[] + constitution_version + parent_receipt); `bequite cost` reads receipts and rolls up. |
 | v0.7.1 | ed25519 signing + `bequite verify-receipts` |
 | v0.8.0 | Live multi-model AiProvider adapters (Anthropic + OpenAI + Google + DeepSeek + Ollama) |
 | v0.8.1 | Pricing fetch + 24h cache + offline fallback |
@@ -86,48 +86,60 @@ Nothing structurally failed. Two minor session frictions worth noting:
 Until v0.7.0 ships the receipts system, evidence is the git history + this file + the snapshots.
 
 ```
-git log --oneline       # 19 clean commits
-git tag -l              # 15 tags
-find .bequite/memory/ skill/ template/ cli/ docs/ -type f | wc -l  # 153 files
+git log --oneline       # ~21 commits expected post-v0.6.1
+git tag -l              # 16 tags expected (through v0.6.1)
+find .bequite/memory/ skill/ template/ cli/ docs/ -type f | wc -l  # ~167+
 ```
 
 Snapshots:
 - `.bequite/memory/prompts/v1/2026-05-10_initial-plan.md` — the approved plan ratified via ExitPlanMode (early session)
 - `.bequite/memory/prompts/v1/2026-05-10_initial-brief.md` — original brief preserved
 - `.bequite/memory/prompts/v2/2026-05-10_constitution-v1.2.0.md` + ADR-009 + ADR-010 (v0.5.2)
-- `.bequite/memory/prompts/v3/` (this snapshot) — Constitution v1.2.0 + state/recovery.md + activeContext + progress + ADRs
+- `.bequite/memory/prompts/v3/` (this snapshot) — Constitution v1.2.0 + state/recovery.md + activeContext + progress + ADRs (taken pre-v0.6.1; v0.6.1 changes layered on top during this session)
 
 ## What is the next safe task
 
-**Resume v0.6.1 — Frontend Quality Module.** Per the build plan §4 (`v0.6.1` row):
+**Resume v0.7.0 — Reproducibility receipts.** Per the build plan §4 (`v0.7.0` row):
 
-1. Vendor `pbakaus/impeccable` snapshot at `skill/skills-bundled/impeccable/`. Pin the commit in `skill/skills-bundled/impeccable/.pinned-commit`. Attribute Paul Bakaus in `ATTRIBUTION.md` (MIT-license-respecting). Note from session research: the repo is verified ~26.6k stars, 23 commands.
-2. Wire 23 Impeccable commands as `bequite design <command>` aliases. The slash-command surface is structurally in place via v0.4.0 (`design-audit.md` + `impeccable-craft.md`). v0.6.1 documents the 23 specific names + maps each to its Impeccable behaviour.
-3. shadcn registry MCP wiring: built into shadcn CLI v3+ per session research (NOT third-party). Document in `default-web-saas` Doctrine.
-4. 21st.dev Magic MCP wiring: `@21st-dev/magic`. Document API-key requirement.
-5. context7 MCP wiring: Upstash version-pinned docs.
-6. tweakcn link in stack-matrix; theme JSON template.
-7. `templates/tokens.css.tpl` — design tokens with named, deliberate font choice.
-8. axe-core gate in CI workflow (under `.github/workflows/`).
-9. Update `default-web-saas` Doctrine to reference all of the above.
+1. Author `cli/bequite/receipts.py` with a Pydantic model for the receipt schema.
+2. Schema fields:
+   - `version` (str, "1")
+   - `session_id` (UUID)
+   - `phase` (literal P0..P7)
+   - `timestamp_utc` (ISO 8601)
+   - `model` (object: name, reasoning_effort, fallback_model)
+   - `input` (object: prompt_hash sha256, memory_snapshot_hash sha256)
+   - `output` (object: diff_hash sha256, files_touched list)
+   - `tools_invoked` (list of: name, args_hash sha256, exit code)
+   - `tests` (object: command, exit, stdout_hash sha256)
+   - `cost` (object: input_tokens, output_tokens, usd)
+   - `doctrine` (list of active doctrines)
+   - `constitution_version` (semver)
+   - `parent_receipt` (sha256 chain pointer; null for first receipt of a session)
+3. Storage: `.bequite/receipts/<sha>-<phase>.json` (sha is the receipt's own content-hash).
+4. Update `bequite cost` to walk receipts and roll up by session / phase / day.
+5. Emit a receipt at every phase transition (currently no-op since auto-mode lands v0.10.0; but the emitter is ready).
+6. Add receipt-replay test that reconstructs prompt + memory state from receipt content.
+7. Update `cli/bequite/__init__.py::__version__` → `0.7.0` and `cli/pyproject.toml::version` → `0.7.0`.
+8. Update CHANGELOG, activeContext, progress, recovery; commit + tag v0.7.0.
 
-Acceptance for v0.6.1: `bequite design audit` runs on a fresh shadcn-based project; `tokens.css` presence enforced; axe-core gate fails a planted gray-on-color violation.
+Acceptance for v0.7.0: receipts emitted on every phase transition; `bequite cost --since v0.6.0` returns a roll-up; receipt-replay test reconstructs prompt + memory state from receipt content.
 
 ## Commands to run first (on resume)
 
 ```bash
 # Orient
-cat .bequite/memory/activeContext.md       # this file
+cat .bequite/memory/activeContext.md       # most-recent state
 cat state/current_phase.md
 cat state/recovery.md                       # this file
 
 # Verify git state
-git -C "<repo>" log --oneline | head -5
-git -C "<repo>" tag -l                      # expect 15 tags through v0.6.0
-git -C "<repo>" status                      # expect clean
+git log --oneline | head -5
+git tag -l                                  # expect 16 tags through v0.6.1
+git status                                  # expect clean
 
 # Smoke-test the three working Python modules
-cd "<repo>/cli"
+cd cli/
 python -m bequite.audit --help
 python -m bequite.freshness --help
 python -m bequite.verify --help
@@ -163,7 +175,7 @@ For any agent resuming this build:
 
 ## Suggested next phase
 
-Continue v0.6.1 → v0.7.0 → v0.7.1 → v0.8.0 → v0.8.1 → v0.9.0 → v0.9.1 → v0.10.0 → v0.10.1 → v0.11.0 → v0.12.0 → v0.13.0 → v0.14.0 → v0.15.0 → **v1.0.0** per the main plan at `.bequite/memory/prompts/v1/2026-05-10_initial-plan.md`. **14 sub-versions remain.**
+Continue v0.7.0 → v0.7.1 → v0.8.0 → v0.8.1 → v0.9.0 → v0.9.1 → v0.10.0 → v0.10.1 → v0.11.0 → v0.12.0 → v0.13.0 → v0.14.0 → v0.15.0 → **v1.0.0** per the main plan at `.bequite/memory/prompts/v1/2026-05-10_initial-plan.md`. **13 sub-versions remain.**
 
 After v1.0.0: pause. Layer 2 Studio (v2.0.0+) is a separate plan that requires Ahmed's authorization to begin (see ADR-008 / docs/merge/MASTER_MD_MERGE_AUDIT.md Bucket D).
 

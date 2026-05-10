@@ -6,51 +6,52 @@
 
 ## Build phase
 
-- **Phase:** `phase-1` — Core domain + CLI (master §23 framing)
-- **Sub-version:** Just tagged `v0.4.1`. Next: `v0.4.2` (bequite audit Python implementation).
-- **Last green sub-version:** `v0.4.1` (BeQuite-unique commands; committed + tagged 2026-05-10)
+- **Phase:** `phase-2` — Verification + design module (covers v0.6.0 + v0.6.1, both COMPLETE).
+- **Sub-version:** Just tagged `v0.6.1`. Next: **`v0.7.0`** (Reproducibility receipts).
+- **Last green sub-version:** `v0.6.1` (Frontend Quality Module — vendored Impeccable + tokens.css.tpl + frontend-stack reference + frontend-mcps reference + axe-core gate; default-web-saas Doctrine v1.0.0 → v1.1.0).
 - **Mode:** Safe Mode (master §4)
-- **Active doctrines:** `library-package`, `cli-tool`, `mena-bilingual`
-- **Constitution version:** `v1.0.1`
+- **Active doctrines (BeQuite-itself):** `library-package`, `cli-tool`, `mena-bilingual` (full content lands v0.11.0)
+- **Constitution version:** `v1.2.0` (9 Iron Laws; Modes; 12 Doctrines; Definition-of-done)
 
-## What this sub-version is doing
+## What this sub-version (just tagged) shipped
 
-`v0.2.0` is the **Skill orchestrator**. The brain of the harness.
+`v0.6.1` is the **Frontend Quality Module**. Wires the design discipline the brief demanded.
 
-Completed in this commit:
-- ✅ `skill/SKILL.md` — Anthropic Skills frontmatter (name, description ≤1024 chars, allowed-tools), orchestrator persona, 7-phase router, mode selector (Fast/Safe/Enterprise), 19-command surface (master's 12 + BeQuite's 7 unique), routing matrix reference, hooks reference, auto-mode reference, banned-weasel-words enforcement.
-- ✅ 11 persona files at `skill/agents/`: product-owner, research-analyst, software-architect, frontend-designer (Impeccable-loaded for frontend Doctrines), backend-engineer, database-architect, qa-engineer, security-reviewer, devops-engineer, token-economist, **skeptic** (adversarial twin — BeQuite's unique addition).
-- ✅ `skill/routing.json` — default model routing matrix per phase + persona. Anthropic primary; OpenAI / Google / DeepSeek / Ollama as fallback per provider abstraction. Aider architect mode pattern (cheap writes + frontier review). AkitaOnRails 2026 split-only-when-genuinely-parallel rule encoded.
-- ✅ `skill/templates/bequite.config.toml.tpl` — per-project config schema. mode, audience, doctrines, scale_tier, compliance, locales, safety_rails, routing overrides, providers (env-var-only), freshness, receipts, evidence, memory, hosts, skills, telemetry, mena_bilingual.
-- ✅ `template/.claude/skills/bequite/README.md` — fresh-project skill-install target (`bequite skill install` v0.12.0 will populate). Documents the copy-not-symlink decision.
+Completed:
+- ✅ `skill/skills-bundled/impeccable/` — vendored snapshot of pbakaus/impeccable (MIT, attributed). `.pinned-commit` + `ATTRIBUTION.md` + `README.md` + `SKILL.md` + `references/{principles,anti-patterns,aesthetic-targets}.md` + `commands/CATALOG.md` + `commands/{craft,audit,harden,polish}.md` (4 marquee dispatch contracts; remaining 19 catalogued in CATALOG.md).
+- ✅ `skill/templates/tokens.css.tpl` — design tokens with deliberate font-choice comment (Doctrine Rule 2 enforced at the template level), 3-color system (primary + neutral + accent + system-state), strict 4/8/12/16/24/32/48/64/96/128 spacing scale, restrained radius/shadow tokens, ease-out motion (NEVER bounce/elastic; Doctrine Rule 6), light + dark theme overrides, `[dir="rtl"]` overrides for `mena-bilingual` (Tajawal/Cairo/Readex Pro), `prefers-reduced-motion` handling.
+- ✅ `skill/references/frontend-stack.md` — verified May-2026 library list with license flags (Sentry BSL/FSL post-2023; AGPL components flagged for closed-source distribution).
+- ✅ `skill/references/frontend-mcps.md` — wiring guide: shadcn registry MCP (built into shadcn CLI v3+; no separate install), 21st.dev Magic MCP (`@21st-dev/magic`; API key required), context7 MCP (Upstash; free), tweakcn (visual theme editor; not an MCP).
+- ✅ axe-core gate: `skill/templates/.github/workflows/axe.yml.tpl` (workflow template; PR + nightly + manual; HTML+JSON evidence retained 30d) + `skill/templates/tests/a11y/{admin,user}/axe-{admin,user}.spec.ts.tpl` (per-route axe analysis with WCAG 2.0+2.1 A+AA tags) + `skill/templates/playwright.config.ts.tpl` extended with `axeProjects` (axe-admin + axe-user).
+- ✅ `skill/doctrines/default-web-saas.md` bumped 1.0.0 → 1.1.0 (additive only — Rules 1–14 unchanged in behavior; new section 5 cross-references all v0.6.1 artifacts; sections 6/7/8 renumbered).
+- ✅ `cli/bequite/__init__.py::__version__` → `0.6.1`. `cli/pyproject.toml::version` → `0.6.1`.
+- ✅ `CHANGELOG.md` — v0.6.1 entry added with full artifact + bump details.
 
 ## Next sub-version
 
-After `v0.2.0`: **`v0.3.0` — Hooks (deterministic gates)**.
+After `v0.6.1`: **`v0.7.0` — Reproducibility receipts (JSON)**.
 
-Tasks for v0.3.0:
-1. `skill/hooks/pretooluse-secret-scan.sh` — regex for API keys, JWTs, AWS access patterns. Exit 2.
-2. `skill/hooks/pretooluse-block-destructive.sh` — Tier-3 commands (rm -rf, terraform destroy, DROP DATABASE, git push -f, git reset --hard). Exit 2.
-3. `skill/hooks/pretooluse-verify-package.sh` — diff new imports vs registry. PhantomRaven defense. Exit 2.
-4. `skill/hooks/posttooluse-format.sh` — auto-format (prettier/biome/black/ruff/clippy).
-5. `skill/hooks/posttooluse-lint.sh` — warn-only lint.
-6. `skill/hooks/stop-verify-before-done.sh` — banned-weasel-words check + incomplete-task check. Exit 2.
-7. `skill/hooks/sessionstart-load-memory.sh` — preload Memory Bank + active ADRs + state/recovery.md.
-8. `skill/hooks/sessionstart-cost-budget.sh` — load cost ceiling.
-9. `tests/integration/hooks/` — fixtures + assertions per hook.
-10. `template/.claude/settings.json` — hooks wired for fresh-project.
+Tasks for v0.7.0:
+1. `cli/bequite/receipts.py` — Pydantic-modeled receipt emitter.
+2. Schema: version + session_id + phase + timestamp_utc + model{name, reasoning_effort, fallback_model} + input{prompt_hash, memory_snapshot_hash} + output{diff_hash, files_touched} + tools_invoked[] + tests + cost{input_tokens, output_tokens, usd} + doctrine[] + constitution_version + parent_receipt (chain hash).
+3. Storage at `.bequite/receipts/<sha>-<phase>.json`.
+4. `bequite cost` walks receipts and rolls up.
+5. Receipt-replay test reconstructs prompt + memory state.
+6. Updates: `cli/bequite/__init__.py` + `cli/pyproject.toml` → `0.7.0`; CHANGELOG entry; activeContext + progress + recovery; commit + tag.
 
-## Open questions (none blocking v0.1.2)
+After v0.7.0: v0.7.1 (ed25519 signing), v0.8.0 (multi-model live), v0.8.1 (live pricing), v0.9.0 (3 examples), v0.9.1 (e2e harness), v0.10.0 (auto-mode), v0.10.1 (auto-mode hardening), v0.11.0 (MENA bilingual), v0.12.0 (host adapters), v0.13.0 (vibe-handoff exporters), v0.14.0 (docs), v0.15.0 (release-eng), **v1.0.0** (final).
 
-- E1 — GitHub org / repo name (`xpShawky/BeQuite` default; confirm before remote push, no remote configured)
-- E2 — PyPI package name + ownership (will block v0.5.0 release)
-- E3 — Studio (v2.0.0+) timing (after v1.0.0 ships, default)
-- E4 — Telemetry policy (off entirely; pending ADR-002 in v0.7.0)
-- E5 — Doctrine distribution model (separate org for community; pending in v0.12.0)
-- E6 — MENA bilingual Researcher seeds (Ahmed seeds list at v0.11.0)
-- E7 — Codex 5.5 review-mode role (review-only default; pending v0.8.0)
+## Open questions (none blocking)
 
-None of these block v0.1.2 → v0.5.x progress.
+- E1 — GitHub org / repo: `xpShawky/BeQuite` confirmed (Ahmed created; remote configured `origin = https://github.com/xpShawky/BeQuite.git`; NOT pushed).
+- E2 — PyPI package name + ownership — blocks v0.5.0 PyPI release / v1.0.0 final.
+- E3 — Studio (v2.0.0+) timing — after v1.0.0 ships.
+- E4 — Telemetry policy — off entirely; pending ADR-002 in v0.7.0.
+- E5 — Doctrine distribution model (community fork org) — pending in v0.12.0.
+- E6 — MENA bilingual Researcher seeds — Ahmed seeds list at v0.11.0.
+- E7 — Codex 5.5 review-mode role — review-only default; pending v0.8.0.
+
+None of these block v0.7.0+ progress.
 
 ## Cost / wall-clock telemetry (this session)
 

@@ -1,16 +1,18 @@
 ---
 name: default-web-saas
-version: 1.0.0
+version: 1.1.0
 applies_to: [web-saas, frontend]
-supersedes: null
+supersedes: default-web-saas@1.0.0
 maintainer: Ahmed Shawky (xpShawky)
 ratification_date: 2026-05-10
 license: MIT
 ---
 
-# Doctrine: default-web-saas v1.0.0
+# Doctrine: default-web-saas v1.1.0
 
 > The default Doctrine BeQuite ships for web SaaS projects with a frontend. Loaded by `.bequite/bequite.config.toml::doctrines = ["default-web-saas"]`. Stacks with `mena-bilingual` cleanly when both are loaded (mena-bilingual adds RTL + Arabic; default-web-saas governs the rest of UI/UX).
+>
+> v1.1.0 (BeQuite v0.6.1) wires the Frontend Quality Module: bundled Impeccable skill (`skill/skills-bundled/impeccable/`), tokens template (`skill/templates/tokens.css.tpl`), MCPs (`skill/references/frontend-mcps.md`), library reference (`skill/references/frontend-stack.md`), and axe-core gate workflow + Playwright project (`skill/templates/.github/workflows/axe.yml.tpl` + `skill/templates/tests/a11y/`). Rules 1–14 are unchanged in behavior; cross-references updated.
 
 ## 1. Scope
 
@@ -171,35 +173,87 @@ When the Architect writes the stack ADR for a project loaded with this Doctrine,
 5. **CSP / HSTS check** — actual headers from a running server.
 6. **`bequite audit`** — Iron Laws + this Doctrine's rules.
 
-## 5. Examples and references
+## 5. Frontend Quality Module (v0.6.1+)
+
+When this Doctrine loads, the **Frontend Quality Module** wires automatically. It comprises:
+
+### 5.1 Bundled design skill — Impeccable
+
+- **Path:** `skill/skills-bundled/impeccable/`
+- **Source:** vendored snapshot of [pbakaus/impeccable](https://github.com/pbakaus/impeccable) (MIT, attributed in `ATTRIBUTION.md`).
+- **Pinned commit:** see `.pinned-commit`.
+- **Loaded by:** the **frontend-designer** persona (`skill/agents/frontend-designer.md`).
+- **Surfaces:** 23 commands (`craft, teach, document, extract, shape, critique, audit, polish, bolder, quieter, distill, harden, onboard, animate, colorize, typeset, layout, delight, overdrive, clarify, adapt, optimize, live`) catalogued at `skill/skills-bundled/impeccable/commands/CATALOG.md`. Marquee commands (`craft`, `audit`, `harden`, `polish`) have detailed dispatch contracts.
+- **Slash commands that wrap them:** `/bequite.design-audit` (diagnostic) and `/bequite.impeccable-craft <command>` (apply).
+
+### 5.2 Tokens template
+
+- **Path:** `skill/templates/tokens.css.tpl`
+- **Lands at:** `apps/web/src/styles/tokens.css` (or equivalent) per `bequite init`.
+- **Enforces:** Rules 1+2 (tokens-only design + recorded font choice). Includes light/dark themes + RTL fallback (mena-bilingual) + reduced-motion handling.
+
+### 5.3 Frontend stack reference
+
+- **Path:** `skill/references/frontend-stack.md`
+- **Contents:** verified May-2026 library list — components (shadcn/ui v3+, Radix, HeadlessUI, tweakcn, Aceternity, Magic, Origin), frameworks (Next, Remix, Astro, SvelteKit, Nuxt), styling (Tailwind v4+, Panda, CSS Modules), type-safety (Zod, Valibot), data (TanStack Query, SWR, tRPC, Hono RPC), state (Zustand, Jotai), forms (React Hook Form, TanStack Form, Conform), auth (Better-Auth, Clerk, Supabase Auth, Auth0/WorkOS), a11y (axe-core, axe-playwright, react-aria), i18n (next-intl, i18next, lingui), testing (Playwright, Vitest, Storybook, MSW), perf (Vite, Turbopack, rspack, Lighthouse CI), observability (Sentry — license-flagged, PostHog, OTel-JS).
+- **License flags called out** for each: MIT/Apache-clean vs proprietary vs BSL/FSL (Sentry post-2023 license shift).
+
+### 5.4 Frontend MCP wiring
+
+- **Path:** `skill/references/frontend-mcps.md`
+- **Wires:** shadcn Registry MCP (built into shadcn CLI v3+; no separate install), 21st.dev Magic MCP (`@21st-dev/magic`; API key required), context7 MCP (Upstash; free tier), tweakcn (visual theme editor; not an MCP).
+- **Provides:** project-kickoff sequence, custom-component playbook, stack-bump refresh playbook, anti-patterns to avoid.
+
+### 5.5 axe-core gate
+
+- **Workflow template:** `skill/templates/.github/workflows/axe.yml.tpl`
+- **Playwright a11y specs:** `skill/templates/tests/a11y/{admin,user}/axe-{admin,user}.spec.ts.tpl`
+- **playwright.config.ts.tpl** updated to ship `axe-admin` + `axe-user` projects.
+- **Behavior:** runs on every PR + nightly cron. Walks every admin route + every user route; runs axe-core; fails the build on any WCAG AA violation.
+- **Evidence:** results JSON saved to `evidence/P6/axe/` — both pass and fail traces archived.
+
+## 6. Examples and references
 
 - shadcn/ui: https://ui.shadcn.com/
 - tweakcn: https://tweakcn.com/
 - Aceternity UI: https://ui.aceternity.com/
+- Magic UI: https://magicui.design/
+- Origin UI: https://originui.com/
 - 21st.dev Magic: https://21st.dev/
 - context7: https://github.com/upstash/context7
+- Impeccable (upstream): https://github.com/pbakaus/impeccable
+- axe-core: https://github.com/dequelabs/axe-core
 - Better-Auth: https://better-auth.com/
 - Clerk: https://clerk.com/pricing
 - Supabase: https://supabase.com/pricing
 - OWASP Top 10 (Web): https://owasp.org/www-project-top-ten/
 - WCAG AA: https://www.w3.org/WAI/WCAG2AA-Conformance
 
-## 6. Forking guidance
+## 7. Forking guidance
 
 Common forks:
 - **Plain-shadcn** — drop the Magic MCP recommendation when offline-only.
 - **Frontend-only** — drop the database/auth rules when decoupled from backend.
 - **Marketing-only** — drop the auth + RLS rules; keep design tokens + axe-core.
+- **MENA-bilingual stack** — load `mena-bilingual` Doctrine alongside this; `tokens.css.tpl` already ships the RTL fallback + Arabic font stack.
 
 Pattern:
 1. Copy this file to `.bequite/doctrines/<your-name>.md`.
 2. Bump `version` to `0.1.0`.
-3. Set `supersedes: default-web-saas@1.0.0`.
+3. Set `supersedes: default-web-saas@1.1.0`.
 4. Document changes in a `## Changes` section.
 5. Load via `.bequite/bequite.config.toml::doctrines = ["<your-name>"]`.
 
-## 7. Changelog
+## 8. Changelog
 
 ```
+1.1.0 — 2026-05-10 — Frontend Quality Module wired (BeQuite v0.6.1).
+                     - Bundled Impeccable skill at skill/skills-bundled/impeccable/ (MIT, attributed Paul Bakaus, pinned commit).
+                     - tokens.css.tpl with deliberate font choice + light/dark themes + RTL fallback + reduced-motion.
+                     - frontend-stack.md (verified May-2026 library list with license flags).
+                     - frontend-mcps.md (shadcn registry MCP / 21st.dev Magic / context7 / tweakcn).
+                     - axe-core gate: workflow template + Playwright a11y specs + playwright.config.ts axe-projects.
+                     Rules 1–14 unchanged in behavior; cross-references updated. Changes are additive-only —
+                     v1.0.0 projects continue to satisfy v1.1.0 with no migration required.
 1.0.0 — 2026-05-10 — initial draft. Rules 1–14 ratified. Stack matrix reflects May 2026 reality (post brief reconciliation).
 ```

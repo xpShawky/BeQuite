@@ -6,12 +6,12 @@
 
 ## Current state
 
-- **Sub-version:** v0.6.0 just tagged. **15 sub-versions tagged: v0.1.0 / v0.1.1 / v0.1.2 / v0.2.0 / v0.2.1 / v0.3.0 / v0.4.0 / v0.4.1 / v0.4.2 / v0.4.3 / v0.5.0 / v0.5.1 / v0.5.2 / v0.5.3 / v0.6.0.** Real counts (git-verified after v0.5.3 housekeeping): **24,132 lines added net across 19 commits; 153 tracked files.** (Earlier "30,000+/22,000+/13,000+" estimates were inflated; corrected per Article VI honest reporting.)
+- **Sub-version:** v0.6.1 just tagged. **16 sub-versions tagged: v0.1.0 / v0.1.1 / v0.1.2 / v0.2.0 / v0.2.1 / v0.3.0 / v0.4.0 / v0.4.1 / v0.4.2 / v0.4.3 / v0.5.0 / v0.5.1 / v0.5.2 / v0.5.3 / v0.6.0 / v0.6.1.** Counts (git-verified post-v0.6.1, pre-commit): ~21 commits with the v0.6.1 + memory-snapshot chore landing, ~167+ tracked files, ~28k lines added net. (Earlier "30,000+/22,000+/13,000+" estimates were inflated; corrected per Article VI honest reporting.)
 - **Constitution version:** `1.2.0`. Amendment trail: v1.0.0 (v0.1.0 ratification) → v1.0.1 (v0.1.2 master-merge, ADR-008) → v1.1.0 (v0.5.1 Article VIII Scraping, ADR-009) → v1.2.0 (v0.5.2 Article IX Cybersecurity, ADR-010). All additive; no Iron Law removed or relaxed.
 - **Active doctrines (BeQuite-itself):** `library-package`, `cli-tool`, `mena-bilingual`. 12 Doctrines shipped for downstream projects (`default-web-saas`, `cli-tool`, `ml-pipeline`, `desktop-tauri`, `library-package`, `fintech-pci`, `healthcare-hipaa`, `gov-fedramp`, `ai-automation`, `vibe-defense`, `mena-pdpl`, `eu-gdpr`).
 - **Active mode:** Safe Mode (master §4, adopted v1.0.1).
-- **Phases shipped:** v0.1.0 → v0.6.0 inclusive (15 tags). Target: v1.0.0 (full Layer 1 release). Layer 2 Studio: v2.0.0+ (per ADR-008).
-- **Open features:** 1 (the BeQuite v1.0.0 build; 11 sub-versions remain to v1.0.0 — v0.6.1 next).
+- **Phases shipped:** v0.1.0 → v0.6.1 inclusive (16 tags). Target: v1.0.0 (full Layer 1 release). Layer 2 Studio: v2.0.0+ (per ADR-008).
+- **Open features:** 1 (the BeQuite v1.0.0 build; 10 sub-versions remain to v1.0.0 — v0.7.0 next).
 - **Receipt chain integrity:** N/A yet — chain begins in v0.7.0 (receipts JSON; v0.7.1 ed25519 signing).
 - **Remote:** configured `origin = https://github.com/xpShawky/BeQuite.git` in v0.5.3. NOT pushed — push awaits explicit owner authorization (one-way door per plan §11/12).
 
@@ -47,8 +47,8 @@ The 15-sub-version roadmap from the approved plan:
 | v0.5.2 | Article IX — Cybersecurity & Authorized-Testing Module (3 personas + 4 Doctrines + 4 hooks + security reference + ROE templates) | ✅ tagged 2026-05-10 |
 | v0.5.3 | Repo URL correction + remote configuration + count honesty backfill | ✅ tagged 2026-05-10 |
 | v0.6.0 | Verification gates (`cli/bequite/verify.py` 17-gate orchestrator + Playwright walks + walkthrough fixtures + smoke scripts + references/playwright-walks.md) | ✅ tagged 2026-05-10 |
-| v0.6.1 | Frontend Quality Module (Impeccable vendor + shadcn registry MCP + 21st.dev Magic + context7 + tokens.css.tpl + axe-core gate) | **next** |
-| v0.7.0 | Reproducibility receipts (JSON schema + emitter + storage at `.bequite/receipts/`) | pending |
+| v0.6.1 | Frontend Quality Module (vendored Impeccable + tokens.css.tpl + frontend-stack + frontend-mcps + axe-core gate + default-web-saas v1.1.0) | ✅ tagged 2026-05-10 |
+| v0.7.0 | Reproducibility receipts (JSON schema + emitter + storage at `.bequite/receipts/`) | **next** |
 | v0.7.1 | Signed receipts (ed25519 keypair on init, sign at emission, `verify-receipts`) | pending |
 | v0.8.0 | Multi-model routing (cost-aware; AiProvider adapters; cost ceiling enforcement via stop hook) | pending |
 | v0.8.1 | Live pricing fetch (best-effort; 24h cache; offline fallback) | pending |
@@ -74,6 +74,8 @@ The 15-sub-version roadmap from the approved plan:
 ## Evolution log (newest first)
 
 ```
+2026-05-10  v0.6.1 tagged — Frontend Quality Module. skill/skills-bundled/impeccable/ vendored: .pinned-commit + ATTRIBUTION.md + README.md + SKILL.md + references/{principles,anti-patterns,aesthetic-targets}.md + commands/CATALOG.md + commands/{craft,audit,harden,polish}.md (4 marquee command dispatch contracts; remaining 19 catalogued in CATALOG.md). skill/templates/tokens.css.tpl with deliberate font-choice comment + 3-color system + 4/8/12/16 spacing scale + restrained radius/shadow + ease-out motion (NEVER bounce/elastic) + light/dark/RTL overrides + reduced-motion handling. skill/references/frontend-stack.md (verified May-2026 library list with license flags: Sentry BSL/FSL post-2023 flagged; AGPL components flagged for commercial closed-source distribution). skill/references/frontend-mcps.md (shadcn registry MCP via shadcn CLI v3+ built-in; 21st.dev Magic with TWENTY_FIRST_API_KEY env requirement; context7 free; tweakcn visual-only). axe-core gate: skill/templates/.github/workflows/axe.yml.tpl (PR + nightly + workflow-dispatch; HTML+JSON evidence retained 30d) + skill/templates/tests/a11y/{admin,user}/axe-{admin,user}.spec.ts.tpl (per-route axe analysis with WCAG 2.0+2.1 A+AA tags). skill/templates/playwright.config.ts.tpl extended with axeProjects (axe-admin + axe-user). skill/doctrines/default-web-saas.md bumped 1.0.0 → 1.1.0 with new section 5 (Frontend Quality Module subsections 5.1-5.5 cross-referencing all v0.6.1 artifacts; rules unchanged). cli/bequite/__init__.py + cli/pyproject.toml bumped to 0.6.1. CHANGELOG entry added.
+
 2026-05-10  v0.6.0 tagged — Verification gates. cli/bequite/verify.py (17-gate orchestrator: lint/typecheck/test/build/secret-scan/audit/freshness/playwright-admin-walk/playwright-user-walk/smoke/axe/visual-diff/console-errors/network-errors/HAR-capture/screenshot/coverage; per-stack command detection; GateResult dataclass with exit_code+duration+stdout_hash+stderr_tail; per-Mode rigour Fast/Safe/Enterprise). skill/templates/tests/walkthroughs/{README,admin-walk,user-walk}.md.tpl (natural-language flows + accessibility-first locator hints). skill/templates/tests/seed.spec.ts.tpl (Playwright-based DB seed). skill/templates/playwright.config.ts.tpl (projects per role × viewport × locale; trace+video+screenshot on failure). skill/templates/scripts/{self-walk,smoke}.sh.tpl (cheap-curl complement to heavier suite). skill/references/playwright-walks.md (canonical 4-step planner→spec-writer→generator→healer pattern). qa-engineer persona refreshed with the pattern. cli/pyproject.toml bumped to 0.6.0; cli/bequite/__init__.py to "0.6.0".
 
 2026-05-10  v0.5.3 tagged — Repo URL casing correction (xpshawky→xpShawky across 10 writable files; preserved BEQUITE_BOOTSTRAP_BRIEF.md and prompts/v1/* as immutable history). git remote configured (origin = https://github.com/xpShawky/BeQuite.git; NOT pushed). Inflated line-count claims corrected ("30,000+"/"22,000+" → 24,132 git-verified). README Quickstart reframed as today (local checkout) vs after-first-push (uvx --from git+...) vs v1.0.0 (PyPI). CHANGELOG backfilled.

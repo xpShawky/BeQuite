@@ -4,13 +4,13 @@
 
 ---
 
-## Now (last edited: 2026-05-10, end of v0.6.0 + memory snapshot)
+## Now (last edited: 2026-05-10, end of v0.6.1)
 
 - **Active feature:** `BeQuite v1.0.0` (the build of BeQuite itself).
-- **Active phase:** `phase-2` per `state/project.yaml::build_phases` — Verification + design module (covers v0.6.0 + v0.6.1).
-- **Active sub-version:** v0.6.0 just tagged. Next: **v0.6.1** — Frontend Quality Module (Impeccable bundle + shadcn / 21st.dev Magic / context7 MCP wiring + tokens.css.tpl + axe-core gate config).
-- **Last green sub-version:** `v0.6.0` (Verification gates — Playwright walks + verify.py orchestrator).
-- **15 tags total** at this snapshot: `v0.1.0` `v0.1.1` `v0.1.2` `v0.2.0` `v0.2.1` `v0.3.0` `v0.4.0` `v0.4.1` `v0.4.2` `v0.4.3` `v0.5.0` `v0.5.1` `v0.5.2` `v0.5.3` `v0.6.0`. Real git counts: 19 commits, 153 tracked files, ~25k lines added net.
+- **Active phase:** `phase-2` per `state/project.yaml::build_phases` — Verification + design module (covers v0.6.0 + v0.6.1, both now complete).
+- **Active sub-version:** v0.6.1 just tagged. Next: **v0.7.0** — Reproducibility receipts (JSON schema + emitter + storage at `.bequite/receipts/`).
+- **Last green sub-version:** `v0.6.1` (Frontend Quality Module — vendored Impeccable + tokens.css.tpl + frontend-stack reference + frontend-mcps reference + axe-core gate).
+- **16 tags total** at this snapshot: `v0.1.0` `v0.1.1` `v0.1.2` `v0.2.0` `v0.2.1` `v0.3.0` `v0.4.0` `v0.4.1` `v0.4.2` `v0.4.3` `v0.5.0` `v0.5.1` `v0.5.2` `v0.5.3` `v0.6.0` `v0.6.1`. Real git counts (post-v0.6.1): 21 commits (memory-snapshot chore + v0.6.1 feat), ~167+ tracked files, ~28k lines added net.
 - **Constitution version:** `v1.2.0`. Amendment trail: v1.0.0 (v0.1.0 ratification) → v1.0.1 (v0.1.2 master-merge, ADR-008) → v1.1.0 (v0.5.1 Article VIII Scraping, ADR-009) → v1.2.0 (v0.5.2 Article IX Cybersecurity, ADR-010). All additive; no Iron Law removed or relaxed. **9 Iron Laws** (I-VII universal + VIII Scraping + IX Cybersecurity).
 - **Active mode:** `auto` (Ahmed authorised autonomous execution; safety rails per `state/project.yaml::safety_rails`).
 - **Project mode (BeQuite-itself):** Safe Mode.
@@ -20,7 +20,7 @@
 - **Wall-clock-ceiling status:** session-default (6 h); not tracked yet.
 - **Remote:** `origin = https://github.com/xpShawky/BeQuite.git` configured. **NOT pushed.** Push remains a one-way door per Iron Law IV; awaits explicit owner authorization (`git push origin main && git push origin --tags`).
 
-## Six operational modules now in place
+## Seven operational modules now in place
 
 1. **Skill orchestrator** (v0.2.0) — SKILL.md + 17 personas + routing.json + config TOML.
 2. **AI automation module** (v0.2.1) — n8n / Make / Zapier / Temporal / Inngest expert + automation-architect persona + ai-automation Doctrine.
@@ -28,6 +28,7 @@
 4. **Scraping module** (v0.5.1, Article VIII) — Crawlee / Trafilatura / Firecrawl / Scrapling triad + watch-and-trigger pattern + scraping-engineer persona + polite-mode preset + watch-budget.
 5. **Cybersecurity module** (v0.5.2, Article IX) — Trivy / Semgrep / OSV / Strix + scan-and-trigger pattern + 4 personas (security-auditor + pentest-engineer + cve-watcher + disclosure-timer) + RoE template + 3 new Doctrines (vibe-defense / mena-pdpl / eu-gdpr).
 6. **Verification gates** (v0.6.0) — walkthrough templates (admin/user) + seed.spec.ts + playwright.config.ts + self-walk + smoke + verify.py orchestrator (17-gate per-Mode matrix).
+7. **Frontend Quality Module** (v0.6.1) — vendored Impeccable bundle (23 commands + principles + anti-patterns + aesthetic targets) + tokens.css.tpl (deliberate font choice + light/dark/RTL/reduced-motion) + frontend-stack reference (verified May-2026 libs with license flags) + frontend-mcps reference (shadcn registry / 21st.dev Magic / context7 / tweakcn) + axe-core gate (workflow tpl + Playwright a11y specs + axe-projects in playwright.config.ts.tpl) + default-web-saas Doctrine v1.0.0 → v1.1.0.
 
 ## Three working Python modules (runnable today from local checkout)
 
@@ -39,21 +40,18 @@ python -m cli.bequite.verify             # Phase 6 validation mesh (v0.6.0)
 
 All three smoke-tested via `python -m`; help output prints correctly. CLI thin wrapper at `cli/bequite/__main__.py` (v0.5.0) wires all three under the `bequite` console script alongside `discover` / `research` / `decide-stack` / `plan` / `implement` / `review` / `validate` / `recover` / `evidence` / `release` / `auto` / `cost` / `memory show|validate` / `skill install` / `design audit|craft` (skill-dispatch stubs; live API call lands v0.6.1+).
 
-## What I'm doing right now (after this snapshot)
+## What I'm doing right now (after this commit)
 
-Continuing to **v0.6.1 — Frontend Quality Module**. Per the build plan:
+v0.6.1 just shipped. Continuing to **v0.7.0 — Reproducibility receipts** per the main plan:
 
-1. Vendor `pbakaus/impeccable` at a pinned commit at `skill/skills-bundled/impeccable/`. Attribute Paul Bakaus in `ATTRIBUTION.md` (MIT-license-respecting). Note: Impeccable verified as `~26.6k stars, 23 commands` per session research.
-2. Wire 23 Impeccable commands as `bequite design <command>` aliases (already structurally in place via v0.4.0 `design-audit` + `impeccable-craft` slash-commands; v0.6.1 wires the 23 specific names).
-3. shadcn registry MCP wiring (built into shadcn CLI v3+ per session research; not third-party).
-4. 21st.dev Magic MCP wiring (`@21st-dev/magic`); document API-key requirement.
-5. context7 MCP wiring (Upstash, version-pinned docs).
-6. tweakcn link in stack-matrix; theme JSON template.
-7. `templates/tokens.css.tpl` — design tokens with named, deliberate font choice.
-8. axe-core gate config in CI workflow.
-9. Update `default-web-saas` Doctrine to reference all of the above.
+1. `cli/bequite/receipts.py` — Pydantic-modeled receipt emitter.
+2. Schema fields: version + session_id + phase + timestamp_utc + model{name,reasoning_effort} + input{prompt_hash,memory_snapshot_hash} + output{diff_hash,files_touched} + tools_invoked[] + tests{command,exit,stdout_hash} + cost{input_tokens,output_tokens,usd} + doctrine[] + constitution_version + parent_receipt (chain hash).
+3. Storage at `.bequite/receipts/<sha>-<phase>.json`.
+4. `bequite cost` reads receipts and rolls up.
+5. Emit receipts on every phase transition.
+6. Receipt-replay test reconstructs prompt + memory state from receipt content.
 
-After v0.6.1: v0.7.0 (Receipts JSON) → v0.7.1 (ed25519 signing) → v0.8.0+ per main plan.
+After v0.7.0: v0.7.1 (ed25519 signing) → v0.8.0 (multi-model routing live) → v0.8.1 (live pricing fetch) → v0.9.0+ per main plan.
 
 ## Open questions (none blocking)
 
@@ -71,24 +69,24 @@ After v0.6.1: v0.7.0 (Receipts JSON) → v0.7.1 (ed25519 signing) → v0.8.0+ pe
 |---|---|---|---|
 | (none) | | | |
 
-## Next 5 things I'll do (after this memory snapshot commits)
+## Next 5 things I'll do (after this v0.6.1 commit)
 
-1. Commit the memory-snapshot chore (this file + progress + recovery + prompts/v3/ snapshot).
-2. v0.6.1 — vendor Impeccable + wire Frontend Quality MCPs + tokens.css.tpl + axe-core. Commit + tag.
-3. v0.7.0 — Receipts JSON schema + emitter + storage. Commit + tag.
-4. v0.7.1 — ed25519 signing + verify-receipts. Commit + tag.
-5. v0.8.0+ per main plan (multi-model live, examples, auto-mode, MENA, host adapters, vibe-handoff exporters, docs, release engineering, v1.0.0).
+1. v0.7.0 — Receipts JSON schema + emitter + storage. Pydantic model + chain-hash + cost roll-up. Commit + tag.
+2. v0.7.1 — ed25519 signing on init + sign at emission + `verify-receipts` validator. Commit + tag.
+3. v0.8.0 — Multi-model routing live (AiProvider adapters: Anthropic, OpenAI, Google, DeepSeek, Ollama). Cost ceiling enforcement via stop-cost-budget hook. Commit + tag.
+4. v0.8.1 — Live pricing fetch (24h cache, offline fallback). Commit + tag.
+5. v0.9.0 — Three example projects (bookings-saas + ai-tool-wrapper + tauri-note-app) with full seven-phase walks executed. Commit + tag.
 
 ## Heartbeat (auto-mode)
 
-- Last heartbeat: 2026-05-10 (this snapshot).
+- Last heartbeat: 2026-05-10 (v0.6.1 close).
 - Last receipt: none (receipts ship v0.7.0).
-- Last commit: `8e088e4 feat(v0.6.0): Verification gates — Playwright walks + verify.py orchestrator`.
-- Pending commit: state-snapshot chore.
+- Last commit (pending): `feat(v0.6.1): Frontend Quality Module — vendored Impeccable + tokens.css.tpl + frontend references + axe gate + default-web-saas v1.1.0`.
 
 ## Recent decisions (last 12)
 
 ```
+2026-05-10  v0.6.1 Frontend Quality Module: vendored Impeccable (MIT, attributed, pinned) + tokens.css.tpl with deliberate font choice (Doctrine Rule 2 enforcement at the template level) + frontend-stack reference with license flags (Sentry BSL/FSL flagged; AGPL components flagged for closed-source distribution) + frontend-mcps reference (shadcn registry as built-in MCP since CLI v3+; 21st.dev Magic with API-key requirement; context7 free; tweakcn as visual-only) + axe gate as Playwright projects (axe-admin / axe-user) + workflow template + per-route JSON evidence. default-web-saas Doctrine bumped 1.0.0 → 1.1.0 (additive only).
 2026-05-10  v0.6.0 verify.py: 17-gate matrix per Constitution v1.0.1 §4. Per-stack command detection. Stops on first required-gate failure (Article II + master §3.7).
 2026-05-10  v0.5.3: URL casing → xpShawky/BeQuite; line counts corrected to git-verified numbers; uvx commands reframed as post-first-push (honest reporting per Article VI).
 2026-05-10  Remote configured at https://github.com/xpShawky/BeQuite.git. NOT pushed; awaits owner authorization.

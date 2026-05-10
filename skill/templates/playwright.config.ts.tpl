@@ -45,6 +45,24 @@ const projects = ROLES.flatMap((role) =>
   )
 );
 
+// axe-core a11y projects (Doctrine `default-web-saas` Rule 8) — one per role.
+// Walks the same routes as functional walks; runs axe-core after each navigation;
+// fails on any WCAG AA violation. Reports merged into evidence/P6/axe/.
+const axeProjects = ROLES.map((role) => ({
+  name: `axe-${role}`,
+  testDir: `./tests/a11y/${role}`,
+  use: {
+    ...devices['Desktop Chrome'],
+    baseURL: BASE_URL,
+    viewport: { width: 1440, height: 900 },
+    locale: LOCALES[0] ?? 'en-US',
+    trace: IS_CI ? 'on-first-retry' : 'retain-on-failure',
+    screenshot: 'only-on-failure',
+    video: 'off',
+  },
+  dependencies: ['setup'],
+}));
+
 export default defineConfig({
   testDir: './tests',
   // Setup project runs tests/seed.spec.ts BEFORE all e2e walks.
@@ -54,6 +72,7 @@ export default defineConfig({
       testMatch: /.*\bseed\.spec\.ts/,
     },
     ...projects,
+    ...axeProjects,
   ],
   fullyParallel: !IS_CI,           // serial in CI to avoid DB contention
   forbidOnly: IS_CI,               // CI fails on .only()

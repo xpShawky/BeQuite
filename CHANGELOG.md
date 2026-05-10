@@ -8,6 +8,48 @@ The full sub-version roadmap (`v0.1.0` → `v1.0.0`) lives in `docs/HOW-IT-WORKS
 
 ---
 
+## [0.6.1] — 2026-05-10
+
+### Added — Frontend Quality Module
+
+- **Bundled Impeccable skill at `skill/skills-bundled/impeccable/`** — vendored snapshot of [pbakaus/impeccable](https://github.com/pbakaus/impeccable) (MIT, attributed Paul Bakaus). Contents:
+  - `.pinned-commit` — recorded SHA + verification date + update protocol.
+  - `ATTRIBUTION.md` — MIT-license-respecting credit + bundling rationale + delisting protocol.
+  - `README.md` — bundle-side docs (when it loads, how the frontend-designer uses it, layering with mena-bilingual / ai-automation / shadcn-MCP).
+  - `SKILL.md` — Anthropic-Skills frontmatter (loaded-by Doctrine list, allowed-tools, hard rules layered on upstream's philosophy).
+  - `references/principles.md` — 10 design principles (hierarchy, recorded typography, three-color system, 4/8/12/16 spacing scale, eased motion, real states, mobile-first/RTL/keyboard, density variants, consistency-over-cleverness, Skeptic kill-shot).
+  - `references/anti-patterns.md` — 15 AI-slop tells with fixes (generic SaaS look, bad spacing, weak typography, purple-blue gradients, card nesting, fake charts, weak empty states, bad mobile, poor contrast, missing focus, repeated icons, poor UX copy, wrong hierarchy, over-rounded, unclear actions).
+  - `references/aesthetic-targets.md` — Linear / Vercel / Stripe / Raycast / Arc / Notion / Cron — what they share + how to learn principles without copying.
+  - `commands/CATALOG.md` — all 23 commands tabulated.
+  - `commands/{craft,audit,harden,polish}.md` — marquee command dispatch contracts (~80–110 lines each: when to use, when not, inputs, steps, outputs, Skeptic kill-shot, stop conditions, anti-patterns).
+- **`skill/templates/tokens.css.tpl`** — design-tokens template with deliberate font-choice comment (Doctrine Rule 2), 3-color system (primary + neutral scale + accent + system-state), strict spacing scale (4/8/12/16/24/32/48/64/96/128), restrained radius/shadow tokens, motion tokens (durations + ease curves; never bounce/elastic), breakpoints, z-index scale, light + dark theme overrides, `[dir="rtl"]` overrides for `mena-bilingual` (Tajawal/Cairo/Readex Pro), `prefers-reduced-motion` handling.
+- **`skill/references/frontend-stack.md`** — verified May-2026 library reference. Component layer (shadcn/ui v3+, Radix, HeadlessUI, tweakcn, Aceternity, Magic, Origin), framework layer (Next App Router, Remix, Astro, SvelteKit, Nuxt, React+Vite), styling (Tailwind v4+, Panda, CSS Modules), type-safety (Zod, Valibot, TS), data fetching (TanStack Query, SWR, tRPC, Hono RPC), state (Zustand, Jotai), forms (React Hook Form, TanStack Form, Conform), auth (Better-Auth, Clerk, Supabase Auth, Auth0/WorkOS), a11y (axe-core, axe-playwright, eslint-plugin-jsx-a11y, react-aria), i18n (next-intl, i18next, lingui), testing (Playwright, Vitest, Storybook, MSW), perf (Vite, Turbopack, rspack, Lighthouse CI), observability (Sentry — license-flagged BSL/FSL post-2023, PostHog, OTel-JS). License flags called out where commercial closed-source distribution is impacted (Sentry / Aceternity components / SF Pro font).
+- **`skill/references/frontend-mcps.md`** — wiring guide for the three frontend MCPs + tweakcn:
+  - **shadcn Registry MCP** (built into shadcn CLI v3+; `npx shadcn@latest registry:mcp`; no API key).
+  - **21st.dev Magic MCP** (`@21st-dev/magic`; API key `TWENTY_FIRST_API_KEY`; per-prompt-quota cost-conscious).
+  - **context7 MCP** (Upstash; `@upstash/context7-mcp`; free tier; version-pinned docs).
+  - **tweakcn** (visual theme editor — not an MCP; export to tokens.css).
+  - Project-kickoff sequence + custom-component playbook + stack-bump refresh playbook + anti-patterns when wiring.
+- **axe-core gate (Doctrine `default-web-saas` Rule 8 wired):**
+  - `skill/templates/.github/workflows/axe.yml.tpl` — workflow template; runs on every PR + nightly cron at 03:00 UTC; checks out + builds + boots app + runs `axe-admin` + `axe-user` Playwright projects + uploads HTML/JSON reports + comments on PR if failed.
+  - `skill/templates/tests/a11y/admin/axe-admin.spec.ts.tpl` — admin-role axe walks; per-route axe analysis with WCAG 2.0 + 2.1 A + AA tags; results JSON saved to `evidence/P6/axe/admin/`.
+  - `skill/templates/tests/a11y/user/axe-user.spec.ts.tpl` — user-role parallel.
+  - `skill/templates/playwright.config.ts.tpl` — added `axeProjects` (one per role) so `npx playwright test --project=axe-admin` works out of the box.
+- **`skill/doctrines/default-web-saas.md` — bumped `1.0.0` → `1.1.0`** with new section 5 (Frontend Quality Module: subsections 5.1–5.5 cross-referencing the Impeccable bundle / tokens.css.tpl / frontend-stack.md / frontend-mcps.md / axe gate). Sections 6/7/8 renumbered. Rules 1–14 unchanged in behavior — additive-only bump per Article III.
+
+### Changed
+
+- `cli/bequite/__init__.py::__version__` → `0.6.1`.
+- `cli/pyproject.toml::version` → `0.6.1`. Description appended: "Frontend Quality Module (Impeccable + tokens.css + axe-core gate)."
+
+### Notes
+
+The `design-audit` slash (`skill/commands/design-audit.md`) and `impeccable-craft` slash (`skill/commands/impeccable-craft.md`) authored in v0.4.0 already referenced the bundled-skill path; v0.6.1 fills in the actual bundle. No slash-command edits required; Doctrine v1.1.0 is the seam.
+
+The Frontend Quality Module respects the existing seven phases — Impeccable is invoked in P5 (during implementation) with before/after evidence, validated in P6 (axe gate runs as part of `bequite verify`). Receipts will record Impeccable command applications when v0.7.0 ships the receipt schema.
+
+---
+
 ## [0.6.0] — 2026-05-10
 
 ### Added — Verification gates (Playwright walks)

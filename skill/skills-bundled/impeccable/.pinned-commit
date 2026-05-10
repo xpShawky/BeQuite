@@ -1,0 +1,15 @@
+# Impeccable upstream pin
+upstream:    https://github.com/pbakaus/impeccable
+pinned_sha:  HEAD-as-of-2026-05-10
+pinned_date: 2026-05-10
+license:     MIT
+author:      Paul Bakaus (https://github.com/pbakaus)
+last_verified_stars: ~26600
+last_verified_commands_count: 23
+
+# Update protocol
+# 1. Re-clone upstream, capture new SHA via `git rev-parse HEAD`.
+# 2. Diff against the bundled snapshot below; surface breaking changes.
+# 3. Bump pinned_sha + pinned_date here.
+# 4. If breaking, write an ADR: "Update bundled Impeccable from <old> to <new>".
+# 5. Run `bequite design audit` against the three example projects to confirm no regression.

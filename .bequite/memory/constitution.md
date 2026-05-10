@@ -1,6 +1,6 @@
-# BeQuite Constitution v1.0.1 — operating under BeQuite
+# BeQuite Constitution v1.1.0 — operating under BeQuite
 
-> Drafted: 2026-05-10 · Amended: 2026-05-10 (v1.0.0 → v1.0.1; ADR-008-master-merge) · Maintainer: Ahmed Shawky (xpShawky) · BeQuite version: 0.1.2
+> Drafted: 2026-05-10 · Amended: 2026-05-10 (v1.0.0 → v1.0.1, ADR-008-master-merge; v1.0.1 → v1.1.0, ADR-009-article-viii-scraping) · Maintainer: Ahmed Shawky (xpShawky) · BeQuite version: 0.5.1
 >
 > This Constitution governs every action taken inside this repository — by humans, by AI agents, by automation. It is layered: **Iron Laws** are universal and immutable-ish (amendable only via ADR + version bump); **Doctrines** are forkable rule packs loaded per project type (`@doctrines/<active>.md`); **Modes** (Fast / Safe / Enterprise) gate which rigour level applies.
 >
@@ -92,6 +92,24 @@ Never import a package without verifying it exists in the relevant registry (npm
 - WebFetch the registry page when none of the above is available
 
 PreToolUse hook `pretooluse-verify-package.sh` greps every Edit/Write for new imports and runs the verifier. Cross-checks the package against `references/package-allowlist.md` (BeQuite's known-good list) and recorded supply-chain incidents (the **PhantomRaven** campaign — Koi Security 2025, 126 packages exploiting hallucinated names; **Shai-Hulud** ~700 packages; the September 8 attack 18 packages). A package not in the allowlist requires a freshness probe pass before import.
+
+### Article VIII — Scraping & automation discipline
+
+> Numbering note: this is the brief's "Article XI" renumbered to fit BeQuite's 7-Iron-Law structure (we trimmed in v0.1.0). Verbatim text otherwise. Adopted v1.1.0 (ADR-009).
+
+When a project involves web scraping, crawling, or browser automation:
+
+- **ALWAYS read `/robots.txt`** before scraping any domain. Honor `Disallow`. The hook (`pretooluse-scraping-respect.sh`) blocks Edit/Write of new scraper code without a robots-respect path in the same module.
+- **ALWAYS read the site's Terms of Service.** If ToS forbids scraping, STOP and surface this to the user before writing any scraper. The Skeptic explicitly probes "what does the ToS say" at every scraping-related phase boundary.
+- **ALWAYS rate-limit** (default: 1 req/3 sec/domain — polite-mode-friendly; ADR required for anything faster including for sites you own; cap at 1 req/sec absolute maximum without site-owner-approval ADR) and use exponential backoff on 429/503.
+- **NEVER scrape personal data** (names, emails, phones, addresses, IDs, dates of birth, government IDs) without explicit user consent + a documented legal basis (GDPR Art. 6, CCPA, Egyptian PDPL Law No. 151 of 2020, Saudi PDPL, UAE PDPL, or local equivalent). Document the legal basis in the spec; the hook scans for PII-shaped field assignments and blocks without a recorded consent log.
+- **ALWAYS cache aggressively** (sqlite or redis) — re-scraping the same URL in the same session without a cache-bust reason is wasted bandwidth + bandwidth tax on the source site.
+- **USE the libraries listed in the scraping reference** (`skill/references/scraping-and-automation.md`). Do not invent or hallucinate libraries. New libraries require an ADR + GitHub link + freshness probe pass.
+- **For stealth/anti-detection libraries** (undetected-chromedriver, Camoufox, Scrapling stealth mode, Pydoll-with-stealth): require an ADR explicitly enumerating one of `legitimate-basis ∈ { own-site, bug-bounty-allows, ToS-explicitly-allows, security-research-with-coordinated-disclosure }`. Stealth without one of these four bases is forbidden. The hook greps for stealth-library imports and refuses without the ADR's `legitimate-basis` field set to one of the four values.
+- **For captcha-solving** (2Captcha, CapSolver, AntiCaptcha, equivalent services): solving captchas to access protected content can constitute bypassing access controls in many jurisdictions (CFAA-class). Default: forbidden. With ADR allowed only on `legitimate-basis ∈ { own-site, bug-bounty-explicitly-allows-captcha-bypass }`. The same hook scans captcha-service imports.
+- **WIRE TO existing automation platforms** (n8n, Zapier, Make, Activepieces, Trigger.dev, Inngest) before rolling a custom integration. Custom integrations require an ADR justifying why the off-the-shelf tool doesn't fit. The decision rule when user says "I want automation": glue between SaaS apps → n8n / Zapier / Make / Activepieces; background jobs in your own app → Trigger.dev / Inngest / BullMQ; mission-critical durable workflows → Temporal.
+- **The watch-and-trigger pattern** (scheduler → scraper → change-detector → trigger → automation) is the canonical scaffold; use `template/watch-and-trigger/` as the starting point. Every watch-and-trigger flow declares an expected `max_fires_per_week` budget; if actual fires exceed 3× expected, pause and ask (catches noisy-diff failures).
+- **`bequite scrape doctor`** runs before any production scrape kickoff: selector-drift detection (3+ consecutive zero-result-runs OR rows < 50% of previous run → flag) + cost-projection (URLs × Firecrawl-credits × proxy-cost; warn > $10, block > $100 without ADR).
 
 ---
 
@@ -226,4 +244,5 @@ ADRs at `.bequite/memory/decisions/` document every constitutional amendment.
 ```
 v1.0.0 — 2026-05-10 — initial ratification (v0.1.0)
 v1.0.1 — 2026-05-10 — master-file merge: added Modes section (Fast/Safe/Enterprise), command-safety three-tier classification, prompt-injection rule, three-level definition-of-done, state/ files reference in Article III. Patch bump (additive only). Cross-reference: ADR-008-master-merge. (v0.1.2)
+v1.1.0 — 2026-05-10 — Article VIII added: scraping & automation discipline (renumbered from brief's "Article XI" to fit BeQuite's 7-Iron-Law structure). Robots.txt + ToS + rate-limit-1-req/3-sec + PII-aggregation prohibition + stealth-requires-ADR + captcha-requires-ADR + wire-to-existing-automation + watch-budget. Cross-reference: ADR-009-article-viii-scraping. (v0.5.1)
 ```

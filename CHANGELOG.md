@@ -8,6 +8,29 @@ The full sub-version roadmap (`v0.1.0` → `v1.0.0`) lives in `docs/HOW-IT-WORKS
 
 ---
 
+## [0.5.1] — 2026-05-10
+
+### Added
+
+- **Constitution v1.0.1 → v1.1.0**: **Article VIII — Scraping & automation discipline** added. Renumbered from the brief's "Article XI" to fit BeQuite's 7-Iron-Law structure (we trimmed in v0.1.0). Substantive text otherwise verbatim from the addendum, with four senior-architect amendments: (1) default rate limit `1 req/sec` → `1 req/3 sec` polite-default; (2) stealth requires `legitimate-basis ∈ {own-site, bug-bounty-allows, ToS-explicitly-allows, security-research-with-coordinated-disclosure}` not just "ADR exists"; (3) captcha-solving clause added (CFAA-class concern); (4) watch-budget added (`max_fires_per_week`; 3× exceeded → pause-and-ask).
+- **`.bequite/memory/decisions/ADR-009-article-viii-scraping.md`** — captures the Constitution amendment + the four amendments + alternatives considered + consequences + verification.
+- **`skill/references/scraping-and-automation.md`** — canonical scraping library list with verified May 2026 URLs + star counts + licenses + last-release dates. Triad (Crawlee / Crawlee-Python / Trafilatura / Firecrawl / Scrapling) + specialists + browser automation + stealth (ADR-gated) + OSINT (RoE-gated). Decision tree, watch-and-trigger pattern, polite-mode preset, anti-bot posture, MCP servers, compliance map (GDPR / CCPA / Egyptian PDPL / Saudi PDPL / UAE PDPL / CFAA / Computer Misuse Act / Robots Exclusion Standard / per-site ToS), forking guidance.
+  - **License flags called out**: Firecrawl AGPL-3.0 (commercial closed-source caveat); Crawl4AI Apache-2.0 (cleaner alternative); n8n-mcp is community-maintained (`czlonkowski/n8n-mcp`), not official n8n-io.
+  - **Verification footer**: every URL + stars + last-release verified via GitHub REST API on 2026-05-10.
+- **`skill/agents/scraping-engineer.md`** — 13th persona. Owns scraping library selection, robots.txt + ToS enforcement, polite-mode defaults, watch-and-trigger pattern, change-detection strategy, anti-bot posture, watch-budget gate, `bequite scrape doctor` command. Cross-pollinates with `automation-architect` (workflow side), `security-reviewer` (legitimate-basis ADRs), `research-analyst` (freshness probes), `token-economist` (scraping cost), `frontend-designer` (admin UI when applicable). Phases P0/P1/P2/P3/P5/P6.
+- **`skill/hooks/pretooluse-scraping-respect.sh`** — enforcement hook. Exit 2 (block) when: scraping import without robots.txt path; scraping import without rate-limit + cache config; stealth library without `legitimate-basis` ADR; captcha-solving service without `legitimate-basis` ADR; PII field assignments from scraped data without consent log. Self-exclusion list for the canonical reference + persona + this hook itself + tests.
+- **`skill/templates/projects/watch-and-trigger.md`** — canonical scaffold for "watch X, when it changes, trigger Y." Ships n8n + Postgres + Redis in `infra/docker-compose.yml` by default (opt-out via `--no-n8n` swap to `docker-compose.no-n8n.yml`). `polite_mode = true` baked into generated `bequite.config.toml`. Per-target spec + change-detection module + watch-budget enforcement + `bequite scrape doctor` smoke + Phase 6 gates additions.
+
+### Notes
+
+Article VIII is BeQuite's first non-master Iron Law — the brief's "Article XI" name preserved verbatim in the article header but renumbered to VIII for structural consistency. The hook + the polite-mode preset together make Article VIII enforceable, not documentary. Pairs with the existing `ai-automation` Doctrine (v0.2.1) — that Doctrine governs workflow execution; Article VIII governs scraping inputs that feed those workflows.
+
+Three URL corrections caught by parallel verification research: Crawl4AI canonical is `unclecode/crawl4ai` (not `crawl4ai/crawl4ai`); n8n MCP is `czlonkowski/n8n-mcp` (not `n8n-io/n8n-mcp` — community-maintained); `mendableai/firecrawl*` redirects to `firecrawl/firecrawl*` (org rename). License flags surfaced: Firecrawl + Shannon + BunkerWeb are AGPL-3.0 (commercial-closed-source-blocker); Crawl4AI + Strix are Apache-2.0 (clean alternatives).
+
+`tfsec` removed from the canonical list (officially retired into Trivy per repo description; last release May 2025).
+
+---
+
 ## [0.5.0] — 2026-05-10
 
 Python CLI thin wrapper. **Eleven sub-versions now tagged this session.** `bequite` + `bq` console scripts; 19 subcommands; Pydantic config; skill loader (v0.5.0 stub for live API dispatch in v0.6.0+); per-host hook runner. See full notes under v0.5.0 commit + the README architecture section.
@@ -228,7 +251,8 @@ Each regulated Doctrine carries a disclaimer: starting points, not substitutes f
 
 This release contains no executable code. It establishes the inviolate base layer (Constitution + Memory Bank + ADR + Doctrine schemas) on which every later sub-version depends.
 
-[Unreleased]: https://github.com/xpshawky/bequite/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/xpshawky/bequite/compare/v0.5.1...HEAD
+[0.5.1]: https://github.com/xpshawky/bequite/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/xpshawky/bequite/compare/v0.4.3...v0.5.0
 [0.4.3]: https://github.com/xpshawky/bequite/compare/v0.4.2...v0.4.3
 [0.4.2]: https://github.com/xpshawky/bequite/compare/v0.4.1...v0.4.2

@@ -201,5 +201,3 @@ MIT. See [`LICENSE`](LICENSE).
 ## Maintainer
 
 **Ahmed Shawky** ([@xpshawky](https://github.com/xpshawky)).
-
-> ما تتسهلش في الإجابة. رد براحتك. شوف كل الاحتمالات. اقترح إضافات من عندك. فكّر معايا، مش بدالي.

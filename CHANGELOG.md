@@ -8,6 +8,40 @@ The full sub-version roadmap (`v0.1.0` → `v1.0.0`) lives in `docs/HOW-IT-WORKS
 
 ---
 
+## [0.5.2] — 2026-05-10
+
+### Added
+
+- **Constitution v1.1.0 → v1.2.0**: **Article IX — Cybersecurity & authorized-testing discipline**. Renumbered from brief's "Article XII." Substantive text otherwise verbatim with four senior-architect amendments: (1) **internal red-team carve-out** with 8 hard guardrails for corporate-internal C2/implants/payloads; (2) **cryptojackers** added to forbidden-no-matter-what list; (3) **defensive-validation clause** for known-CVE PoCs against own systems (RoE-self); (4) **plural disclosure frameworks** (Project Zero / CERT/CC / MITRE CNA / FDA / ICS-CERT / NCSC).
+- **`ADR-010-article-ix-cybersecurity.md`** captures the bump rationale + four amendments.
+- **`skill/references/security-and-pentest.md`** — 25+ verified May-2026 tools with license flags called out (AGPL/GPL = closed-source-blocker; Apache/MIT clean). Lite scanner stack (Trivy + Semgrep + OSV + secret-scan) + full opt-in (Nuclei + ZAP + Wazuh + Falco). Three workflow patterns (scan-and-trigger / harden-on-deploy / incident-response). Selection tree, compliance Doctrine cross-reference.
+- **4 new personas:** `security-auditor` (14th, defensive — pairs with existing `security-reviewer`), `pentest-engineer` (15th, RoE-gated offensive), `cve-watcher` (16th, support — daily trickest/cve diff vs SBOM, Haiku), `disclosure-timer` (17th, support — 60/80/90-day SLA tracking, framework-aware).
+- **3 new hooks:** `pretooluse-pentest-authorization.sh` (blocks offensive tools without RoE; recognizes lab targets), `pretooluse-no-malware.sh` (blocks 6 forbidden categories — reverse-shell/persistence/cred-exfil/C2/ransomware/cryptojacker — NO override except internal-RT 8-guardrail carve-out), `pretooluse-cve-poc-context.sh` (PoC requires ADR with 3 confirmations).
+- **2 templates:** `projects/scan-and-trigger.md` (canonical defensive automation; lite default + `--with-wazuh` opt-in; harden-on-deploy CI gate; incident-response runbook), `roe-template.md` (4 variants — ROE / RoE-RT / RoE-self / RoE-CTF — RoE-RT additions enumerate all 8 hard guardrails).
+- **3 new Doctrines:**
+  - **`vibe-defense`** — DEFAULT for `audience: vibe-handoff`. 15 extra-strict rules codifying response to Veracode 2025's 45% OWASP-Top-10 hit rate on AI-generated code: HIGH-SAST blocks merge with 90d-expiring-ADR-override, exact-pinned prod deps, RLS deny-by-default, locked-down CSP, secret-scan on every commit, axe-core every deploy, mandatory `bequite audit` clean, input validation everywhere, Better-Auth/Clerk/Supabase no-custom auth, rate limiting on public endpoints, CSRF, Argon2id, hardened cookies, logs exclude PII.
+  - **`mena-pdpl`** — Egyptian PDPL (Law 151/2020) + Saudi PDPL (SDAIA enforceable since 2024-09-14, 48+ enforcement decisions by Jan 2026) + UAE Federal PDPL (Decree-Law 45/2021) with **jurisdiction branching** for UAE free zones (DIFC DPL 5/2020, ADGM Data Protection Regs 2021, DHCC). Authoritative URLs verified. Egypt's executive regs flagged as pending.
+  - **`eu-gdpr`** — GDPR 2016/679. 12 rules covering Arts. 6/15-22/25/30/32-35/37, ePrivacy cookie consent, Schrems II + SCCs 2021. Stacks with `mena-pdpl` when DIFC/ADGM in scope.
+- **`.bequite/memory/prompts/v2/`** — phase snapshot per Article III: Constitution v1.2.0 + ADR-009 + ADR-010 archived.
+
+### Notes — research-driven corrections
+
+The verification research agent surfaced critical corrections applied throughout v0.5.2:
+
+- Crawl4AI canonical URL: `unclecode/crawl4ai` (not `crawl4ai/crawl4ai`).
+- n8n MCP: `czlonkowski/n8n-mcp` (community, **not** official `n8n-io`).
+- Firecrawl org rename: `mendableai/firecrawl*` → `firecrawl/firecrawl*`.
+- License flags throughout: Firecrawl + Shannon + Pentagi + BunkerWeb + THC Hydra are AGPL-3.0; Wazuh + SafeLine + ImHex are GPL-2/3.0; Strix + Trivy + OSV-Scanner + Nuclei + Crawl4AI + Crawlee are Apache-2.0 / MIT (clean).
+- tfsec officially retired into Trivy.
+- Bug-bounty platform APIs all auth-required; `arkadiyt/bounty-targets-data` for anonymous program-scope reads.
+- MENA PDPL: Egypt regs pending; KSA enforceable 2024-09-14; UAE free-zone carve-outs (DIFC/ADGM/DHCC).
+
+### Improvements adopted (per "make it fully loaded" delegation)
+
+I2.1 Internal RT carve-out · I2.2 cve-watcher · I2.3 disclosure-timer · I2.5 vibe-defense Doctrine as default · I2.6 Bug-bounty engagement assistant · I2.7 Findings-to-Jira/Linear · I2.8 Anti-bug-bounty-poaching guard.
+
+---
+
 ## [0.5.1] — 2026-05-10
 
 ### Added
@@ -251,7 +285,8 @@ Each regulated Doctrine carries a disclaimer: starting points, not substitutes f
 
 This release contains no executable code. It establishes the inviolate base layer (Constitution + Memory Bank + ADR + Doctrine schemas) on which every later sub-version depends.
 
-[Unreleased]: https://github.com/xpshawky/bequite/compare/v0.5.1...HEAD
+[Unreleased]: https://github.com/xpshawky/bequite/compare/v0.5.2...HEAD
+[0.5.2]: https://github.com/xpshawky/bequite/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/xpshawky/bequite/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/xpshawky/bequite/compare/v0.4.3...v0.5.0
 [0.4.3]: https://github.com/xpshawky/bequite/compare/v0.4.2...v0.4.3

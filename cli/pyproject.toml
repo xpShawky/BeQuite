@@ -56,11 +56,11 @@ bequite = "bequite.__main__:cli"
 bq = "bequite.__main__:cli"
 
 [project.urls]
-Homepage = "https://github.com/xpshawky/bequite"
-Documentation = "https://github.com/xpshawky/bequite/blob/main/README.md"
-Repository = "https://github.com/xpshawky/bequite"
-"Bug Tracker" = "https://github.com/xpshawky/bequite/issues"
-Changelog = "https://github.com/xpshawky/bequite/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/xpShawky/BeQuite"
+Documentation = "https://github.com/xpShawky/BeQuite/blob/main/README.md"
+Repository = "https://github.com/xpShawky/BeQuite"
+"Bug Tracker" = "https://github.com/xpShawky/BeQuite/issues"
+Changelog = "https://github.com/xpShawky/BeQuite/blob/main/CHANGELOG.md"
 
 [tool.hatch.build.targets.wheel]
 packages = ["bequite"]

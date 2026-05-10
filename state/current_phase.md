@@ -42,7 +42,7 @@ Tasks for v0.3.0:
 
 ## Open questions (none blocking v0.1.2)
 
-- E1 — GitHub org / repo name (`xpshawky/bequite` default; confirm before remote push, no remote configured)
+- E1 — GitHub org / repo name (`xpShawky/BeQuite` default; confirm before remote push, no remote configured)
 - E2 — PyPI package name + ownership (will block v0.5.0 release)
 - E3 — Studio (v2.0.0+) timing (after v1.0.0 ships, default)
 - E4 — Telemetry policy (off entirely; pending ADR-002 in v0.7.0)

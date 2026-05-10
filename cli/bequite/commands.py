@@ -117,7 +117,7 @@ def run_init(
         err_console.print(
             "[red]Could not locate the BeQuite source tree. "
             "Run from a BeQuite-developed checkout, or install via "
-            "`uvx --from git+https://github.com/xpshawky/bequite bequite init <name>`.[/red]"
+            "`uvx --from git+https://github.com/xpShawky/BeQuite bequite init <name>`.[/red]"
         )
         return 1
 

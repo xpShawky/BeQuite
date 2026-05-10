@@ -6,13 +6,14 @@
 
 ## Current state
 
-- **Sub-version:** v0.5.0 just tagged. **Eleven sub-versions tagged this session: v0.1.0 / v0.1.1 / v0.1.2 / v0.2.0 / v0.2.1 / v0.3.0 / v0.4.0 / v0.4.1 / v0.4.2 / v0.4.3 / v0.5.0.** ~22,000+ lines across 14 commits.
-- **Constitution version:** `1.0.1` (amended in v0.1.2; patch bump; additive only — ADR-008-master-merge)
+- **Sub-version:** v0.5.2 just tagged. **13 sub-versions tagged: v0.1.0 / v0.1.1 / v0.1.2 / v0.2.0 / v0.2.1 / v0.3.0 / v0.4.0 / v0.4.1 / v0.4.2 / v0.4.3 / v0.5.0 / v0.5.1 / v0.5.2.** Real counts (git-verified): 24,132 lines added across 16 commits; 153 tracked files. (Earlier "30,000+" estimate was inflated; corrected here per Article VI honest reporting.)
+- **Constitution version:** `1.2.0`. Amendment trail: v1.0.0 (v0.1.0 ratification) → v1.0.1 (v0.1.2 master-merge, ADR-008) → v1.1.0 (v0.5.1 Article VIII Scraping, ADR-009) → v1.2.0 (v0.5.2 Article IX Cybersecurity, ADR-010). All additive; no Iron Law removed or relaxed.
 - **Active doctrines:** `library-package`, `cli-tool`, `mena-bilingual` (BeQuite-itself); 8 Doctrines shipped for downstream projects (`default-web-saas`, `cli-tool`, `ml-pipeline`, `desktop-tauri`, `library-package`, `fintech-pci`, `healthcare-hipaa`, `gov-fedramp`)
 - **Active mode:** Safe Mode (master §4, adopted v1.0.1)
-- **Phases shipped:** v0.1.0, v0.1.1 (v0.1.2 in this commit). Target: v1.0.0 (full release of Layer 1 Harness). Layer 2 Studio: v2.0.0+.
-- **Open features:** 1 (the BeQuite v1.0.0 build; 15 sub-versions per approved plan + post-merge updates)
-- **Receipt chain integrity:** intact — chain begins in v0.7.0
+- **Phases shipped:** v0.1.0 → v0.5.2 inclusive (13 tags). Target: v1.0.0 (full Layer 1 release). Layer 2 Studio: v2.0.0+.
+- **Open features:** 1 (the BeQuite v1.0.0 build; 11 sub-versions remain to v1.0.0).
+- **Receipt chain integrity:** N/A yet — chain begins in v0.7.0 (receipts JSON; v0.7.1 ed25519 signing).
+- **Remote:** configured `origin = https://github.com/xpShawky/BeQuite.git` in v0.5.3. NOT pushed — push awaits explicit owner authorization (one-way door per plan §11).
 
 ## What works (verified, with receipts)
 

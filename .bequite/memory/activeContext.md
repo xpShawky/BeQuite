@@ -8,12 +8,12 @@
 
 - **Active feature:** `BeQuite v1.0.0` (the build of BeQuite itself)
 - **Active phase:** `phase-1` — Core domain + CLI (master §23 framing)
-- **Active sub-version:** v0.5.0 just tagged. **Eleven sub-versions tagged this session: v0.1.0 → v0.5.0.** ~22,000+ lines committed across 14 commits.
+- **Active sub-version:** v0.5.2 just tagged + casing/state cleanup commit pending (v0.5.3). **13 sub-versions tagged: v0.1.0 → v0.5.2.** Real counts (verified via git): 24,132 lines added across 16 commits, 153 tracked files. Constitution at v1.2.0. Five operational modules in place (skill orchestrator, AI automation, hooks, scraping (Article VIII), cybersecurity (Article IX)). Remote configured at https://github.com/xpShawky/BeQuite (not pushed; awaits owner authorization).
 - **Active mode:** `auto` (Ahmed authorised autonomous execution; safety rails per `state/project.yaml::safety_rails`)
 - **Project mode (BeQuite-itself):** Safe Mode (newly named per Constitution v1.0.1)
 - **Skeptic gate state:** `cleared` — merge audit + ADR-008 reviewed; Constitution amendment rationale recorded
-- **Last green sub-version:** `v0.1.1` (Doctrines pack — 8 doctrines committed + tagged 2026-05-10)
-- **Constitution version:** `v1.0.1` (just amended — patch bump from v1.0.0; ADR-008-master-merge)
+- **Last green sub-version:** `v0.5.2` (Article IX Cybersecurity; tagged 2026-05-10).
+- **Constitution version:** `v1.2.0` (last amended in v0.5.2 — Article IX Cybersecurity; ADR-010). Three amendments total: v1.0.0 → v1.0.1 → v1.1.0 → v1.2.0.
 - **Active doctrines (BeQuite-itself):** `library-package`, `cli-tool`, `mena-bilingual`
 - **Cost-ceiling status:** session-default ($20 USD); not yet tracked (receipts ship in v0.7.0)
 - **Wall-clock-ceiling status:** session-default (6 h); not yet tracked
@@ -44,7 +44,7 @@ Next: stage all v0.1.2 files; commit with conventional-commits message; tag `v0.
 
 ## Open questions (none blocking v0.1.2)
 
-- [ ] E1 — GitHub org / repo name (`xpshawky/bequite` default; confirm before remote push, no remote configured)
+- [ ] E1 — GitHub org / repo name (`xpShawky/BeQuite` default; confirm before remote push, no remote configured)
 - [ ] E2 — PyPI package name + ownership (will block v0.5.0 release)
 - [ ] E3 — Studio (v2.0.0+) timing (after v1.0.0 ships, default)
 - [ ] E4 — Telemetry policy (off entirely; pending ADR-002 in v0.7.0)

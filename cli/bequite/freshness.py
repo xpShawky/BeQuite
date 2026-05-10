@@ -41,7 +41,7 @@ CACHE_TTL_SECONDS = 24 * 60 * 60   # 24h default
 CACHE_DIR_ENV = "BEQUITE_CACHE_DIR"
 DEFAULT_CACHE_DIR = ".bequite/cache/freshness"
 DEFAULT_MAX_AGE_MONTHS = 6
-USER_AGENT = "bequite-freshness/0.4.3 (+https://github.com/xpshawky/bequite)"
+USER_AGENT = "bequite-freshness/0.4.3 (+https://github.com/xpShawky/BeQuite)"
 HTTP_TIMEOUT_SECONDS = 10
 
 

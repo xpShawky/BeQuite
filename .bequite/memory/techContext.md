@@ -57,7 +57,7 @@ python --version    # >= 3.11
 git --version       # >= 2.40
 
 # 2. Bootstrap (post-v0.5.0)
-git clone https://github.com/xpshawky/bequite
+git clone https://github.com/xpShawky/BeQuite
 cd bequite
 uvx --from . bequite --version
 

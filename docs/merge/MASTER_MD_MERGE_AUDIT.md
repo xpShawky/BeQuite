@@ -139,7 +139,7 @@ Decisions I cannot make unilaterally; flagged for Ahmed.
 
 | # | Decision | My current default | When it blocks |
 |---|---|---|---|
-| E1 | GitHub org / repo name | `xpshawky/bequite` | Before first remote push (no remote configured yet — non-blocking) |
+| E1 | GitHub org / repo name | `xpShawky/BeQuite` | Before first remote push (no remote configured yet — non-blocking) |
 | E2 | PyPI package name + ownership | `bequite` (assume Ahmed creates) | v0.5.0 release (CLI ships) |
 | E3 | Studio (v2.0.0+) timing — start after v1.0.0 ships, or immediately as parallel track? | After v1.0.0 ships | v1.0.0 release |
 | E4 | Telemetry policy — opt-in only? Receipt-only (no code/prompts)? Off entirely? | Off entirely until ADR-002 lands; receipts are local-only | v0.7.0 (receipts ship) |

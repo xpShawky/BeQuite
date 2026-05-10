@@ -31,7 +31,7 @@ That's the gap.
 
 | Criterion | Threshold | How measured |
 |---|---|---|
-| GitHub stars at 6 months | ≥ 1,000 | https://github.com/xpshawky/bequite |
+| GitHub stars at 6 months | ≥ 1,000 | https://github.com/xpShawky/BeQuite |
 | Monthly active CLI installs | ≥ 100 | PyPI download stats |
 | Doctrine forks (industry-specific) | ≥ 10 | GitHub search for `bequite-doctrine-` repos |
 | Successful auto-mode runs to DONE without rail-trip | ≥ 50 | Receipt chain analysis, opt-in telemetry |

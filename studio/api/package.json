@@ -1,6 +1,6 @@
 {
   "name": "@bequite/api",
-  "version": "2.0.0-alpha.1",
+  "version": "2.0.0-alpha.4",
   "private": true,
   "description": "BeQuite Studio API — Hono on Bun back-end serving the dashboard. v0.19.0 read surface + v0.19.5 Bearer-token auth + append-only writes (receipts, snapshots) with Iron Law X attestation + v0.20.0 SSE event streams (receipts, cost, phase) + v0.20.5 terminal exec surface (allow-list-gated per ADR-016). Per ADR-013 + ADR-015 + ADR-016.",
   "type": "module",

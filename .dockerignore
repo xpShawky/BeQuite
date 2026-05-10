@@ -1,0 +1,56 @@
+# Root-level .dockerignore — applies when building from repo root.
+# Each studio/<app>/.dockerignore applies when building that app's image.
+
+# Heavy bundles + caches
+node_modules
+.next
+.turbo
+.cache
+.parcel-cache
+.pnpm-store
+.yarn
+
+# Python venv + build artifacts
+.venv
+__pycache__
+*.py[cod]
+*.egg-info
+.pytest_cache
+.mypy_cache
+.ruff_cache
+
+# Rust / Tauri
+target
+
+# Git
+.git
+.gitignore
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode
+.idea
+*.swp
+
+# Logs
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# Test outputs
+coverage
+playwright-report
+test-results
+
+# Secrets (defense in depth — should never be committed but doubly excluded)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.bequite/.keys
+.bequite/.auth

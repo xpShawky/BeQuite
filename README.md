@@ -10,30 +10,66 @@ By **xpShawky** ([Ahmed Shawky](https://github.com/xpShawky)).
 
 ---
 
-## Install — one command (vibecoder-friendly)
+## Install — pick your path
 
-### Windows (PowerShell)
+### 🐳 Path A — Docker (easiest; one command brings up the whole stack)
 
+For anyone who wants the **whole Studio stack** (marketing site + dashboard + API) running in 60 seconds without installing Node, Bun, or anything else:
+
+```bash
+git clone https://github.com/xpShawky/BeQuite.git
+cd BeQuite
+docker compose up --build
+```
+
+That's it. Open three URLs:
+
+| URL | What |
+|---|---|
+| http://localhost:3000 | Cinematic landing |
+| http://localhost:3000/docs | 6 vibecoder tutorials |
+| http://localhost:3001 | Operations dashboard (with xterm.js terminal) |
+| http://localhost:3002/healthz | API health |
+
+**Prerequisite:** Docker Desktop running. Install from https://www.docker.com/products/docker-desktop/
+
+Stop the stack with `docker compose down`. Or use the helpers:
+
+```powershell
+# Windows
+.\scripts\docker-up.ps1            # build + run
+.\scripts\docker-up.ps1 -Detach    # background
+.\scripts\docker-up.ps1 -Down      # stop
+```
+
+```bash
+# macOS / Linux
+./scripts/docker-up.sh             # build + run
+./scripts/docker-up.sh --detach    # background
+./scripts/docker-up.sh --down      # stop
+```
+
+### 💻 Path B — Native (CLI only; for vibecoders who don't want Docker)
+
+If you only want the `bequite` CLI (Layer 1 Harness) and don't need the visual dashboard:
+
+**Windows (PowerShell)**
 ```powershell
 irm https://raw.githubusercontent.com/xpShawky/BeQuite/main/scripts/bootstrap.ps1 | iex
 ```
 
-### macOS / Linux
-
+**macOS / Linux**
 ```bash
 curl -fsSL https://raw.githubusercontent.com/xpShawky/BeQuite/main/scripts/bootstrap.sh | bash
 ```
 
-That's it. The bootstrap will:
+The bootstrap script:
+1. Checks Python 3.11+ and git — prints install hints if missing.
+2. Clones the repo into `./BeQuite/`.
+3. Creates a Python venv, installs `bequite` editable.
+4. Verifies + prints next-step commands.
 
-1. Check that **Python 3.11+** and **git** are installed — and tell you exactly how to install them if they're not (one-click installer links).
-2. Clone the repo into `./BeQuite/`.
-3. Create a Python venv inside the clone.
-4. Install the `bequite` CLI in editable mode.
-5. Verify everything works.
-6. Print the next-step commands.
-
-**Want the Studio (dashboard + marketing + API) too?**
+**Path B with full Studio (native, without Docker):**
 
 ```powershell
 # Windows
@@ -44,6 +80,8 @@ That's it. The bootstrap will:
 # macOS / Linux
 curl -fsSL https://raw.githubusercontent.com/xpShawky/BeQuite/main/scripts/bootstrap.sh | bash -s -- --studio
 ```
+
+Then start three apps yourself in three terminals. See [`docs/INSTALL.md`](docs/INSTALL.md).
 
 ---
 

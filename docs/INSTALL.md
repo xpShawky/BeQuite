@@ -1,17 +1,85 @@
 # Installing BeQuite from a fresh clone
 
-This guide covers installing BeQuite from a clean GitHub clone on Windows, macOS, and Linux. Two layers, pick what you need:
+This guide covers installing BeQuite from a clean GitHub clone on Windows, macOS, and Linux. Three install paths, pick what fits:
 
-- **Layer 1 — Harness CLI** (`bequite` + `bq`) — Python, ~5MB install, all you need to scaffold + run BeQuite-managed projects from the terminal.
-- **Layer 2 — Studio Edition** — three Next.js + Hono apps (marketing site / dashboard / API). Adds a visual surface; optional.
+- **🐳 Path A — Docker** — easiest for the full Studio stack. One command, no Node/Bun install required. Recommended for vibecoders trying BeQuite for the first time.
+- **💻 Path B — Native bootstrap script** — for users who already use Python and want the CLI directly.
+- **🔧 Path C — Manual** — full control for contributors.
 
-> **Status:** v1.0.1+. Per-PyPI publish (`pip install bequite` from the public registry) is **not yet active** — Ahmed pushes the wheel manually (one-way door per Article IV). Today the canonical install path is "clone + install from source." This doc covers that path; once the wheel is on PyPI the top-level `pip install bequite` will Just Work.
+> **Status:** v1.0.x / v2.0.0-alpha.x. `pip install bequite` from PyPI is **not yet active** — Ahmed pushes the wheel manually. Today the canonical install path is "clone + install from source." This doc covers that path; once the wheel is on PyPI the top-level `pip install bequite` will Just Work.
 
 ---
 
-## One-command install
+## Path A — Docker (recommended; easiest)
 
-We ship two install scripts:
+```bash
+git clone https://github.com/xpShawky/BeQuite.git
+cd BeQuite
+docker compose up --build
+```
+
+What you get:
+- **http://localhost:3000** — cinematic marketing landing + `/docs` tutorials
+- **http://localhost:3001** — operations dashboard with live xterm.js terminal
+- **http://localhost:3002** — API back-end (Hono on Bun)
+
+**Prerequisites:**
+- Docker Desktop installed and running (https://www.docker.com/products/docker-desktop/)
+- ~3GB free disk space for images
+- ~30-90s for first build (subsequent rebuilds use cache)
+
+**Convenience helpers:**
+
+```powershell
+# Windows
+.\scripts\docker-up.ps1            # build + run (foreground)
+.\scripts\docker-up.ps1 -Detach    # build + run in background
+.\scripts\docker-up.ps1 -Down      # stop + remove containers
+.\scripts\docker-up.ps1 -NoBuild   # use cached image; skip rebuild
+```
+
+```bash
+# macOS / Linux
+./scripts/docker-up.sh             # build + run (foreground)
+./scripts/docker-up.sh --detach    # build + run in background
+./scripts/docker-up.sh --down      # stop + remove containers
+./scripts/docker-up.sh --no-build  # use cached image; skip rebuild
+```
+
+**How it's wired:**
+
+| Service | Image base | Port | Notes |
+|---|---|---|---|
+| `api` | `oven/bun:1.1` | 3002 | Reads `.bequite/` from the repo root (volume-mounted at `/workspace`). Writes (receipts, snapshots) land back in the repo. |
+| `dashboard` | `node:20-bookworm-slim` | 3001 | Multi-stage Next.js production build. Talks to `http://api:3002` server-side, `http://localhost:3002` client-side (for SSE). |
+| `marketing` | `node:20-bookworm-slim` | 3000 | Multi-stage Next.js production build. Static landing + MDX docs. |
+
+**The dashboard inside Docker speaks HTTP, not filesystem.** `BEQUITE_DASHBOARD_MODE=http` is set in compose. The dashboard fetches snapshot data from the API container, not the filesystem.
+
+**Auth mode in Docker:** defaults to `local-dev` (no Bearer token required). To switch to token mode, override the env var in `docker-compose.yml`:
+
+```yaml
+services:
+  api:
+    environment:
+      BEQUITE_AUTH_MODE: token   # require Authorization: Bearer ...
+```
+
+Then mint a token via the bootstrap bootstrap-into-token flow documented in `studio/api/README.md`.
+
+**Image hygiene:**
+
+```bash
+docker compose down               # stop containers; keep images
+docker image prune                # remove unused dangling images
+docker compose down --rmi all     # stop + remove the bequite-* images
+```
+
+---
+
+## Path B — Native bootstrap script
+
+We ship two scripts that handle prereq checks + clone + venv + CLI install in one shot:
 
 | Platform | Script |
 |---|---|

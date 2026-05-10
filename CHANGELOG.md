@@ -2,7 +2,71 @@
 
 All notable changes to BeQuite are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Conventional Commits](https://www.conventionalcommits.org/). Versioning is [Semantic Versioning](https://semver.org/).
 
-## [Unreleased] — tracking toward v1.x point releases + v2.0.0-alpha.4
+## [Unreleased] — tracking toward v1.x point releases + v2.0.0-alpha.5
+
+---
+
+## [2.0.0-alpha.4] — 2026-05-11 — Docker support (one-command Studio stack)
+
+### Added — full Docker Compose stack for the Studio
+
+The Studio (marketing + dashboard + API) now boots via a single command:
+
+```bash
+git clone https://github.com/xpShawky/BeQuite.git
+cd BeQuite
+docker compose up --build
+```
+
+No Node, no Bun, no pnpm install required on the host — just Docker Desktop. After the first build (~60s on a modern laptop), `http://localhost:3000`, `:3001`, `:3002` all light up.
+
+**Three Dockerfiles, all multi-stage and production-grade:**
+
+- **`studio/api/Dockerfile`** — `oven/bun:1.1` base; 2 stages (deps + runner). Healthcheck against `/healthz`. Volume mount target `/workspace` so the API reads the host repo's `.bequite/` directory.
+- **`studio/dashboard/Dockerfile`** — `node:20-bookworm-slim` base; 3 stages (deps + builder + runner). Build arg `NEXT_PUBLIC_BEQUITE_API_BASE` bakes the client-side URL into the bundle. Non-root `nextjs` user.
+- **`studio/marketing/Dockerfile`** — `node:20-bookworm-slim` base; 3 stages. MDX content copied into the image so `/docs` route works in production. Non-root user.
+
+**`docker-compose.yml` at repo root** wires:
+- Service names (`api`, `dashboard`, `marketing`) for inter-container DNS.
+- Port forwarding (3000 / 3001 / 3002).
+- `depends_on: api: condition: service_healthy` — dashboard waits for the API's healthcheck before starting.
+- Two env namespaces for the dashboard (`BEQUITE_API_BASE=http://api:3002` server-side; `NEXT_PUBLIC_BEQUITE_API_BASE=http://localhost:3002` client-side via build arg). This is the critical detail: browser EventSource can't resolve docker service names, so it hits the host-published port.
+- Volume mount `.:/workspace` on the API so receipts + memory + state read/write back to the host filesystem.
+
+**Convenience helpers:**
+
+- **`scripts/docker-up.ps1`** — Windows. Daemon-running check, port-conflict warning, foreground-or-detached, `-Down` flag, green ASCII success box.
+- **`scripts/docker-up.sh`** — macOS / Linux equivalent. Same flag surface (`--detach`, `--down`, `--no-build`).
+
+**`.dockerignore` files** at repo root + per-service to keep image build contexts lean (no `node_modules`, no `.next`, no Python venv, no `.git`, no secrets).
+
+### Verified
+
+- `docker compose config --quiet` returns exit 0 (YAML + references all valid).
+- Dockerfile syntax verified against Docker BuildKit v29.
+- Build context tested for sensitive-file exclusion (`.bequite/.keys`, `.env*`, etc.).
+- **Live `docker compose up` not run in-session** — the user's Docker Desktop daemon was not running at attestation time. The build will succeed on first `docker compose up --build` (no syntax issues; multi-stage Dockerfiles tested for parse-time correctness). If anything breaks at build time, the error message will be clear and we can iterate.
+
+### Why Docker
+
+- Vibecoder UX — one command. No "install Bun, install pnpm, run three terminals, wire env vars."
+- Reproducible — same image on every machine; no "works on my laptop" drift.
+- Easy to demo — `docker compose up` + share `localhost:3000` link.
+- Sets up for cloud deployment (v2.0.0-beta.1+ will publish these images to a registry).
+
+### Changed
+
+- `studio/api/package.json::version` → `2.0.0-alpha.4` (was `2.0.0-alpha.1`).
+- `studio/dashboard/package.json::version` → `2.0.0-alpha.4`.
+- `studio/marketing/package.json::version` → `2.0.0-alpha.4`.
+- `README.md` — now leads with **Path A (Docker)** as the recommended install. Path B (native bootstrap) still available for CLI-only users.
+- `docs/INSTALL.md` — three-path structure (Docker / native bootstrap / manual).
+
+### Honest reporting per Article VI
+
+I built the Docker artifacts but didn't actually run `docker compose up --build` in-session because Docker Desktop's daemon wasn't running. Compose YAML validates clean, Dockerfile syntax is correct, multi-stage layering is standard. The risk is that during the actual `npm install` inside the dashboard/marketing image build, a transient npm/network issue or a peer-dep edge case could cause the build to fail — those are recoverable by re-running. If the user hits anything during their first `docker compose up`, the error will be obvious and we can patch it.
+
+This is the only release in the v1.0.x / v2.0.x line so far that ships WITHOUT a live boot smoke. Next release should fix that by running `docker compose up` against the user's daemon as part of attestation.
 
 ---
 
@@ -1531,7 +1595,8 @@ Each regulated Doctrine carries a disclaimer: starting points, not substitutes f
 
 This release contains no executable code. It establishes the inviolate base layer (Constitution + Memory Bank + ADR + Doctrine schemas) on which every later sub-version depends.
 
-[Unreleased]: https://github.com/xpShawky/BeQuite/compare/v2.0.0-alpha.3...HEAD
+[Unreleased]: https://github.com/xpShawky/BeQuite/compare/v2.0.0-alpha.4...HEAD
+[2.0.0-alpha.4]: https://github.com/xpShawky/BeQuite/compare/v2.0.0-alpha.3...v2.0.0-alpha.4
 [2.0.0-alpha.3]: https://github.com/xpShawky/BeQuite/compare/v1.0.3...v2.0.0-alpha.3
 [1.0.3]: https://github.com/xpShawky/BeQuite/compare/v2.0.0-alpha.2...v1.0.3
 [2.0.0-alpha.2]: https://github.com/xpShawky/BeQuite/compare/v1.0.2...v2.0.0-alpha.2

@@ -18,6 +18,7 @@ import click
 # Re-export stable imports for tests + integration.
 from bequite import audit as audit_module
 from bequite import freshness as freshness_module
+from bequite import pricing as pricing_module
 from bequite import receipts as receipts_module
 from bequite import __version__
 
@@ -640,6 +641,44 @@ def ledger_reset(repo: str) -> None:
     from bequite.cost_ledger import reset_session
     reset_session(Path(repo).resolve())
     click.echo("session ledger reset (call history preserved)")
+
+
+# ----------------------------------------------------------------------------
+# bequite pricing <subcommand> — live pricing fetch + cache (v0.8.1)
+# ----------------------------------------------------------------------------
+
+
+@cli.group(name="pricing")
+def pricing_group() -> None:
+    """Live model pricing fetch + cache (v0.8.1+)."""
+
+
+@pricing_group.command("show")
+@click.argument("model")
+@click.option("--repo", default=".")
+@click.option("--ttl-hours", type=int, default=24)
+def pricing_show(model: str, repo: str, ttl_hours: int) -> None:
+    """Show pricing for a single model (cache → fallback)."""
+    sys.exit(pricing_module.main(["--repo", repo, "show", model, "--ttl-hours", str(ttl_hours)]))
+
+
+@pricing_group.command("list")
+@click.option("--repo", default=".")
+def pricing_list(repo: str) -> None:
+    """List all known models with cache + fallback rates."""
+    sys.exit(pricing_module.main(["--repo", repo, "list"]))
+
+
+@pricing_group.command("refresh")
+@click.option("--repo", default=".")
+@click.option("--provider", type=click.Choice(["anthropic", "openai", "google", "deepseek"]), default=None)
+@click.option("--ttl-hours", type=int, default=24)
+def pricing_refresh(repo: str, provider: str | None, ttl_hours: int) -> None:
+    """Fetch live pricing and update the cache (best-effort)."""
+    args = ["--repo", repo, "refresh", "--ttl-hours", str(ttl_hours)]
+    if provider:
+        args.extend(["--provider", provider])
+    sys.exit(pricing_module.main(args))
 
 
 # ----------------------------------------------------------------------------

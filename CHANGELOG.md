@@ -8,6 +8,56 @@ The full sub-version roadmap (`v0.1.0` → `v1.0.0`) lives in `docs/HOW-IT-WORKS
 
 ---
 
+## [0.8.1] — 2026-05-10
+
+### Added — Live pricing fetch (best-effort)
+
+- **`cli/bequite/pricing.py`** (~330 lines) — vendor pricing fetch + cache + fallback:
+  - **Cache** at `.bequite/cache/pricing.json`; default 24h TTL; canonical-JSON encoded.
+  - **`fetch_pricing(provider=None)`** — best-effort GET on each vendor's pricing page (Anthropic / OpenAI / Google / DeepSeek). Returns partial dict on parse failure (rather than raising).
+  - **`extract_prices_from_html(html)`** — coarse regex extraction. Pairs nearest model + 2 prices in the same paragraph. Hardly perfect but better than nothing; flags missing extraction so the cache stays incomplete-but-honest rather than silently wrong.
+  - **`pricing_for(model)`** — returns `(rates, source)` where source ∈ {"live", "stale", "fallback", "unknown"}. Prefers fresh cache → stale cache (with warning) → vendored hard-coded fallback → unknown.
+  - **`estimate_cost_usd(model, input_tokens, output_tokens)`** — one-call helper used by provider adapters. Returns `(usd, source)`.
+  - **CLI** at `python -m bequite.pricing {refresh,show,list}`.
+- **`skill/references/pricing-table.md`** — vendored May-2026 pricing snapshot covering 5 providers + hosting (Vercel / Cloudflare / Render / Fly / Railway) + auth (Clerk / Auth0 / Better-Auth) + database (Supabase / Neon / Convex). Used as fallback when both cache and live fetch fail. Marked stale on use.
+- **Provider adapters updated** (`cli/bequite/providers/{anthropic,openai,google,deepseek}.py`):
+  - `estimate_cost_usd()` now consults `pricing.pricing_for()` first; falls back to module-level hard-coded table if pricing module unimportable or model unknown.
+  - Soft-import: adapters remain usable without `pricing.py` (graceful degradation per the v0.8.0 contract).
+- **CLI surface additions** in `cli/bequite/__main__.py`:
+  - `bequite pricing show <model>` — current rate + source for a model.
+  - `bequite pricing list` — all known models with cache + fallback rates.
+  - `bequite pricing refresh [--provider <p>]` — best-effort live fetch + cache update.
+- **14-test integration suite at `tests/integration/pricing/test_pricing_smoke.py`**:
+  1. fallback_pricing for 4 known models across 4 providers.
+  2. fallback_pricing returns None for unknown.
+  3. pricing_for falls back when cache empty.
+  4. pricing_for unknown model returns "unknown".
+  5. pricing_for uses fresh cache (live source).
+  6. pricing_for marks stale when cache > TTL.
+  7. pricing_for unknown-in-cache falls back to fallback table.
+  8. estimate_cost_usd uses pricing_for (1M opus = $22.50 round-trip).
+  9. estimate_cost_usd unknown returns 0.
+  10. cache_age_hours missing/invalid returns +inf.
+  11. is_cache_fresh under TTL.
+  12. is_cache_fresh over TTL.
+  13. extract_prices_from_html finds paired model+prices.
+  14. AnthropicProvider.estimate_cost_usd consults pricing module.
+  - All 14 pass on Python 3.14.
+  - **Combined integration suite: 48/48 green** (10 receipts + 9 signing + 15 router + 14 pricing).
+
+### Changed
+
+- `cli/bequite/__init__.py::__version__` → `0.8.1`.
+- `cli/pyproject.toml::version` → `0.8.1`.
+
+### Notes
+
+- Live fetch + extract is intentionally conservative. WebFetch + regex extraction is brittle for pricing pages; v0.8.1 ships the **infrastructure** (cache shape, fallback path, adapter wiring). Live extraction degrades gracefully to "fallback (stale)" when a vendor restructures its pricing page.
+- The vendored `skill/references/pricing-table.md` is the fallback's fallback. When both cache and live fetch are unavailable, this file is the source of truth — flagged `stale=True`.
+- Article VI honest reporting: every cache entry carries `source` so users always know whether they're looking at live, stale, or fallback data.
+
+---
+
 ## [0.8.0] — 2026-05-10
 
 ### Added — Multi-model routing (cost-aware)

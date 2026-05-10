@@ -39,6 +39,14 @@ class GoogleProvider:
         return model in _GOOGLE_PRICING or model.startswith("gemini-")
 
     def estimate_cost_usd(self, model: str, input_tokens: int, output_tokens: int) -> float:
+        # v0.8.1: consult live pricing cache first; fall back to hard-coded table.
+        try:
+            from bequite.pricing import pricing_for
+            rates, _source = pricing_for(model)
+            if rates:
+                return (input_tokens / 1_000_000) * rates["input"] + (output_tokens / 1_000_000) * rates["output"]
+        except ImportError:
+            pass
         tier = _GOOGLE_PRICING.get(model)
         if not tier:
             return 0.0

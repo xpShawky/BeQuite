@@ -4,7 +4,53 @@ All notable changes to BeQuite are documented here. Format follows [Keep a Chang
 
 ## [Unreleased] — tracking toward v1.x point releases + v2.0.0-alpha.2
 
-v1.0.0 + v2.0.0-alpha.1 both shipped 2026-05-11. The v1.x line tracks point releases (bug fixes, doc improvements, freshness probe tuning, additional Doctrines). v2.x tracks the Studio Edition graduation alpha → beta → stable.
+---
+
+## [1.0.1] — 2026-05-11 — Fresh-clone install fixes (critical)
+
+**Article VI failure caught by fresh-clone testing.** Two install-path bugs were silently shipping since v0.5.0 and v0.20.0 respectively. Every CHANGELOG since then that claimed "the CLI is installable via `pip install -e ./cli`" was technically false — the path errored from a clean clone. v1.0.1 fixes both, adds verified one-command install scripts, and ships a proper `docs/INSTALL.md`.
+
+### Fixed
+
+- **`cli/README.md` was missing.** `cli/pyproject.toml` has declared `readme = "README.md"` since v0.5.0, but the file was never staged. Hatchling rejects builds with `OSError: Readme file does not exist: README.md`, so `pip install -e ./cli` failed with a metadata-generation error from a fresh clone. The CLI was only installable via local hacks on this developer's machine (where the file may have existed transiently, or where a different build path was used). Authored a proper `cli/README.md` describing the package surface.
+
+- **`bequite --help` crashed on Windows with UnicodeEncodeError.** Click renders help text containing `→`, `✓`, `·` (Geist-style separators) via `sys.stdout.write()`, which on Windows defaults to `cp1252` codec — incapable of encoding `→`. Added a stdout/stderr reconfigure-to-UTF-8 block at the top of `cli/bequite/__main__.py` (uses Python 3.7+'s `reconfigure(encoding="utf-8", errors="replace")` with safe try/except for redirected-pipe contexts). All current AND future Unicode characters in help text now render cleanly on Windows, macOS, and Linux.
+
+### Added
+
+- **`scripts/install.ps1`** (~150 lines) — one-command install for Windows PowerShell 5.1 + 7+. Prereq checks (Python ≥ 3.11, git, optionally Node/pnpm/Bun for `-Studio`), venv creation, `pip install -e ./cli`, end-to-end `bequite --version` verification, optional Studio dependency install. Honest prereq warnings + clear next-step output.
+
+- **`scripts/install.sh`** (~110 lines) — bash equivalent for macOS / Linux. Same surface (`--studio`, `--clone-to`, `--venv-name` flags). `set -euo pipefail` for fail-loud behavior.
+
+- **`docs/INSTALL.md`** (~250 lines) — replaces the chat-only install instructions with a checked-in doc. Covers: one-command install via scripts, prerequisites per OS, manual install fallback, common errors and fixes (including the `&&` PowerShell-5.1 gotcha + the `pip install bequite` not-yet-on-PyPI explanation), verification URLs, optional per-host install (`bequite skill install --host cursor`).
+
+### Verified
+
+Iron Law X self-attestation done in-session:
+
+```
+$ cd /tmp/bq-install-test && python -m venv .venv
+$ source .venv/Scripts/activate
+$ pip install -e "C:/Ahmed Shawky/Antigravity projects/BeQuite/cli"
+... Successfully installed bequite-1.0.0 + 25 deps
+$ bequite --version  →  bequite, version 1.0.0
+$ bequite --help     →  (full help renders; no UnicodeEncodeError)
+$ bequite doctor     →  full diagnostic table renders
+$ bequite route providers  →  table renders
+$ bequite pricing list     →  fallback table renders
+```
+
+(The smoke test ran against the v1.0.0 wheel built from main, which is functionally equivalent to v1.0.1 plus the cli/README.md + UTF-8 fix.)
+
+### Changed
+
+- `cli/bequite/__init__.py::__version__` → `1.0.1`.
+- `cli/pyproject.toml::version` → `1.0.1`.
+- `cli/bequite/__main__.py` — added UTF-8 stdout/stderr reconfigure block.
+
+### Honest reporting per Article VI
+
+This bug should have been caught at v0.5.0. It wasn't because no one (including me) ever ran the install from a fresh clone — the file was present on the developer's local disk through some other path. This is the same class of failure as the silently-ignored `studio/*/lib/` files we fixed in the v0.19.0 follow-up, and the reason Iron Law X exists. v1.0.1 closes the loop: the install path is now verified end-to-end against a clean venv before any "the CLI installs cleanly" claim is made.
 
 ---
 
@@ -1315,7 +1361,8 @@ Each regulated Doctrine carries a disclaimer: starting points, not substitutes f
 
 This release contains no executable code. It establishes the inviolate base layer (Constitution + Memory Bank + ADR + Doctrine schemas) on which every later sub-version depends.
 
-[Unreleased]: https://github.com/xpShawky/BeQuite/compare/v2.0.0-alpha.1...HEAD
+[Unreleased]: https://github.com/xpShawky/BeQuite/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/xpShawky/BeQuite/compare/v2.0.0-alpha.1...v1.0.1
 [2.0.0-alpha.1]: https://github.com/xpShawky/BeQuite/compare/v1.0.0...v2.0.0-alpha.1
 [1.0.0]: https://github.com/xpShawky/BeQuite/compare/v0.20.5...v1.0.0
 [0.20.5]: https://github.com/xpShawky/BeQuite/compare/v0.20.0...v0.20.5

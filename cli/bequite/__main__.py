@@ -13,6 +13,17 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+# Force UTF-8 on stdout/stderr so help text + receipts + log lines containing
+# Unicode (→, ✓, ・, RTL Arabic) render correctly on Windows consoles that
+# default to cp1252. Python 3.7+ exposes reconfigure(); the try/except keeps
+# us safe on stdout-redirected-to-pipe contexts where reconfigure may fail.
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        try:
+            _stream.reconfigure(encoding="utf-8", errors="replace")  # type: ignore[union-attr]
+        except Exception:
+            pass
+
 import click
 
 # Re-export stable imports for tests + integration.

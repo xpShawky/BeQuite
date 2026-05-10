@@ -8,6 +8,25 @@ Full sub-version roadmap (`v0.1.0` → `v1.0.0`) lives in `docs/HOW-IT-WORKS.md`
 
 ---
 
+## [0.10.6] — 2026-05-10
+
+### Added — CLI Authentication Phase-2 (stubs that gracefully degrade) per ADR-011
+
+- **`cli/bequite/auth.py`** (~190 lines) — LocalIdentity dataclass + get/save/delete + status_dict + offline-mode + ci-mode detection. CLI: `python -m bequite.auth {login,logout,whoami,status,refresh}`. Phase-2 ships local-file identity (UUID at `.bequite/.identity.json`); Phase-3 device-code RFC 8628 flow lands v0.11.x+ when auth server stands up.
+- **CI mode** detected via `BEQUITE_API_KEY` or `BEQUITE_CI_MODE=true` — login skips device-code flow.
+- **Offline mode** via `BEQUITE_OFFLINE=true` — auth-required commands suppress.
+- **`tests/integration/auth/test_auth_smoke.py`** — 8 tests covering identity roundtrip / unauthenticated state / authenticated state / offline + CI mode env handling / UUID generation. **All 8 pass.**
+
+### Changed
+
+- Versions bumped to `0.10.6`.
+
+### Notes
+
+- Combined integration suite: 87 + 8 = **95/95 tests green** on Python 3.14.
+
+---
+
 ## [0.10.5] — 2026-05-10
 
 ### Added — Multi-Model Planning (manual-paste working) per ADR-012

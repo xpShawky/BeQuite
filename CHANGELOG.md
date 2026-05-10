@@ -8,6 +8,24 @@ Full sub-version roadmap (`v0.1.0` → `v1.0.0`) lives in `docs/HOW-IT-WORKS.md`
 
 ---
 
+## [0.10.7] — 2026-05-10
+
+### Added — Auto-mode hardening (resume + parallel + idempotent)
+
+- **`cli/bequite/auto_state.py`** (~110 lines) — `list_sessions` / `can_resume` / `resume_session` (clears BLOCKED+PAUSED markers, resets failure counter, advances to next phase). `should_split_parallel` + `fan_out_parallel` (per AkitaOnRails 2026 N>5 threshold; respects `depends_on`). `is_phase_idempotent_rerun` + `detect_double_commit` (same-feature in-flight session detection).
+- **`tests/integration/auto/test_auto_state_smoke.py`** — 13 tests covering empty session list / saved sessions / resume valid+invalid states / parallel threshold + dependency-blocking / idempotent rerun / double-commit detection. **All 13 pass.**
+
+### Changed
+
+- Versions bumped to `0.10.7`.
+
+### Notes
+
+- Combined integration suite: 95 + 13 = **108/108 tests green** on Python 3.14.
+- Phase-5 (Auto + new feature impls) closes here. Next: phase-6 (MENA + host adapters).
+
+---
+
 ## [0.10.6] — 2026-05-10
 
 ### Added — CLI Authentication Phase-2 (stubs that gracefully degrade) per ADR-011

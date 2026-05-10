@@ -4,7 +4,37 @@ All notable changes to BeQuite are documented here. Format follows [Keep a Chang
 
 ## [Unreleased] — tracking toward v1.0.0 + v2.0.0-alpha.1
 
-v0.17.0 ships the deep vibecoder tutorials + docs route + cinematic Chapter primitive + R3F starfield. v0.17.5 (3D astronaut GLB via Blender) deferred — Blender's MCP add-on is timing out at `localhost:9876`. Ahmed reviews before tagging v1.0.0 (Layer 1 Harness final) + v2.0.0-alpha.1 (Studio Edition first pre-release).
+v0.18.0 ships the **Studio dashboard real implementation** per image 6 mock. v0.17.5 (3D astronaut GLB via Blender) parked — Blender MCP unresponsive. v0.19.0 next: Hono+Bun API back-end. Ahmed reviews before tagging v1.0.0 (Layer 1 Harness final) + v2.0.0-alpha.1 (Studio Edition first pre-release).
+
+---
+
+## [0.18.0] — 2026-05-10
+
+### Added — Studio dashboard real implementation (per image 6 mock)
+
+**`studio/dashboard/` is now a working Next.js 15 app** that boots on http://localhost:3001 and reads the BeQuite repo itself (or any BeQuite-managed project at a configurable path):
+
+- **`app/page.tsx`** — composes the full operations console: TopBar + PhasesSidebar + center main + AgentPanel (right). Server-component reads project state via `lib/projects.ts::loadProject()` on every request.
+- **`components/TopBar.tsx`** — logo + workspace/project breadcrumbs + AGENT ONLINE indicator with pulsing gold dot.
+- **`components/PhasesSidebar.tsx`** — P0..P7 phase list with status icons (Check / Loader / Circle / AlertOctagon) + DEV STATUS block + DEPLOY button.
+- **`components/CommandConsole.tsx`** — terminal-mock with gold prompt arrow + ✓ output styling + blinking cursor.
+- **`components/PlanTasksTests.tsx`** — 3-panel grid (Plan / Tasks / Tests).
+- **`components/AgentPanel.tsx`** — right-side astronaut character + status indicator + activeContext summary + recent activity log.
+- **`components/ReceiptsList.tsx`** — last 10 receipts with ed25519 signature badges + cost + timestamp.
+- **`lib/projects.ts`** — filesystem-based project loader. Reads `constitution.md`, `projectbrief.md`, `activeContext.md`, `state/current_phase.md`, `state/recovery.md`, `.bequite/receipts/*.json`, `.bequite/cache/cost-ledger.json`. Returns a `ProjectSnapshot`.
+- **`package.json`** — Next.js 15 + React 19 + Tailwind v4 + Framer Motion 11 + TanStack Query 5 + gray-matter + Lucide icons.
+
+### Changed
+
+- `cli/bequite/__init__.py::__version__` → `0.18.0`. `cli/pyproject.toml::version` → `0.18.0`.
+- `studio/dashboard/README.md` — rewritten from placeholder to working-app docs.
+
+### Notes
+
+- Dashboard **boots locally**: `cd studio/dashboard && pnpm install && pnpm dev` → http://localhost:3001. By default it loads the BeQuite repo from `../..` and shows real receipts, real phases, real Constitution version, real cost ledger.
+- v0.17.5 (3D character) still parked — Blender MCP went from timeout to `Cannot connect`.
+- v0.18.5 will add live xterm.js terminal streaming.
+- v0.19.0 swaps filesystem-mode for HTTP-to-`studio/api/`. v0.19.0+ adds auth (per ADR-011 Phase-3 device-code).
 
 ---
 

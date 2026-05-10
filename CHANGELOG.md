@@ -8,6 +8,69 @@ The full sub-version roadmap (`v0.1.0` → `v1.0.0`) lives in `docs/HOW-IT-WORKS
 
 ---
 
+## [0.8.0] — 2026-05-10
+
+### Added — Multi-model routing (cost-aware)
+
+- **`cli/bequite/providers/`** — 5 vendor adapters + Protocol + Completion dataclass:
+  - `__init__.py` — `AiProvider` Protocol (`is_available`, `supports_model`, `estimate_cost_usd`, `complete`); `Completion` dataclass (text, input_tokens, output_tokens, finish_reason, model, provider, usd_cost, raw_response, error); `get_provider(name)` factory + `REGISTERED_PROVIDERS` tuple.
+  - `anthropic.py` — Claude family via `anthropic` SDK; pricing for `claude-opus-4-7` ($15/$75 per 1M), `claude-sonnet-4-6` ($3/$15), `claude-haiku-4-5` ($0.80/$4); reasoning-effort passed via system-prompt prefix.
+  - `openai.py` — GPT-5 / o3 family via `openai` SDK; pricing for `gpt-5` ($12/$50), `gpt-5-mini` ($0.50/$2), `o3` ($10/$40); reusable as base for DeepSeek (OpenAI-compatible API).
+  - `google.py` — Gemini via `google-genai` SDK (the `bequite[google]` extra); pricing for `gemini-2.5-pro` ($1.25/$10), `gemini-2.5-flash` ($0.30/$2.50).
+  - `deepseek.py` — Subclasses OpenAIProvider; `base_url=https://api.deepseek.com/v1`; pricing for `deepseek-chat`/`deepseek-coder` ($0.27/$1.10), `deepseek-reasoner` ($0.55/$2.19).
+  - `ollama.py` — HTTP localhost (`http://localhost:11434`) via `httpx`; **no vendor SDK required**; cost always $0.00 (local compute); availability probed via `/api/tags`.
+  - **Graceful degradation:** every adapter is importable WITHOUT its vendor SDK — `is_available()` returns False instead of raising. The router uses this to fall back without crashing.
+- **`cli/bequite/router.py`** — selects (provider, model, effort) per (phase, persona):
+  - `Route` dataclass (phase, persona, model, reasoning_effort, fallback_model, max_input_tokens, max_output_tokens, provider, used_fallback, note).
+  - `_provider_for_model()` heuristic: `claude-*` → anthropic; `gpt-*`/`o3*`/`o4*` → openai; `gemini-*` → google; `deepseek-*` → deepseek; `llama|mistral|qwen|phi|gemma` → ollama; else → ollama.
+  - `find_routing_path()` — searches `.bequite/routing-overrides.json` then `skill/routing.json` (project-local override possible).
+  - `select_route()` — match priority: exact (phase, persona) → (persona, special-phase: any/any-boundary/always-on/any-mode) → (phase, orchestrator) → orchestrator catch-all.
+  - `dispatch()` — runs primary; on unavailable, tries `fallback_model` (auto-resolves provider from model name); calls `cost_ledger.update()` on every call.
+- **`cli/bequite/cost_ledger.py`** — feeds `.bequite/cache/cost-ledger.json` so the existing `stop-cost-budget.sh` hook (v0.3.0) actually has data to enforce against:
+  - `update()` — appends call to ledger; refreshes `session_total_usd` + `session_total_tokens` + `calls_this_session`. Per-process session_id auto-resets totals on session change.
+  - `read()` — full ledger dict.
+  - `session_summary()` — one-screen current-session summary.
+  - `reset_session()` — clears session totals (keeps call history).
+- **CLI surface additions** in `cli/bequite/__main__.py`:
+  - `bequite route show --phase <P> --persona <X>` — JSON of resolved route.
+  - `bequite route list` — every row in routing.json (table format).
+  - `bequite route providers` — availability probe per provider (SDK + API key check).
+  - `bequite ledger show` — current session summary.
+  - `bequite ledger reset` — reset session totals.
+- **15-test integration suite at `tests/integration/router/test_router_smoke.py`**:
+  1. provider registry complete (5 providers).
+  2. each provider implements Protocol (4 methods).
+  3. provider-for-model heuristics (8 model names).
+  4. select_route exact match (P5 backend-engineer → claude-sonnet-4-6).
+  5. select_route reviewer uses Opus xhigh (Aider architect-mode pattern).
+  6. select_route skeptic via any-boundary special phase.
+  7. select_route unknown falls back to orchestrator.
+  8. anthropic pricing estimates (3 model tiers).
+  9. openai pricing estimates.
+  10. dispatch with TestProvider returns Completion + Route.
+  11. dispatch falls back when primary unavailable.
+  12. dispatch returns error when both unavailable.
+  13. cost_ledger accumulates across calls (totals + count).
+  14. cost_ledger session_summary surface.
+  15. dispatch updates ledger when enabled.
+  - All 15 pass on Python 3.14.
+  - **Total integration suite: 34/34 green** (10 receipts + 9 signing + 15 router).
+
+### Changed
+
+- `cli/bequite/__init__.py::__version__` → `0.8.0`.
+- `cli/pyproject.toml::version` → `0.8.0`. Description updated to "multi-model routing (Anthropic + OpenAI + Google + DeepSeek + Ollama with cost-aware fallback)".
+
+### Notes
+
+- The `routing.json` schema in `skill/routing.json` was authored in v0.2.0 with the right shape; v0.8.0 makes it operational by wiring the provider adapters + dispatch path.
+- AkitaOnRails 2026 finding (forced multi-model on coupled tasks loses to solo frontier) is preserved: routing routes Skeptic to `any-boundary` and reviewer to Opus-xhigh on Aider architect-mode pattern, but implementation stays single-frontier per-task.
+- The `stop-cost-budget.sh` hook (shipped v0.3.0) reads `.bequite/cache/cost-ledger.json::session_total_usd`. Now that the ledger is populated, ceiling enforcement is operational.
+- TestProvider injection (`provider_factory` arg on `dispatch()`) keeps the suite hermetic — no network, no API keys required.
+- Receipt emission per model invocation is cleanly separable from the dispatch path: the router updates the ledger; receipts (v0.7.0+v0.7.1 schema) get emitted by the auto-mode driver in v0.10.0 when phase boundaries fire.
+
+---
+
 ## [0.7.1] — 2026-05-10
 
 ### Added — Signed receipts (ed25519)

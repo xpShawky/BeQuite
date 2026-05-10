@@ -543,6 +543,106 @@ def keygen(repo: str, overwrite: bool) -> None:
 
 
 # ----------------------------------------------------------------------------
+# bequite route <subcommand> — multi-model routing inspection (v0.8.0)
+# ----------------------------------------------------------------------------
+
+
+@cli.group(name="route")
+def route_group() -> None:
+    """Inspect / probe the multi-model routing matrix (v0.8.0+)."""
+
+
+@route_group.command("show")
+@click.option("--phase", required=True, help="P0..P7 / any / any-boundary / always-on / orchestrator.")
+@click.option("--persona", required=True, help="One of the 17 personas in skill/agents/.")
+@click.option("--repo", default=".")
+def route_show(phase: str, persona: str, repo: str) -> None:
+    """Print the route a (phase, persona) pair would resolve to."""
+    import json
+    from bequite.router import select_route
+    repo_path = Path(repo).resolve()
+    route = select_route(phase=phase, persona=persona, repo_root=repo_path)
+    click.echo(json.dumps({
+        "phase": route.phase,
+        "persona": route.persona,
+        "model": route.model,
+        "reasoning_effort": route.reasoning_effort,
+        "fallback_model": route.fallback_model,
+        "max_input_tokens": route.max_input_tokens,
+        "max_output_tokens": route.max_output_tokens,
+        "provider": route.provider,
+        "note": route.note,
+    }, indent=2, sort_keys=True))
+
+
+@route_group.command("list")
+@click.option("--repo", default=".")
+def route_list(repo: str) -> None:
+    """List every routing row in skill/routing.json."""
+    import json
+    from bequite.router import find_routing_path
+    repo_path = Path(repo).resolve()
+    path = find_routing_path(repo_path)
+    if not path:
+        click.echo("error: no routing.json found", err=True)
+        sys.exit(2)
+    data = json.loads(path.read_text(encoding="utf-8"))
+    rows = data.get("phase_routing", [])
+    click.echo(f"{'phase':18s} {'persona':22s} {'model':22s} {'effort':8s} {'fallback':16s}")
+    click.echo("-" * 90)
+    for row in rows:
+        click.echo(
+            f"{row.get('phase', ''):18s} {row.get('persona', ''):22s} "
+            f"{row.get('model', ''):22s} {row.get('reasoning_effort', ''):8s} "
+            f"{(row.get('fallback_model') or ''):16s}"
+        )
+
+
+@route_group.command("providers")
+def route_providers() -> None:
+    """Probe each provider for availability (SDK + API key)."""
+    from bequite.providers import REGISTERED_PROVIDERS, get_provider
+    click.echo(f"{'provider':12s} {'available':12s}")
+    click.echo("-" * 28)
+    for name in REGISTERED_PROVIDERS:
+        p = get_provider(name)
+        status = "yes" if p.is_available() else "no"
+        click.echo(f"{name:12s} {status:12s}")
+
+
+# ----------------------------------------------------------------------------
+# bequite ledger show — current session cost ledger
+# ----------------------------------------------------------------------------
+
+
+@cli.group(name="ledger")
+def ledger_group() -> None:
+    """Inspect / reset the session cost ledger (v0.8.0+)."""
+
+
+@ledger_group.command("show")
+@click.option("--repo", default=".")
+def ledger_show(repo: str) -> None:
+    """Display the current session's ledger summary."""
+    import json
+    from bequite.cost_ledger import session_summary
+    s = session_summary(Path(repo).resolve())
+    if not s.get("session_id"):
+        click.echo("(no ledger yet — make at least one model call to populate)")
+        return
+    click.echo(json.dumps(s, indent=2, sort_keys=True))
+
+
+@ledger_group.command("reset")
+@click.option("--repo", default=".")
+def ledger_reset(repo: str) -> None:
+    """Reset session totals (keeps the call history)."""
+    from bequite.cost_ledger import reset_session
+    reset_session(Path(repo).resolve())
+    click.echo("session ledger reset (call history preserved)")
+
+
+# ----------------------------------------------------------------------------
 # bequite design <subcommand> — Impeccable command dispatch
 # ----------------------------------------------------------------------------
 

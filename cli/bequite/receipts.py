@@ -113,7 +113,14 @@ class CostBlock:
 
 @dataclasses.dataclass
 class Receipt:
-    """v1 receipt schema. Add fields only via additive ADR-graded changes."""
+    """v1 receipt schema. Add fields only via additive ADR-graded changes.
+
+    The `signature` field (added v0.7.1) is optional + last-position so the
+    canonical content_hash() is computed *with* the field present (None or
+    set). Signature verification (in receipts_signing) recomputes the
+    canonical-JSON-without-signature payload, which sidesteps the chicken-and-egg
+    problem of "the signature signs over the receipt that includes the signature."
+    """
 
     version: str
     session_id: str
@@ -128,6 +135,7 @@ class Receipt:
     doctrine: list[str] = dataclasses.field(default_factory=list)
     constitution_version: str = "1.0.0"
     parent_receipt: Optional[str] = None  # sha256:... of parent receipt's content_hash
+    signature: Optional[str] = None  # base64 ed25519 signature (v0.7.1+)
     # Future-extension fields go HERE, all Optional with defaults.
 
     def to_canonical_dict(self) -> dict[str, Any]:
@@ -221,12 +229,26 @@ class ReceiptStore:
         self.path = pathlib.Path(storage_dir)
         self.path.mkdir(parents=True, exist_ok=True)
 
-    def write(self, receipt: Receipt) -> pathlib.Path:
-        """Write the receipt as JSON. Filename = <hash>-<phase>.json."""
+    def write(self, receipt: Receipt, sign_with: Optional[Any] = None) -> pathlib.Path:
+        """Write the receipt as JSON. Filename = <hash>-<phase>.json.
+
+        If `sign_with` is an Ed25519PrivateKey instance (from receipts_signing),
+        the receipt is signed at write-time and the `signature` field is added
+        to the on-disk JSON. The receipt's `content_hash()` is computed BEFORE
+        signing (so the filename remains deterministic from inputs alone, even
+        if the key changes).
+        """
         h = receipt.content_hash().split(":")[1]  # strip the sha256: prefix
         filename = f"{h}-{receipt.phase}.json"
         target = self.path / filename
         canonical = receipt.to_canonical_dict()
+
+        if sign_with is not None:
+            # Lazy-import receipts_signing to keep the receipts module usable
+            # without `cryptography` installed when unsigned writes are fine.
+            from bequite.receipts_signing import sign_dict
+            canonical = sign_dict(canonical, sign_with)
+
         target.write_text(json.dumps(canonical, indent=2, sort_keys=True), encoding="utf-8")
         return target
 
@@ -263,6 +285,7 @@ def _dict_to_receipt(d: dict[str, Any]) -> Receipt:
         doctrine=d.get("doctrine", []),
         constitution_version=d.get("constitution_version", "1.0.0"),
         parent_receipt=d.get("parent_receipt"),
+        signature=d.get("signature"),
     )
 
 

@@ -188,18 +188,47 @@ def run_init(
             text = text.replace(k, v)
         config_dest.write_text(text, encoding="utf-8")
 
+    # v0.7.1+: generate ed25519 keypair for receipt signing.
+    keygen_status = "skipped (already present)"
+    try:
+        from bequite.receipts_signing import generate_keypair
+        priv, pub = generate_keypair(target, overwrite=False)
+        keygen_status = f"generated → {priv.relative_to(target)} + {pub.relative_to(target)}"
+    except FileExistsError:
+        keygen_status = "already present (kept)"
+    except (ImportError, OSError) as e:
+        keygen_status = f"FAILED ({e}) — run `bequite keygen` manually"
+
+    # Append .bequite/.keys/ to .gitignore so the private key is never committed.
+    # The template/.gitignore should already include this, but defend belt-and-braces.
+    gitignore_path = target / ".gitignore"
+    keys_pattern = ".bequite/.keys/\n.bequite/.keys/*\n"
+    if gitignore_path.exists():
+        existing = gitignore_path.read_text(encoding="utf-8")
+        if ".bequite/.keys" not in existing:
+            with gitignore_path.open("a", encoding="utf-8") as f:
+                f.write("\n# v0.7.1 — never commit ed25519 private keys (Article IV).\n")
+                f.write(keys_pattern)
+    else:
+        gitignore_path.write_text(
+            "# v0.7.1 — never commit ed25519 private keys (Article IV).\n" + keys_pattern,
+            encoding="utf-8",
+        )
+
     console.print(Panel.fit(
         f"[green]Initialised {project_name} at {target}[/green]\n\n"
         f"  Mode:       {mode}\n"
         f"  Audience:   {audience}\n"
         f"  Scale tier: {scale_tier}\n"
-        f"  Doctrines:  {', '.join(doctrines)}\n\n"
+        f"  Doctrines:  {', '.join(doctrines)}\n"
+        f"  Keypair:    {keygen_status}\n\n"
         f"Next steps:\n"
         f"  cd {project_name}\n"
         f"  bequite doctor\n"
         f"  bequite discover            # P0 product discovery\n"
         f"  bequite research <topic>    # P0 research scan\n"
-        f"  bequite decide-stack        # P1 stack ADR\n",
+        f"  bequite decide-stack        # P1 stack ADR\n"
+        f"  bequite verify-receipts     # validate signed receipts (v0.7.1+)\n",
         title="bequite init",
     ))
     return 0

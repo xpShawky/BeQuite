@@ -462,6 +462,87 @@ def receipts_rollup(repo: str, by: str) -> None:
 
 
 # ----------------------------------------------------------------------------
+# bequite verify-receipts (v0.7.1) — ed25519 chain validation
+# ----------------------------------------------------------------------------
+
+
+@cli.command(name="verify-receipts")
+@click.option("--repo", default=".")
+@click.option("--strict", is_flag=True, default=False, help="Reject unsigned receipts (recommended for v0.7.1+ projects).")
+def verify_receipts(repo: str, strict: bool) -> None:
+    """Validate signatures + chain on every receipt in the project (v0.7.1+).
+
+    Checks for: missing-parent links, causality violations, cycles, signature
+    invalid (tampered receipt), unsigned receipts (in strict mode).
+    """
+    from bequite.receipts_signing import (
+        load_public_key,
+        verify_receipts_directory,
+        DEFAULT_PUBLIC_KEY,
+    )
+
+    project = Path(repo).resolve()
+    receipts_dir = project / ".bequite" / "receipts"
+    pub_path = project / DEFAULT_PUBLIC_KEY
+
+    # 1. Public key present?
+    if not pub_path.exists():
+        click.echo(f"error: no public key at {pub_path}.", err=True)
+        click.echo("       run `bequite init` (which generates a keypair) or `bequite keygen`.", err=True)
+        sys.exit(2)
+
+    # 2. Signatures
+    pub = load_public_key(pub_path)
+    sig_ok, sig_issues, counts = verify_receipts_directory(receipts_dir, pub, strict=strict)
+    click.echo(
+        f"signature check: total={counts['total']} signed_valid={counts['signed_valid']} "
+        f"signed_invalid={counts['signed_invalid']} unsigned={counts['unsigned']}"
+    )
+    for i in sig_issues:
+        click.echo(f"  ! {i}", err=True)
+
+    # 3. Chain
+    store = receipts_module.ReceiptStore(str(receipts_dir))
+    receipts = store.list_all()
+    chain_ok, chain_issues = receipts_module.validate_chain(receipts)
+    click.echo(f"chain check:     {len(receipts)} receipt(s); {'OK' if chain_ok else 'FAIL'}")
+    for i in chain_issues:
+        click.echo(f"  ! {i}", err=True)
+
+    if sig_ok and chain_ok:
+        sys.exit(0)
+    sys.exit(1)
+
+
+# ----------------------------------------------------------------------------
+# bequite keygen (v0.7.1) — direct keypair generation (also called from init)
+# ----------------------------------------------------------------------------
+
+
+@cli.command()
+@click.option("--repo", default=".")
+@click.option("--overwrite", is_flag=True, default=False, help="Replace an existing keypair (WILL invalidate previous receipt signatures).")
+def keygen(repo: str, overwrite: bool) -> None:
+    """Generate a per-project ed25519 keypair for receipt signing (v0.7.1+)."""
+    from bequite.receipts_signing import generate_keypair
+
+    project = Path(repo).resolve()
+    try:
+        priv, pub = generate_keypair(project, overwrite=overwrite)
+    except FileExistsError as e:
+        click.echo(f"error: {e}", err=True)
+        click.echo("       Pass --overwrite to regenerate (this WILL invalidate previous signatures).", err=True)
+        sys.exit(2)
+    click.echo("generated keypair:")
+    click.echo(f"  private: {priv}  (chmod 0600; gitignored)")
+    click.echo(f"  public:  {pub}   (chmod 0644; commit this)")
+    click.echo("")
+    click.echo("Reminders (auto-handled by `bequite init`; manual when running keygen standalone):")
+    click.echo("  - Add '.bequite/.keys/' to .gitignore (private key MUST NEVER be committed).")
+    click.echo("  - Commit '.bequite/keys/public.pem' so receipt signatures stay verifiable.")
+
+
+# ----------------------------------------------------------------------------
 # bequite design <subcommand> — Impeccable command dispatch
 # ----------------------------------------------------------------------------
 

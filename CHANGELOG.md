@@ -8,6 +8,42 @@ The full sub-version roadmap (`v0.1.0` → `v1.0.0`) lives in `docs/HOW-IT-WORKS
 
 ---
 
+## [0.7.1] — 2026-05-10
+
+### Added — Signed receipts (ed25519)
+
+- **`cli/bequite/receipts_signing.py`** — ed25519 sign-and-verify layer on top of v0.7.0 receipts.
+  - **`generate_keypair(project_dir, overwrite=False)`** — creates per-project keypair using `cryptography.hazmat.primitives.asymmetric.ed25519`. Private key at `<project>/.bequite/.keys/private.pem` (mode 0600 best-effort on POSIX; gitignored). Public key at `<project>/.bequite/keys/public.pem` (mode 0644; committed). Refuses to overwrite by default; `overwrite=True` regenerates with explicit warning that previous receipt signatures become invalid.
+  - **`load_private_key(path)` / `load_public_key(path)`** — typed PEM loaders. `cryptography` raises if the file isn't actually an Ed25519 key.
+  - **`sign_dict(receipt_dict, private_key)`** — returns a copy with `signature` (base64-encoded ed25519) added. Signs over canonical-JSON of receipt *with the signature field absent or null* — sidesteps the chicken-and-egg of "signing a receipt that contains its own signature."
+  - **`verify_dict(receipt_dict, public_key)`** — recovers the signature, recomputes canonical-JSON-without-signature, verifies. Returns `(ok, reason)` with helpful error messages.
+  - **`verify_receipts_directory(receipts_dir, public_key, strict)`** — walks every `*.json` in `.bequite/receipts/`. Returns `(ok, issues, counts)` where counts has total / signed_valid / signed_invalid / unsigned. In `strict=True`, unsigned receipts contribute to `issues`; in `strict=False`, they're tolerated (legacy v0.7.0 receipts pass).
+  - CLI: `python -m bequite.receipts_signing {keygen,sign,verify}`.
+- **`Receipt` schema additive bump** — optional `signature: Optional[str] = None` field (last position; backward-compatible). v0.7.0 unsigned receipts still load + emit + roll-up unchanged.
+- **`ReceiptStore.write(receipt, sign_with=None)`** — when `sign_with` is an `Ed25519PrivateKey`, the on-disk JSON includes the `signature` field. Filename remains the v0.7.0 deterministic-from-inputs hash so the chain pointer stays stable across re-signings (e.g. after key rotation).
+- **`bequite verify-receipts`** Click command (`cli/bequite/__main__.py`):
+  - Loads `.bequite/keys/public.pem`; refuses to run if missing (suggests `bequite init` or `bequite keygen`).
+  - Verifies signatures via `verify_receipts_directory` with optional `--strict`.
+  - Validates chain via existing `validate_chain` (missing-parent + causality + cycles).
+  - Exits 0 on full pass, 1 on any failure.
+- **`bequite keygen`** Click command — direct keypair generation; explains gitignore + commit obligations.
+- **`bequite init` extension** — auto-calls `generate_keypair` (catching FileExistsError for re-init); appends `.bequite/.keys/` patterns to project's `.gitignore` (additive; defends against template drift). Init summary now shows keypair status.
+- **9-test integration suite at `tests/integration/receipts/test_signing_smoke.py`** — keygen creates files / refuses overwrite / overwrites when explicit; sign-verify roundtrip; tampered-body rejected; unsigned-strict-fails; unsigned-lenient-tolerated; ReceiptStore.write(sign_with=...) emits signed receipts; cross-paste-signature mismatch detected. All 9 pass on Python 3.14.
+
+### Changed
+
+- `cli/bequite/__init__.py::__version__` → `0.7.1`.
+- `cli/pyproject.toml::version` → `0.7.1`. Description updated to "ed25519-signed" (no longer "in v0.7.1+").
+
+### Notes
+
+- The repo's existing root `.gitignore` already had `.bequite/.keys/` from v0.1.0+; the v0.7.1 init code is the belt-and-braces safety net for fresh-template projects.
+- ed25519 is fast enough that signing every receipt at emit-time is cost-free; no batching needed.
+- Strict-mode unsigned-rejection is opt-in for v0.7.1 to allow gradual adoption; v0.8.0+ may flip the default once auto-mode (v0.10.0) wires emit-with-signing as the only path. Decision deferred until v0.10.0 arrives.
+- All 19 receipts+signing tests pass (10 v0.7.0 + 9 v0.7.1).
+
+---
+
 ## [0.7.0] — 2026-05-10
 
 ### Added — Reproducibility receipts

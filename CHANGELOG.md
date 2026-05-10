@@ -8,6 +8,26 @@ Full sub-version roadmap (`v0.1.0` → `v1.0.0`) lives in `docs/HOW-IT-WORKS.md`
 
 ---
 
+## [0.11.0] — 2026-05-10
+
+### Added — MENA bilingual Doctrine + RTL walkthrough
+
+- **`skill/doctrines/mena-bilingual.md`** — Doctrine v1.0.0 with 11 binding rules: locale-binding declared in project.yaml; `dir="rtl"` for ar-* locales; logical properties only (no hardcoded left/right); Arabic-friendly font stack with recorded reason (Tajawal / Cairo / Readex Pro / Noto Sans Arabic / IBM Plex Sans Arabic — all OFL-licensed); slightly-larger body type + more leading for Arabic legibility; bilingual string extraction (no inline ternaries on user-facing strings); Egyptian dialect preserved by default in research outputs (no auto-normalization to Modern Standard); RTL Playwright walks for every UI feature; mirrored icons + arrows; Intl.NumberFormat / DateTimeFormat per locale; Skeptic kill-shot for MENA UX. Stack guidance: i18n libraries (next-intl / i18next / lingui), Arabic font foundries, MENA-specific data sources for Researcher persona.
+- **`skill/templates/tests/walkthroughs/rtl-walk.md.tpl`** — 7 RTL flows (locale switch / mirrored navigation / form input at 360 RTL / tabular data + sorting / modal + toast positioning / search + filter chips / empty states + onboarding). Negative paths: mixed-direction text + mixed-language form validation + URL with locale switch.
+- **Forking guidance** for `mena-bilingual-saudi` (ar-SA + Hijri default), `mena-bilingual-uae` (ar-AE + DIFC layered), `mena-bilingual-mghreb` (Maghreb + Berber/French).
+
+### Changed
+
+- Versions bumped to `0.11.0`.
+- Doctrine count: 12 → 13 (mena-bilingual was previously deferred to v0.11.0; now shipped).
+- Tokens template (`skill/templates/tokens.css.tpl`) already shipped `[dir="rtl"]` block since v0.6.1; no change required.
+
+### Notes
+
+- Combined integration suite still 108/108 (v0.11.0 is a Doctrine + walkthrough release; no new code modules).
+
+---
+
 ## [0.10.7] — 2026-05-10
 
 ### Added — Auto-mode hardening (resume + parallel + idempotent)

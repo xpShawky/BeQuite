@@ -2,7 +2,53 @@
 
 All notable changes to BeQuite are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Conventional Commits](https://www.conventionalcommits.org/). Versioning is [Semantic Versioning](https://semver.org/).
 
-## [Unreleased] — tracking toward v1.x point releases + v2.0.0-alpha.2
+## [Unreleased] — tracking toward v1.x point releases + v2.0.0-alpha.3
+
+---
+
+## [2.0.0-alpha.2] — 2026-05-11 — Marketing site React 19 peer-dep fix
+
+### Fixed
+
+- **`npm install` in `studio/marketing/` failed with ERESOLVE on a fresh clone.** `@react-three/fiber@8.x` declares `peer react@">=18 <19"`, refusing to resolve against the React 19 that Next.js 15 mandates. The error was clean but install-blocking:
+
+  ```
+  npm error Could not resolve dependency:
+  npm error peer react@">=18 <19" from @react-three/fiber@8.18.0
+  ```
+
+  This was caught by fresh-clone testing on Windows (the v1.0.2 `-Studio` install path got through the API + dashboard but tripped here). Would also have happened on macOS / Linux — pure peer-dep issue, not platform-specific.
+
+### Changed — `studio/marketing/package.json`
+
+| Package | Was | Now | Why |
+|---|---|---|---|
+| `@react-three/fiber` | `^8.17.0` | `^9.0.0` | React 19 compatibility (8.x peer-dep blocks ≥19) |
+| `@react-three/drei` | `^9.114.0` | `^10.0.0` | Matches R3F 9 |
+| `three` | `^0.169.0` | `^0.171.0` | R3F 9 minimum |
+| `@types/three` | `^0.169.0` | `^0.171.0` | Matches three |
+| `version` | `2.0.0-alpha.1` | `2.0.0-alpha.2` | Studio Layer 2 patch |
+
+### Verified end-to-end (Iron Law X — no repeats of the v1.0.2 mistake)
+
+```
+cd studio/marketing
+rm -rf node_modules package-lock.json
+npm install --no-audit --no-fund
+  → added 525 packages in 30s
+npx tsc --noEmit
+  → exit code 0
+```
+
+`Starfield.tsx` and `AgentCharacter3D.tsx` both compile clean against R3F 9 / drei 10 — the basic R3F JSX surface (`<Canvas>`, `useFrame`, `<points>`, `<bufferAttribute>`, `<ambientLight>`, `<primitive>`, `useGLTF`, `useAnimations`, `<Environment>`, `<OrbitControls>`) is stable across the major-version bump for these usage patterns.
+
+### Honest reporting per Article VI
+
+The v2.0.0-alpha.1 marketing `package.json` was authored in v0.16.0 (when React was still 18) and never re-tested against the React 19 it depends on transitively (Next.js 15 mandates 19). This is the third install-path bug caught by fresh-clone testing in two days (cli/README.md missing → v1.0.1, PowerShell quote escape → v1.0.2, this one → v2.0.0-alpha.2). The pattern is clear: **install paths need clean-room verification per release, not just `tsc --noEmit` on the developer's machine.** This will be encoded as a check in the v0.20.0 SSE / v1.0.x line going forward.
+
+### Compatibility note
+
+`@react-three/drei` v10 dropped a handful of v9-era helpers (`ScrollControls` legacy mode, certain `useFBO` overloads). The components shipped in v2.0.0-alpha.1 (`Starfield`, `AgentCharacter3D`) only use the stable subset (`<Environment>`, `<OrbitControls>`, `useGLTF`, `useAnimations`) and are unaffected. Future drei additions should reference the v10 API.
 
 ---
 
@@ -1385,7 +1431,8 @@ Each regulated Doctrine carries a disclaimer: starting points, not substitutes f
 
 This release contains no executable code. It establishes the inviolate base layer (Constitution + Memory Bank + ADR + Doctrine schemas) on which every later sub-version depends.
 
-[Unreleased]: https://github.com/xpShawky/BeQuite/compare/v1.0.2...HEAD
+[Unreleased]: https://github.com/xpShawky/BeQuite/compare/v2.0.0-alpha.2...HEAD
+[2.0.0-alpha.2]: https://github.com/xpShawky/BeQuite/compare/v1.0.2...v2.0.0-alpha.2
 [1.0.2]: https://github.com/xpShawky/BeQuite/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/xpShawky/BeQuite/compare/v2.0.0-alpha.1...v1.0.1
 [2.0.0-alpha.1]: https://github.com/xpShawky/BeQuite/compare/v1.0.0...v2.0.0-alpha.1

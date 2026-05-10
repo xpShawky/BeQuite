@@ -95,8 +95,8 @@ Sources:
 |---|---|---|
 | `v0.1.0` | Foundation & Constitution | ✅ tagged 2026-05-10 |
 | `v0.1.1` | Doctrines pack — 8 default Doctrines | ✅ tagged 2026-05-10 |
-| `v0.1.2` | Master-file merge integration | 🟡 in progress |
-| `v0.2.0` | Skill orchestrator (12 personas, 19 commands) | pending |
+| `v0.1.2` | Master-file merge integration | ✅ tagged 2026-05-10 |
+| `v0.2.0` | Skill orchestrator (SKILL.md + 11 personas + routing.json + config TOML) | 🟡 committing now |
 | `v0.3.0` → `v1.0.0` | Hooks, commands, audit, freshness, CLI, verification, receipts, multi-model, examples, auto-mode, MENA, host adapters, vibe-handoff, docs, release | pending |
 | `v2.0.0+` | Studio (Next.js dashboard + API + Postgres + Worker) | planned post-`v1.0.0` |
 

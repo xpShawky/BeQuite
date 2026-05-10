@@ -8,6 +8,33 @@ The full sub-version roadmap (`v0.1.0` → `v1.0.0`) lives in `docs/HOW-IT-WORKS
 
 ---
 
+## [0.2.0] — 2026-05-10
+
+### Added
+
+- **`skill/SKILL.md`** — the orchestrator. Anthropic Skills frontmatter (name `bequite`, description ≤ 1024 chars, allowed-tools list). Body: orchestrator persona, 7-phase router (P0 Research → P7 Handoff), mode selector (Fast / Safe / Enterprise per Constitution v1.0.1), 19-command surface (master's 12 named + BeQuite's 7 unique extras: `/audit`, `/freshness`, `/auto`, `/memory`, `/snapshot`, `/cost`, `/skill-install`), routing matrix reference, hooks reference, auto-mode reference, banned-weasel-words enforcement.
+- **11 persona files at `skill/agents/`:**
+  - `product-owner` — owns scope, requirements, phase + task breakdown.
+  - `research-analyst` — owns research with cited authority levels, fights AI hallucination of facts.
+  - `software-architect` — owns ADRs, system boundaries, second-pass code review.
+  - `frontend-designer` — owns UI direction, design system, Impeccable-style flow (12 steps), tokens-only design.
+  - `backend-engineer` — owns API, services, error shape, TDD discipline (RED-GREEN-REFACTOR).
+  - `database-architect` — owns data model, migrations (reversible), backup-restore drill.
+  - `qa-engineer` — owns Playwright planner-generator-healer pattern, validation mesh.
+  - `security-reviewer` — owns threat model, OWASP LLM Top 10 + Web Top 10 mapping, supply-chain review.
+  - `devops-engineer` — owns Docker, CI, deployment, handoff (P7).
+  - `token-economist` — owns cost ceiling, prompt compression, AkitaOnRails 2026 routing rules.
+  - `skeptic` — adversarial twin (BeQuite's unique addition; one kill-shot per phase boundary).
+- **`skill/routing.json`** — default model routing matrix per phase + persona. Provider abstraction (Anthropic primary; OpenAI / Google / DeepSeek / Ollama fallback). Encodes AkitaOnRails 2026 finding (split-only-when-genuinely-parallel; threshold N>5). Encodes Aider architect-mode pattern (cheap writes + frontier reviews + cheap fixes). Compliance routing for hipaa/pci/fedramp.
+- **`skill/templates/bequite.config.toml.tpl`** — per-project config schema. Sections: project metadata, mode, audience, doctrines, scale_tier, compliance, locales, safety_rails (cost + wall-clock + failure threshold + banned-phrase list + auto-mode pause triggers), routing overrides, providers (env-var-only), freshness, receipts, evidence, memory, hosts, skills, telemetry (off by default), mena_bilingual.
+- **`template/.claude/skills/bequite/README.md`** — fresh-project skill-install target. Documents the copy-not-symlink decision (Windows + Docker volume compatibility; reproducibility).
+
+### Notes
+
+This release contains no executable code; the CLI ships in v0.5.0. The skill is portable across hosts (Claude Code via `.claude/skills/`, Cursor 3.0+ via `.cursor/skills/`, Codex CLI via `AGENTS.md` discovery, others via the `bequite skill install` v0.12.0 command). Every persona references the Constitution + active Doctrines for binding rules. Skeptic gate now mandatory at every phase boundary.
+
+---
+
 ## [0.1.2] — 2026-05-10
 
 ### Added
@@ -84,7 +111,8 @@ Each regulated Doctrine carries a disclaimer: starting points, not substitutes f
 
 This release contains no executable code. It establishes the inviolate base layer (Constitution + Memory Bank + ADR + Doctrine schemas) on which every later sub-version depends.
 
-[Unreleased]: https://github.com/xpshawky/bequite/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/xpshawky/bequite/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/xpshawky/bequite/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/xpshawky/bequite/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/xpshawky/bequite/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/xpshawky/bequite/releases/tag/v0.1.0

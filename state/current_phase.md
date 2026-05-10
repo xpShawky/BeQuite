@@ -6,52 +6,39 @@
 
 ## Build phase
 
-- **Phase:** `phase-0` — Repo foundation
-- **Sub-version:** `v0.1.2` (in progress this commit)
-- **Last green sub-version:** `v0.1.1` (committed + tagged 2026-05-10)
+- **Phase:** `phase-1` — Core domain + CLI (master §23 framing)
+- **Sub-version:** `v0.2.0` (Skill orchestrator — committing this turn)
+- **Last green sub-version:** `v0.1.2` (master-merge integration; committed + tagged 2026-05-10)
 - **Mode:** Safe Mode (master §4)
 - **Active doctrines:** `library-package`, `cli-tool`, `mena-bilingual`
-- **Constitution version:** `v1.0.1` (bumped from `v1.0.0` in this sub-version)
+- **Constitution version:** `v1.0.1`
 
 ## What this sub-version is doing
 
-`v0.1.2` is the master-file merge integration sub-version, triggered by the introduction of `BeQuite_MASTER_PROJECT.md` (2858 lines) mid-session, after `v0.1.1` was already committed and tagged. The merge plan lives at `docs/merge/MASTER_MD_MERGE_AUDIT.md`.
+`v0.2.0` is the **Skill orchestrator**. The brain of the harness.
 
-In flight in this commit:
-
-- ✅ Two pending Doctrines completed (healthcare-hipaa, gov-fedramp) — closes `v0.1.1` work that was interrupted.
-- ✅ `v0.1.1` committed + tagged.
-- 🟡 `docs/merge/MASTER_MD_MERGE_AUDIT.md` — written.
-- 🟡 Root `CLAUDE.md` + `AGENTS.md` — written.
-- 🟡 `state/` files (project.yaml, current_phase.md, recovery.md, task_index.json, decision_index.json, evidence_index.json) — being written now.
-- 🟠 `prompts/` (master, discovery, research, stack_decision, implementation, review, recovery) — pending.
-- 🟠 `evidence/README.md` — pending.
-- 🟠 Constitution amendment v1.0.0 → v1.0.1 (modes, command-safety, prompt-injection, def-of-done, state/ refs) — pending.
-- 🟠 `README.md`, `CHANGELOG.md`, `.bequite/memory/activeContext.md`, `.bequite/memory/progress.md` — pending updates.
-- 🟠 `BeQuite_MASTER_PROJECT.md` itself becomes a tracked file in this commit (it's the source of the merge).
-- 🟠 Commit + tag `v0.1.2`.
+Completed in this commit:
+- ✅ `skill/SKILL.md` — Anthropic Skills frontmatter (name, description ≤1024 chars, allowed-tools), orchestrator persona, 7-phase router, mode selector (Fast/Safe/Enterprise), 19-command surface (master's 12 + BeQuite's 7 unique), routing matrix reference, hooks reference, auto-mode reference, banned-weasel-words enforcement.
+- ✅ 11 persona files at `skill/agents/`: product-owner, research-analyst, software-architect, frontend-designer (Impeccable-loaded for frontend Doctrines), backend-engineer, database-architect, qa-engineer, security-reviewer, devops-engineer, token-economist, **skeptic** (adversarial twin — BeQuite's unique addition).
+- ✅ `skill/routing.json` — default model routing matrix per phase + persona. Anthropic primary; OpenAI / Google / DeepSeek / Ollama as fallback per provider abstraction. Aider architect mode pattern (cheap writes + frontier review). AkitaOnRails 2026 split-only-when-genuinely-parallel rule encoded.
+- ✅ `skill/templates/bequite.config.toml.tpl` — per-project config schema. mode, audience, doctrines, scale_tier, compliance, locales, safety_rails, routing overrides, providers (env-var-only), freshness, receipts, evidence, memory, hosts, skills, telemetry, mena_bilingual.
+- ✅ `template/.claude/skills/bequite/README.md` — fresh-project skill-install target (`bequite skill install` v0.12.0 will populate). Documents the copy-not-symlink decision.
 
 ## Next sub-version
 
-After `v0.1.2`: **`v0.2.0` — Skill orchestrator (the brain)**.
+After `v0.2.0`: **`v0.3.0` — Hooks (deterministic gates)**.
 
-Tasks for v0.2.0:
-1. Author `skill/SKILL.md` (Anthropic Skills schema; orchestrator persona; 7-phase router; mode selector).
-2. Author each persona file in `skill/agents/` — adopting master's named roles + Skeptic + token-economist:
-   - `product-owner.md`
-   - `research-analyst.md`
-   - `software-architect.md`
-   - `frontend-designer.md` (Impeccable-loaded)
-   - `backend-engineer.md`
-   - `database-architect.md`
-   - `qa-engineer.md`
-   - `security-reviewer.md`
-   - `devops-engineer.md`
-   - `token-economist.md`
-   - `skeptic.md` (kept from current; adversarial twin)
-3. Author `skill/routing.json` — default routing matrix (post brief reconciliations).
-4. Author `bequite.config.toml.tpl`.
-5. Wire skill into `template/.claude/skills/bequite/`.
+Tasks for v0.3.0:
+1. `skill/hooks/pretooluse-secret-scan.sh` — regex for API keys, JWTs, AWS access patterns. Exit 2.
+2. `skill/hooks/pretooluse-block-destructive.sh` — Tier-3 commands (rm -rf, terraform destroy, DROP DATABASE, git push -f, git reset --hard). Exit 2.
+3. `skill/hooks/pretooluse-verify-package.sh` — diff new imports vs registry. PhantomRaven defense. Exit 2.
+4. `skill/hooks/posttooluse-format.sh` — auto-format (prettier/biome/black/ruff/clippy).
+5. `skill/hooks/posttooluse-lint.sh` — warn-only lint.
+6. `skill/hooks/stop-verify-before-done.sh` — banned-weasel-words check + incomplete-task check. Exit 2.
+7. `skill/hooks/sessionstart-load-memory.sh` — preload Memory Bank + active ADRs + state/recovery.md.
+8. `skill/hooks/sessionstart-cost-budget.sh` — load cost ceiling.
+9. `tests/integration/hooks/` — fixtures + assertions per hook.
+10. `template/.claude/settings.json` — hooks wired for fresh-project.
 
 ## Open questions (none blocking v0.1.2)
 

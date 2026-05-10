@@ -7,8 +7,8 @@
 ## Now (last edited: 2026-05-10)
 
 - **Active feature:** `BeQuite v1.0.0` (the build of BeQuite itself)
-- **Active phase:** `phase-0` — Repo foundation
-- **Active sub-version:** `v0.1.2` (master-file merge integration — committing now)
+- **Active phase:** `phase-1` — Core domain + CLI (master §23 framing)
+- **Active sub-version:** `v0.2.0` (Skill orchestrator — committing now)
 - **Active mode:** `auto` (Ahmed authorised autonomous execution; safety rails per `state/project.yaml::safety_rails`)
 - **Project mode (BeQuite-itself):** Safe Mode (newly named per Constitution v1.0.1)
 - **Skeptic gate state:** `cleared` — merge audit + ADR-008 reviewed; Constitution amendment rationale recorded
@@ -20,7 +20,9 @@
 
 ## What I'm doing right now
 
-`v0.1.2` master-file merge: `BeQuite_MASTER_PROJECT.md` (2858 lines) was introduced mid-session by Ahmed, post-`v0.1.1` tag. Senior-architect call: do not discard 5800+ lines of v0.1.0/v0.1.1 work; instead **two-layer architecture** (Harness now, Studio v2.0.0+).
+`v0.2.0` Skill orchestrator. `skill/SKILL.md` written (Anthropic Skills frontmatter; orchestrator persona; 7-phase router; mode selector for Fast/Safe/Enterprise; 19-command surface). 11 personas authored at `skill/agents/` (master's 10 + Skeptic). `skill/routing.json` encodes model + reasoning-effort per phase/persona, with provider abstraction. `bequite.config.toml.tpl` defines per-project config schema. `template/.claude/skills/bequite/` wired for `bequite skill install`. About to commit + tag `v0.2.0`, then proceed to `v0.3.0` (Hooks).
+
+Earlier in session: v0.1.2 master-file merge — `BeQuite_MASTER_PROJECT.md` (2858 lines) was introduced mid-session by Ahmed, post-`v0.1.1` tag. Senior-architect call: do not discard 5800+ lines of v0.1.0/v0.1.1 work; instead **two-layer architecture** (Harness now, Studio v2.0.0+).
 
 Adopted into v0.1.2 (this commit):
 - Master merge audit at `docs/merge/MASTER_MD_MERGE_AUDIT.md`.
@@ -60,9 +62,9 @@ None of these block v0.1.2 → v0.5.x progress.
 
 ## Next 3 things I'll do
 
-1. Commit + tag `v0.1.2` (master-merge integration).
-2. Begin `v0.2.0` (Skill orchestrator): author `skill/SKILL.md` (Anthropic Skills schema; 7-phase router; mode selector for Fast/Safe/Enterprise).
-3. Author 12 persona files in `skill/agents/`.
+1. Commit + tag `v0.2.0` (Skill orchestrator + 11 personas + routing + config TOML + skill-install template).
+2. Begin `v0.3.0` (Hooks): 8 deterministic-gate shell scripts + integration test fixtures + template/.claude/settings.json.
+3. Begin `v0.4.0` (Slash commands wave 1: master's 12 names) immediately after v0.3.0.
 
 ## Heartbeat (auto-mode only)
 

@@ -1,0 +1,241 @@
+{
+  "$schema": "https://bequite.dev/schemas/routing.v1.json",
+  "version": "1",
+  "description": "Default model routing matrix for BeQuite. Maps phase + persona → model + reasoning effort + reasoning_max_tokens. Per AkitaOnRails 2026: forced multi-model on cohesive tasks loses to solo frontier; only split when tasks are genuinely parallel. Override per project in .bequite/bequite.config.toml::routing.",
+  "providers": {
+    "anthropic": {
+      "primary": true,
+      "models": {
+        "claude-opus-4-7": {
+          "context_window": 200000,
+          "reasoning_efforts": ["low", "medium", "high", "xhigh"],
+          "use_for": ["orchestrator", "research", "architecture", "skeptic", "security_review"]
+        },
+        "claude-sonnet-4-6": {
+          "context_window": 200000,
+          "reasoning_efforts": ["low", "medium", "high"],
+          "use_for": ["implementation", "qa", "frontend", "backend", "database", "devops"]
+        },
+        "claude-haiku-4-5": {
+          "context_window": 200000,
+          "reasoning_efforts": ["low", "medium"],
+          "use_for": ["doc_writing", "token_economist", "summarisation"]
+        }
+      }
+    },
+    "openai": {
+      "primary": false,
+      "models": {
+        "gpt-5": {
+          "use_for": ["alt_orchestrator", "alt_architecture"]
+        },
+        "gpt-5-mini": {
+          "use_for": ["alt_implementation"]
+        }
+      }
+    },
+    "google": {
+      "primary": false,
+      "models": {
+        "gemini-2.5-pro": {
+          "use_for": ["alt_orchestrator"]
+        },
+        "gemini-2.5-flash": {
+          "use_for": ["doc_writing", "summarisation"]
+        }
+      }
+    },
+    "deepseek": {
+      "primary": false,
+      "models": {
+        "deepseek-coder": {
+          "use_for": ["cheap_parallel_implementation"]
+        }
+      }
+    },
+    "ollama": {
+      "primary": false,
+      "models": {
+        "llama-3.3-70b": {
+          "use_for": ["offline_implementation", "air_gapped"]
+        }
+      }
+    }
+  },
+  "phase_routing": [
+    {
+      "phase": "orchestrator",
+      "description": "The SKILL.md itself; routes work and gates phase exits.",
+      "persona": "orchestrator",
+      "model": "claude-opus-4-7",
+      "reasoning_effort": "high",
+      "fallback_model": "gpt-5",
+      "max_input_tokens": 100000,
+      "max_output_tokens": 16000
+    },
+    {
+      "phase": "P0",
+      "persona": "product-owner",
+      "model": "claude-opus-4-7",
+      "reasoning_effort": "high",
+      "fallback_model": "gpt-5",
+      "max_input_tokens": 80000,
+      "max_output_tokens": 12000
+    },
+    {
+      "phase": "P0",
+      "persona": "research-analyst",
+      "model": "claude-opus-4-7",
+      "reasoning_effort": "high",
+      "fallback_model": "gpt-5",
+      "max_input_tokens": 100000,
+      "max_output_tokens": 16000
+    },
+    {
+      "phase": "P1",
+      "persona": "software-architect",
+      "model": "claude-opus-4-7",
+      "reasoning_effort": "xhigh",
+      "fallback_model": "gpt-5",
+      "max_input_tokens": 100000,
+      "max_output_tokens": 16000
+    },
+    {
+      "phase": "P2",
+      "persona": "software-architect",
+      "model": "claude-opus-4-7",
+      "reasoning_effort": "xhigh",
+      "fallback_model": "gpt-5",
+      "max_input_tokens": 100000,
+      "max_output_tokens": 16000
+    },
+    {
+      "phase": "P3",
+      "persona": "product-owner",
+      "model": "claude-sonnet-4-6",
+      "reasoning_effort": "medium",
+      "fallback_model": "gpt-5-mini",
+      "max_input_tokens": 80000,
+      "max_output_tokens": 12000
+    },
+    {
+      "phase": "P4",
+      "persona": "product-owner",
+      "model": "claude-sonnet-4-6",
+      "reasoning_effort": "medium",
+      "fallback_model": "gpt-5-mini",
+      "max_input_tokens": 80000,
+      "max_output_tokens": 12000
+    },
+    {
+      "phase": "P5",
+      "persona": "backend-engineer",
+      "model": "claude-sonnet-4-6",
+      "reasoning_effort": "medium",
+      "fallback_model": "gpt-5-mini",
+      "max_input_tokens": 80000,
+      "max_output_tokens": 12000
+    },
+    {
+      "phase": "P5",
+      "persona": "frontend-designer",
+      "model": "claude-sonnet-4-6",
+      "reasoning_effort": "medium",
+      "fallback_model": "gpt-5-mini",
+      "max_input_tokens": 80000,
+      "max_output_tokens": 12000,
+      "loaded_skills": ["impeccable"]
+    },
+    {
+      "phase": "P5",
+      "persona": "database-architect",
+      "model": "claude-sonnet-4-6",
+      "reasoning_effort": "medium",
+      "fallback_model": "gpt-5-mini",
+      "max_input_tokens": 60000,
+      "max_output_tokens": 8000
+    },
+    {
+      "phase": "P5",
+      "persona": "reviewer",
+      "model": "claude-opus-4-7",
+      "reasoning_effort": "xhigh",
+      "fallback_model": "gpt-5",
+      "max_input_tokens": 100000,
+      "max_output_tokens": 12000,
+      "note": "Aider architect mode pattern: cheap writes + frontier reviews + cheap fixes."
+    },
+    {
+      "phase": "P6",
+      "persona": "qa-engineer",
+      "model": "claude-sonnet-4-6",
+      "reasoning_effort": "medium",
+      "fallback_model": "gpt-5-mini",
+      "max_input_tokens": 80000,
+      "max_output_tokens": 12000,
+      "loaded_mcps": ["playwright"]
+    },
+    {
+      "phase": "P6",
+      "persona": "security-reviewer",
+      "model": "claude-opus-4-7",
+      "reasoning_effort": "xhigh",
+      "fallback_model": "gpt-5",
+      "max_input_tokens": 100000,
+      "max_output_tokens": 12000
+    },
+    {
+      "phase": "P7",
+      "persona": "devops-engineer",
+      "model": "claude-sonnet-4-6",
+      "reasoning_effort": "medium",
+      "fallback_model": "gpt-5-mini",
+      "max_input_tokens": 60000,
+      "max_output_tokens": 12000
+    },
+    {
+      "phase": "P7",
+      "persona": "tech-writer",
+      "model": "claude-haiku-4-5",
+      "reasoning_effort": "low",
+      "fallback_model": "gemini-2.5-flash",
+      "max_input_tokens": 60000,
+      "max_output_tokens": 8000
+    },
+    {
+      "phase": "any-boundary",
+      "persona": "skeptic",
+      "model": "claude-opus-4-7",
+      "reasoning_effort": "xhigh",
+      "fallback_model": "gpt-5",
+      "max_input_tokens": 80000,
+      "max_output_tokens": 4000,
+      "note": "Adversarial twin. One kill-shot question per phase boundary. AkitaOnRails 2026 finding: split only at boundaries, not inside coupled tasks."
+    },
+    {
+      "phase": "always-on",
+      "persona": "token-economist",
+      "model": "claude-haiku-4-5",
+      "reasoning_effort": "low",
+      "fallback_model": "gemini-2.5-flash",
+      "max_input_tokens": 20000,
+      "max_output_tokens": 4000,
+      "note": "Reads receipts; rolls up cost. Cheapest model is correct here."
+    }
+  ],
+  "parallelism_rules": {
+    "split_when_genuinely_parallel": true,
+    "split_threshold_n": 5,
+    "comment": "Split into subagents only when the same change applies to N>5 files, or N>5 similar CRUD endpoints, or N>5 independent walks. For coupled tasks (single user-facing flow), use solo frontier. AkitaOnRails 2026 binding."
+  },
+  "cost_ceiling": {
+    "default_session_max_usd": 20,
+    "default_wall_clock_max_hours": 6,
+    "hooks": ["stop-cost-budget.sh"]
+  },
+  "compliance": {
+    "phi_pii_chd_routing": "When state/project.yaml::compliance contains hipaa/pci/fedramp, only providers with a signed BAA/DPA + no-data-retention enterprise tier may be used. Specifically: AWS Bedrock GovCloud (Anthropic) for fedramp; Anthropic enterprise BAA for hipaa; verify current authorisation via context7 + WebFetch on bequite freshness.",
+    "default_provider_for_regulated": "anthropic",
+    "fallback_for_regulated": "self-hosted (vLLM + Llama on GovCloud) when zero-trust toward vendors required."
+  }
+}

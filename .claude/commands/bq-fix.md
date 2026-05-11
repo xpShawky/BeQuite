@@ -1,42 +1,106 @@
 ---
-description: Fix a broken behavior. Reproduce first, identify root cause, fix the smallest cause, add or update test, verify, log to .bequite/logs/ERROR_LOG.md.
+description: Fix a broken behavior. 15-type problem router. Reproduce first → identify type → activate matching specialist skills → root cause → smallest patch → add test → verify symptom is gone → log to ERROR_LOG.md.
 ---
 
-# /bq-fix — break the broken thing
+# /bq-fix — diagnose + repair, with type router
 
-You are diagnosing + fixing **one specific broken behavior**. Reproduce-first discipline. Smallest safe patch.
+## Purpose
 
-## Step 1 — Get the bug
+Fix **one specific broken behavior**. The command classifies the problem into one of 15 types and activates the matching specialist skills. Reproduce-first discipline. Smallest safe patch. Always a regression test.
 
-If user typed `/bq-fix` alone, ask:
+## When to use it
+
+- Anything broken: error, wrong output, performance regression, security issue, UX regression
+- A test went red and you don't know why
+- Production incident (with `bequite-problem-solver` skill in heavy mode)
+
+## Preconditions
+
+- `BEQUITE_INITIALIZED ✅`
+- Code exists (the bug has to be in something)
+
+## Required previous gates
+
+- `BEQUITE_INITIALIZED`
+- `MODE_SELECTED` (Fix Problem mode — or any mode mid-cycle)
+
+## Files to read
+
+- `.bequite/logs/ERROR_LOG.md` (prior entries for context)
+- recent `git log`
+- the failing code + tests
+
+## Files to write
+
+- The fix (source file)
+- A new or updated regression test
+- `.bequite/logs/ERROR_LOG.md` (appended)
+- `.bequite/logs/CHANGELOG.md` (appended if user-visible)
+- `.bequite/audits/FIX_<slug>.md` (mini-spec for the fix)
+- `.bequite/tasks/CURRENT_TASK.md`
+- `.bequite/state/WORKFLOW_GATES.md` (`FIX_DONE ✅`)
+- `.bequite/logs/AGENT_LOG.md`
+- `.bequite/state/LAST_RUN.md`
+
+## Steps
+
+### 1. Get the bug
+
+If user typed `/bq-fix` alone:
 > "What's broken? Paste the error message, command, or describe the symptom."
 
-If they passed an argument like `/bq-fix "login button does nothing on Safari"`, use that.
+If `/bq-fix "login button does nothing on Safari"` — use that.
 
-## Step 2 — Reproduce
+### 2. Classify the problem (15 types)
+
+Ask the model (silently) to classify into one of:
+
+| # | Type | Activates skill(s) |
+|---|---|---|
+| 1 | **Frontend bug (visual / state)** | `bequite-frontend-quality`, `bequite-problem-solver` |
+| 2 | **Backend bug (API / logic)** | `bequite-backend-architect`, `bequite-problem-solver` |
+| 3 | **Database bug (query / data)** | `bequite-database-architect`, `bequite-problem-solver` |
+| 4 | **Auth bug (login / permissions)** | `bequite-security-reviewer`, `bequite-backend-architect` |
+| 5 | **Build / compile error** | `bequite-problem-solver`, `bequite-testing-gate` |
+| 6 | **Test failure** | `bequite-testing-gate`, `bequite-problem-solver` |
+| 7 | **Deployment / CI bug** | `bequite-devops-cloud`, `bequite-problem-solver` |
+| 8 | **Performance regression** | `bequite-problem-solver`, `bequite-backend-architect` |
+| 9 | **Security vulnerability** | `bequite-security-reviewer` |
+| 10 | **Dependency / package issue** | `bequite-problem-solver`, `bequite-project-architect` |
+| 11 | **Configuration / env bug** | `bequite-devops-cloud`, `bequite-problem-solver` |
+| 12 | **Network / integration bug** | `bequite-backend-architect`, `bequite-problem-solver` |
+| 13 | **Memory leak / resource issue** | `bequite-problem-solver`, `bequite-backend-architect` |
+| 14 | **Race condition / async bug** | `bequite-problem-solver`, `bequite-backend-architect` |
+| 15 | **Cross-browser / platform bug** | `bequite-frontend-quality`, `bequite-problem-solver` |
+
+Print the classification + which skills will be active. Ask: "Correct? (y/N + correction)"
+
+### 3. Reproduce
 
 **Before changing anything**, reproduce the bug:
 
-- For a code-level error: run the failing command yourself
-- For a UI bug: navigate to the page yourself (or describe what should happen vs what does)
-- For a test failure: run the failing test in isolation
-- For an env / config issue: re-run the setup
+- Code-level error: run the failing command yourself
+- UI bug: navigate to the page yourself
+- Test failure: run the failing test in isolation
+- Env / config issue: re-run the setup
+- Performance: run a benchmark with the regression visible
 
 If you can't reproduce, ask the user for:
-- Exact command they ran
+- Exact command run
 - Exact error output
 - OS / browser / runtime version
 - Steps to reproduce
 
-Do NOT proceed without reproduction. "I think I know what's wrong" is wrong — you've been wrong before.
+**Do NOT proceed without reproduction.** "I think I know what's wrong" is wrong — you've been wrong before.
 
-## Step 3 — Capture the exact error
+### 4. Capture the exact error
 
-Save the verbatim error output to `.bequite/logs/ERROR_LOG.md`:
+Save verbatim error output + reproduction steps to `ERROR_LOG.md`:
 
 ```markdown
 ## <ISO 8601 UTC> — <one-line symptom>
 
+**Type:** <1 of 15>
 **Reproduced via:** <command or steps>
 **Error output:**
 
@@ -45,94 +109,167 @@ Save the verbatim error output to `.bequite/logs/ERROR_LOG.md`:
 ```
 
 **Affected component:** <file or system>
+**Activated skills:** <list>
 ```
 
-## Step 4 — Find the root cause
+### 5. Write the fix mini-spec
+
+Save to `.bequite/audits/FIX_<slug>.md`:
+
+```markdown
+# Fix: <symptom>
+
+**Generated:** <date>
+**Type:** <classification>
+**Active skills:** <list>
+
+## Symptom
+
+(one paragraph)
+
+## Reproduction
+
+(steps + expected vs actual)
+
+## Hypothesis
+
+(2-3 possible causes, ranked by likelihood)
+
+## Files this fix will touch
+
+| File | Why |
+|---|---|
+
+## Test plan
+
+- The reproduction (currently fails) will pass
+- New regression test: <name>
+- Suite: no new failures
+
+## Rollback
+
+(if fix is wrong, how to revert in one step)
+```
+
+### 6. Find the root cause
 
 Walk back from the error:
 
-1. **What was the LAST thing that changed?** (git log; recent commits)
+1. **What was the LAST thing that changed?** (`git log`)
 2. **Where in the code does this error originate?** (Read the stack trace; open the file at the offending line)
 3. **What does that code DO?** (Read function + neighborhood; understand intent)
 4. **What's wrong?** (the actual cause — not the symptom)
 
-The root cause is the **smallest** change you can revert/fix that makes the symptom disappear.
+The root cause is the **smallest change** that makes the symptom disappear.
 
-**Common root-cause patterns:**
-- Off-by-one
-- Missing null/undefined check
-- Wrong env var
-- Wrong path (forward vs back slashes; absolute vs relative)
-- Type mismatch
-- Async race / missing await
-- CORS / cross-origin
-- Permissions / file system access
-- Version mismatch between deps
+**Common root-cause patterns per type:**
 
-## Step 5 — Fix the smallest cause
+- Frontend: stale prop, missing useEffect dep, CSS specificity, hydration mismatch
+- Backend: missing await, wrong env var, type coercion, missing null check
+- Database: missing index, wrong join, N+1, transaction isolation
+- Auth: cookie not set, CORS, redirect URL mismatch, expired token
+- Build: peer dep mismatch, missing types, wrong path alias
+- Test: order-dependent test, leaky fixture, time-dependent
+- Deployment: env var missing, wrong region, build cache stale
+- Performance: missing index, sync I/O in hot path, no caching
+- Security: input not sanitized, exposed secret, OWASP-Top-10 hit
+- Dependency: transitive CVE, version pin missing, AGPL leak
+- Config: typo in env var name, path separator (Windows vs Unix), permissions
+- Network: timeout, retry not configured, certificate
+- Memory: closure holding ref, unbounded array, missing cleanup
+- Race: missing lock, await order, fire-and-forget
+- Cross-browser: vendor prefix, polyfill missing, BOM differences
 
-Make the smallest safe change that addresses the root cause. NOT a refactor. NOT "while I'm in here, let me also...". The fix only.
+### 7. Fix the smallest cause
+
+Make the smallest safe change that addresses the root cause. NOT a refactor. NOT "while I'm here...".
 
 Read the file. Edit only what needs editing.
 
-## Step 6 — Add or update a test
+### 8. Add or update a regression test
 
-Every fix gets a test that **reproduces the bug**. The test should:
+Every fix gets a test that **reproduces the bug**:
 
-- Fail BEFORE the fix
-- Pass AFTER the fix
-- Have a name that describes the bug (`it("renders login button on Safari", ...)`)
+- Fails BEFORE the fix
+- Passes AFTER the fix
+- Has a name that describes the bug (`it("renders login button on Safari", ...)`)
 
-If a test for this behavior already exists and was passing → it was missing a case. Add the case.
+If a test for this behavior already existed and was passing → it was missing a case. Add the case.
 
-## Step 7 — Verify
+### 9. Verify
 
 Run the failing reproduction + the new test:
 
-- Original symptom gone? (acceptance: the reproduction now succeeds)
-- New test passes? (acceptance: green)
-- Other tests still pass? (acceptance: no regressions in `npm test`)
+- Original symptom gone? (the reproduction now succeeds)
+- New test passes?
+- Other tests still pass? (no regressions in full suite)
 
-## Step 8 — Log the fix to ERROR_LOG.md
+### 10. Log the fix
 
-Append below the original entry:
+Append to ERROR_LOG.md below the original entry:
 
 ```markdown
 **Root cause:** <one sentence>
 **Fix:** <file:line + summary; ~3 lines of diff if helpful>
 **Verification:**
 - Reproduction now: passes
-- New test: passes
+- New test: passes (`<test name>`)
 - Full suite: <count pass / count total>
 **Resolved:** <date>
 ```
 
-## Step 9 — Update CHANGELOG (if user-visible)
+### 11. Update CHANGELOG (if user-visible)
 
-If the bug was user-visible, append to `.bequite/logs/CHANGELOG.md` under [Unreleased]:
+If the bug was user-visible, append to `CHANGELOG.md` under `[Unreleased]`:
 
 ```markdown
 ### Fixed
 - <one-line symptom + brief cause>
 ```
 
-## Step 10 — Update state + report
+### 12. Update state + report
 
-- `.bequite/state/LAST_RUN.md` updated
-- `.bequite/logs/AGENT_LOG.md` appended
+- Mark `FIX_DONE ✅` in `WORKFLOW_GATES.md`
+- `LAST_RUN.md` updated
+- `AGENT_LOG.md` appended
 
 Print to chat:
 
 ```
 ✓ Fixed — <symptom>
 
+Type:         <classification>
+Active skills:<list>
 Root cause:   <one-liner>
 Fix:          <file:line>
 Test added:   <test name>
-Suite:        <pass / total>
+Suite:        <pass> / <total>
 
 Logged: .bequite/logs/ERROR_LOG.md
+        .bequite/audits/FIX_<slug>.md
 ```
+
+## Output format
+
+Narrate each step. Highlight the classification + activated skills early so user can correct.
+
+## Quality gate
+
+- Reproduction confirmed BEFORE any code change
+- Type classified (1 of 15)
+- Root cause stated in one sentence
+- Smallest patch (no refactor, no "while I'm here")
+- Regression test added (fails before, passes after)
+- Full suite green (no new failures)
+- ERROR_LOG.md entry complete
+- No banned weasel words
+
+## Failure behavior
+
+- Can't reproduce → log the symptom, ask user for more details, exit
+- Root cause unclear after 30 minutes → pause, ask user, consider `/bq-research` for the specific tech
+- Fix breaks other tests → roll back, log, retry with a different approach
+- Type classification wrong → user corrects, re-route to different skills
 
 ## Rules
 
@@ -142,25 +279,13 @@ Logged: .bequite/logs/ERROR_LOG.md
 - **No "should fix" claims.** Verify the original symptom is actually gone.
 - **One bug per /bq-fix.** Multiple bugs = multiple invocations.
 
-This command pairs with the `bequite-problem-solver` skill — see `.claude/skills/bequite-problem-solver/SKILL.md` for the deeper diagnostic procedures (binary search, git bisect, etc.).
+## Skills activated
 
-## Memory files this command reads
-
-- The actual failing code + tests
-- `.bequite/logs/ERROR_LOG.md` (prior entries for context)
-- recent git log
-
-## Memory files this command writes
-
-- The fix (source file)
-- A new or updated test
-- `.bequite/logs/ERROR_LOG.md` (appended)
-- `.bequite/logs/CHANGELOG.md` (appended if user-visible)
-- `.bequite/logs/AGENT_LOG.md` (appended)
-- `.bequite/state/LAST_RUN.md` (updated)
+Per the 15-type table above. Always plus `bequite-problem-solver` (the reproduce-first discipline core).
 
 ## Usual next command
 
 - `/bq-test` — full suite to confirm no regressions
-- `/bq-implement` — continue task list if you were mid-implementation when the bug hit
+- `/bq-implement` — continue task list if mid-implementation when bug hit
 - `/bq-fix` — if another bug surfaced during the fix
+- `/bq-changelog` — if you fixed a user-visible bug and want to sharpen the entry

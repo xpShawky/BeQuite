@@ -4,14 +4,34 @@ Tracked by BeQuite. Use `/bq-changelog` to add entries. Format follows [Keep a C
 
 ## [Unreleased]
 
-### Added
-- v3.0.0-alpha.1 direction: BeQuite is now a lightweight project skill pack at `.claude/commands/` + `.claude/skills/` + `.bequite/` memory.
+### Added (v3.0.0-alpha.2 — direction reset Cycle 2)
+- **Mandatory workflow gate system** — `.bequite/state/WORKFLOW_GATES.md` ledger with 23 gates across 6 phases. Commands refuse to run when required gates aren't met.
+- **6 explicit modes** — `.bequite/state/CURRENT_MODE.md`: New Project, Existing Audit, Add Feature, Fix Problem, Research Only, Release Readiness.
+- **10 new commands** — `/bq-mode`, `/bq-new`, `/bq-existing`, `/bq-feature`, `/bq-auto`, `/bq-p0`..`/bq-p5`. Total now 34 commands.
+- **Phase orchestrators** — `/bq-p0` through `/bq-p5` walk one phase end-to-end.
+- **Autonomous runner** — `/bq-auto` walks ALL phases with 12 hard human gates.
+- **7 new specialist skills** — bequite-researcher (11 dimensions), bequite-product-strategist, bequite-ux-ui-designer, bequite-backend-architect, bequite-database-architect, bequite-security-reviewer, bequite-devops-cloud. Total now 14 skills.
+- **Add Feature 12-type router** — `/bq-feature` classifies into Frontend / Backend / Database / Auth / Automation / Scraping / Cloud / Admin / Dashboard / CLI / Integration / Security and activates matching skills.
+- **Fix 15-type router** — `/bq-fix` classifies into Frontend / Backend / Database / Auth / Build / Test / Deploy / Perf / Security / Dep / Config / Network / Memory / Race / Cross-browser and activates matching skills.
+- **ADR-002** — mandatory workflow gates.
+- **COMMAND_CATALOG.md** — single source of truth for all 34 commands with their gates + skills + reads/writes.
+
+### Changed (v3.0.0-alpha.2)
+- `/bequite` root menu now **gate-aware** — reads `WORKFLOW_GATES.md`, displays phase gate status, refuses to recommend commands whose required gates aren't met.
+- `/bq-research` expanded from single-dimension freshness probe to **11 dimensions** (stack, product, competitors, failures, success, user journey, UX/UI, security, scalability, deployment, differentiation).
+- `/bq-plan` activates **multi-skill** thinking (project-architect + backend-architect + database-architect + security-reviewer + devops-cloud + ux-ui-designer + frontend-quality + testing-gate). 15 sections including §11 security and §12 devops.
+- `/bq-multi-plan` enforces **unbiased external prompts** — external model prompts contain ZERO mention of Claude's plan. Both models propose independently from the same briefing.
+- `/bq-fix` reproduce-first procedure now classifies into one of 15 problem types and activates matching specialist skills.
+- `CLAUDE.md` reflects 34 commands, 14 skills, modes, gates, hard human gates, required-reads list.
+
+### Added (v3.0.0-alpha.1 direction)
+- v3.0.0-alpha.1: BeQuite is a lightweight project skill pack at `.claude/commands/` + `.claude/skills/` + `.bequite/` memory.
 - 24 slash commands: `/bequite` (root menu) + 23 `/bq-*` workflow commands across 5 phases.
 - 7 focused skills: project-architect, problem-solver, frontend-quality, testing-gate, release-gate, scraping-automation, multi-model-planning.
-- Lightweight installer scripts (planned in this cycle).
+- Lightweight installer scripts.
 - ADR-001: lightweight-skill-pack-first.
 
-### Changed
+### Changed (v3.0.0-alpha.1)
 - README rewritten to lead with skill-pack install + `/bequite` usage.
 - CLAUDE.md shortened — points at the new `.claude/commands/` + `.claude/skills/` + `.bequite/` structure.
 

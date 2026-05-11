@@ -8,6 +8,14 @@ interface Line {
   tone?: "out" | "good" | "warn" | "err";
 }
 
+/**
+ * Static command-console mock. Shown in FILESYSTEM mode (when the dashboard
+ * has no API to talk to). HTTP mode swaps in the live xterm.js Terminal.
+ *
+ * v2.0.0-alpha.6: surfaces an honest "Demo only — filesystem mode" banner
+ * so users don't think this is a live shell.
+ */
+
 const DEFAULT_LINES: Line[] = [
   { prompt: true, text: "bequite init" },
   { tone: "good", text: "✓ Scaffolded .bequite/memory/ + 6 Memory Bank files" },
@@ -31,6 +39,12 @@ export function CommandConsole({ lines = DEFAULT_LINES }: { lines?: Line[] }) {
           <span className="h-2 w-2 rounded-full bg-[#FFBD2E]" />
           <span className="h-2 w-2 rounded-full bg-[#27C93F]" />
         </div>
+      </div>
+
+      {/* Honest banner — filesystem mode is static. HTTP mode swaps in the live Terminal. */}
+      <div className="border-b border-gold-deep/30 bg-ink-velvet/50 px-4 py-2 text-[11px] text-silver-soft">
+        <span className="font-mono text-gold">Demo · </span>
+        Static console (filesystem mode). Set <code className="font-mono text-gold-bright">BEQUITE_DASHBOARD_MODE=http</code> and run the Studio API for the live xterm.js terminal.
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 font-mono text-sm leading-relaxed">

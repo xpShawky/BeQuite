@@ -1,0 +1,38 @@
+{
+  "name": "bequite-monorepo",
+  "version": "2.0.0-alpha.6",
+  "private": true,
+  "description": "BeQuite — root orchestrator. Brings up the Studio stack (api + dashboard + marketing) via Docker or native dev. Not published to npm.",
+  "scripts": {
+    "//----- one-command dev -----": "",
+    "dev": "docker compose up --build",
+    "dev:detach": "docker compose up --build -d",
+    "stop": "docker compose down",
+    "//----- per-app native dev (alternative to docker) -----": "",
+    "dev:api": "cd studio/api && bun run src/index.ts",
+    "dev:dashboard": "cd studio/dashboard && cross-env BEQUITE_DASHBOARD_MODE=http npm run dev",
+    "dev:marketing": "cd studio/marketing && npm run dev",
+    "//----- install + verify -----": "",
+    "install:all": "npm install --prefix studio/api && npm install --prefix studio/dashboard && npm install --prefix studio/marketing && npm install --prefix tests/e2e",
+    "typecheck": "npm run typecheck:api && npm run typecheck:dashboard && npm run typecheck:marketing",
+    "typecheck:api": "npx --prefix studio/api tsc --project studio/api/tsconfig.json --noEmit",
+    "typecheck:dashboard": "npx --prefix studio/dashboard tsc --project studio/dashboard/tsconfig.json --noEmit",
+    "typecheck:marketing": "npx --prefix studio/marketing tsc --project studio/marketing/tsconfig.json --noEmit",
+    "test:e2e": "cd tests/e2e && npx playwright test",
+    "test:py": "cd cli && python -m pytest tests/ -q",
+    "//----- full verify (Phase 7) -----": "",
+    "verify": "npm run typecheck && npm run test:py && npm run test:e2e",
+    "//----- cleanup -----": "",
+    "clean": "rm -rf studio/api/node_modules studio/dashboard/node_modules studio/marketing/node_modules tests/e2e/node_modules"
+  },
+  "engines": {
+    "node": ">=20",
+    "npm": ">=10"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xpShawky/BeQuite.git"
+  },
+  "author": "Ahmed Shawky (xpShawky)",
+  "license": "MIT"
+}

@@ -2,15 +2,22 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import type { ReceiptSummary } from "@/lib/projects-types";
 
 interface Props {
   message?: string;
   status?: "online" | "thinking" | "blocked";
+  /**
+   * Last 3 receipts to surface as "recent activity". v2.0.0-alpha.6 replaces
+   * the hardcoded mock list with real receipt data when present.
+   */
+  recentReceipts?: ReceiptSummary[];
 }
 
 export function AgentPanel({
   message = "Hi there. Memory loaded. Ready when you are — pick a phase or run a command.",
   status = "online",
+  recentReceipts = [],
 }: Props) {
   const statusLabel = status === "online" ? "online" : status === "thinking" ? "thinking" : "blocked";
 
@@ -60,11 +67,25 @@ export function AgentPanel({
         <p className="font-mono text-[10px] uppercase tracking-wider text-silver-dim">
           recent activity
         </p>
-        <ul className="mt-2 space-y-1.5 font-mono text-[11px] text-silver-soft">
-          <li>$ bequite verify ✓</li>
-          <li>$ bequite plan ✓</li>
-          <li>$ bequite freshness ✓</li>
-        </ul>
+        {recentReceipts.length === 0 ? (
+          <p className="mt-2 font-mono text-[11px] italic text-silver-dim">
+            no receipts yet — run <span className="text-gold">bequite auto</span>
+          </p>
+        ) : (
+          <ul className="mt-2 space-y-1.5 font-mono text-[11px] text-silver-soft">
+            {recentReceipts.slice(0, 3).map((r) => (
+              <li key={r.filename} className="flex items-center gap-1.5">
+                <span className={r.signed ? "text-gold" : "text-silver-dim"}>
+                  {r.signed ? "✓" : "·"}
+                </span>
+                <span className="truncate">
+                  <span className="text-gold-bright">{r.phase}</span>
+                  <span className="ml-1 text-silver-dim">{r.model}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </aside>
   );

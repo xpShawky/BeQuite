@@ -167,6 +167,42 @@ def doctor(repo: str) -> None:
 
 
 # ----------------------------------------------------------------------------
+# bequite dev  — bring up Studio stack via Docker (v1.0.4+)
+# ----------------------------------------------------------------------------
+
+
+@cli.command()
+@click.option("--repo", default=".", help="Repo root.")
+@click.option("--detach", "-d", is_flag=True, help="Run docker compose in background.")
+@click.option("--down", is_flag=True, help="Stop the stack instead of starting it.")
+def dev(repo: str, detach: bool, down: bool) -> None:
+    """Bring up the Studio stack (marketing + dashboard + api).
+
+    Prefers Docker. Falls back to native-dev instructions if Docker isn't running.
+    """
+    from bequite.commands import run_dev, run_dev_down
+
+    repo_root = Path(repo).resolve()
+    if down:
+        sys.exit(run_dev_down(repo_root))
+    sys.exit(run_dev(repo_root, detach=detach))
+
+
+# ----------------------------------------------------------------------------
+# bequite status  — health probe for the three Studio services
+# ----------------------------------------------------------------------------
+
+
+@cli.command()
+@click.option("--repo", default=".", help="Repo root.")
+def status(repo: str) -> None:
+    """Probe localhost:3000 / 3001 / 3002 and report up/down for each service."""
+    from bequite.commands import run_status
+
+    sys.exit(run_status(Path(repo).resolve()))
+
+
+# ----------------------------------------------------------------------------
 # bequite init  — scaffold a new project
 # ----------------------------------------------------------------------------
 

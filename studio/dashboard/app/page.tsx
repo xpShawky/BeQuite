@@ -7,6 +7,14 @@ import { AgentPanel } from "@/components/AgentPanel";
 import { ReceiptsList } from "@/components/ReceiptsList";
 import { loadProject, getLoaderConfig } from "@/lib/projects";
 
+// v2.0.0-alpha.6: force dynamic rendering so loadProject() runs on every
+// request (reads BEQUITE_DASHBOARD_MODE + BEQUITE_API_BASE at request time).
+// Without this, Next.js caches the server-component at build time, where
+// env vars often aren't set, and the dashboard silently falls back to
+// filesystem mode forever.
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function DashboardHome() {
   // Server-component reads project state on every request. The dispatcher
   // in `lib/projects` picks filesystem or HTTP mode based on
@@ -89,8 +97,9 @@ export default async function DashboardHome() {
         </main>
 
         <AgentPanel
-          message={snapshot.activeContextSummary}
+          message={snapshot.activeContextSummary || "Hi there. Memory loaded. Ready when you are — pick a phase or run a command."}
           status="online"
+          recentReceipts={snapshot.recentReceipts}
         />
       </div>
     </div>

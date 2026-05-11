@@ -29,17 +29,56 @@ err_console = Console(stderr=True)
 
 
 def run_doctor(repo_root: Path) -> int:
-    """Environment + state-coherence check (master §17.2 — adapted)."""
+    """Environment + state-coherence check (master §17.2 — adapted).
+
+    v1.0.4: extended with a "Studio runtime" group that surfaces Node/Bun/Docker
+    availability. These are optional for the CLI alone but required for the
+    Studio (marketing + dashboard + API). Missing tools surface a clear install
+    hint instead of a stack trace later.
+    """
     checks: list[tuple[str, str, bool, str]] = []   # (group, name, ok, hint)
 
-    # --- Tooling ---
+    # --- Tooling (required for CLI) ---
     for tool, hint in [
-        ("git", "install git"),
-        ("python", "install Python 3.11+"),
-        ("jq", "install jq for hook JSON parsing"),
+        ("git", "install git: https://git-scm.com"),
+        ("python", "install Python 3.11+: https://python.org"),
+        ("jq", "install jq for hook JSON parsing (optional for CLI; required for hooks)"),
     ]:
         ok = shutil.which(tool) is not None
         checks.append(("Tooling", tool, ok, hint if not ok else ""))
+
+    # --- Studio runtime (required only if you want to run studio/) ---
+    studio_tools = [
+        ("node", ">=20", "install Node.js 20+: https://nodejs.org"),
+        ("npm", ">=10", "ships with Node.js"),
+        ("bun", ">=1.1", "powershell -c \"irm bun.sh/install.ps1 | iex\" | curl -fsSL https://bun.sh/install | bash"),
+        ("docker", ">=24", "install Docker Desktop: https://www.docker.com/products/docker-desktop/"),
+    ]
+    for tool, _min, hint in studio_tools:
+        ok = shutil.which(tool) is not None
+        checks.append(("Studio runtime", tool, ok, hint if not ok else ""))
+
+    # Docker daemon reachability (separate from binary presence)
+    if shutil.which("docker"):
+        try:
+            r = subprocess.run(
+                ["docker", "info"], capture_output=True, text=True, timeout=4,
+            )
+            daemon_ok = r.returncode == 0
+        except (subprocess.TimeoutExpired, OSError):
+            daemon_ok = False
+        checks.append((
+            "Studio runtime", "docker daemon", daemon_ok,
+            "start Docker Desktop and wait for 'Engine running'" if not daemon_ok else "",
+        ))
+
+    # --- Port availability (3000/3001/3002 for Studio) ---
+    for port in (3000, 3001, 3002):
+        ok = _port_is_free(port)
+        checks.append((
+            "Ports", f"localhost:{port}", ok,
+            f"stop the process using :{port} OR run `docker compose down`" if not ok else "",
+        ))
 
     # --- BeQuite scaffolding ---
     for path, hint in [
@@ -445,3 +484,136 @@ def run_skill_command(name: str, repo_root: Path, **kwargs: Any) -> int:
         title=f"bequite {name}",
     ))
     return 0
+
+
+# ----------------------------------------------------------------------------
+# bequite dev — bring up the local Studio stack (v1.0.4+)
+# ----------------------------------------------------------------------------
+
+
+def run_dev(repo_root: Path, detach: bool = False) -> int:
+    """Bring up the Studio stack (marketing + dashboard + api).
+
+    Prefers Docker if the daemon is running. Falls back to instructions for
+    native dev if Docker is missing.
+    """
+    docker_ok = False
+    if shutil.which("docker"):
+        try:
+            r = subprocess.run(
+                ["docker", "info"], capture_output=True, text=True, timeout=4,
+            )
+            docker_ok = r.returncode == 0
+        except (subprocess.TimeoutExpired, OSError):
+            docker_ok = False
+
+    if docker_ok and (repo_root / "docker-compose.yml").exists():
+        console.print(Panel(
+            "[green]Starting BeQuite Studio via Docker Compose[/green]\n"
+            "[dim]docker compose up --build" + (" -d" if detach else "") + "[/dim]\n\n"
+            "  http://localhost:3000   marketing\n"
+            "  http://localhost:3001   dashboard\n"
+            "  http://localhost:3002   api\n\n"
+            "Stop with [bold]docker compose down[/bold] (or [bold]bequite dev --down[/bold]).",
+            title="bequite dev",
+        ))
+        cmd = ["docker", "compose", "up", "--build"]
+        if detach:
+            cmd.append("-d")
+        try:
+            return subprocess.call(cmd, cwd=str(repo_root))
+        except KeyboardInterrupt:
+            console.print("\n[yellow]Interrupted. Run `bequite dev --down` to stop containers.[/yellow]")
+            return 130
+
+    # Docker not available — print clear native-dev instructions.
+    err_console.print(
+        "[yellow]Docker daemon not reachable. Falling back to native instructions.[/yellow]\n"
+    )
+    console.print(Panel(
+        "Run these in three separate terminals:\n\n"
+        "[bold]Terminal 1[/bold] — API on :3002\n"
+        "  [cyan]cd studio/api && bun run src/index.ts[/cyan]\n\n"
+        "[bold]Terminal 2[/bold] — Dashboard on :3001 (HTTP mode)\n"
+        "  Windows: [cyan]cd studio/dashboard; $env:BEQUITE_DASHBOARD_MODE='http'; npm run dev[/cyan]\n"
+        "  Unix:    [cyan]cd studio/dashboard && BEQUITE_DASHBOARD_MODE=http npm run dev[/cyan]\n\n"
+        "[bold]Terminal 3[/bold] — Marketing on :3000\n"
+        "  [cyan]cd studio/marketing && npm run dev[/cyan]\n\n"
+        "[dim]Bun install: https://bun.sh  |  Docker install: https://docker.com[/dim]",
+        title="bequite dev — native mode",
+    ))
+    return 1
+
+
+def run_dev_down(repo_root: Path) -> int:
+    """Stop the Studio stack."""
+    if shutil.which("docker") and (repo_root / "docker-compose.yml").exists():
+        return subprocess.call(["docker", "compose", "down"], cwd=str(repo_root))
+    err_console.print("[yellow]Docker not available; stop native dev servers with Ctrl+C in each terminal.[/yellow]")
+    return 1
+
+
+# ----------------------------------------------------------------------------
+# bequite status — quick health probe (v1.0.4+)
+# ----------------------------------------------------------------------------
+
+
+def run_status(repo_root: Path) -> int:
+    """Probe the three Studio services + report up/down for each."""
+    import urllib.request
+    import urllib.error
+
+    targets = [
+        ("api",       "http://localhost:3002/healthz",         200),
+        ("dashboard", "http://localhost:3001/",                200),
+        ("marketing", "http://localhost:3000/",                200),
+    ]
+
+    table = Table(title="bequite status — Studio service probes")
+    table.add_column("Service")
+    table.add_column("URL")
+    table.add_column("Status")
+    table.add_column("Notes")
+
+    any_down = False
+    for name, url, expected in targets:
+        try:
+            with urllib.request.urlopen(url, timeout=3) as r:
+                code = r.status
+                if code == expected:
+                    table.add_row(name, url, "[green]UP[/green]", f"HTTP {code}")
+                else:
+                    table.add_row(name, url, "[yellow]ODD[/yellow]", f"got HTTP {code}")
+                    any_down = True
+        except urllib.error.URLError as e:
+            reason = str(getattr(e, "reason", e))
+            table.add_row(name, url, "[red]DOWN[/red]", reason[:50])
+            any_down = True
+        except Exception as e:
+            table.add_row(name, url, "[red]ERR[/red]", str(e)[:50])
+            any_down = True
+
+    console.print(table)
+    if any_down:
+        err_console.print(
+            "\n[yellow]Some services are down. Try `bequite dev` to bring them up.[/yellow]"
+        )
+        return 1
+    console.print("\n[green]All Studio services up.[/green]")
+    return 0
+
+
+def _port_is_free(port: int) -> bool:
+    """Return True if nothing is listening on localhost:<port>."""
+    import socket
+
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.settimeout(0.5)
+    try:
+        result = s.connect_ex(("127.0.0.1", port))
+    except OSError:
+        return True
+    finally:
+        s.close()
+    # connect_ex returns 0 on success (port IS bound). Non-zero = free.
+    return result != 0

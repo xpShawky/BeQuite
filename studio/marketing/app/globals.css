@@ -210,6 +210,13 @@ html, body {
 .text-balance { text-wrap: balance; }
 .text-pretty  { text-wrap: pretty; }
 
+/* Hero starfield glint animation (referenced by Hero.tsx's 40 random stars).
+ * v2.0.0-alpha.6: was missing before — particles sat static. */
+@keyframes glint {
+  0%, 100% { opacity: 0.15; }
+  50%      { opacity: 0.75; }
+}
+
 /* Selection color = gold */
 ::selection {
   background: var(--gold-primary);

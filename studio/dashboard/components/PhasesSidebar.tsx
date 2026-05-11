@@ -51,10 +51,14 @@ export function PhasesSidebar({ phases, currentPhase, costSession }: Props) {
         </p>
         <button
           type="button"
-          className="mt-3 flex w-full items-center justify-center gap-2 rounded-md bg-gold px-3 py-2 text-sm font-medium text-ink transition-all duration-200 ease-cinematic hover:bg-gold-bright hover:shadow-glint"
+          disabled
+          title="Deploy lands in v2.0.0-beta.1. For now: run `bequite handoff` to generate the deploy artifacts."
+          aria-disabled="true"
+          className="mt-3 flex w-full items-center justify-center gap-2 rounded-md bg-ink-edge px-3 py-2 text-sm font-medium text-silver-dim opacity-60 cursor-not-allowed"
         >
           <Rocket className="h-3.5 w-3.5" strokeWidth={2.5} />
           DEPLOY
+          <span className="ml-1 rounded-sm bg-ink-velvet px-1 py-0.5 font-mono text-[9px] uppercase tracking-wider text-silver-dim">soon</span>
         </button>
       </div>
     </aside>

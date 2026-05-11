@@ -102,3 +102,12 @@ e2e-results/
 # --- Generated docs ---
 docs/_build/
 site/
+# Playwright artifacts
+tests/e2e/node_modules/
+tests/e2e/test-results/
+docs/audits/screenshots/_playwright-output/
+docs/audits/screenshots/_playwright-report/
+
+# Root-level npm/Node
+node_modules/
+

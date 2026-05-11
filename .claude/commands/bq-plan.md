@@ -314,3 +314,32 @@ Print summary + ask for approval. Full plan in the file.
 
 - `/bq-multi-plan` — second opinion (recommended for high-stakes plans)
 - `/bq-assign` — break plan into actionable tasks
+
+---
+
+## Tool neutrality (global rule)
+
+⚠ **Every tool, library, framework, design system, or workflow this command names in its stack table is an EXAMPLE, not a mandatory default.**
+
+§5 (Stack decision) of IMPLEMENTATION_PLAN.md must produce **decision sections** for each major pick — not bare names.
+
+**Do not write in the plan:** "Use Next.js 15."
+**Write:** "Next.js 15 is one candidate. Compared against alternatives [list]; chosen because [reasons tied to the 10 questions]; risk [X]; rollback plan [Y]."
+
+The 10 decision questions every stack pick must answer:
+1. What is the project type?
+2. What is the actual problem?
+3. What scale is expected?
+4. What constraints exist?
+5. What stack already exists?
+6. What user experience is required?
+7. What failure risks exist?
+8. What tools are proven for this case?
+9. What tools are overkill?
+10. What tool gives the best output with the least complexity?
+
+For each major pick, embed a decision section (Problem / Options / Sources / Best option / Why it fits / Why others rejected / Risk / Cost / Test plan / Rollback plan) in §5 or §11/§12 of the plan. For large or regulated projects, write a full ADR at `.bequite/decisions/ADR-XXX-<tool>-choice.md` instead.
+
+**Do not auto-install.** The plan declares what tools the project will adopt; `/bq-implement` only installs deps after the decision section is present and approved.
+
+See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.

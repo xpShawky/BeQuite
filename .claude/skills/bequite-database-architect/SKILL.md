@@ -310,3 +310,30 @@ DB bug types (per the 15-type router):
 - Design the API around the DB (use `bequite-backend-architect`)
 - Run query optimization beyond EXPLAIN ANALYZE (use a DBA for serious tuning)
 - Sharding strategy (out of scope until 50K+ users)
+
+---
+
+## Tool neutrality (global rule)
+
+⚠ **Every tool, library, framework, design system, or workflow named in this file (Postgres, MySQL, SQLite, MongoDB, DynamoDB, Firestore, Drizzle, Prisma, Kysely, sqlx, Supabase, Neon, RDS, PgBouncer, Supavisor, Atlas, Liquibase, Flyway, etc.) is an EXAMPLE, not a mandatory default.**
+
+The patterns (UUIDs, timestamps, soft deletes, forward-only migrations, indexing strategy, transaction isolation) are **universal database discipline**. Specific DB engine + ORM + migration tool picks are candidates per project.
+
+**Do not say:** "Use Postgres."
+**Say:** "Postgres is one candidate. Compare against SQLite (for solo / single-server projects), MongoDB (only when data is truly document-shaped), or managed alternatives based on this project's data shape, scale, query patterns, and team expertise. Use it only if it fits."
+
+The 10 decision questions:
+1. What is the project type?
+2. What is the actual problem?
+3. What scale is expected?
+4. What constraints exist?
+5. What stack already exists?
+6. What user experience is required?
+7. What failure risks exist?
+8. What tools are proven for this case?
+9. What tools are overkill?
+10. What tool gives the best output with the least complexity?
+
+Write a decision section before adopting (Problem / Options / Sources / Best option / Why it fits / Why others rejected / Risk / Cost / Test plan / Rollback plan).
+
+See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.

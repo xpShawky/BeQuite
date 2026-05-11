@@ -4,6 +4,20 @@ Tracked by BeQuite. Use `/bq-changelog` to add entries. Format follows [Keep a C
 
 ## [Unreleased]
 
+### Added (v3.0.0-alpha.3 — tool neutrality principle)
+- `.bequite/principles/TOOL_NEUTRALITY.md` — canonical source of truth for the rule that every named tool is an EXAMPLE, not a default.
+- `docs/decisions/ADR-003-tool-neutrality.md` — formalizes the decision.
+- **10 decision questions** every major tool pick must answer (project type, problem, scale, constraints, stack, UX, failure risks, proven tools, overkill, complexity).
+- **Decision section format** required before any tool pick (Problem / Options / Sources / Best option / Why it fits / Why others rejected / Risk / Cost / Test plan / Rollback plan).
+- **Do-not-auto-install defaults** — no dependencies, scraping tools, frontend libs, Docker, testing frameworks, deployment tools, monitoring, or auth libs added by default.
+- **Research-depth rule** — 11 dimensions of research, not just stack. Tool choice comes AFTER project understanding.
+
+### Changed (v3.0.0-alpha.3)
+- `CLAUDE.md` — tool neutrality is now Core Operating Rule #1; 10 decision questions enumerated.
+- All 11 tool-touching skills (researcher, project-architect, frontend-quality, ux-ui-designer, backend-architect, database-architect, security-reviewer, testing-gate, devops-cloud, scraping-automation, release-gate) — appended Tool Neutrality block.
+- All 8 tool-touching commands (bq-research, bq-plan, bq-feature, bq-fix, bq-audit, bq-review, bq-red-team, bq-verify) — appended Tool Neutrality block.
+- Canonical phrasing standardized: replace "Use X." with "X is one candidate. Research and compare against other options. Use it only if it fits this project."
+
 ### Added (v3.0.0-alpha.2 — direction reset Cycle 2)
 - **Mandatory workflow gate system** — `.bequite/state/WORKFLOW_GATES.md` ledger with 23 gates across 6 phases. Commands refuse to run when required gates aren't met.
 - **6 explicit modes** — `.bequite/state/CURRENT_MODE.md`: New Project, Existing Audit, Add Feature, Fix Problem, Research Only, Release Readiness.

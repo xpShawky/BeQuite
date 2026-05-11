@@ -171,3 +171,32 @@ Next: /bq-review (review the change) or /bq-verify (full gates)
 - `/bq-test` — broader test pass
 - `/bq-verify` — full gate matrix before shipping
 - `/bq-changelog` — sharpen the CHANGELOG entry
+
+---
+
+## Tool neutrality (global rule)
+
+⚠ **Every tool, library, framework, or design system this command might add as part of a feature is a CANDIDATE, not a default.**
+
+If the feature mini-spec requires a new tool / library / dep, the spec must include a decision section before `/bq-implement` runs.
+
+**Do not write in the mini-spec:** "Add Drizzle."
+**Write:** "Drizzle is one candidate. Compared against [alternatives]; chosen because [reasons]; risk [X]; rollback [Y]."
+
+The 10 decision questions every new dep must answer:
+1. What is the project type?
+2. What is the actual problem?
+3. What scale is expected?
+4. What constraints exist?
+5. What stack already exists?
+6. What user experience is required?
+7. What failure risks exist?
+8. What tools are proven for this case?
+9. What tools are overkill?
+10. What tool gives the best output with the least complexity?
+
+For each new dep, embed a short decision section in the feature mini-spec (Problem / Options / Sources / Best option / Why it fits / Why others rejected / Risk / Cost / Test plan / Rollback plan). For features touching auth, payments, or DB schema, use a full ADR.
+
+**Do not auto-install new deps.** Adding a dependency requires explicit justification per the 6-point implementation rule: needed, justified, compatible, not over-complex, has test plan, has rollback path.
+
+See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.

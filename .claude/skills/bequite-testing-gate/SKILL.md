@@ -164,3 +164,30 @@ test("user can sign up with email + password", async ({ page }) => {
 - **Tests that depend on a specific test order** — fixed with `--randomize` or `--shuffle`.
 - **Tests that hit live external services** — flake source. Use mocks.
 - **One mega test that exercises 12 things.** Split into 12 tests.
+
+---
+
+## Tool neutrality (global rule)
+
+⚠ **Every tool, library, framework, design system, or workflow named in this file (vitest, jest, pytest, cargo test, go test, Playwright, Cypress, supertest, msw, Pact, Testcontainers, etc.) is an EXAMPLE, not a mandatory default.**
+
+The test pyramid + contract-test discipline + coverage targets + per-level rules are **universal**. Specific test framework picks are candidates per project.
+
+**Do not say:** "Use vitest."
+**Say:** "vitest is one candidate for the unit test runner. Compare against jest, the framework's native test runner, or other alternatives for this project's stack and team expertise. Use it only if it fits."
+
+The 10 decision questions:
+1. What is the project type?
+2. What is the actual problem?
+3. What scale is expected?
+4. What constraints exist?
+5. What stack already exists?
+6. What user experience is required?
+7. What failure risks exist?
+8. What tools are proven for this case?
+9. What tools are overkill?
+10. What tool gives the best output with the least complexity?
+
+Write a decision section before adopting (Problem / Options / Sources / Best option / Why it fits / Why others rejected / Risk / Cost / Test plan / Rollback plan).
+
+See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.

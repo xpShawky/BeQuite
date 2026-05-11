@@ -203,3 +203,42 @@ Next: /bq-fix <highest-severity-finding>
 - `/bq-fix` (highest-severity finding first)
 - `/bq-review` (if red-team passed, formalize a normal review)
 - `/bq-verify` (if conditional-pass and you accept the medium/low findings as deferred)
+
+---
+
+## Tool neutrality (global rule)
+
+⚠ **Red Team probes the cost of tool choices that lack justification.**
+
+Add a 9th attack angle to the 8 listed:
+
+### 9. Tool choice
+
+- Was the tool added by default rather than chosen for this project?
+- Does the project really need it, or is it cargo-culted?
+- Is the tool overkill for the project's actual scale?
+- Has the project locked into a vendor whose pricing / availability / license is risky?
+- Could a simpler / native alternative achieve the same outcome?
+- Is the dependency tree growing for no clear reason?
+
+**Kill-shot questions to add:**
+- "Why this tool over [named alternative]? Show me the decision section."
+- "At what scale does this tool become unnecessary?"
+- "What's the rollback path if this tool is sunsetted next year?"
+- "Could the existing stack handle this without the new dep?"
+
+**Tool-choice findings are real BLOCKERS** if a critical dep was added without justification.
+
+The 10 decision questions every named tool in the diff must answer:
+1. What is the project type?
+2. What is the actual problem?
+3. What scale is expected?
+4. What constraints exist?
+5. What stack already exists?
+6. What user experience is required?
+7. What failure risks exist?
+8. What tools are proven for this case?
+9. What tools are overkill?
+10. What tool gives the best output with the least complexity?
+
+See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.

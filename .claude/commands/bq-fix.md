@@ -289,3 +289,30 @@ Per the 15-type table above. Always plus `bequite-problem-solver` (the reproduce
 - `/bq-implement` — continue task list if mid-implementation when bug hit
 - `/bq-fix` — if another bug surfaced during the fix
 - `/bq-changelog` — if you fixed a user-visible bug and want to sharpen the entry
+
+---
+
+## Tool neutrality (global rule)
+
+⚠ **A fix should rarely introduce a new tool. If it does, the fix mini-spec must include a decision section before the patch lands.**
+
+The smallest-cause / smallest-patch discipline means most fixes use existing project tooling. If a fix tempts you to "let's add library X to handle this properly" — pause. Either the existing stack solves it, or the fix is larger than a fix (becomes a feature).
+
+**Do not write in the FIX mini-spec:** "Add Zod for validation."
+**Write:** "Zod is one candidate to address the validation gap. Compared against [alternatives]; chosen because [reasons]; risk [X]; rollback [Y]."
+
+The 10 decision questions every new dep introduced during a fix must answer:
+1. What is the project type?
+2. What is the actual problem?
+3. What scale is expected?
+4. What constraints exist?
+5. What stack already exists?
+6. What user experience is required?
+7. What failure risks exist?
+8. What tools are proven for this case?
+9. What tools are overkill?
+10. What tool gives the best output with the least complexity?
+
+**Default for fixes:** use what's already installed. Adding a dep during a fix is a flag — re-scope as a feature if the dep is structural.
+
+See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.

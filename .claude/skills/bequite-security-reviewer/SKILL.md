@@ -316,3 +316,30 @@ For each diff:
 - Compliance certification (SOC 2, ISO 27001 — hire auditors)
 - Incident response (use `engineering:incident-response` skill if available)
 - Forensic analysis (out of scope)
+
+---
+
+## Tool neutrality (global rule)
+
+⚠ **Every tool, library, framework, design system, or workflow named in this file (Better-Auth, Clerk, Auth0, NextAuth, Supabase Auth, trufflehog, gitleaks, OSV scanner, Snyk, Dependabot, Renovate, Doppler, Infisical, AWS Secrets Manager, DOMPurify, Zod, Valibot, Pydantic, otplib, etc.) is an EXAMPLE, not a mandatory default.**
+
+The OWASP coverage map + supply-chain defenses + secrets discipline + auth flow controls are **universal security rules**. Specific tool picks are candidates per project.
+
+**Do not say:** "Use Better-Auth."
+**Say:** "Better-Auth is one candidate for self-hosted auth. Compare against Clerk (managed), Supabase Auth (built-in if on Supabase), NextAuth/Auth.js, or Auth0 (enterprise) based on this project's hosting, scale, team expertise, and budget. Use it only if it fits."
+
+The 10 decision questions:
+1. What is the project type?
+2. What is the actual problem?
+3. What scale is expected?
+4. What constraints exist?
+5. What stack already exists?
+6. What user experience is required?
+7. What failure risks exist?
+8. What tools are proven for this case?
+9. What tools are overkill?
+10. What tool gives the best output with the least complexity?
+
+Write a decision section before adopting (Problem / Options / Sources / Best option / Why it fits / Why others rejected / Risk / Cost / Test plan / Rollback plan).
+
+See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.

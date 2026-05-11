@@ -380,3 +380,32 @@ Print a short summary in chat (see above). Full evidence goes in the report file
 - `/bq-scope` if research surfaced new sub-questions
 - `/bq-plan` otherwise
 - `/bq-multi-plan` if research left a tie on a high-stakes decision
+
+---
+
+## Tool neutrality (global rule)
+
+⚠ **Every tool, library, framework, design system, or workflow this command surfaces during research is an EXAMPLE, not a mandatory default.**
+
+Research produces **candidates**, not commitments. The plan that follows decides which candidate fits.
+
+**Do not write in the RESEARCH_REPORT:** "Use X."
+**Write:** "X is one candidate. Compare against alternatives. Adopt only if it fits this project's type, scale, constraints, and existing stack."
+
+The 10 decision questions every research summary must enable:
+1. What is the project type?
+2. What is the actual problem?
+3. What scale is expected?
+4. What constraints exist?
+5. What stack already exists?
+6. What user experience is required?
+7. What failure risks exist?
+8. What tools are proven for this case?
+9. What tools are overkill?
+10. What tool gives the best output with the least complexity?
+
+Every recommendation in RESEARCH_REPORT.md must enable a decision section: Problem / Options / Sources / Best option / Why it fits / Why others rejected / Risk / Cost / Test plan / Rollback plan.
+
+Research depth covers 11 dimensions — not just stack. Project domain, user needs, competitors, failure modes, success patterns, UX, security, scalability, deployment, differentiation. **Tool choice comes after project understanding, never before.**
+
+See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.

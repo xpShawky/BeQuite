@@ -175,3 +175,32 @@ When this skill produces a scraping plan or code:
 - Scraping PII (names + emails + phones + addresses) without consent
 
 If asked, refuse + redirect to the legitimate alternative (official API, partnership, opt-in dataset).
+
+---
+
+## Tool neutrality (global rule)
+
+⚠ **Every tool, library, framework, design system, or workflow named in this file (Scrapy, Crawlee, Trafilatura, AutoScraper, ScrapeGraphAI, Playwright, Puppeteer, Cheerio, Firecrawl, Crawl4AI, Scrapling, Browser-use, Browserless, Colly, n8n, Make, Zapier, Temporal, Inngest, Trigger.dev, etc.) is an EXAMPLE, not a mandatory default.**
+
+Article VIII discipline (robots.txt respect, polite-rate default, no captcha-solving, no PII extraction without consent) is **universal**. Specific scraping / automation tool picks are candidates per project.
+
+**Do not say:** "Use Scrapy."
+**Say:** "Scrapy is one candidate for large Python crawls. Compare against Crawlee-Python (newer, Playwright-unified), simple Cheerio/BeautifulSoup + requests/axios + sleep (for small one-shot crawls), or the target's official API based on this project's scale, JS-rendering needs, and team expertise. Use it only if it fits."
+
+The 10 decision questions:
+1. What is the project type?
+2. What is the actual problem?
+3. What scale is expected?
+4. What constraints exist?
+5. What stack already exists?
+6. What user experience is required?
+7. What failure risks exist?
+8. What tools are proven for this case?
+9. What tools are overkill?
+10. What tool gives the best output with the least complexity?
+
+Write a decision section before adopting (Problem / Options / Sources / Best option / Why it fits / Why others rejected / Risk / Cost / Test plan / Rollback plan).
+
+**Do not auto-install scraping tools.** No scraping dep added by default. The skill stays dormant unless the project explicitly needs scraping/automation.
+
+See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.

@@ -163,3 +163,30 @@ npm publish                              # for npm
 python -m build && twine upload dist/*   # for PyPI
 cargo publish                            # for Rust
 ```
+
+---
+
+## Tool neutrality (global rule)
+
+⚠ **Every tool, library, framework, design system, or workflow named in this file (npm, pip, cargo, GitHub Actions, GitLab CI, GPG signing, AzureSignTool, Apple notarytool, OIDC Trusted Publisher, twine, etc.) is an EXAMPLE, not a mandatory default.**
+
+The release matrix + CI parity + semver + CHANGELOG hygiene + signing discipline + rollback plan are **universal**. Specific tool picks (package manager, CI provider, signing solution) are candidates per project.
+
+**Do not say:** "Use GitHub Actions."
+**Say:** "GitHub Actions is one candidate for CI. Compare against GitLab CI, CircleCI, Buildkite, or self-hosted runners based on this project's repo host, budget, and matrix-build needs. Use it only if it fits."
+
+The 10 decision questions:
+1. What is the project type?
+2. What is the actual problem?
+3. What scale is expected?
+4. What constraints exist?
+5. What stack already exists?
+6. What user experience is required?
+7. What failure risks exist?
+8. What tools are proven for this case?
+9. What tools are overkill?
+10. What tool gives the best output with the least complexity?
+
+Write a decision section before adopting (Problem / Options / Sources / Best option / Why it fits / Why others rejected / Risk / Cost / Test plan / Rollback plan).
+
+See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.

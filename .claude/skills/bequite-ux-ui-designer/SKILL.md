@@ -268,3 +268,30 @@ For UI bugs:
 - Pick a brand color from scratch (use a designer or be deliberate yourself)
 - Write marketing copy (use brand-voice plugin)
 - Replace usability testing with real users (irreplaceable)
+
+---
+
+## Tool neutrality (global rule)
+
+⚠ **Every tool, library, framework, design system, or workflow named in this file (Inter Tight, Spectral, JetBrains Mono, shadcn/ui, Radix, tweakcn, Magic, Mobbin, Dribbble, axe-core, Pa11y, etc.) is an EXAMPLE, not a mandatory default.**
+
+The 10 design principles + 15 AI-slop anti-patterns + token discipline are **universal rules**. Specific font / library picks are candidates per project.
+
+**Do not say:** "Use Inter Tight."
+**Say:** "Inter Tight is one candidate for the body font. Compare against alternatives that fit the brand's voice and audience. Use it only if it fits — and record the reason in tokens.css."
+
+The 10 decision questions:
+1. What is the project type?
+2. What is the actual problem?
+3. What scale is expected?
+4. What constraints exist?
+5. What stack already exists?
+6. What user experience is required?
+7. What failure risks exist?
+8. What tools are proven for this case?
+9. What tools are overkill?
+10. What tool gives the best output with the least complexity?
+
+Write a decision section before adopting (Problem / Options / Sources / Best option / Why it fits / Why others rejected / Risk / Cost / Test plan / Rollback plan).
+
+See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.

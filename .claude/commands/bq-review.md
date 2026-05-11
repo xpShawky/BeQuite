@@ -135,3 +135,34 @@ Next: /bq-fix <first-blocker>  (if Blocked)
 - Approved-with-comments → fix nits then `/bq-verify`
 - Blocked → `/bq-fix <issue-id>`
 - Need a second opinion → `/bq-red-team`
+
+---
+
+## Tool neutrality (global rule)
+
+⚠ **Reviews must flag any "use X" claim in the diff that lacks a decision section.**
+
+When reviewing a diff that adds a new dependency, library, framework, or tool, check:
+
+1. Is there a decision section in the plan, feature mini-spec, or PR description?
+2. Does it answer the 10 decision questions?
+3. Does it justify this tool over named alternatives?
+4. Does it include a test plan + rollback plan?
+
+If any answer is no → mark **Blocked** with a finding: "New dep `<name>` added without a decision section. Required: Problem / Options / Sources / Best option / Why it fits / Why others rejected / Risk / Cost / Test plan / Rollback plan."
+
+The 10 decision questions every new tool must answer:
+1. What is the project type?
+2. What is the actual problem?
+3. What scale is expected?
+4. What constraints exist?
+5. What stack already exists?
+6. What user experience is required?
+7. What failure risks exist?
+8. What tools are proven for this case?
+9. What tools are overkill?
+10. What tool gives the best output with the least complexity?
+
+**Tool neutrality findings are a real BLOCKER category.** Treat them as such.
+
+See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.

@@ -191,3 +191,30 @@ Next: /bq-fix <first-blocker-id>  (or /bq-red-team for adversarial review)
 
 - `/bq-fix B-1` — start clearing blockers
 - `/bq-red-team` — adversarial review for what the audit missed
+
+---
+
+## Tool neutrality (global rule)
+
+⚠ **Audit findings recommend candidates, not commitments.**
+
+When an audit suggests adopting a new tool to address a finding (e.g. "add Sentry for error tracking", "add axe-core for accessibility"), frame it as a candidate:
+
+**Do not write in the audit:** "Add Sentry."
+**Write:** "Error tracking is missing. Sentry is one candidate; compare against Datadog, Honeycomb, or self-hosted GlitchTip based on this project's budget, data-residency needs, and team familiarity. Adopt only after a decision section is written."
+
+Each Blocker / High / Medium recommendation that adds a tool must trigger a decision section in the follow-up `/bq-fix` or `/bq-implement` cycle:
+- Problem
+- Options considered
+- Sources / references checked
+- Best option
+- Why it fits this project
+- Why other options were rejected
+- Risk
+- Cost / complexity
+- Test plan
+- Rollback plan
+
+**Audit recommendations are diagnostic, not prescriptive.** The fix cycle decides the specific tool.
+
+See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.

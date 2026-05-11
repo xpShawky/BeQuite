@@ -2,6 +2,58 @@
 
 Append-only chronicle of every BeQuite command run. Newest at top.
 
+## 2026-05-11 — global correction (v3.0.0-alpha.3): tool neutrality principle
+
+**Action:** User correction. Every tool, library, repo, framework, design system, workflow, or method named in BeQuite is an EXAMPLE, not a fixed mandatory choice. BeQuite must research the project first, choose tools second, justify every pick.
+
+**Files created:**
+- `.bequite/principles/TOOL_NEUTRALITY.md` — canonical source of truth (the rule, 10 questions, decision section format, do-not-auto-install defaults, research-depth rule)
+- `docs/decisions/ADR-003-tool-neutrality.md` — formalizes the decision
+
+**Files updated (11 skills):**
+- bequite-researcher
+- bequite-project-architect
+- bequite-frontend-quality
+- bequite-ux-ui-designer
+- bequite-backend-architect
+- bequite-database-architect
+- bequite-security-reviewer
+- bequite-testing-gate
+- bequite-devops-cloud
+- bequite-scraping-automation
+- bequite-release-gate
+
+Each gained a "Tool neutrality (global rule)" section at the end with: the rule, the 10 decision questions, the decision section format, and a project-specific reframing (e.g. "Drizzle is one candidate. Compare against Prisma, Kysely, raw SQL...").
+
+**Files updated (8 commands):**
+- /bq-research — research enables decisions, not commitments
+- /bq-plan — §5 stack picks require decision sections, not bare names
+- /bq-feature — new deps need decision sections in the mini-spec
+- /bq-fix — fixes should rarely add tools; if they do, decision section required
+- /bq-audit — recommendations are diagnostic, not prescriptive
+- /bq-review — flag any "use X" claim without justification as BLOCKER
+- /bq-red-team — adds 9th attack angle: tool choice
+- /bq-verify — flags new deps in build lacking decision sections (warning, not blocker)
+
+**Files updated (1 root):**
+- CLAUDE.md — tool neutrality is now Core Operating Rule #1; 10 decision questions enumerated; do-not-auto-install added as Rule #12
+
+**Result:** every BeQuite material now explicitly frames named tools as candidates. Concrete examples remain in body text for learning value; the tool-neutrality block at the end of each file makes the framing explicit. Canonical phrasing standardized: "X is one candidate. Research and compare against other options. Use it only if it fits this project."
+
+**Heavy-app status unchanged.** No deletions. No new dependencies installed. No installer changes.
+
+**Pending (user-gated):**
+- Live verification in Claude Code
+- Tag v3.0.0-alpha.3 after live verification
+- Installer scripts update to copy `.bequite/principles/TOOL_NEUTRALITY.md` template into target projects (currently the rule lives in BeQuite's own repo; needs propagation to target installs)
+- Future pass to rewrite inline "use X" language across the body of skills/commands (currently the rule is enforced via the block at the end; body text is unchanged)
+
+**Article VI honest reporting:**
+- The tool-neutrality block is appended uniformly to all 11 skills + 8 commands; the existing body text still uses some "default X" phrasing in places. The block at the end overrides, but a future pass should rewrite inline language for full consistency.
+- Installer scripts have NOT been updated to copy `.bequite/principles/TOOL_NEUTRALITY.md` into target projects. Follow-up task.
+
+---
+
 ## 2026-05-11 — direction reset Cycle 2 (v3.0.0-alpha.2): mandatory workflow gates + modes + orchestrators + specialist skills
 
 **Action:** second major direction reset on top of v3.0.0-alpha.1. The brief required BeQuite to **prevent skipping important steps** and force the AI to think like a senior product engineer, architect, researcher, designer, security reviewer, and DevOps engineer before implementation. The alpha.1 spec was advisory only. This cycle introduces enforcement.

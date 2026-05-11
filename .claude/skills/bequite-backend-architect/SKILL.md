@@ -269,3 +269,30 @@ Write the §11 (security) and §12 (devops) sections in detail. Include:
 - Set up CI/CD (use `bequite-devops-cloud`)
 - Do penetration testing (use `bequite-security-reviewer` + a real pentester)
 - Design the UI (use `bequite-ux-ui-designer`)
+
+---
+
+## Tool neutrality (global rule)
+
+⚠ **Every tool, library, framework, design system, or workflow named in this file (Zod, tRPC, GraphQL, Inngest, Trigger.dev, BullMQ, Temporal, Upstash, Redis, Sentry, Vercel, AWS Lambda, Cloudflare Workers, OpenTelemetry, Better-Auth, Clerk, etc.) is an EXAMPLE, not a mandatory default.**
+
+The patterns (validate inputs server-side, async correctness, idempotency, rate limits, observability layers) are **universal**. Specific tool picks are candidates per project.
+
+**Do not say:** "Use Inngest."
+**Say:** "Inngest is one candidate for background jobs. Compare against Trigger.dev, BullMQ + Redis, Temporal, or a simple DB-queue table for this project's job volume, durability needs, and team expertise. Use it only if it fits."
+
+The 10 decision questions:
+1. What is the project type?
+2. What is the actual problem?
+3. What scale is expected?
+4. What constraints exist?
+5. What stack already exists?
+6. What user experience is required?
+7. What failure risks exist?
+8. What tools are proven for this case?
+9. What tools are overkill?
+10. What tool gives the best output with the least complexity?
+
+Write a decision section before adopting (Problem / Options / Sources / Best option / Why it fits / Why others rejected / Risk / Cost / Test plan / Rollback plan).
+
+See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.

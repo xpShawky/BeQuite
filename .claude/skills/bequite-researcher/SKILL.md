@@ -234,3 +234,30 @@ When two libraries are equivalent on freshness + license + CVEs, prefer:
 3. The one with a paid commercial backer (sustainability)
 4. The one with smaller bundle / install size
 5. Coin flip — flag both, let user pick
+
+---
+
+## Tool neutrality (global rule)
+
+⚠ **Every tool, library, framework, design system, or workflow named in this file is an EXAMPLE, not a mandatory default.**
+
+Research the best fit for the specific project before adopting any candidate.
+
+**Do not say:** "Use X."
+**Say:** "X is one candidate. Research and compare against other options. Use it only if it fits this project."
+
+The 10 decision questions:
+1. What is the project type?
+2. What is the actual problem?
+3. What scale is expected?
+4. What constraints exist?
+5. What stack already exists?
+6. What user experience is required?
+7. What failure risks exist?
+8. What tools are proven for this case?
+9. What tools are overkill?
+10. What tool gives the best output with the least complexity?
+
+Write a decision section before adopting (Problem / Options / Sources / Best option / Why it fits / Why others rejected / Risk / Cost / Test plan / Rollback plan). Short inline for small projects; full ADR at `.bequite/decisions/ADR-XXX-<tool>-choice.md` for large / regulated work.
+
+See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.

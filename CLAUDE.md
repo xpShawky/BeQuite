@@ -56,16 +56,36 @@ The heavy `studio/` directory (Next.js marketing + dashboard + Hono API + Docker
 
 ## Core operating rules
 
-1. **Never claim a task is "done" unless `/bq-verify` passes.**
-2. **Always update `.bequite/logs/AGENT_LOG.md` when you take a real action.**
-3. **Always update `.bequite/state/CURRENT_PHASE.md` when the workflow phase changes.**
-4. **Always update `.bequite/state/WORKFLOW_GATES.md` when a gate is met.**
-5. **Banned weasel words in completion reports:** should, probably, seems to, appears to, I think it works, might, hopefully, in theory. Replace with concrete verification or admit you didn't verify.
-6. **Iron Law X:** every change ships in operationally complete state. No "feature added but needs restart."
-7. **PhantomRaven defense:** never import a package without verifying it exists in the relevant registry in this session.
-8. **Read before editing.** Use Read / Glob / Grep first; Edit only after.
-9. **Inspect before assuming.** The `bequite-problem-solver` skill's "reproduce-first" discipline applies to every bug.
-10. **No out-of-order commands.** If a command's required gates aren't met, refuse and suggest the prerequisite command.
+1. **Tool neutrality.** Named tools are EXAMPLES, not commands. BeQuite must research, compare, justify, and choose the best tool for the current project instead of blindly using any named tool. See `.bequite/principles/TOOL_NEUTRALITY.md`.
+2. **Never claim a task is "done" unless `/bq-verify` passes.**
+3. **Always update `.bequite/logs/AGENT_LOG.md` when you take a real action.**
+4. **Always update `.bequite/state/CURRENT_PHASE.md` when the workflow phase changes.**
+5. **Always update `.bequite/state/WORKFLOW_GATES.md` when a gate is met.**
+6. **Banned weasel words in completion reports:** should, probably, seems to, appears to, I think it works, might, hopefully, in theory. Replace with concrete verification or admit you didn't verify.
+7. **Iron Law X:** every change ships in operationally complete state. No "feature added but needs restart."
+8. **PhantomRaven defense:** never import a package without verifying it exists in the relevant registry in this session.
+9. **Read before editing.** Use Read / Glob / Grep first; Edit only after.
+10. **Inspect before assuming.** The `bequite-problem-solver` skill's "reproduce-first" discipline applies to every bug.
+11. **No out-of-order commands.** If a command's required gates aren't met, refuse and suggest the prerequisite command.
+12. **Do not auto-install dependencies.** No new deps, scraping tools, frontend libs, Docker, testing frameworks, deploy tools, monitoring, or auth libs added by default. Only when justified per the 10 decision questions.
+
+### The 10 decision questions (apply before any major tool pick)
+
+1. What is the project type?
+2. What is the actual problem?
+3. What scale is expected?
+4. What constraints exist?
+5. What stack already exists?
+6. What user experience is required?
+7. What failure risks exist?
+8. What tools are proven for this case?
+9. What tools are overkill?
+10. What tool gives the best output with the least complexity?
+
+**Do not say:** "Use X."
+**Say:** "X is one candidate. Research and compare against other options. Use it only if it fits this project."
+
+For each major pick: write a decision section (short for small projects; full ADR at `.bequite/decisions/ADR-XXX-<tool>-choice.md` for large / regulated projects). Format: Problem / Options / Sources / Best option / Why it fits / Why others rejected / Risk / Cost / Test plan / Rollback plan.
 
 ---
 

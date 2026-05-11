@@ -358,3 +358,32 @@ DevOps bug types:
 - Real incident response (out of scope; use a runbook + page on-call)
 - Cost optimization beyond ceilings (use a FinOps consultant for serious bills)
 - Cloud architecture certification (AWS / GCP / Azure cert prep is out of scope)
+
+---
+
+## Tool neutrality (global rule)
+
+⚠ **Every tool, library, framework, design system, or workflow named in this file (Vercel, Fly.io, Render, Railway, AWS Lambda, Cloudflare Workers, Docker, Kubernetes, Terraform, Pulumi, GitHub Actions, GitLab CI, Sentry, Datadog, Axiom, Better Stack, Doppler, Infisical, etc.) is an EXAMPLE, not a mandatory default.**
+
+The patterns (env hierarchy, CI gates, preview deploys, rollback strategy, monitoring pillars, cost ceilings, hard human gates for prod-touching changes) are **universal**. Specific hosting, IaC, monitoring tool picks are candidates per project.
+
+**Do not say:** "Use Vercel."
+**Say:** "Vercel is one candidate for hosting. Compare against Fly.io, Render, Railway, Cloudflare Pages, AWS Amplify, or self-host on a VPS based on this project's stack, region needs, cold-start budget, function duration limits, and team expertise. Use it only if it fits."
+
+The 10 decision questions:
+1. What is the project type?
+2. What is the actual problem?
+3. What scale is expected?
+4. What constraints exist?
+5. What stack already exists?
+6. What user experience is required?
+7. What failure risks exist?
+8. What tools are proven for this case?
+9. What tools are overkill?
+10. What tool gives the best output with the least complexity?
+
+Write a decision section before adopting (Problem / Options / Sources / Best option / Why it fits / Why others rejected / Risk / Cost / Test plan / Rollback plan).
+
+**Do not auto-install Docker / Kubernetes / Terraform / IaC tooling.** Containerization and IaC are project-specific decisions, not defaults.
+
+See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.

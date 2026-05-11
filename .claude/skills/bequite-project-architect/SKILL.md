@@ -124,3 +124,30 @@ When this skill writes content (ADRs, plan sections, file plans):
 - Acceptance evidence is concrete, not aspirational
 - License-flag AGPL / GPL dependencies that block commercial closed-source
 - Never list a package without verifying it exists (PhantomRaven defense)
+
+---
+
+## Tool neutrality (global rule)
+
+⚠ **Every tool, library, framework, design system, or workflow named in this file (Next.js, Hono, Drizzle, Better-Auth, Clerk, Supabase, Neon, Vercel, Railway, Render, Fly, Resend, shadcn/ui, Tailwind, vitest, Playwright, etc.) is an EXAMPLE, not a mandatory default.**
+
+The stack matrix above is a **starting reference** to verify against `/bq-research` — not a fixed recommendation. Each project's stack is decided by its own scale, constraints, and existing tech.
+
+**Do not say:** "Use Drizzle."
+**Say:** "Drizzle is one candidate. Research and compare against Prisma, Kysely, and raw SQL for this project's specific data needs, scale, and team expertise. Use it only if it fits."
+
+The 10 decision questions:
+1. What is the project type?
+2. What is the actual problem?
+3. What scale is expected?
+4. What constraints exist?
+5. What stack already exists?
+6. What user experience is required?
+7. What failure risks exist?
+8. What tools are proven for this case?
+9. What tools are overkill?
+10. What tool gives the best output with the least complexity?
+
+Write a decision section before adopting (Problem / Options / Sources / Best option / Why it fits / Why others rejected / Risk / Cost / Test plan / Rollback plan). Short inline for small projects; full ADR at `.bequite/decisions/ADR-XXX-<tool>-choice.md` for large / regulated work.
+
+See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.

@@ -126,3 +126,30 @@ When `/bq-audit` or `/bq-verify` exercise the frontend:
 - **"We'll add empty states later."** They'll never get added. Add them now.
 - **"Just use Inter."** Inter is fine but state WHY.
 - **"Make it pop with a gradient."** No. Apple, Linear, Vercel, Stripe, Raycast, Arc, Notion — none use gradients heavily. Match those, not the AI defaults.
+
+---
+
+## Tool neutrality (global rule)
+
+⚠ **Every tool, library, framework, design system, or workflow named in this file (Impeccable, shadcn/ui, Tailwind, tweakcn, Aceternity, Magic, context7, Inter, axe-core, Playwright, etc.) is an EXAMPLE, not a mandatory default.**
+
+The 10 design principles + 15 AI-slop patterns are **universal rules**. The named tools that help implement them are candidates to evaluate per project.
+
+**Do not say:** "Use shadcn/ui."
+**Say:** "shadcn/ui is one candidate for the component layer. Compare against Radix primitives, Headless UI, Aria-Components, or framework-native components for this specific project's stack and complexity. Use it only if it fits."
+
+The 10 decision questions:
+1. What is the project type?
+2. What is the actual problem?
+3. What scale is expected?
+4. What constraints exist?
+5. What stack already exists?
+6. What user experience is required?
+7. What failure risks exist?
+8. What tools are proven for this case?
+9. What tools are overkill?
+10. What tool gives the best output with the least complexity?
+
+Write a decision section before adopting (Problem / Options / Sources / Best option / Why it fits / Why others rejected / Risk / Cost / Test plan / Rollback plan).
+
+See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.

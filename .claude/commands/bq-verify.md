@@ -135,3 +135,30 @@ See `.claude/skills/bequite-release-gate/SKILL.md` for the deeper procedure (CI 
 
 - PASS → `/bq-release`
 - FAIL → `/bq-fix`
+
+---
+
+## Tool neutrality (global rule)
+
+⚠ **Verify confirms what was built. The tools used to build it should already have decision sections from earlier phases.**
+
+If `/bq-verify` detects a new dep or tool in the build that lacks a corresponding decision section in IMPLEMENTATION_PLAN.md, ADRs, or feature mini-specs:
+
+- Mark `VERIFY_REPORT.md` with a "Tool justification" warning (not a blocker — verification is about working code, not architecture review)
+- Suggest running `/bq-review` or `/bq-red-team` to close the gap before release
+
+**Tool-neutrality at verify time is a documentation gap, not a runtime bug.** Fix in plan / spec, not in code.
+
+The 10 decision questions every tool in the verified build should have answered:
+1. What is the project type?
+2. What is the actual problem?
+3. What scale is expected?
+4. What constraints exist?
+5. What stack already exists?
+6. What user experience is required?
+7. What failure risks exist?
+8. What tools are proven for this case?
+9. What tools are overkill?
+10. What tool gives the best output with the least complexity?
+
+See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.

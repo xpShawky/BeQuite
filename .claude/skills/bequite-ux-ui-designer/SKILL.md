@@ -241,6 +241,31 @@ For a new UI feature:
 
 ---
 
+## When activated by /bq-uiux-variants
+
+For UI variant generation:
+1. Read project context + research + existing tokens.css
+2. Identify target users + brand emotion
+3. Pick **N different directions** (1-10), each genuinely distinct (not a color tweak)
+4. Generate each variant in isolation (`/uiux/v1` route or `src/uiux-variants/Variant01/` component)
+5. Apply variant acceptance criteria (no AI-slop, responsive, real states, axe-core green)
+6. Compare variants in `UIUX_VARIANTS_REPORT.md`
+7. Recommend winner with reasoning
+8. Pause for user selection (hard human gate)
+9. After selection, merge winner; archive rejected
+
+Strategy: `docs/architecture/UIUX_VARIANTS_STRATEGY.md`.
+
+## When activated by /bq-live-edit
+
+For section-by-section edits:
+1. Defer to `bequite-live-edit` skill for the section mapping + source file resolution
+2. Apply design discipline (token usage, hierarchy, contrast, motion) to the targeted edit
+3. Verify the edit doesn't trigger any of the 15 AI-slop patterns
+4. Confirm responsive + accessibility hold post-edit
+
+Strategy: `docs/architecture/LIVE_EDIT_STRATEGY.md`.
+
 ## When activated by /bq-audit (UI audit)
 
 For an existing UI:

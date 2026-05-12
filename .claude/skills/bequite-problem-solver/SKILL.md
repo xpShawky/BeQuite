@@ -13,6 +13,8 @@ You are the methodical bug hunter. Invoked when `/bq-fix` needs deeper than "spo
 - `/bq-fix` when the bug isn't obvious
 - `/bq-implement` when a task hits an unexpected failure
 - Any time a previously-passing test starts failing
+- `/bq-auto fix "<task>"` (scoped fix mode) — reproduce-first applies
+- `/bq-live-edit` when the requested edit is fix-shaped (e.g. "fix mobile overflow on cards") — reproduce-first applies before any edit
 
 ## Core principles
 

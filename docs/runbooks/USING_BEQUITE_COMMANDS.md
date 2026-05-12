@@ -380,3 +380,52 @@ If the workflow feels heavy for a small change:
 - For prototyping / spike work, run `/bequite` once for orientation, then ignore the rest.
 
 BeQuite's discipline is meant for **changes that affect users**. Use it lightly for spikes.
+
+---
+
+## New in v3.0.0-alpha.4 — scoped auto, UI variants, live edit
+
+### `/bq-auto [intent] "task"` — scoped autonomous runner
+
+Run a task end-to-end without per-step approval clicks. The agent parses the intent (17 types) and runs only the relevant scope. Pauses only at hard human gates (destructive ops, DB migrations, prod / VPS touches, secret rotations, etc.).
+
+```
+You: /bq-auto fix "Fix hidden text on dashboard"
+You: /bq-auto uiux variants=5 "Create 5 dashboard concepts"
+You: /bq-auto live-edit "Pricing cards less crowded"
+You: /bq-auto new "Build pharmacy SaaS admin"
+You: /bq-auto security "Audit + fix issues"
+You: /bq-auto deploy "VPS deployment plan + execute"
+```
+
+Auto-mode continues by default. It does NOT ask "should I continue?" or "do you approve the plan?" unless a hard gate trips.
+
+Full strategy: `docs/architecture/AUTO_MODE_STRATEGY.md`.
+
+### `/bq-uiux-variants [N] "task"` — explore N design directions
+
+Generate 1-10 **isolated** UI variants in parallel. Each is a different design direction (not a color tweak). Original UI stays intact. User picks winner; agent merges.
+
+```
+You: /bq-uiux-variants 3
+You: /bq-uiux-variants 5 "five dashboard concepts"
+You: /bq-uiux-variants 10 "ten landing page concepts"   # requires confirmation
+```
+
+Variants live at `/uiux/v1`, `/uiux/v2`, etc. (or `src/uiux-variants/Variant01/` if routing is harder). After user selects, winner merges into main UI; rejected variants archive at `.bequite/uiux/archive/`.
+
+Full strategy: `docs/architecture/UIUX_VARIANTS_STRATEGY.md`.
+
+### `/bq-live-edit "task"` — section-by-section frontend edits
+
+Lightweight section-mapped editing of a running frontend. Maps visible sections to source files (`.bequite/uiux/SECTION_MAP.md`), applies the smallest possible edit, verifies via build + (optional) screenshots, logs to `.bequite/uiux/LIVE_EDIT_LOG.md`.
+
+```
+You: /bq-live-edit "Make pricing cards less crowded"
+You: /bq-live-edit "Improve empty state on /dashboard"
+You: /bq-live-edit "Fix mobile layout on hero"
+```
+
+**Lightweight.** No heavy Studio. No separate app. No Figma clone. **Does NOT auto-install Playwright** — uses code inspection if browser automation isn't already available.
+
+Full strategy: `docs/architecture/LIVE_EDIT_STRATEGY.md`.

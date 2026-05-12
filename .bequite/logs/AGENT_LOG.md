@@ -2,6 +2,70 @@
 
 Append-only chronicle of every BeQuite command run. Newest at top.
 
+## 2026-05-12 — workflow upgrades (v3.0.0-alpha.4): scoped auto + UI variants + live edit
+
+**Action:** User requested three workflow upgrades to keep BeQuite lightweight while making it more useful:
+
+1. **Scoped auto mode** — `/bq-auto` parses `$ARGUMENTS` for 17 intent types and runs ONLY the relevant scope. Continues by default; does NOT pause for plan / clarify / scope approval. Pauses only at 17 hard human gates.
+2. **UI/UX variant mode** — `/bq-uiux-variants [N]` generates 1-10 isolated design directions; user picks winner; agent merges.
+3. **Live edit mode** — `/bq-live-edit` section-by-section frontend edits using SECTION_MAP.md + (optional) browser automation. No heavy Studio. No auto-installed Playwright.
+
+**Files created (this cycle):**
+- `docs/architecture/AUTO_MODE_STRATEGY.md` — 11-section strategy (intent router, scope per intent, continue-by-default rules, hard human gates, output discipline, cost/time, failure handling, resume)
+- `docs/architecture/UIUX_VARIANTS_STRATEGY.md` — 10-section strategy (count discipline, direction selection, isolation A/B/C, workflow, report template, acceptance criteria, tool neutrality, when not to use, anti-patterns)
+- `docs/architecture/LIVE_EDIT_STRATEGY.md` — 13-section strategy (mental model, when to use / not, workflow, SECTION_MAP, LIVE_EDIT_LOG, edit categories, quality rules, tool neutrality, anti-patterns, failure modes, rollback)
+- `.claude/commands/bq-uiux-variants.md` — new command (count rules, isolation strategies, full workflow, report template, hard gate at winner selection)
+- `.claude/commands/bq-live-edit.md` — new command (stack detection, dev server detection, three-tier browser inspection, section mapping, edit, verify, log)
+- `.claude/skills/bequite-live-edit/SKILL.md` — new skill (14 sections covering stack detection, browser inspection tiers, section mapping, source resolution, edit strategy, responsive checks, screenshots, tests, failures, rollback)
+- `.bequite/uiux/SECTION_MAP.md` — template
+- `.bequite/uiux/LIVE_EDIT_LOG.md` — template (append-only log)
+- `.bequite/uiux/UIUX_VARIANTS_REPORT.md` — template
+- `.bequite/uiux/selected-variant.md` — template (winner record)
+- `.bequite/uiux/screenshots/.gitkeep`
+- `.bequite/uiux/archive/.gitkeep`
+
+**Files updated (this cycle):**
+- `.claude/commands/bq-auto.md` — full rewrite: 17 intent types, $ARGUMENTS parsing, continue-by-default, 17 hard human gates (replaced the 12 from alpha.2)
+- `CLAUDE.md` — v3.0.0-alpha.4 spec, 36 commands, 15 skills, hard gate list expanded, new file paths, new architecture docs, intent types
+- `docs/specs/COMMAND_CATALOG.md` — added bq-uiux-variants, bq-live-edit, expanded bq-auto entry with intent types + 17 hard gates
+- `docs/runbooks/USING_BEQUITE_COMMANDS.md` — added v3.0.0-alpha.4 section with examples for scoped auto / variants / live edit
+- `.claude/skills/bequite-frontend-quality/SKILL.md` — activation list extended (uiux-variants, live-edit, auto intents)
+- `.claude/skills/bequite-ux-ui-designer/SKILL.md` — new sections "When activated by /bq-uiux-variants" + "When activated by /bq-live-edit"
+- `.claude/skills/bequite-testing-gate/SKILL.md` — new section for variant + live-edit verification
+- `.claude/skills/bequite-problem-solver/SKILL.md` — note that scoped auto fix + live-edit fix-shaped tasks both invoke this skill
+- `.claude/skills/bequite-project-architect/SKILL.md` — activation list extended (auto new, uiux-variants)
+
+**Tally:**
+- Commands: 34 → 36 (+2: bq-uiux-variants, bq-live-edit)
+- Skills: 14 → 15 (+1: bequite-live-edit)
+- Hard human gates in `/bq-auto`: 12 → 17 (added VPS/Nginx/SSL change, paid service activation, secret/key handling, architecture change, deleting old impl with callers; clarified variant winner selection + release git ops as gates)
+- Auto intent types: 0 (unscoped) → 17 (new/existing/feature/fix/uiux/frontend/backend/database/security/testing/devops/scraping/automation/deploy/live-edit/variants/release)
+- Architecture docs: 1 → 4 (+3)
+
+**Heavy-app status unchanged.**
+- No reintroduction of Studio
+- No reintroduction of CLI/TUI
+- No local dashboard for BeQuite itself
+- No Playwright auto-installed (tier-3 code-inspection fallback documented)
+- No frontend libs / Docker / testing frameworks added by default
+
+**Result:** v3.0.0-alpha.4 spec complete on disk. Skills registry detects all 15 skills + 36 commands. Auto-mode now scopes per intent; UI/UX variants + live edit available.
+
+**Pending (user-gated, intentionally not auto-done):**
+- Live verification in Claude Code against a fresh project
+- Tag `v3.0.0-alpha.4` after live verification
+- Installer scripts update to copy `.bequite/uiux/` templates + `.bequite/principles/TOOL_NEUTRALITY.md` (carried over from alpha.3)
+- 20 alpha.1 commands still don't have the new template sections (Preconditions / Required gates / etc.) — out-of-scope this cycle
+
+**Article VI honest reporting:**
+- Skills + commands are structurally correct (YAML validates, SKILL.md format matches Anthropic spec, gate references consistent)
+- Cross-references between commands (e.g. `/bq-auto uiux variants=N` → `/bq-uiux-variants N`) are documented but the dispatch logic is the agent's responsibility at run time, not a hard wired router
+- Not live-tested in Claude Code against a real project — same caveat as alpha.2/alpha.3
+- Browser-automation tier-1 (Playwright MCP) and tier-2 (project-local Playwright) are described in the live-edit skill; the actual MCP tool detection happens at runtime
+- No `.bequite/uiux/` templates yet auto-installed in target projects; needs installer update
+
+---
+
 ## 2026-05-11 — global correction (v3.0.0-alpha.3): tool neutrality principle
 
 **Action:** User correction. Every tool, library, repo, framework, design system, workflow, or method named in BeQuite is an EXAMPLE, not a fixed mandatory choice. BeQuite must research the project first, choose tools second, justify every pick.

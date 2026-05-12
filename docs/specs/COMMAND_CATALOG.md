@@ -1,8 +1,8 @@
-# BeQuite Command Catalog (v3.0.0-alpha.2)
+# BeQuite Command Catalog (v3.0.0-alpha.4)
 
-**Status:** authored 2026-05-11
-**Total commands:** 34 (1 root menu + 33 `/bq-*`)
-**Total skills:** 14 (7 baseline + 7 specialist)
+**Status:** authored 2026-05-11; expanded 2026-05-12 (alpha.4: scoped auto + variants + live edit)
+**Total commands:** 36 (1 root menu + 35 `/bq-*`)
+**Total skills:** 15 (7 baseline + 7 specialist + 1 live-edit)
 
 Single source of truth for every BeQuite command. Each entry lists: when to use, what it reads, what it writes, required previous gates, quality gate, usual next.
 
@@ -137,6 +137,23 @@ Single source of truth for every BeQuite command. Each entry lists: when to use,
 - **Quality gate sets:** `FEATURE_DONE ✅`
 - **Skills activated:** per 12-type router (see bq-feature.md)
 - **Next:** `/bq-review`
+
+### `/bq-uiux-variants [count] "task"` (NEW in alpha.4)
+- **Purpose:** generate 1-10 isolated UI design directions; user picks winner; agent merges
+- **Required gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`; frontend exists
+- **Writes:** N isolated variants (`app/uiux/v1/…` or `src/uiux-variants/Variant01/…`), `.bequite/uiux/UIUX_VARIANTS_REPORT.md`, `.bequite/uiux/SECTION_MAP.md`, screenshots, `selected-variant.md` after pick
+- **Hard gate:** user picks winner (step 6)
+- **Skills activated:** `bequite-ux-ui-designer`, `bequite-frontend-quality`
+- **Strategy doc:** `docs/architecture/UIUX_VARIANTS_STRATEGY.md`
+- **Next:** `/bq-live-edit` for refinement
+
+### `/bq-live-edit "task"` (NEW in alpha.4)
+- **Purpose:** section-by-section frontend edits via SECTION_MAP + targeted edits + (optional) browser inspection
+- **Required gates:** `BEQUITE_INITIALIZED`; frontend exists
+- **Writes:** source edits, `.bequite/uiux/SECTION_MAP.md`, `.bequite/uiux/LIVE_EDIT_LOG.md`, before/after screenshots if browser automation available
+- **Skills activated:** `bequite-live-edit`, `bequite-frontend-quality`
+- **Strategy doc:** `docs/architecture/LIVE_EDIT_STRATEGY.md`
+- **Next:** another `/bq-live-edit` or `/bq-test`
 
 ### `/bq-fix`
 - **Purpose:** Fix workflow with 15-type router; reproduce-first
@@ -281,11 +298,31 @@ Single source of truth for every BeQuite command. Each entry lists: when to use,
 
 ## Autonomous runner
 
-### `/bq-auto`
-- **Purpose:** walk ALL phases (P0 → P5) end-to-end, pause only at hard human gates
+### `/bq-auto [intent] [options] "task"` (UPDATED in alpha.4 — scoped + $ARGUMENTS)
+- **Purpose:** scoped autonomous workflow runner; parses 17 intent types and runs only the relevant scope
+- **Intents:** `new | existing | feature | fix | uiux | frontend | backend | database | security | testing | devops | scraping | automation | deploy | live-edit | variants | release`
 - **Required gates:** `BEQUITE_INITIALIZED`
-- **Quality gate sets:** depends on completion
-- **Hard human gates (12):** Mode selection, Clarify, Scope, Multi-plan decision, Plan approval, Release approval, Destructive ops, DB migrations, Server/VPS changes, Cost ceiling, Banned weasel words, 3 consecutive failures
+- **Behavior:** continues by default; does NOT pause for "approve the plan?" — only at hard human gates
+- **Hard human gates (17):**
+  1. Destructive file deletion
+  2. DB migration against shared/prod DB
+  3. Production server change
+  4. VPS / Nginx / SSL change
+  5. Paid service activation
+  6. Secret / key handling
+  7. Changing auth/security model
+  8. Changing project architecture
+  9. Deleting old implementation
+  10. Scope contradiction
+  11. User explicit manual-approval
+  12. Cost ceiling
+  13. Wall-clock ceiling
+  14. Banned-weasel-word trip
+  15. 3 consecutive failures
+  16. UI variant winner selection (after `/bq-uiux-variants`)
+  17. Release `git push` / `git tag`
+- **Strategy doc:** `docs/architecture/AUTO_MODE_STRATEGY.md`
+- **Skills activated:** all 15 (per intent)
 - **Next:** `/bq-handoff` or cycle complete
 
 ---
@@ -312,6 +349,8 @@ Single source of truth for every BeQuite command. Each entry lists: when to use,
 
 ## Summary
 
-34 commands, 14 skills, 6 modes, 6 phases, 23 gates, 12 hard human gates.
+36 commands, 15 skills, 6 modes, 6 phases, 23 gates, 17 hard human gates.
 
 **Discipline + memory + verified evidence > velocity without a plan.**
+
+**Scoped auto-mode means: continue by default until task is complete, tested, verified, and logged. Pause only at hard human gates.**

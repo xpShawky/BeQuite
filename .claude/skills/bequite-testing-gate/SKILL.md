@@ -165,6 +165,15 @@ test("user can sign up with email + password", async ({ page }) => {
 - **Tests that hit live external services** — flake source. Use mocks.
 - **One mega test that exercises 12 things.** Split into 12 tests.
 
+## When activated by /bq-uiux-variants and /bq-live-edit
+
+For UI variant or live-edit verification:
+- Run frontend build (`npm run build`) — catches typeerrors + bad imports
+- Run frontend test suite if it exists (vitest, jest, playwright)
+- Confirm no regressions in non-edited routes
+- For variants: each variant must pass the variant acceptance criteria independently
+- For live edits: confirm both the changed section AND the parent page still build + render correctly
+
 ---
 
 ## Tool neutrality (global rule)

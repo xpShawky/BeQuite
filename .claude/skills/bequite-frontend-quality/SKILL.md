@@ -18,8 +18,12 @@ Frontend quality discipline. Invoked when the project has UI — Next.js, Nuxt, 
 
 - `/bq-audit` when the discovered repo has a frontend
 - `/bq-add-feature` when adding a UI feature
+- `/bq-feature` when the feature is UI-typed (12-type router)
 - `/bq-review` when reviewing a UI PR
 - `/bq-red-team` when adversarial-reviewing a UI
+- `/bq-uiux-variants` for variant quality checks (no broken layout, contrast, real states)
+- `/bq-live-edit` for section-by-section edits (delegates section mapping to `bequite-live-edit`)
+- `/bq-auto uiux` / `/bq-auto frontend` / `/bq-auto live-edit` / `/bq-auto variants`
 
 ## The 10 design principles
 

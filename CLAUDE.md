@@ -16,15 +16,17 @@ The heavy `studio/` directory (Next.js marketing + dashboard + Hono API + Docker
 
 ---
 
-## Current spec: v3.0.0-alpha.2
+## Current spec: v3.0.0-alpha.4
 
-- **34 slash commands** (`.claude/commands/bequite.md` + 33 × `.claude/commands/bq-*.md`)
-- **14 skills** (`.claude/skills/bequite-*/SKILL.md`)
+- **36 slash commands** (`.claude/commands/bequite.md` + 35 × `.claude/commands/bq-*.md`)
+- **15 skills** (`.claude/skills/bequite-*/SKILL.md`)
 - **6 explicit modes** — New Project, Existing Audit, Add Feature, Fix Problem, Research Only, Release Readiness
 - **6 workflow phases** — P0 Setup → P1 Framing → P2 Build → P3 Quality → P4 Release → P5 Memory
 - **23 workflow gates** tracked in `.bequite/state/WORKFLOW_GATES.md` (block out-of-order commands)
 - **Phase orchestrators** — `/bq-p0` … `/bq-p5` walk a single phase end-to-end
-- **Autonomous runner** — `/bq-auto` walks ALL phases, pausing only at hard human gates
+- **Scoped autonomous runner** — `/bq-auto [intent] "task"` parses 17 intent types and runs scoped workflow; pauses only at hard human gates
+- **UI/UX variants** — `/bq-uiux-variants [N] "task"` generates 1-10 isolated design directions
+- **Live edit** — `/bq-live-edit "task"` section-by-section frontend edits with section mapping
 
 ---
 
@@ -32,8 +34,8 @@ The heavy `studio/` directory (Next.js marketing + dashboard + Hono API + Docker
 
 | Need | Path |
 |---|---|
-| Slash commands (34) | `.claude/commands/bequite.md` + `.claude/commands/bq-*.md` |
-| Skills (14) | `.claude/skills/bequite-*/SKILL.md` |
+| Slash commands (36) | `.claude/commands/bequite.md` + `.claude/commands/bq-*.md` |
+| Skills (15) | `.claude/skills/bequite-*/SKILL.md` |
 | BeQuite memory | `.bequite/` |
 | Workflow gate ledger | `.bequite/state/WORKFLOW_GATES.md` |
 | Mode selector | `.bequite/state/CURRENT_MODE.md` |
@@ -49,6 +51,12 @@ The heavy `studio/` directory (Next.js marketing + dashboard + Hono API + Docker
 | Install scripts | `scripts/install-bequite.{ps1,sh}` |
 | ADR-001 (lightweight) | `docs/decisions/ADR-001-lightweight-skill-pack-first.md` |
 | ADR-002 (mandatory gates) | `docs/decisions/ADR-002-mandatory-workflow-gates.md` |
+| ADR-003 (tool neutrality) | `docs/decisions/ADR-003-tool-neutrality.md` |
+| Auto-mode strategy | `docs/architecture/AUTO_MODE_STRATEGY.md` |
+| UI/UX variants strategy | `docs/architecture/UIUX_VARIANTS_STRATEGY.md` |
+| Live edit strategy | `docs/architecture/LIVE_EDIT_STRATEGY.md` |
+| Tool neutrality principle | `.bequite/principles/TOOL_NEUTRALITY.md` |
+| UI/UX memory | `.bequite/uiux/` (SECTION_MAP, LIVE_EDIT_LOG, UIUX_VARIANTS_REPORT, selected-variant, screenshots/) |
 | Command catalog | `docs/specs/COMMAND_CATALOG.md` |
 | Heavy-app ADRs (paused) | `.bequite/memory/decisions/ADR-008..016` |
 
@@ -139,20 +147,31 @@ Phase orchestrators: `/bq-p0` through `/bq-p5` (walk one phase in order). Autono
 - `bequite-security-reviewer` — OWASP + supply-chain + secrets
 - `bequite-devops-cloud` — CI/CD + deploys + safety gates
 
+1 frontend live-edit (new in v3.0.0-alpha.4):
+- `bequite-live-edit` — section-mapped frontend edits + browser inspection tiers
+
 ---
 
 ## Quick commands
 
 ```
-/bequite              → gate-aware menu + recommended next 3
-/bq-help              → full command reference
-/bq-init              → initialize (writes baseline state files)
-/bq-mode              → select / show the workflow mode
-/bq-p0                → run Phase 0 in one pass
-/bq-auto              → walk all phases, pause at hard gates
-/bq-verify            → full local verification before shipping
-/bq-recover           → resume after a session break
+/bequite                                    → gate-aware menu + recommended next 3
+/bq-help                                    → full command reference
+/bq-init                                    → initialize
+/bq-mode                                    → select / show workflow mode
+/bq-auto [intent] "task"                    → scoped autonomous runner (17 intents)
+/bq-uiux-variants [N] "task"                → 1-10 isolated UI directions
+/bq-live-edit "task"                        → section-by-section frontend edits
+/bq-p0..p5                                  → walk one phase in order
+/bq-verify                                  → full local verification
+/bq-recover                                 → resume after session break
 ```
+
+### `/bq-auto` intent types (17)
+
+`new | existing | feature | fix | uiux | frontend | backend | database | security | testing | devops | scraping | automation | deploy | live-edit | variants | release`
+
+Auto-mode continues by default — does NOT pause for "should I continue?" or "approve the plan?" Pauses only at hard human gates (see below).
 
 For everything else, run `/bq-help` or `/bequite`.
 
@@ -176,22 +195,29 @@ If any of those are missing, run `/bq-init` first.
 
 ---
 
-## Hard human gates (the only places /bq-auto pauses)
+## Hard human gates (the only places /bq-auto pauses) — v3.0.0-alpha.4
 
 Even in autonomous mode, the agent MUST pause for explicit user confirmation at:
 
-1. Mode selection
-2. Clarify answers
-3. Scope approval
-4. Multi-model planning decision (yes/no)
-5. Implementation plan approval
-6. Release approval (`git push`, `git tag`)
-7. Destructive operations (`rm -rf`, `terraform destroy`, etc.)
-8. Database migrations against shared / production DBs
-9. Server / VPS configuration changes
-10. Cost ceiling reached
-11. Banned-weasel-word trip
-12. 3 consecutive task failures
+1. **Destructive file deletion** (`rm -rf` on tracked code)
+2. **Database migration against shared / production DBs**
+3. **Production server change** (SSH, systemd, firewall on prod)
+4. **VPS / Nginx / SSL change**
+5. **Paid service activation** (new SaaS signup with payment)
+6. **Secret / key handling** (rotation, generation)
+7. **Changing auth / security model**
+8. **Changing project architecture**
+9. **Deleting old implementation** with active callers
+10. **Scope contradiction** (task contradicts locked SCOPE.md)
+11. **User explicit manual-approval** (`--manual-approval` or "stop and ask me")
+12. **Cost ceiling reached**
+13. **Wall-clock ceiling reached**
+14. **Banned-weasel-word trip**
+15. **3 consecutive failures on the same task**
+16. **UI variant winner selection** (after `/bq-uiux-variants` finishes)
+17. **Release `git push` / `git tag`** (always user-run)
+
+Auto-mode does NOT pause after plan / scope / clarify if the intent is scoped — it continues autonomously per AUTO_MODE_STRATEGY.md.
 
 ---
 

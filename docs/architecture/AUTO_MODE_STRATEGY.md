@@ -1,10 +1,10 @@
-# Auto-mode strategy (v3.0.0-alpha.4)
+# Auto-mode strategy (v3.0.0-alpha.4 + alpha.12 mode expansion)
 
 **Status:** active
-**Adopted:** 2026-05-12
-**Command:** `/bq-auto [intent] [options] "task"`
-**Skill orchestration:** all 14 BeQuite skills (activated by intent)
-**Reference:** ADR-002 (mandatory workflow gates), TOOL_NEUTRALITY.md
+**Adopted:** 2026-05-12; expanded alpha.12 with 4-mode system + composition rules
+**Command:** `/bq-auto [intent] [mode(s)] "task"`
+**Skill orchestration:** all 20 BeQuite skills (activated by intent + mode)
+**Reference:** ADR-002 (mandatory workflow gates), TOOL_NEUTRALITY.md, RESEARCH_DEPTH_STRATEGY.md, MEMORY_FIRST_BEHAVIOR.md
 
 ---
 
@@ -382,7 +382,111 @@ After a pause:
 
 ---
 
-## 11. What this strategy is NOT
+## 11. Operating modes (alpha.12 expansion)
+
+### The 4 modes + balanced default
+
+| Mode | Optimizes for | Research depth | Testing depth | Output length |
+|---|---|---|---|---|
+| **balanced** (default) | sane defaults | per intent emphasis (3-11 dims) | full | normal |
+| **fast** | speed | shallow (3 dims) | tests still run | compact |
+| **deep** | quality | full 11-dim + community sources | full + red-team | full report |
+| **token-saver** (alias `lean`) | token cost | reuse cached + focused | full | compact |
+| **delegate** | cost via two-model split | strong-model depth (Phase 1) | full | task pack + review report |
+
+### Per-mode philosophy
+
+#### Fast Mode
+
+**Not low-quality mode.** Skip what isn't needed; don't skip safety.
+
+- Skip 11-dim research (use 3 dims: stack + security + scalability)
+- Reuse existing memory
+- Skip multi-plan + red-team unless explicitly added
+- Still tests. Still verifies. Still logs.
+- Shorter output (5-line summary, not multi-page report)
+
+Use when: trivial fixes, well-understood features, prototypes, you trust the existing stack.
+Avoid when: production-bound changes, regulated work, new architecture.
+
+#### Deep Mode
+
+**No shallow research.** Quality > speed > tokens.
+
+- Full 11-dim research (stack / product / competitors / failures / success / user journey / UX-UI / security / scalability / deployment / differentiation)
+- Searches beyond obvious sources: GitHub, official docs, Reddit, X/Twitter, Hacker News, Product Hunt, public communities, competitor sites, issue trackers, niche forums, non-English sources, country-specific markets, failure stories, success patterns
+- Multi-plan prompted
+- Red-team mandatory at phase boundaries
+- Full verify + audit
+- Produces: research report / decisions / plan / risks / acceptance / test plan / verification checklist
+
+Use when: new SaaS, regulated work (PCI / HIPAA / FedRAMP), production-bound changes, high-stakes architecture.
+Avoid when: trivial tasks (overkill).
+
+Deep Mode is **structured**, not endless — see `RESEARCH_DEPTH_STRATEGY.md` for caps.
+
+#### Token Saver Mode (`token-saver`, alias `lean`)
+
+**Reduce token usage without reducing correctness.** Not the same as Fast Mode.
+
+Rules:
+- Read core memory first; don't load all `.bequite/` per command
+- Read only files relevant to current step
+- Use summaries before full files
+- Reuse previous discovery + research reports
+- Targeted Grep before broad Read
+- Focused skills only (not all 20 loaded)
+- Compact reports
+- Reuse `.bequite/state/MISTAKE_MEMORY.md` to skip learned errors
+
+Use when: long sessions, cost-sensitive work, partial fixes within a feature, follow-up planning.
+Avoid when: greenfield (you genuinely need full discovery).
+
+**Naming correction:** This mode is "Token Saver" or "token-lean", NOT "token-free". The mode reduces tokens; it doesn't eliminate them.
+
+#### Delegate Mode
+
+Strong model architects + reviews; cheaper model implements. Cost savings 40-70% when task is large enough.
+
+Three phases:
+1. **Phase 1 (strong model):** task pack at `.bequite/tasks/DELEGATE_*.md`
+2. **Phase 2 (cheaper model, separate session):** implements per task pack
+3. **Phase 3 (strong model, back):** review at `.bequite/audits/DELEGATE_REVIEW_REPORT.md`
+
+Full skill: `bequite-delegate-planner`. Use when: large features with clear shape; willing to do two-session handoff.
+
+### Mode composition (composable)
+
+| Combination | Effect | When |
+|---|---|---|
+| `fast` + `token-saver` | quick + compact output | one-off small fixes |
+| `deep` + `token-saver` | thorough research + compact output | follow-up planning |
+| `deep` + `delegate` | strong-model deep research + task pack | **recommended for new features** |
+| `fast` + `delegate` | shallow research + task pack | well-understood features |
+| `token-saver` + `delegate` | reuse cached research + task pack | follow-up tasks |
+| `uiux` + `variants=5` + `deep` | high-quality UI exploration | design-critical work |
+
+### Mode conflict resolution
+
+| Conflict | Default |
+|---|---|
+| `fast` + `deep` | Ask one question; default `deep` for quality-critical intents (new / security / release / deploy); `fast` for trivial fixes |
+| `delegate` + tiny task | Refuse delegate; recommend `fast` |
+| `delegate` + no research | Auto-add `deep` |
+
+Agent picks a default + tells user; doesn't silently choose.
+
+### Mode tracking
+
+Every `/bq-auto` run appends to `.bequite/state/MODE_HISTORY.md` (mode + outcome + approx cost + tests). `/bq-suggest` reads this to learn user patterns.
+
+### Hard human gates apply regardless of mode
+
+**Mode flags are token / speed / cost optimizations, NOT safety bypasses.** All 17 hard human gates still apply. All tool-neutrality decision sections still required.
+
+---
+
+## 12. What this strategy is NOT
 
 - **Not** "fire and forget" — the user is in the loop at hard gates
 - **Not** a justification for skipping research (it scopes research to relevance, doesn't skip it)

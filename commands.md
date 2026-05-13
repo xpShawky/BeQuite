@@ -4,12 +4,13 @@
 >
 > For full procedural detail per command, click through to the matching file at `.claude/commands/<name>.md`.
 
-**Version:** v3.0.0-alpha.10 · 43 slash commands · 19 specialist skills · 6 workflow phases · 23 workflow gates · 17 hard human gates
+**Version:** v3.0.0-alpha.12 · 43 slash commands · 20 specialist skills · 6 workflow phases · **4 composable operating modes** · 23 workflow gates · 17 hard human gates
 
 ---
 
 ## Table of contents
 
+- [Operating Modes (alpha.12)](#operating-modes-alpha12)
 - [Root](#root)
 - [Phase 0 — Setup and Discovery](#phase-0--setup-and-discovery)
 - [Phase 1 — Product Framing and Research](#phase-1--product-framing-and-research)
@@ -22,6 +23,123 @@
 - [UI / UX](#ui--ux)
 - [Quick orientation](#quick-orientation)
 - [How to read this file](#how-to-read-this-file)
+
+---
+
+## Operating Modes (alpha.12)
+
+BeQuite has **4 composable operating modes** that adjust how depth / cost / speed trade off — without ever skipping safety. All 17 hard human gates apply regardless of mode. Set as a positional flag on any command (most commonly `/bq-auto`, `/bq-plan`, `/bq-fix`, `/bq-feature`, `/bq-research`, `/bq-review`, `/bq-assign`).
+
+### Mode decision table
+
+| Mode | Best for | Avoid when | Research depth | Testing depth | Output length |
+|---|---|---|---|---|---|
+| **Deep** | Quality-critical · production · regulated (PCI/HIPAA/FedRAMP) · new big builds | Trivial prototype · throwaway spike · "just rename a button" | Full 11-dim + community signals + competitors + failure stories + non-English sources when relevant | Full + acceptance + red-team if warranted | Long, detailed |
+| **Fast** | Small fix · scoped feature · prototype · you trust the existing stack | Production-bound · security work · new architecture decisions · regulated | 3 dims (stack / security / scale) using project memory | Run tests for changed surface | Compact (what / files / tests / verify / next) |
+| **Token Saver** *(alias `lean`)* | Long sessions · cost-sensitive · partial work · revisiting cached research | First-time research · architecture decisions · production sign-off | Reuse prior research + targeted grep + summaries; avoid re-loading docs | Scoped | Compact |
+| **Delegate** | Strong-model design + cheap-model implementation + strong-model review | Trivial task (handoff overhead not worth it) · no prior research (auto-compose with `deep`) | Strong model does discovery / research in Phase 1 | Cheap model runs task-pack tests; strong model verifies in Phase 3 | Variable — depends on task |
+
+### Examples
+
+#### Deep Mode
+
+```
+/bq-auto deep "Build a SaaS dashboard for clinic booking"
+/bq-research deep "Research best architecture and product gaps"
+/bq-plan deep "Create a complete implementation plan"
+/bq-feature deep "Add automation module with full research and test plan"
+/bq-fix deep "Fix unstable frontend and API with root-cause proof"
+```
+
+Deep Mode must still be **structured**. It is not endless research. It must produce: research report · decision summary · implementation plan · risks · acceptance criteria · test plan · verification checklist.
+
+#### Fast Mode
+
+```
+/bq-auto fast "Fix dashboard text contrast"
+/bq-fix fast "Fix install error"
+/bq-feature fast "Add export button"
+/bq-uiux-variants fast 3
+```
+
+Fast Mode is **not low-quality mode**. It must not skip safety. It must not skip tests if tests exist.
+
+#### Token Saver Mode (`lean` alias)
+
+```
+/bq-auto token-saver "Add a small settings toggle"
+/bq-fix token-saver "Fix one failing test"
+/bq-plan token-saver "Plan a small feature using existing research"
+/bq-review token-saver "Review only current diff"
+/bq-auto lean "Quick scoped task with low context"
+```
+
+Token Saver rules:
+- Read memory first
+- Read only relevant files
+- Use summaries before full files
+- Reuse previous discovery and research reports
+- Targeted grep/search before broad reads
+- Avoid verbose output
+
+**Note:** It is **not** "token-free." It is token-lean. Reduced cost, not zero cost.
+
+#### Delegate Mode (Architect-Delegate pattern)
+
+Strong model architects → cheaper model implements → strong model reviews.
+
+```
+/bq-auto delegate "Build this feature"
+/bq-plan delegate "Create implementation tasks for a cheaper model"
+/bq-assign delegate "Split into delegate task pack"
+/bq-review delegate "Review implementation made by cheaper model"
+```
+
+Delegate produces 5 task-pack files in `.bequite/tasks/`:
+- `DELEGATE_TASKS.md` — Task ID, goal, files to inspect, files to edit, do not touch, exact steps, edge cases
+- `DELEGATE_INSTRUCTIONS.md` — Strong model warnings, constraints, common mistakes
+- `DELEGATE_ACCEPTANCE_CRITERIA.md` — Concrete pass/fail per task
+- `DELEGATE_TEST_PLAN.md` — Test commands cheaper model must run
+- `DELEGATE_REVIEW_REPORT.md` — Strong-model verdict per task after implementation (in `.bequite/audits/`)
+
+Phase-3 review by strong model must check: file placement · function design · naming · integration · tests · security · regressions · UX if relevant · docs/log updates.
+
+### Mode composition (modes stack)
+
+```
+/bq-auto deep delegate "Research deeply, then produce delegated tasks"
+/bq-auto fast token-saver "Quick small fix with low context use"
+/bq-auto uiux variants=5 deep "Create high-quality design directions"
+/bq-auto fix fast "Fix known issue quickly"
+/bq-auto security deep "Full security review"
+/bq-auto fast delegate "Well-understood feature, split + delegate cheaply"
+/bq-auto token-saver delegate "Cheap-model implements from cached research"
+```
+
+### Conflict resolution
+
+| Conflict | Resolution |
+|---|---|
+| `fast` + `deep` | Ask one short question; default `deep` for quality-critical intents (new / security / release / deploy); `fast` for trivial scoped fixes |
+| `delegate` + tiny task | Refuse delegate; recommend `fast` (handoff overhead not worth it) |
+| `delegate` + no prior research | Auto-compose with `deep` (delegate needs research to write good task pack) |
+| Any mode + hard human gate | Mode never bypasses safety; gate fires regardless |
+| `token-saver` + first-time architecture decision | Warn user; recommend `deep` for the architecture step, then `token-saver` for follow-ups |
+
+### Where mode is tracked
+
+- **Active mode for current run:** `.bequite/state/CURRENT_MODE.md`
+- **History of all mode picks + outcomes + approx cost:** `.bequite/state/MODE_HISTORY.md`
+- **Strategy detail:** [`docs/architecture/AUTO_MODE_STRATEGY.md`](docs/architecture/AUTO_MODE_STRATEGY.md) §11
+
+### Skills behind the modes
+
+| Mode | Driving skill |
+|---|---|
+| Deep | `bequite-researcher` + 11-dim depth across `bequite-product-strategist`, `bequite-security-reviewer`, `bequite-ux-ui-designer`, `bequite-devops-cloud`, etc. |
+| Fast | `bequite-workflow-advisor` (mode controller — picks tight scope) |
+| Token Saver | `bequite-workflow-advisor` (mode controller — enforces memory-first + targeted reads) |
+| Delegate | `bequite-delegate-planner` (alpha.12 — task-pack format + Phase-3 review) |
 
 ---
 

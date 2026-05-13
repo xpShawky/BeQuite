@@ -1,10 +1,10 @@
 # BeQuite installed version
 
-**Version:** v3.0.0-alpha.10
+**Version:** v3.0.0-alpha.12
 **Updated:** 2026-05-12
 **Source:** github
 **Source path / repo:** xpShawky/BeQuite (branch: main)
-**Previous version:** v3.0.0-alpha.9
+**Previous version:** v3.0.0-alpha.11
 **Last check:** 2026-05-12
 **Update count:** 0 (this is the seed file; updates from /bq-update increment)
 

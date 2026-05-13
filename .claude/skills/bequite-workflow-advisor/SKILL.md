@@ -85,14 +85,44 @@ New Project · Existing Audit · Add Feature · Fix Problem · Research Only · 
 | "Find work" | `/bq-job-finder` |
 | "Find income" | `/bq-make-money` |
 
-### By mode choice
+### By mode choice (4 modes + balanced default)
 
 | Situation | Mode |
 |---|---|
-| Trivial fix / prototype / spike | `--mode fast` |
-| High-stakes / production / regulated (PCI / HIPAA / FedRAMP) | `--mode deep` |
-| Long session / cost-sensitive / partial work | `--mode token-saver` |
+| Trivial fix / prototype / spike | `fast` |
+| High-stakes / production / regulated (PCI / HIPAA / FedRAMP) / new build | `deep` |
+| Long session / cost-sensitive / partial work | `token-saver` (alias: `lean`) |
+| Large feature with clear shape; strong model expensive end-to-end | `delegate` |
 | Standard work | no flag (balanced default) |
+
+### Mode composition (advisor recommends combinations)
+
+| User wants | Recommend |
+|---|---|
+| Quick small fix with low context cost | `fast token-saver` (or just `fast`) |
+| Thorough research on follow-up task using cached research | `deep token-saver` |
+| Large new feature — save cost, keep quality | `deep delegate` (strongly recommended) |
+| Well-understood feature, save cost | `fast delegate` |
+| Cheap model to refresh task pack from cached research | `token-saver delegate` |
+| Trivial fix with delegate? | Refuse — handoff overhead not worth it; recommend `fast` instead |
+
+### Mode conflict resolution
+
+| Conflict | Resolution |
+|---|---|
+| `fast` + `deep` | Ask one question; default `deep` for quality-critical intents (new / security / release / deploy); `fast` for trivial scoped fixes |
+| `delegate` + tiny task | Refuse delegate; recommend `fast` |
+| `delegate` + no prior research | Auto-compose with `deep` (delegate needs research to write good task pack) |
+
+The advisor recommends a default + explains; never silently picks.
+
+### How to read `MODE_HISTORY.md`
+
+`/bq-suggest` reads recent entries from `.bequite/state/MODE_HISTORY.md` to learn:
+- Which modes the user prefers
+- Which modes failed for which task types
+- Cost patterns ("last 5 `deep` runs averaged $X")
+- Outcome patterns ("`fast` mode on security tasks failed 2/3 last week → recommend `deep`")
 
 ### By "auto vs. scoped vs. phase vs. individual"
 

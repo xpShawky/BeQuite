@@ -1,8 +1,9 @@
-# BeQuite Command Catalog (v3.0.0-alpha.10)
+# BeQuite Command Catalog (v3.0.0-alpha.12)
 
-**Status:** authored 2026-05-11; expanded 2026-05-12 across alpha.2–alpha.10
+**Status:** authored 2026-05-11; expanded 2026-05-12 across alpha.2–alpha.10; 4 operating modes added 2026-05-12 (alpha.12)
 **Total commands:** 43 (1 root menu + 42 `/bq-*`)
-**Total skills:** 19 (7 baseline + 7 specialist + 1 live-edit + 3 opportunity + 1 updater)
+**Total skills:** 20 (7 baseline + 7 specialist + 1 live-edit + 3 opportunity + 1 updater + 1 delegate-planner)
+**Operating modes (alpha.12):** 4 composable — Deep / Fast / Token Saver (alias `lean`) / Delegate
 **Human-readable reference:** [`commands.md`](../../commands.md) at repo root
 
 Single source of truth for every BeQuite command. Each entry lists: when to use, what it reads, what it writes, required previous gates, quality gate, usual next.
@@ -447,10 +448,68 @@ New memory files (alpha.10):
 
 ---
 
+## Operating Modes (alpha.12)
+
+4 composable modes — Deep / Fast / Token Saver (alias `lean`) / Delegate. Set on any command as a positional flag. Modes adjust depth / cost / speed; they NEVER bypass safety. All 17 hard human gates apply regardless of mode.
+
+### Mode decision matrix
+
+| Mode | Best for | Avoid when | Research depth | Testing depth | Output length | Driving skill |
+|---|---|---|---|---|---|---|
+| **deep** | Quality-critical · production · regulated (PCI / HIPAA / FedRAMP) · big new builds | Trivial prototype · throwaway spike · "rename a button" | Full 11-dim + community + competitors + non-English + failure stories | Full + red-team if warranted | Long, detailed | `bequite-researcher` + 11-dim depth across specialist skills |
+| **fast** | Small fix · scoped feature · prototype · trusted stack | Production-bound · security · new architecture decisions · regulated | 3 dims (stack / security / scale) + memory-first | Run tests for changed surface | Compact | `bequite-workflow-advisor` (mode controller) |
+| **token-saver** *(alias `lean`)* | Long sessions · cost-sensitive · partial work · revisit cached research | First-time research · architecture · production sign-off | Reuse prior research + targeted grep + summaries | Scoped | Compact | `bequite-workflow-advisor` (mode controller) |
+| **delegate** | Strong model designs → cheap model implements → strong model reviews | Trivial task (overhead) · no prior research (auto-compose with `deep`) | Strong model in Phase 1 | Cheap model runs task-pack tests; strong model verifies in Phase 3 | Variable | `bequite-delegate-planner` (alpha.12) |
+
+### Composition rules
+
+| Composition | Behavior |
+|---|---|
+| `deep` + `delegate` | Strongly recommended for large features — strong model researches deeply then writes delegate task pack |
+| `fast` + `delegate` | OK for well-understood feature; saves cost |
+| `fast` + `token-saver` | Quick small fix with low context use |
+| `token-saver` + `delegate` | Cheap model implements from cached research |
+| `deep` + `token-saver` | Thorough research on follow-up task using cached research |
+
+### Conflict resolution
+
+| Conflict | Resolution |
+|---|---|
+| `fast` + `deep` | Ask one question; default `deep` for quality-critical intents; `fast` for trivial scoped fixes |
+| `delegate` + tiny task | Refuse delegate; recommend `fast` |
+| `delegate` + no prior research | Auto-compose with `deep` |
+| Any mode + hard human gate | Mode never bypasses safety; gate fires regardless |
+
+### Mode-related files
+
+- `.bequite/state/CURRENT_MODE.md` — active mode for current run
+- `.bequite/state/MODE_HISTORY.md` — append-only history (which mode for which task; outcome; approx cost; tests pass/total)
+- `.bequite/tasks/DELEGATE_TASKS.md` — task pack with Task ID / Goal / Files to inspect / Files to edit / Do not touch / Exact steps / Edge cases / Test commands / Acceptance criteria / Common mistakes / Rollback notes
+- `.bequite/tasks/DELEGATE_INSTRUCTIONS.md` — strong-model warnings + constraints + common mistakes
+- `.bequite/tasks/DELEGATE_ACCEPTANCE_CRITERIA.md` — concrete pass/fail per task
+- `.bequite/tasks/DELEGATE_TEST_PLAN.md` — test commands cheap model must run
+- `.bequite/audits/DELEGATE_REVIEW_REPORT.md` — Phase-3 strong-model verdict per task
+
+### Phase-3 delegate review (strong-model check)
+
+After cheap model implements from the task pack, strong model MUST review:
+- File placement
+- Function design
+- Naming
+- Integration
+- Tests run + pass
+- Security regressions
+- UX regressions if relevant
+- Docs / log updates
+
+Verdict per task: ✅ APPROVED · ⚠ APPROVED-WITH-COMMENTS · ❌ REJECTED.
+
+---
+
 ## Summary
 
-43 commands, 19 skills, 6 modes, 6 phases, 23 gates, 17 hard human gates.
+43 commands, 20 skills, 6 workflow modes, **4 operating modes**, 6 phases, 23 gates, 17 hard human gates.
 
 **Discipline + memory + verified evidence > velocity without a plan.**
 
-**Scoped auto-mode means: continue by default until task is complete, tested, verified, and logged. Pause only at hard human gates. Mode flags (`--mode fast|deep|token-saver`) adjust depth without skipping safety.**
+**Scoped auto-mode means: continue by default until task is complete, tested, verified, and logged. Pause only at hard human gates. Operating modes (`deep | fast | token-saver | delegate`) adjust depth, cost, and speed — without skipping safety. Modes are composable.**

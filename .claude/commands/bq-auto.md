@@ -217,29 +217,136 @@ If paused at a hard gate:
   Resume: /bq-auto <same args>
 ```
 
-## Mode flag — fast / deep / token-saver
+## Operating modes (alpha.12 — 4 modes, composable)
 
-`/bq-auto` accepts an optional `--mode` flag that adjusts the **depth** of execution. Hard human gates still apply regardless of mode.
+`/bq-auto` accepts mode flags that adjust **depth, speed, token use, or model strategy**. Hard human gates still apply regardless of mode.
 
-| Mode | Behavior | When to use |
-|---|---|---|
-| `--mode fast` | Skip 11-dim research (use 3 dims: stack + security + scalability); skip multi-plan; skip red-team; full verify still runs | Small fixes; trivial features; prototypes; you trust the existing stack |
-| `--mode deep` | Full 11-dim research; multi-plan prompted; red-team mandatory; full verify + audit | High-stakes new builds; production-bound changes; regulated projects (PCI / HIPAA / etc.) |
-| `--mode token-saver` | Read only files needed for this task; summarize older log entries (keep last 5); cache research; use focused skills (not all 15); avoid loading all docs every session | Long sessions; cost-sensitive work; partial fixes within a feature |
-| (no flag) | Balanced (current default) — full research per intent emphasis table, no red-team unless asked | Most cases |
+| Mode | Optimizes for | Best for | Avoid when |
+|---|---|---|---|
+| **balanced** (default) | sane defaults | most work | – |
+| **fast** | speed | small fixes, prototypes, trusted stack | quality-critical / regulated / production-bound |
+| **deep** | quality | new builds, regulated work, high-stakes | trivial tasks (overkill) |
+| **token-saver** (alias: `lean`) | low token cost | long sessions, scoped fixes | greenfield (you need full discovery) |
+| **delegate** | cost via model split | large features with clear shape | tiny tasks (overhead not worth it) |
 
-Examples:
+### Mode flag syntax
+
+Use either form:
+
 ```
-/bq-auto fix "..." --mode fast
-/bq-auto new "..." --mode deep
-/bq-auto feature "..." --mode token-saver
+/bq-auto fast "<task>"
+/bq-auto fix "<task>" fast
+/bq-auto fix "<task>" --mode fast
+/bq-auto new "<task>" deep
+/bq-auto fix "<task>" token-saver
+/bq-auto feature "<task>" lean        # alias for token-saver
+/bq-auto delegate "<task>"
+/bq-auto deep delegate "<task>"        # COMPOSED
 ```
 
-**Mode flags are token-cost optimizations, NOT safety bypasses.** All 17 hard human gates still apply. All tool-neutrality decision sections still required.
+### Per-mode behavior
+
+#### Fast Mode
+
+- Short discovery (skip if `DISCOVERY_REPORT.md` exists and is recent)
+- Short research (3 dims: stack + security + scalability — NOT all 11)
+- Reuse known project memory
+- Use existing stack (no stack research unless task forces it)
+- Skip multi-plan
+- Skip red-team
+- **Still tests. Still verifies. Still logs.** Fast Mode is NOT low-quality mode.
+- Shorter output: what was done / files changed / tests run / verification / next step
+
+#### Deep Mode
+
+- **No shallow research.** Full 11-dim research per `RESEARCH_DEPTH_STRATEGY.md`.
+- Full discovery + competitor study + failure-mode analysis + UX deep-dive + security + scalability + deployment
+- Multi-plan prompted (`/bq-multi-plan` recommended)
+- Red-team mandatory at phase transitions
+- Full verify + audit
+- Searches **beyond obvious sources:** GitHub repos, official docs, Reddit, X/Twitter, Hacker News, Product Hunt, public communities, competitor sites, public issue trackers, niche forums, non-English sources, country-specific markets, failure stories, success patterns
+- Produces: research report / decision summary / implementation plan / risks / acceptance criteria / test plan / verification checklist
+
+Deep Mode is **structured**, not endless. The strategy doc caps research depth.
+
+#### Token Saver Mode (alias: lean / token-lean)
+
+- Read core memory only — not all `.bequite/` every command
+- Read only files relevant to the current step
+- Use summaries before full files
+- Reuse previous discovery + research reports (don't re-fetch)
+- Targeted Grep before broad Read
+- Use focused skills only (not all 19 loaded)
+- Compact reports (1-2 paragraph summaries, not multi-page)
+- Ask only if needed
+- Avoid loading all docs every session
+- Use `.bequite/state/MISTAKE_MEMORY.md` to skip already-learned errors
+
+**This is not the same as Fast Mode.** Token Saver can still be careful + thorough; it just avoids wasting context. Fast Mode optimizes for **speed**; Token Saver optimizes for **token cost**.
+
+> **Note on naming:** This mode is called "Token Saver" or "token-lean", NOT "token-free". The mode reduces tokens; it doesn't eliminate them. If anywhere in docs reads "token-free", correct to "Token Saver" or "Token Saver Mode".
+
+#### Delegate Mode (Architect Delegate pattern)
+
+A two-session workflow where a **strong model architects + reviews** and a **cheaper model implements**. Net effect: 40-70% cost savings without quality loss when the task is large enough for the handoff overhead to pay off.
+
+Three phases:
+
+1. **Phase 1 — Architect (strong model, this session):** strong model does research + writes a detailed task pack at `.bequite/tasks/DELEGATE_TASKS.md`, `DELEGATE_INSTRUCTIONS.md`, `DELEGATE_ACCEPTANCE_CRITERIA.md`, `DELEGATE_TEST_PLAN.md`
+2. **Phase 2 — Implement (cheaper model, separate session):** user switches Claude model (e.g. Opus → Sonnet, or to a different account/host). Cheap model runs `/bq-implement delegate` and executes exactly per the task pack — no architectural decisions, no guessing
+3. **Phase 3 — Review (strong model, back here):** user switches back. Strong model runs `/bq-review delegate`; produces `.bequite/audits/DELEGATE_REVIEW_REPORT.md` with per-task verdicts (✅ approved / ⚠ approved-with-comments / ❌ rejected). Strong model fixes or re-instructs the cheap model
+
+Full discipline: `.claude/skills/bequite-delegate-planner/SKILL.md`.
+
+**Use Delegate Mode when:**
+- A feature is large enough that strong-model end-to-end is expensive
+- The work has a clear architectural shape
+- You're willing to do a two-session handoff
+- You can articulate acceptance criteria precisely
+
+**Don't use Delegate Mode for:**
+- Tiny tasks (handoff overhead isn't worth it)
+- Exploratory / research-heavy work (cheap model can't make discovery decisions)
+- Anything requiring real-time judgment (UX, design taste, security trade-offs)
+- One-shot urgent fixes
+
+### Mode composition
+
+Modes can stack:
+
+| Combination | Effect |
+|---|---|
+| `fast` + `token-saver` | quick task with compact output (recommended for one-off small fixes) |
+| `deep` + `token-saver` | thorough research but compact output (recommended for follow-up planning on existing research) |
+| `deep` + `delegate` | **strongly recommended for new features** — strong model researches deeply + writes task pack |
+| `fast` + `delegate` | shallow research before delegation (OK for well-understood features) |
+| `token-saver` + `delegate` | Phase 1 reuses cached research; suitable for follow-up tasks |
+
+### Mode conflict resolution
+
+Some combinations conflict:
+
+| Conflict | Default resolution |
+|---|---|
+| `fast` + `deep` | Ask one question; default to `deep` for quality-critical (`new`, `security`, `release`, `deploy`) and `fast` for small scoped (`fix`, `feature` of trivial size) |
+| `delegate` + tiny task | Warn: "overhead not worth it; use `fast` instead?" |
+| `delegate` + greenfield + no research | Auto-add `deep` (delegate needs research to write good task pack) |
+
+The agent picks a sane default + tells the user; doesn't silently choose.
+
+### Mode tracking
+
+Every `/bq-auto` run appends an entry to `.bequite/state/MODE_HISTORY.md` (mode used + outcome + cost approx + tests pass/total). `bequite-workflow-advisor` reads this to learn user's pattern.
+
+---
 
 ## Mistake memory update
 
+## Mistake memory + mode history update
+
 After this command completes, if it surfaced a recurring mistake pattern, an unexpected root cause, or a project-specific lesson, append an entry to `.bequite/state/MISTAKE_MEMORY.md`.
+
+Also append a one-line entry to `.bequite/state/MODE_HISTORY.md` (mode used + outcome + approx cost + tests pass/total). This helps `bequite-workflow-advisor` recommend the right mode next time.
 
 Append when:
 - A repeated bug pattern emerged (same root cause as a previous fix)

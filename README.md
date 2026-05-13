@@ -4,14 +4,15 @@
 
 A lightweight skill pack + memory system. Install once. Works everywhere Claude Code runs.
 
-**Latest:** `v3.0.0-alpha.10` · **Previous:** `v3.0.0-alpha.9` · MIT · by [@xpShawky](https://github.com/xpShawky)
+**Latest:** `v3.0.0-alpha.12` · **Previous:** `v3.0.0-alpha.11` · MIT · by [@xpShawky](https://github.com/xpShawky)
 
 **📖 Full command reference: [`commands.md`](commands.md)** — every command explained, ordered by workflow.
 
 <p>
   <a href="#install"><img alt="Install" src="https://img.shields.io/badge/install-one_command-0ea5e9?style=flat-square"></a>
   <a href="commands.md"><img alt="43 commands" src="https://img.shields.io/badge/slash_commands-43-7c3aed?style=flat-square"></a>
-  <a href="#how-to-use"><img alt="15 skills" src="https://img.shields.io/badge/skills-15-10b981?style=flat-square"></a>
+  <a href="#how-to-use"><img alt="20 skills" src="https://img.shields.io/badge/skills-20-10b981?style=flat-square"></a>
+  <a href="#operating-modes"><img alt="4 modes" src="https://img.shields.io/badge/operating_modes-4-ec4899?style=flat-square"></a>
   <a href="#workflow"><img alt="6 phases" src="https://img.shields.io/badge/phases-6-f59e0b?style=flat-square"></a>
   <a href="#what-bequite-is-not"><img alt="No Docker" src="https://img.shields.io/badge/no-Docker-64748b?style=flat-square"></a>
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-000000?style=flat-square"></a>
@@ -26,12 +27,78 @@ A lightweight skill pack + memory system. Install once. Works everywhere Claude 
 It gives every project:
 
 - **43 slash commands** — `/bq-init`, `/bq-research`, `/bq-plan`, `/bq-feature`, `/bq-fix`, `/bq-auto`, `/bq-uiux-variants`, `/bq-live-edit`, `/bq-now`, `/bq-spec`, `/bq-explain`, `/bq-suggest`, `/bq-job-finder`, `/bq-make-money`, `/bq-update`, … (full reference: [`commands.md`](commands.md))
-- **19 specialist skills** — researcher, product-strategist, backend-architect, database-architect, security-reviewer, devops-cloud, frontend-quality, ux-ui-designer, testing-gate, release-gate, live-edit, scraping-automation, problem-solver, multi-model-planning, project-architect, workflow-advisor, job-finder, make-money, updater
+- **20 specialist skills** — researcher, product-strategist, backend-architect, database-architect, security-reviewer, devops-cloud, frontend-quality, ux-ui-designer, testing-gate, release-gate, live-edit, scraping-automation, problem-solver, multi-model-planning, project-architect, workflow-advisor, job-finder, make-money, updater, **delegate-planner** (alpha.12)
+- **4 composable operating modes** — Deep / Fast / Token Saver / Delegate (alpha.12). See [Operating Modes](#operating-modes) below.
 - **6 workflow phases** with **mandatory gates** that block out-of-order commands
-- **Persistent memory** in `.bequite/` — state, plans, audits, logs, mistake memory
+- **Persistent memory** in `.bequite/` — state, plans, audits, logs, mistake memory, **mode history**
 - **Tool neutrality** — every named tool is a candidate, not a default
 
 Designed for Claude Code first. Skill format follows the Anthropic SKILL.md spec.
+
+---
+
+## Operating Modes
+
+**4 composable modes** that adjust how BeQuite executes — without ever skipping safety. All 17 hard human gates apply regardless of mode. Set per command with `--mode <mode>` or as positional flags in `/bq-auto`.
+
+| Mode | When to use | Research | Tests | Output length | Cost profile |
+|---|---|---|---|---|---|
+| **Deep** | Quality-critical / production / regulated / new big builds | Full 11-dim + community + competitor + non-English | Full + red-team | Long | Higher (worth it) |
+| **Fast** | Small fix · prototype · trivial feature | Memory-first + 3 dims (stack / security / scale) | Still runs, but scoped | Compact | Lower |
+| **Token Saver** *(alias: `lean`)* | Long sessions · cost-sensitive · partial work · context-heavy | Reuse cached research + targeted reads + summaries | Scoped | Compact | Lowest (NOT token-free) |
+| **Delegate** | Strong model architects, cheaper model implements, strong model reviews | Done by strong model in Phase 1 | Defined in task pack, run by cheaper model, verified by strong model in Phase 3 | Variable | Cheaper than `deep` alone |
+
+### Examples
+
+```
+# Deep — quality matters most
+/bq-auto deep "Build a SaaS dashboard for clinic booking"
+/bq-research deep "Research best architecture and product gaps"
+/bq-plan deep "Create a complete implementation plan"
+
+# Fast — small scoped work
+/bq-auto fast "Fix dashboard text contrast"
+/bq-fix fast "Fix install error"
+/bq-feature fast "Add export button"
+/bq-uiux-variants fast 3
+
+# Token Saver — context cost matters
+/bq-auto token-saver "Add a small settings toggle"
+/bq-fix token-saver "Fix one failing test"
+/bq-plan token-saver "Plan a small feature using existing research"
+/bq-review token-saver "Review only current diff"
+/bq-auto lean "Quick scoped task"            # alias
+
+# Delegate — strong model architects, cheap model implements, strong model reviews
+/bq-auto delegate "Build this feature"
+/bq-plan delegate "Create implementation tasks for a cheaper model"
+/bq-assign delegate "Split into delegate task pack"
+/bq-review delegate "Review implementation made by cheaper model"
+```
+
+### Composition (modes stack)
+
+```
+/bq-auto deep delegate "Research deeply, then produce delegated tasks for cheap model"
+/bq-auto fast token-saver "Quick small fix with low context use"
+/bq-auto uiux variants=5 deep "Create high-quality design directions"
+/bq-auto fix fast "Fix known issue quickly"
+/bq-auto security deep "Full security review"
+/bq-auto fast delegate "Well-understood feature, split + delegate cheaply"
+```
+
+### Conflict resolution
+
+| Conflict | Resolution |
+|---|---|
+| `fast` + `deep` | Ask one question; default to `deep` for quality-critical intents (new / security / release / deploy); `fast` for trivial scoped fixes |
+| `delegate` + tiny task | Refuse delegate; recommend `fast` (handoff overhead not worth it) |
+| `delegate` + no prior research | Auto-compose with `deep` (delegate needs research to write good task pack) |
+| Any mode + hard human gate | Mode never bypasses safety; gate fires regardless |
+
+**Important:** Modes adjust **depth + cost + speed**, NOT safety. Token Saver is **token-lean**, not "token-free". Fast mode still runs tests and verification. Delegate mode requires Phase-3 strong-model review of cheaper-model output (no "ship without review").
+
+Full strategy: [`docs/architecture/AUTO_MODE_STRATEGY.md`](docs/architecture/AUTO_MODE_STRATEGY.md) §11. Mode history tracked in `.bequite/state/MODE_HISTORY.md`. Active mode in `.bequite/state/CURRENT_MODE.md`.
 
 ---
 

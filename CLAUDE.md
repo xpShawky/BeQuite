@@ -16,27 +16,29 @@ This repo IS the source of the skill pack. Its `.claude/commands/` + `.claude/sk
 
 ---
 
-## Current spec: v3.0.0-alpha.10
+## Current spec: v3.0.0-alpha.12
 
 - **43 slash commands** (`.claude/commands/bequite.md` + 42 × `.claude/commands/bq-*.md`)
-- **19 skills** (`.claude/skills/bequite-*/SKILL.md`)
-- **Memory-first behavior** — every action-taking command reads core memory (state / mode / phase / gates / last-run / mistake-memory) before acting; see `docs/architecture/MEMORY_FIRST_BEHAVIOR.md`
-- **6 explicit modes** — New Project, Existing Audit, Add Feature, Fix Problem, Research Only, Release Readiness
+- **20 skills** (`.claude/skills/bequite-*/SKILL.md`) — adds `bequite-delegate-planner` in alpha.12
+- **4 composable operating modes** (alpha.12) — Deep / Fast / Token Saver (alias `lean`) / Delegate. Set per command with `--mode <mode>` or as positional flags. All 17 hard human gates apply regardless of mode. Tracked in `.bequite/state/CURRENT_MODE.md` and `MODE_HISTORY.md`. Full table in `commands.md` § Operating Modes and `docs/architecture/AUTO_MODE_STRATEGY.md` §11.
+- **Memory-first behavior** — every action-taking command reads core memory (state / mode / phase / gates / last-run / mistake-memory / mode-history) before acting; see `docs/architecture/MEMORY_FIRST_BEHAVIOR.md`
+- **6 explicit workflow modes** — New Project, Existing Audit, Add Feature, Fix Problem, Research Only, Release Readiness (these are the workflow-level modes; the 4 operating modes above are orthogonal depth/cost flags)
 - **6 workflow phases** — P0 Setup → P1 Framing → P2 Build → P3 Quality → P4 Release → P5 Memory
 - **23 workflow gates** tracked in `.bequite/state/WORKFLOW_GATES.md` (block out-of-order commands)
 - **Phase orchestrators** — `/bq-p0` … `/bq-p5` walk a single phase end-to-end
-- **Scoped autonomous runner** — `/bq-auto [intent] [--mode fast|deep|token-saver] "task"` parses 17 intent types; pauses only at hard human gates
+- **Scoped autonomous runner** — `/bq-auto [intent] [--mode fast|deep|token-saver|delegate] "task"` parses 17 intent types; pauses only at hard human gates
 - **UI/UX variants** — `/bq-uiux-variants [N] "task"` generates 1-10 isolated design directions
 - **Live edit** — `/bq-live-edit "task"` section-by-section frontend edits with section mapping
 - **Mistake memory** — wired into 7 commands (fix / audit / review / red-team / verify / auto / live-edit); writes to `.bequite/state/MISTAKE_MEMORY.md`
 - **Quick orientation** — `/bq-now` returns one-line status (faster than `/bequite`)
 - **Spec Kit interop** — `/bq-spec "<feature>"` writes one-page `specs/<slug>/spec.md`
 - **Plain-English explainer** — `/bq-explain "<target>"` for files / functions / decisions / artifacts
-- **Workflow advisor** — `/bq-suggest "<situation>"` recommends best commands/mode for the goal (alpha.8)
+- **Workflow advisor** — `/bq-suggest "<situation>"` recommends best commands/mode for the goal (alpha.8); reads `MODE_HISTORY.md` to learn user patterns (alpha.12)
 - **Job finder** — `/bq-job-finder` finds real work opportunities; supports `worldwide_hidden=true` (alpha.8)
 - **Make money finder** — `/bq-make-money` finds legitimate earning opportunities; 10 tracks + Hidden Gems (alpha.8); deep intelligence with community signals + trending + AI-assisted (alpha.10)
 - **BeQuite self-update** — `/bq-update` safely refreshes commands / skills / docs from GitHub or local source; never overwrites project memory (alpha.10)
 - **Memory-first** — every action command reads core memory before acting (alpha.10; see MEMORY_FIRST_BEHAVIOR.md)
+- **Delegate task pack** — `.bequite/tasks/DELEGATE_*.md` + `.bequite/audits/DELEGATE_REVIEW_REPORT.md`: strong-model writes, cheap-model implements, strong-model reviews (alpha.12)
 - **Public command reference** — `commands.md` at repo root
 
 ---
@@ -50,7 +52,10 @@ This repo IS the source of the skill pack. Its `.claude/commands/` + `.claude/sk
 | Money memory | `.bequite/money/` (MONEY_PROFILE, MONEY_SEARCH_LOG, OPPORTUNITIES, TRUST_CHECKS, ACTION_PLAN, HIDDEN_GEMS, COMMUNITY_SIGNALS, AI_ASSISTED_PATHS) |
 | Version + update tracking | `.bequite/state/BEQUITE_VERSION.md`, `UPDATE_SOURCE.md`; `.bequite/logs/UPDATE_LOG.md`; `.bequite/backups/` |
 | Memory-first doc | `docs/architecture/MEMORY_FIRST_BEHAVIOR.md` |
-| Skills (15) | `.claude/skills/bequite-*/SKILL.md` |
+| Mode history (alpha.12) | `.bequite/state/MODE_HISTORY.md` |
+| Delegate task pack (alpha.12) | `.bequite/tasks/DELEGATE_TASKS.md`, `DELEGATE_INSTRUCTIONS.md`, `DELEGATE_ACCEPTANCE_CRITERIA.md`, `DELEGATE_TEST_PLAN.md` |
+| Delegate review report (alpha.12) | `.bequite/audits/DELEGATE_REVIEW_REPORT.md` |
+| Skills (20) | `.claude/skills/bequite-*/SKILL.md` |
 | Public command reference | `commands.md` (repo root) |
 | BeQuite memory | `.bequite/` |
 | Workflow gate ledger | `.bequite/state/WORKFLOW_GATES.md` |

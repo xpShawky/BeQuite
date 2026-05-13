@@ -253,4 +253,59 @@ Additional commands not listed above (alpha.2+):
 
 `/bq-job-finder` and `/bq-make-money` now search **community signals** (Reddit / IH / HN / Product Hunt / X / forums) + **trending short-window** opportunities + **AI-assisted paths** in addition to standard platforms. New tracks: `worldwide_hidden`, `trending_now`, `community_discovered`, `AI_assisted`, `no_calls`, `fast_first_payout`, `highest_payout`, `beginner_friendly`, `skilled_remote`, `local_country`, `non_english_platforms`. New memory files: `HIDDEN_GEMS.md`, `COMMUNITY_SIGNALS.md`, `AI_ASSISTED_WORK.md` / `AI_ASSISTED_PATHS.md`.
 
+---
+
+## Operating Modes (alpha.12 — 4 composable modes)
+
+4 modes that adjust how BeQuite executes — without ever skipping safety. All 17 hard human gates apply regardless. Set on any command as a positional flag.
+
+| Mode | Best for | Research | Tests | Output | Cost |
+|---|---|---|---|---|---|
+| **deep** | Quality-critical · production · regulated · big new builds | Full 11-dim + community + competitors + failure stories | Full + red-team | Long, detailed | Higher (worth it) |
+| **fast** | Small scoped fix · trivial feature · prototype | 3 dims (stack / security / scale) + memory-first | Run tests for changed surface | Compact | Lower |
+| **token-saver** *(alias `lean`)* | Long sessions · cost-sensitive · cached research reuse | Reuse prior + targeted reads + summaries | Scoped | Compact | Lowest — NOT token-free |
+| **delegate** | Strong model designs, cheap model implements, strong model reviews | Strong model does research in Phase 1 | Cheap model runs task-pack tests; strong model verifies | Variable | Cheaper than `deep` alone |
+
+### Mode examples
+
+```
+/bq-auto deep "Build a SaaS dashboard for clinic booking"
+/bq-research deep "Research best architecture and product gaps"
+
+/bq-auto fast "Fix dashboard text contrast"
+/bq-fix fast "Fix install error"
+
+/bq-auto token-saver "Add a small settings toggle"
+/bq-auto lean "Quick scoped task"                      # alias
+
+/bq-auto delegate "Build this feature"
+/bq-plan delegate "Create implementation tasks for a cheaper model"
+/bq-review delegate "Review implementation made by cheaper model"
+```
+
+### Composition (modes stack)
+
+```
+/bq-auto deep delegate "Research deeply, then produce delegated tasks"
+/bq-auto fast token-saver "Quick small fix with low context use"
+/bq-auto uiux variants=5 deep "Create high-quality design directions"
+/bq-auto security deep "Full security review"
+```
+
+### Conflict resolution
+
+| Conflict | Resolution |
+|---|---|
+| `fast` + `deep` | Ask one question; default `deep` for quality-critical intents (new / security / release / deploy); `fast` for trivial scoped fixes |
+| `delegate` + tiny task | Refuse delegate; recommend `fast` (handoff overhead not worth it) |
+| `delegate` + no prior research | Auto-compose with `deep` (delegate needs research to write a good task pack) |
+| Any mode + hard human gate | Mode never bypasses safety; gate fires regardless |
+
+**Important:** Modes adjust **depth + cost + speed**, NOT safety. Token Saver is **token-lean**, not "token-free". Fast mode still runs tests and verification.
+
+- Active mode for current run: `.bequite/state/CURRENT_MODE.md`
+- Mode history + outcomes + cost: `.bequite/state/MODE_HISTORY.md`
+- Full strategy: `docs/architecture/AUTO_MODE_STRATEGY.md` §11
+- Delegate task pack: `.bequite/tasks/DELEGATE_*.md` + `.bequite/audits/DELEGATE_REVIEW_REPORT.md`
+
 For the complete picture: [`commands.md`](../../commands.md).

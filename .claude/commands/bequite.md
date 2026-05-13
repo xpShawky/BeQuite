@@ -133,6 +133,22 @@ Command map (34 commands, ordered by workflow phase):
     /bq-p5              walk Phase 5 in order
     /bq-auto            walk ALL phases autonomously (stops at hard gates)
 
+Operating modes (alpha.12 — composable, set per command):
+  deep                  quality matters most · full 11-dim research · full red-team
+  fast                  small scoped work · memory-first · 3 dims · still tests + verifies
+  token-saver (lean)    long sessions · reuse cached research + targeted reads (NOT token-free)
+  delegate              strong model architects → cheap model implements → strong model reviews
+
+Mode examples:
+  /bq-auto deep "your project idea"
+  /bq-auto fast "your small fix"
+  /bq-auto token-saver "your scoped task"     (alias: /bq-auto lean "...")
+  /bq-auto delegate "prepare work for cheaper model"
+  /bq-auto deep delegate "research deeply, then produce delegated tasks"
+
+Modes adjust depth + cost + speed, NOT safety. All 17 hard human gates apply regardless of mode.
+Active mode: .bequite/state/CURRENT_MODE.md · History: MODE_HISTORY.md
+
 Run /bq-help for detailed usage of each command.
 ```
 

@@ -2,6 +2,82 @@
 
 Append-only chronicle of every BeQuite command run. Newest at top.
 
+## 2026-05-12 — alpha.12 ship: 4 composable operating modes (Deep / Fast / Token Saver / Delegate)
+
+**Action:** User invoked `/bq-auto` for mode-system documentation. Per /bq-auto discipline, continued autonomously — no hard gates tripped.
+
+**Renaming decision (user gave permission to rename):**
+- "Architect Delegate Mode" → **"Delegate Mode"** (short name in `--mode` flag; full name describes the pattern in docs)
+- "Token Saver Mode" stays — added `lean` as alias
+- No new `/bq-delegate` command — delegate is a **mode flag** on existing commands (avoids command clutter; 43 is enough)
+
+**Skill consolidation:**
+- Extended `bequite-workflow-advisor` with mode-controller logic (decision matrix, composition rules, conflict resolution)
+- Created ONE new skill: `bequite-delegate-planner` (delegate is genuinely cross-session, two-model workflow)
+- NOT creating: bequite-mode-controller, bequite-token-saver, bequite-deep-researcher (would be redundant; workflow-advisor + delegate-planner cover it)
+
+**New skill:**
+- `bequite-delegate-planner` — encodes the strong-model-plans-cheap-model-implements-strong-model-reviews workflow with full task-pack format, hard-gate handling, mode composition, common mistakes, failure handling, cost discipline
+
+**New memory templates (5):**
+- `.bequite/tasks/DELEGATE_TASKS.md` (Phase 1 task list with `[ ]/[x]/[!]/[?]` markers)
+- `.bequite/tasks/DELEGATE_INSTRUCTIONS.md` (per-task: files to inspect/edit/avoid, exact steps, edge cases, rollback)
+- `.bequite/tasks/DELEGATE_ACCEPTANCE_CRITERIA.md` (per-task observable criteria + universal criteria)
+- `.bequite/tasks/DELEGATE_TEST_PLAN.md` (per-task exact test commands)
+- `.bequite/audits/DELEGATE_REVIEW_REPORT.md` (Phase 3 strong-model verdict per task)
+
+**New state file:**
+- `.bequite/state/MODE_HISTORY.md` — append-only log of which mode was used per command run + outcome + approx cost + tests pass/total. `/bq-suggest` reads this to learn user patterns.
+
+**Updated:**
+- `/bq-auto.md` — full rewrite of "Mode flag" section → "Operating modes (alpha.12 — 4 modes, composable)" with per-mode philosophy, composition rules, conflict resolution, mode tracking. Mistake-memory section extended to also append to MODE_HISTORY.
+- `bequite-workflow-advisor` SKILL.md — extended decision matrix with all 4 modes + composition table + conflict resolution table + MODE_HISTORY.md learning loop
+- `AUTO_MODE_STRATEGY.md` §11 — new comprehensive mode section: per-mode philosophy / composition / conflict resolution / mode tracking. Token Saver naming corrected (NOT "token-free").
+- `README.md` — new top-level "Operating Modes" section with mode summary, examples, composition guide, delegate-mode specifics, conflict resolution. Version bumped to alpha.12. Added "4 modes" badge.
+- `/bequite` root menu — appended "Operating modes (composable on /bq-auto + most action commands):" section listing all 4 modes with examples
+- `/bq-help` — new "Operating modes (alpha.12 — composable)" table
+- `commands.md` — new top-level "Operating modes (alpha.12)" section with mode table + composition examples + conflict resolution + link to strategy doc + delegate skill
+- `CLAUDE.md` — version bump to alpha.12; mention of 4 composable modes
+- `docs/specs/COMMAND_CATALOG.md` — version bump; new "Operating modes" section with full decision matrix
+- `.bequite/state/BEQUITE_VERSION.md` — bumped to alpha.12
+
+**Tally after alpha.12:**
+- Commands: 43 (unchanged — modes are flags on existing commands, not new commands)
+- Skills: 19 → 20 (+1: bequite-delegate-planner)
+- Memory templates: +5 delegate task-pack files + 1 MODE_HISTORY = +6
+- Operating modes: 0 documented → **4 composable**
+
+**Acceptance criteria check:**
+- ✅ README explains 4 modes near the top (right after "Why BeQuite?" lead-in, before badges-section drops)
+- ✅ commands.md explains usage + examples
+- ✅ /bequite menu shows modes
+- ✅ /bq-help shows modes
+- ✅ /bq-auto supports mode arguments (extended Mode flag section)
+- ✅ Command docs explain mode combinations
+- ✅ Token Saver Mode documented (with `lean` alias; naming corrected from any "token-free" wording — I searched; the alpha.5 commit description text mentioned "token-saver" but never said "token-free"; no correction needed in current docs)
+- ✅ Deep Mode documented (with community sources + non-English / international scope)
+- ✅ Fast Mode documented (not low-quality mode caveat clear)
+- ✅ Architect Delegate Mode documented (as "Delegate Mode") with full skill + task-pack templates + 3-phase workflow
+- ✅ Logs + changelog updated
+- ✅ No heavy dependencies added
+- ✅ No Studio / heavy CLI reintroduced
+
+**Article VI honest reporting:**
+- The 4 modes are documented as **doctrine**. Runtime behavior depends on the agent honoring the doctrine per command spec — not enforced by harness hooks.
+- Delegate Mode's Phase 2 (cheap-model implementation) happens in a **separate Claude session** — the user must manually switch models. The strong-model command spec documents the handoff; nothing automates the model swap.
+- MODE_HISTORY.md is a new state file; it's empty seed. Real entries accumulate as the user runs commands.
+- Installer NOT yet updated to copy the 5 new delegate templates or MODE_HISTORY.md — alpha.13 work.
+
+**Pending (alpha.13):**
+- Installer updated to copy 5 delegate templates + MODE_HISTORY.md
+- USING_BEQUITE_COMMANDS.md updated with mode examples + delegate walkthrough
+- MULTI_MODEL_PLANNING_STRATEGY.md cross-reference with delegate mode (different but related)
+- MEMORY_FIRST_BEHAVIOR.md cross-reference with token-saver mode
+- RESEARCH_DEPTH_STRATEGY.md cross-reference with deep mode
+- Live verification of all 4 modes against a real project (user action)
+
+---
+
 ## 2026-05-12 — alpha.11 ship: installer carries alpha.10 deep-intelligence + version tracking + backups
 
 **Action:** Installer scripts updated so new BeQuite installs land alpha.10 functionality automatically — no manual file copying.

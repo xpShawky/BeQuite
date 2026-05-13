@@ -141,6 +141,21 @@ copy_template ".bequite/money/OPPORTUNITIES.md"       ".bequite/money/OPPORTUNIT
 copy_template ".bequite/money/TRUST_CHECKS.md"        ".bequite/money/TRUST_CHECKS.md"
 copy_template ".bequite/money/ACTION_PLAN.md"         ".bequite/money/ACTION_PLAN.md"
 
+# alpha.10 — deep-intelligence templates (jobs)
+copy_template ".bequite/jobs/HIDDEN_GEMS.md"          ".bequite/jobs/HIDDEN_GEMS.md"
+copy_template ".bequite/jobs/COMMUNITY_SIGNALS.md"    ".bequite/jobs/COMMUNITY_SIGNALS.md"
+copy_template ".bequite/jobs/AI_ASSISTED_WORK.md"     ".bequite/jobs/AI_ASSISTED_WORK.md"
+
+# alpha.10 — deep-intelligence templates (money)
+copy_template ".bequite/money/HIDDEN_GEMS.md"         ".bequite/money/HIDDEN_GEMS.md"
+copy_template ".bequite/money/COMMUNITY_SIGNALS.md"   ".bequite/money/COMMUNITY_SIGNALS.md"
+copy_template ".bequite/money/AI_ASSISTED_PATHS.md"   ".bequite/money/AI_ASSISTED_PATHS.md"
+
+# alpha.10 — version + update tracking
+copy_template ".bequite/state/BEQUITE_VERSION.md"     ".bequite/state/BEQUITE_VERSION.md"
+copy_template ".bequite/state/UPDATE_SOURCE.md"       ".bequite/state/UPDATE_SOURCE.md"
+copy_template ".bequite/logs/UPDATE_LOG.md"           ".bequite/logs/UPDATE_LOG.md"
+
 # Copy commands.md at repo root (top-level reference)
 if [[ -f "$SOURCE/commands.md" && ! -f "./commands.md" ]]; then
   cp "$SOURCE/commands.md" "./commands.md"

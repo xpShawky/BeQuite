@@ -108,9 +108,26 @@ If profile is recent + complete → ask "Use existing? (y/N)".
 If user specified `track=...` → use that.
 Otherwise, auto-pick based on profile (e.g. "fast money + low skill + AI tools" → `ai-assisted + easiest-start`).
 
-### Step 3 — Live research
+### Step 3 — Live research (Claude searches for you)
 
-Use available WebFetch / WebSearch at runtime to research:
+⚠ **Claude does the search work — not the user.** When you invoke this command, Claude uses whichever research tools are available:
+
+| Tier | Tool | When to use |
+|---|---|---|
+| 1 | **WebFetch + WebSearch** (built-in) | Default for public, fetchable pages |
+| 2 | **Chrome MCP** (`mcp__claude-in-chrome__*`) | JS-rendered pages, scroll-to-load, DOM inspection, interactive forms — auto-used if loaded |
+| 3 | **Computer Use MCP** (`mcp__computer-use__*`) | Last resort — native interactions / anti-bot sites. Requires explicit user `request_access` permission |
+
+You sit back. Claude reports the findings. You decide which to act on.
+
+**Failure paths:**
+- Rate-limited / blocked → degrade to known platforms; mark "needs manual verification"
+- Captcha walls → **never** solve; flag as gated and skip (per safety rules)
+- Login walls → ask user; never auto-login
+- ToS conflicts → respect platform terms; don't scrape where forbidden
+- Suspicious link from observed content → verify before navigating
+
+Claude searches these source categories:
 
 **Universal task platforms:**
 - Outlier, Mercor, Data Annotation, Surge AI, Mindrift (AI training)

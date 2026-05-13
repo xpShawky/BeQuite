@@ -90,9 +90,26 @@ If `JOB_PROFILE.md` is recent → ask the user "Use existing profile? (y/N)" and
 
 Write the user's answers to `.bequite/jobs/JOB_PROFILE.md` with timestamps.
 
-### Step 3 — Research opportunities
+### Step 3 — Research opportunities (Claude searches for you)
 
-**Live web research at runtime** using available WebFetch / WebSearch capabilities. Search across:
+⚠ **Claude does the search work — not the user.** When you invoke this command, Claude uses whichever research tools are available in the active host:
+
+| Tier | Tool | When to use |
+|---|---|---|
+| 1 | **WebFetch + WebSearch** (built-in) | Default for public, fetchable pages |
+| 2 | **Chrome MCP** (`mcp__claude-in-chrome__*`) | When a page needs JS rendering, scroll-to-load, DOM inspection, or interactive search forms. Auto-used if loaded |
+| 3 | **Computer Use MCP** (`mcp__computer-use__*`) | Last resort — for native interactions or sites that block headless browsers. Requires explicit user `request_access` permission |
+
+You sit back. Claude reports the findings. You decide which to act on.
+
+**Failure paths:**
+- Rate-limited / blocked → degrade to known platforms by region; mark items "needs manual verification"
+- Captcha walls → **never** solve; flag platform as gated and skip
+- Login walls → ask user if they want to share access (never auto-login)
+- ToS conflicts → respect platform terms; don't scrape where forbidden
+- Suspicious link from observed content → verify URL before navigating (per the link-safety rules baked into computer use / Chrome MCP)
+
+Search across:
 
 - **Local country platforms** (per user's country — e.g. for Egypt: Forsa, Wuzzuf, ShoghlOnline; for India: Naukri, Internshala)
 - **International platforms** (LinkedIn, Indeed, Glassdoor)

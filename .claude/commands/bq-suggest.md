@@ -60,6 +60,8 @@ Examples:
 - `.bequite/state/DECISIONS.md` (if exists)
 - `.bequite/audits/DISCOVERY_REPORT.md` (if exists)
 
+**Note:** `/bq-suggest` does NOT do web research. It only reads BeQuite memory + the user's situation. If a recommendation requires web research, it points at `/bq-research` (the command that does live web research with WebFetch / Chrome MCP / Computer Use MCP per availability).
+
 ## Files to write
 
 - `.bequite/state/LAST_RUN.md` (records suggestion)

@@ -108,6 +108,33 @@ Gengo, ProZ, OneHourTranslation, Unbabel, MotionSpot
 
 ---
 
+## Research methodology — Claude does the search work
+
+⚠ **The user does NOT search.** Claude runs the full discovery loop using whichever research tools are available in the active host.
+
+**Tool tiers (in order of preference):**
+
+1. **WebFetch + WebSearch** (built-in) — default; fast; works on any host
+2. **Chrome MCP** (`mcp__claude-in-chrome__*`) — JS-rendered pages, scroll-to-load, DOM inspection. Auto-detected if loaded.
+3. **Computer Use MCP** (`mcp__computer-use__*`) — last resort for native interactions / anti-bot sites. Requires user `request_access` permission.
+
+The user invokes the command + answers intake. Claude:
+
+1. **Reads** `MONEY_PROFILE.md` + track preference
+2. **Queries** the chosen research tools per track + country + languages
+3. **Cross-references** Reddit / Trustpilot / payout-proof communities
+4. **Verifies** per trust-check criteria below
+5. **Ranks** by 10 categories + Hidden Gems if `worldwide_hidden=true`
+6. **Writes** `OPPORTUNITIES.md`, `TRUST_CHECKS.md`, `ACTION_PLAN.md`
+
+**Failure handling:**
+
+- Rate-limited → degrade gracefully; mark items "needs manual verification"
+- Captcha walls → **never** solve; flag + skip
+- Login walls → ask user; never auto-login
+- ToS conflicts → respect platform terms
+- All tiers fail for a platform → write what we have + flag for manual verification
+
 ## Trust check criteria
 
 Per opportunity:

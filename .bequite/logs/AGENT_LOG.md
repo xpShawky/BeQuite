@@ -2,6 +2,33 @@
 
 Append-only chronicle of every BeQuite command run. Newest at top.
 
+## 2026-05-12 — alpha.8 hotfix: clarify Claude-side search + add "How to use" section to README
+
+**Action:** User clarified that:
+1. The 3 new opportunity commands run **Claude-side searches** — not user-side. The user invokes; Claude searches.
+2. Claude should use Computer Use MCP or Chrome MCP if WebFetch/WebSearch can't reach a site.
+3. README needs a clear "How to use" section for the 3 new features, especially `/bq-make-money` + worldwide_hidden mode.
+
+**Updates:**
+
+- `/bq-job-finder` — added "Step 3 — Research (Claude searches for you)" with 3-tier tool table (WebFetch → Chrome MCP → Computer Use MCP) + failure handling (rate limits / captcha / login walls / ToS / suspicious links)
+- `/bq-make-money` — same 3-tier tool table + failure paths added to "Step 3 — Live research"
+- `/bq-suggest` — added clarifying note that it doesn't do web research itself; only reads BeQuite memory + situation
+- `bequite-job-finder` skill — full "Research methodology — Claude does the search work" section with per-tier failure handling table
+- `bequite-make-money` skill — same Research methodology section added
+- `README.md` — added "How to use the 3 new opportunity commands" section near the top of the body:
+  - Clarifies Claude-side searching with tier fallbacks
+  - Per-command usage block (suggest / job-finder / make-money)
+  - Detailed `/bq-make-money` section with track table + 10 ranked output sections + Hidden Gems explanation + 7-day action plan note + strict safety rules
+  - Specific examples including all worldwide_hidden=true variants
+
+**Article VI honest reporting:**
+- The commands and skills now explicitly document Claude-side discovery via WebFetch / Chrome MCP / Computer Use MCP.
+- Actual runtime behavior depends on which MCP servers are loaded in the user's Claude host. The agent detects tools at runtime; the documentation is the playbook.
+- README now has a dedicated section that a new user can read in under 5 minutes to understand how to invoke the 3 new commands.
+
+---
+
 ## 2026-05-12 — alpha.8 ship: /bq-suggest + /bq-job-finder + /bq-make-money + worldwide_hidden mode
 
 **Action:** User invoked `/bq-auto` with a feature-shaped task (3 new capabilities). Per /bq-auto discipline, no hard gates tripped — continued autonomously through the full task.

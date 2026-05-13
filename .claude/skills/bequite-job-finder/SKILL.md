@@ -94,14 +94,38 @@ Per opportunity, verify:
 
 ---
 
-## Research methodology
+## Research methodology — Claude does the search work
 
-1. **Read** `JOB_PROFILE.md` to know user's constraints (country, language, skills, payout)
-2. **Query** WebFetch / WebSearch with profile-specific queries (use local language + English + skill keywords)
-3. **Cross-reference** — Reddit, Trustpilot, payout-proof communities for each platform candidate
-4. **Filter** — exclude anything failing safety rules
-5. **Rank** — by match score (profile fit × trust × payout)
-6. **Document** — every claim has a source URL with date accessed (per `bequite-researcher` rigor)
+⚠ **The user does NOT search.** Claude runs the full discovery loop using whichever research tools are available in the active host (Claude Code, Claude Desktop, API, etc.):
+
+**Tool tiers (in order of preference):**
+
+1. **WebFetch + WebSearch** (built-in) — default; fast; works on any host
+2. **Chrome MCP** (`mcp__claude-in-chrome__*`) — JS-rendered pages, scroll-to-load, DOM inspection. Auto-detected if the MCP is loaded.
+3. **Computer Use MCP** (`mcp__computer-use__*`) — last resort for native-interaction sites. Requires explicit user `request_access` permission (tier-3 full desktop).
+
+The user invokes the command, answers the intake form (or accepts existing profile), and waits. Claude:
+
+1. **Reads** `JOB_PROFILE.md` to know user's constraints (country, language, skills, payout)
+2. **Queries** the chosen research tools with profile-specific search strings (local language + English + skill keywords)
+3. **Cross-references** Reddit, Trustpilot, payout-proof communities per platform candidate
+4. **Filters** — excludes anything failing safety rules
+5. **Ranks** — by match score (profile fit × trust × payout)
+6. **Documents** — every claim has source URL + date accessed (`bequite-researcher` rigor)
+
+**Failure handling per tier:**
+
+| Failure | Tier 1 recovery | Tier 2 recovery | Tier 3 recovery |
+|---|---|---|---|
+| Page blocks WebFetch | Try search engine result | Open in Chrome MCP, parse DOM | Open in real desktop browser |
+| JS-only content | Skip; flag | Use Chrome MCP `read_page` | Same |
+| Captcha | Skip; flag platform | Skip | Skip — **never solve** |
+| Login wall | Skip; ask user | Same | Same |
+| Rate limit | Wait; retry once; then degrade | Try Chrome MCP if WebFetch limited | Try computer-use last |
+| ToS violation | Respect; skip | Same | Same |
+| Suspicious link | Verify URL first; flag user | Same | Same — link safety rules apply |
+
+If ALL tiers fail for a platform → mark "needs manual verification" in `OPPORTUNITIES.md` and recommend user verify directly.
 
 ---
 

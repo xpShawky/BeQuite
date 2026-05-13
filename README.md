@@ -234,19 +234,120 @@ Organized by phase, not alphabetically. **Full details for every command:** [`co
 
 **For full procedural detail on every command:** see [`commands.md`](commands.md).
 
-### 🌍 Worldwide Hidden Opportunity Search (alpha.8)
+---
 
-`/bq-job-finder` and `/bq-make-money` both support `worldwide_hidden=true` — searches **beyond** famous English platforms and the user's home country. Finds overlooked legitimate opportunities in non-English markets, country-specific microtask platforms, regional freelance boards, AI training task platforms, and niche communities.
+## 🆕 How to use the 3 new opportunity commands
 
-Searches multilingual: Portuguese, Spanish, German, French, Italian, Turkish, Polish, Romanian, Indonesian, Hindi, Arabic, English. Per-opportunity trust check: legitimacy / country eligibility / payout method / VPN policy / ID verification / upfront-fee red flags / scam reports / realistic payout / time to first payout / why hidden.
+**Important:** these commands run **inside Claude Code (or any Claude host)**. **Claude does the searching, not you.** You invoke the command, answer a short intake, and Claude:
+
+- Uses WebFetch + WebSearch (built-in) by default
+- Falls back to Chrome MCP (`mcp__claude-in-chrome__*`) when JS-rendered pages or DOM inspection are needed
+- Falls back to Computer Use MCP (`mcp__computer-use__*`) as last resort — only with your explicit `request_access` permission
+
+You sit back. Claude reports findings, classifies by fit + trust, writes everything to `.bequite/jobs/` or `.bequite/money/`. You decide what to act on.
+
+### `/bq-suggest` — what should I do next?
+
+Stuck in the command catalog? Describe your situation; Claude recommends the right route. Read-only — never implements.
+
+```
+/bq-suggest "I want to improve UI/UX and security"
+/bq-suggest "I have a broken frontend and API"
+/bq-suggest "I want to build a scraper and deploy it on VPS"
+/bq-suggest "I have a project idea and want to know where to start"
+/bq-suggest "I need UX + backend + testing"
+```
+
+**You get back:** recommended workflow (1-5 commands), skills activated, mode (fast / deep / token-saver), required gates, ONE recommended next command, and "why NOT each alternative".
+
+### `/bq-job-finder` — find real work
+
+Find full-time / part-time / remote / freelance / task / AI-gig opportunities. Claude does the search; you sit back.
+
+**First run** asks a short intake (country, languages, skills, AI tools, payout methods, etc.). Saved to `.bequite/jobs/JOB_PROFILE.md` and re-used on later runs.
+
+```
+/bq-job-finder
+/bq-job-finder "Remote AI-assisted gigs"
+/bq-job-finder worldwide_hidden=true
+/bq-job-finder worldwide_hidden=true "Find overlooked remote tasks"
+```
+
+**You get back:** ranked opportunities (Best fit / Easy start / High pay / Fast application / Needs portfolio / Needs learning / Risky / Not recommended / Hidden Gems), trust check per platform, application link, suggested pitch, next action — all written to `.bequite/jobs/OPPORTUNITIES.md` for you to review.
+
+### `/bq-make-money` — find legitimate earning opportunities (with focus on Worldwide Hidden mode)
+
+Find legitimate earning opportunities ranked by your goals. 10 tracks; supports `worldwide_hidden=true` for opportunities people in your country usually don't find.
+
+**First run** asks intake (country, languages, skills, AI tools, devices, payment methods, target income, risk tolerance, time per day, fast money vs. sustainable income, calls okay or text only, preferred track).
+
+#### Pick a track
+
+| Track flag | Best for |
+|---|---|
+| `track=highest-payout` | Highest $/hour or $/task — even if harder |
+| `track=easiest-start` | No portfolio, instant signup, fast verify |
+| `track=fastest-first-payout` | Get paid this week if possible |
+| `track=long-term-stable` | Recurring monthly income, not one-offs |
+| `track=ai-assisted` | Use your AI tools as multiplier |
+| `track=no-calls` | Async only, text-based |
+| `track=remote-global` | Works regardless of your location |
+| `track=local-only` | Tied to your country + language |
+| `track=beginner` | No prior experience needed |
+| `track=skilled` | Premium rate; expertise required |
+
+If you don't specify, Claude auto-picks based on your profile.
+
+#### Basic examples
+
+```
+/bq-make-money
+/bq-make-money "Egypt, AI image editing, 3 hours daily, want remote tasks"
+/bq-make-money "Find easy AI-assisted tasks with real payout"
+/bq-make-money track=highest-payout country=Egypt skills='AI tools, writing, image editing'
+/bq-make-money "Update previous search and find new opportunities"
+```
+
+#### 🌍 Worldwide Hidden mode (the high-value flag)
+
+Add `worldwide_hidden=true` to search **beyond** famous English platforms and your home country. Claude looks for overlooked legitimate opportunities in:
+
+- **Non-English markets** — Portuguese / Spanish / German / French / Italian / Turkish / Polish / Romanian / Indonesian / Hindi / Arabic + English
+- **Country-specific microtask platforms** — Yandex Toloka, Wuzzuf, Brighter Monday, Get on Board, Wantedly, etc.
+- **AI training task platforms** — Outlier, Mercor, Mindrift, Surge, Data Annotation, Scale, Appen
+- **Research panels** — User Interviews, Respondent, dscout, Prolific
+- **Testing platforms** — UserTesting, UserBrain, Userlytics
+- **App-based earning programs** — Premise, Field Agent, Streetbees
+- **Small companies hiring globally** — Wellfound, RemoteRocketship
+- **Niche platforms by skill / region** — searched live per profile
+
+**Examples:**
 
 ```
 /bq-make-money worldwide_hidden=true "Find hidden legitimate earning opportunities worldwide"
-/bq-job-finder worldwide_hidden=true "Find overlooked remote tasks and AI-assisted work opportunities"
 /bq-make-money track=highest-payout worldwide_hidden=true
+/bq-make-money track=easiest-start worldwide_hidden=true
+/bq-make-money worldwide_hidden=true "Search high-paying remote task platforms for Arabic and English speakers"
 ```
 
-**Safety-first.** No scams. No fraud. No fake reviews. No platform abuse. No CAPTCHA farms. No VPN misrepresentation. No upfront-fee scams. No unrealistic income promises.
+**You get back:**
+
+- **10 ranked sections** — Best hidden / Highest payout / Easiest start / Fastest first payout / Best AI-assisted / Best no-call / Best long-term / Best for your country / Best worldwide remote / Risky or not recommended
+- **Hidden Gems section** — lesser-known but legitimate opportunities not in normal job searches; each with platform / country / language / work type / why hidden / payout method / eligibility / difficulty / risk level / first step / trust check result
+- **Per-opportunity trust check** — legitimacy / country eligibility / payout method / VPN policy / ID verification / upfront-fee red flags / scam reports / realistic payout / time to first payout / what makes it hidden
+- **7-day action plan** — concrete daily actions; first-payout target by end of week if possible
+
+All saved to `.bequite/money/` (OPPORTUNITIES.md, TRUST_CHECKS.md, ACTION_PLAN.md). Re-run later to compare with previous results; Claude marks 🆕 new / ✅ still active / ❌ expired / ⚠ risk increased / ⬆ better alternative / 🔍 needs verification.
+
+#### Strict safety rules (Claude refuses)
+
+❌ Scams / fraud / fake reviews / fake accounts / fake engagement
+❌ CAPTCHA bypass / CAPTCHA farms (likely abuse, low pay)
+❌ Spam / mass cold outreach / VPN misrepresentation / identity misuse
+❌ Upfront-fee scams / passive-income MLM / crypto pump-and-dump
+❌ "Make $500/day from your phone with no skills" promises
+❌ Adult / NSFW unless you explicitly opt in
+❌ Anything failing the trust check — clearly marked "Not recommended" with reason
 
 ---
 

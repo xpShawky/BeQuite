@@ -1,5 +1,5 @@
 ---
-description: Full BeQuite command reference. Explains every command — when to use it, what it reads, what it writes, what comes next. Grouped by workflow phase, not alphabetically.
+description: Full BeQuite command reference. Explains every command — when to use it, what it reads, what it writes, what comes next. Grouped by workflow phase, not alphabetically. For the deep reference, see commands.md at repo root.
 ---
 
 # /bq-help — full command reference
@@ -13,6 +13,10 @@ You are showing the user the complete BeQuite command reference. Order by workfl
 - **Usual next command**
 
 Print this in the chat. Do not run any other action — `/bq-help` is read-only documentation.
+
+> **Note (alpha.5+):** For the canonical reference with full per-command detail (Preconditions / Required gates / Quality gate / Failure behavior / etc.), see [`commands.md`](../../commands.md) at the project root. This `/bq-help` output is the in-Claude-Code summary; `commands.md` is the deep reference.
+>
+> For one-line orientation: `/bq-now`. For the gate-aware menu: `/bequite`.
 
 ---
 
@@ -211,3 +215,36 @@ Print this in the chat. Do not run any other action — `/bq-help` is read-only 
 ## When in doubt
 
 Run `/bequite` for the menu. It reads your current state and tells you the next 3 best commands.
+
+---
+
+## Standardized command fields (alpha.6+)
+
+**Phase:** Any (meta — read-only reference)
+**When NOT to use:** quick orientation (use `/bq-now`); gate-aware menu (use `/bequite`); full deep reference (open [`commands.md`](../../commands.md) — has Preconditions / Required gates / Quality gate / Failure behavior fields per command).
+**Preconditions:** none
+**Required previous gates:** none
+**Quality gate:** output covers all 37 commands grouped by phase; no out-of-date phase names; surfaces alpha.5+ additions (`/bq-now`, `/bq-spec`, `/bq-explain`, `/bq-uiux-variants`, `/bq-live-edit`)
+**Failure behavior:** if the user wants more depth than this command provides, point them at `commands.md` (the full reference) or `/bequite` (the menu)
+**Memory updates:** none (read-only)
+**Log updates:** none (read-only navigation aid)
+
+## Notes on the alpha.5+ surface
+
+This help output has the original Phase 0-5 names that pre-date alpha.2. The current canonical names are:
+- **Phase 0 — Setup and Discovery** (was "Setup and Understanding")
+- **Phase 1 — Product Framing and Research** (was "Problem Framing")
+- **Phase 2 — Planning and Build** (was "Build")
+- **Phase 3 — Quality and Review** (was "Quality")
+- **Phase 4 — Release** (was "Ship")
+- **Phase 5 — Memory and Handoff** (was "Continue Later")
+
+Additional commands not listed above (alpha.2+):
+- `/bq-mode`, `/bq-new`, `/bq-existing` (P0)
+- `/bq-feature` (P2 — supersedes `/bq-add-feature`)
+- `/bq-auto`, `/bq-p0`..`p5` (orchestrators)
+- `/bq-uiux-variants`, `/bq-live-edit` (UI workflow — alpha.4)
+- `/bq-now` (one-line orientation — alpha.5)
+- `/bq-spec`, `/bq-explain` (alpha.7)
+
+For the complete picture: [`commands.md`](../../commands.md).

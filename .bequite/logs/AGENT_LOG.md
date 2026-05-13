@@ -2,6 +2,75 @@
 
 Append-only chronicle of every BeQuite command run. Newest at top.
 
+## 2026-05-12 — alpha.7 ship: /bq-spec + /bq-explain + bq-help alignment
+
+**Action:** User said "continue" — picking up the remaining alpha.7 work after alpha.6 (installer + 19 commands extension) landed.
+
+**New commands (2):**
+
+### /bq-spec "<feature>"
+
+Spec Kit-compatible one-page spec writer. Bridges BeQuite to the GitHub Spec Kit ecosystem. Writes `specs/<slug>/spec.md` with structured fields:
+- What / Why / Who
+- What changes for the user (before/after)
+- Acceptance criteria (testable, observable)
+- Out of scope (explicit non-goals)
+- Constraints (privacy / compliance / performance / budget)
+- Open questions
+- Success metric (one number)
+- How (high-level, optional)
+
+Phase P1/P2. Activates `bequite-product-strategist` for JTBD discipline. Tool neutrality: Spec Kit is an interop target, not a dependency — `/bq-spec` produces markdown that works in BeQuite + Spec Kit + Notion + any wiki.
+
+### /bq-explain "<target>"
+
+Plain-English explainer for files / functions / decisions / concepts / BeQuite artifacts. 4-section output:
+- What it is
+- What it does
+- Why it matters
+- Things to be careful of
+
+Read-only. Use cases: onboarding new engineers, vibe-handoff prep, understanding AI-generated code, learning what `/bq-auto` did. Optional save to `.bequite/handoff/explain-<slug>.md` for `/bq-handoff` bundling.
+
+**bq-help.md aligned:**
+- Added standardized command fields block at the end
+- Added alpha.5+ alignment notice at top pointing to `commands.md` for the canonical reference
+- Added "Notes on the alpha.5+ surface" section documenting:
+  - Updated phase names (Setup and Discovery / Product Framing and Research / Planning and Build / Quality and Review / Release / Memory and Handoff)
+  - Commands added in alpha.2+ that weren't in the original phase 0-5 listing (`/bq-mode`, `/bq-new`, `/bq-existing`, `/bq-feature`, `/bq-auto`, `/bq-p0..p5`, `/bq-uiux-variants`, `/bq-live-edit`, `/bq-now`, `/bq-spec`, `/bq-explain`)
+
+**Updated:**
+- `README.md` — version bump to alpha.7; badge shows 39 commands; `/bq-spec` added to P1 command map; `/bq-explain` added to root; alpha.7 entries added to "MVP now" + alpha.8 pending list
+- `CLAUDE.md` — version bump to alpha.7; 39 commands; new commands referenced
+- `docs/specs/COMMAND_CATALOG.md` — bumped to alpha.7; added `/bq-spec` + `/bq-explain` entries with skills + path conventions
+- `commands.md` — added `/bq-spec` + `/bq-explain` full entries; updated version + tally; added `/bq-explain` to Quick orientation table
+
+**Tally after alpha.7:**
+- Commands: 37 → 39 (+2: `/bq-spec`, `/bq-explain`)
+- Skills: 15 (unchanged)
+- Commands with standardized template: 38 of 39 (only `/bq-help` has a notes-style block at the end vs. the inline labeled fields; close enough — that command is itself a reference)
+
+**Cumulative version state:**
+- v3.0.0-alpha.1: lightweight skill pack MVP (24 commands, 7 skills)
+- v3.0.0-alpha.2: mandatory workflow gates + 6 modes + 7 specialist skills (34 commands, 14 skills)
+- v3.0.0-alpha.3: tool neutrality principle (no command count change)
+- v3.0.0-alpha.4: scoped /bq-auto + variants + live edit (36 commands, 15 skills)
+- v3.0.0-alpha.5: studio cleanup + /bq-now + mistake memory wiring + --mode flag + commands.md (37 commands, 15 skills)
+- v3.0.0-alpha.6: installer auto-copies alpha.5 templates + 19 commands extended (37 commands, 15 skills)
+- v3.0.0-alpha.7 (this commit): /bq-spec + /bq-explain + bq-help alignment (39 commands, 15 skills)
+
+**Pending (alpha.8 — minimal remaining):**
+- Live verification of `/bequite` inside Claude Code against a fresh real-world project (user action — installer is ready for this)
+- Architecture docs expanded from concise summaries to full reference depth (4 docs; current versions are 60-100 lines, full ref would be 200-300 each)
+- `/bq-undo` and `/bq-cost` commands (lower priority; defer unless user pull is strong)
+
+**Article VI honest reporting:**
+- `/bq-spec` and `/bq-explain` are structurally in place. Runtime behavior (the agent's actual response when invoked) follows the procedures documented in each file's Steps + Output format sections.
+- `bq-help.md` was given a standardized fields block at the end AND an alignment notice at top. The body still uses original phase names but the alignment notice corrects this. Full body rewrite deferred to alpha.8 if needed.
+- README's alpha.7 entries are accurate per this commit. v3.0.0-alpha.7 is NOT tagged yet (user-gated).
+
+---
+
 ## 2026-05-12 — alpha.6 ship: installer auto-copies alpha.5 templates + 19 alpha.1 commands extended with standardized fields
 
 **Action:** User said "continue" — picking up the deferred alpha.6 work.

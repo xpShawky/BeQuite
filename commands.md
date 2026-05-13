@@ -4,7 +4,7 @@
 >
 > For full procedural detail per command, click through to the matching file at `.claude/commands/<name>.md`.
 
-**Version:** v3.0.0-alpha.5 (in progress) · 37 slash commands · 15 specialist skills · 6 workflow phases · 23 workflow gates · 17 hard human gates
+**Version:** v3.0.0-alpha.7 · 39 slash commands · 15 specialist skills · 6 workflow phases · 23 workflow gates · 17 hard human gates
 
 ---
 
@@ -77,6 +77,26 @@ Full command reference (this file's source — read by Claude Code on demand).
 - **Inputs:** none
 - **Next:** any command from the list
 - **Full spec:** [`.claude/commands/bq-help.md`](.claude/commands/bq-help.md)
+
+### `/bq-explain "<target>"` (NEW in alpha.7)
+
+Plain-English explainer for files / functions / decisions / concepts / artifacts.
+
+- **Phase:** Any (read-only)
+- **Purpose:** Take a piece of code or a decision and explain it in 4 sections — What it is / What it does / Why it matters / Things to be careful of.
+- **When to use:** AI-generated code you don't understand; vibe-handoff prep; inherited project; understanding `/bq-auto` output.
+- **When NOT to use:** writing new code (use `/bq-feature`); fixing bugs (use `/bq-fix`).
+- **Required gates:** `BEQUITE_INITIALIZED`
+- **Inputs:** file path, function name, concept, decision, or BeQuite artifact name
+- **Writes:** nothing by default (chat only); optional `.bequite/handoff/explain-<slug>.md`
+- **Examples:**
+  ```
+  /bq-explain "lib/auth.ts"
+  /bq-explain "the PricingCards component"
+  /bq-explain "ADR-002"
+  /bq-explain "what /bq-auto did last run"
+  ```
+- **Full spec:** [`.claude/commands/bq-explain.md`](.claude/commands/bq-explain.md)
 
 ### `/bq-now` (NEW in alpha.5)
 
@@ -242,6 +262,26 @@ Write `IMPLEMENTATION_PLAN.md` (15 sections).
 - **Next:** `/bq-assign` or `/bq-multi-plan`
 - **Example:** `/bq-plan`
 - **Full spec:** [`.claude/commands/bq-plan.md`](.claude/commands/bq-plan.md)
+
+### `/bq-spec "<feature>"` (NEW in alpha.7)
+
+One-page Spec Kit-compatible spec.
+
+- **Phase:** P1 / P2 (framing-shaped or feature-shaped)
+- **Purpose:** write a focused one-page spec at `specs/<slug>/spec.md` with What / Why / Who / Acceptance / Out-of-scope / Constraints / Open questions / Success metric. Spec Kit-compatible path so other tools can pick it up.
+- **When to use:** documenting a feature for stakeholders before engineering; portable spec across BeQuite + Spec Kit; bridging team conversation to technical plan.
+- **When NOT to use:** full project planning (use `/bq-plan`); Add Feature mini-cycle (use `/bq-feature`); quick fix (use `/bq-fix`).
+- **Required gates:** `BEQUITE_INITIALIZED`; `MODE_SELECTED` recommended
+- **Inputs:** feature or product idea in quotes
+- **Writes:** `specs/<slug>/spec.md`, `.bequite/plans/spec-<slug>.md`, `DECISIONS.md`, `OPEN_QUESTIONS.md`
+- **Skills activated:** `bequite-product-strategist` (JTBD framework)
+- **Examples:**
+  ```
+  /bq-spec "Add CSV export to bookings page"
+  /bq-spec "Patient intake form for the clinic SaaS"
+  /bq-spec "Lead capture landing page"
+  ```
+- **Full spec:** [`.claude/commands/bq-spec.md`](.claude/commands/bq-spec.md)
 
 ### `/bq-multi-plan`
 
@@ -585,7 +625,8 @@ Three commands for daily-driver use:
 |---|---|---|
 | `/bq-now` | One line — phase + last + next | quick status check |
 | `/bequite` | Full menu — gate status + recommended 3 | orientation, first time each session |
-| `/bq-help` | Full command reference | when learning the system |
+| `/bq-help` | Full command reference (in chat) | when learning the system |
+| `/bq-explain "<target>"` | Plain-English explanation in 4 sections | understanding inherited code / decisions / artifacts |
 
 ---
 

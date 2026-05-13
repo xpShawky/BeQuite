@@ -1,7 +1,7 @@
-# BeQuite Command Catalog (v3.0.0-alpha.5)
+# BeQuite Command Catalog (v3.0.0-alpha.7)
 
-**Status:** authored 2026-05-11; expanded 2026-05-12 (alpha.4: scoped auto + variants + live edit; alpha.5: /bq-now + mistake memory wiring + --mode flag)
-**Total commands:** 37 (1 root menu + 36 `/bq-*`)
+**Status:** authored 2026-05-11; expanded 2026-05-12 across alpha.2–alpha.7
+**Total commands:** 39 (1 root menu + 38 `/bq-*`)
 **Total skills:** 15 (7 baseline + 7 specialist + 1 live-edit)
 **Human-readable reference:** [`commands.md`](../../commands.md) at repo root
 
@@ -37,6 +37,26 @@ Single source of truth for every BeQuite command. Each entry lists: when to use,
 - **Writes:** nothing (read-only)
 - **Output:** single line, e.g. `P2 build · mode: Add Feature · last: /bq-implement T-2.3 ✓ · next: /bq-test`
 - **Next:** command in the `next:` field
+
+### `/bq-spec "<feature>"` (NEW in alpha.7)
+- **Purpose:** write a one-page Spec Kit-compatible spec at `specs/<slug>/spec.md`
+- **Phase:** P1 / P2 (framing-shaped or feature-shaped)
+- **Required gates:** `BEQUITE_INITIALIZED`; `MODE_SELECTED` (recommended)
+- **Reads:** `PROJECT_STATE.md`, `SCOPE.md` (if exists), `IMPLEMENTATION_PLAN.md` (if exists), `RESEARCH_REPORT.md` (if exists)
+- **Writes:** `specs/<slug>/spec.md`, `.bequite/plans/spec-<slug>.md`, `DECISIONS.md`, `OPEN_QUESTIONS.md`
+- **Skills activated:** `bequite-product-strategist` (for JTBD discipline)
+- **Output:** structured one-page spec with What / Why / Who / Acceptance / Out-of-scope / Constraints / Open questions / Success metric
+- **Next:** `/bq-plan` (turn spec into full plan) or `/bq-feature` (mini-cycle if scope small)
+
+### `/bq-explain "<target>"` (NEW in alpha.7)
+- **Purpose:** explain a file / function / decision / concept / BeQuite artifact in plain English
+- **Phase:** any (read-only)
+- **Required gates:** `BEQUITE_INITIALIZED`
+- **Reads:** the target file(s) + 1-2 hops of related files
+- **Writes:** nothing by default; optionally `.bequite/handoff/explain-<slug>.md` if user saves
+- **Output:** 4-section structured explanation — What it is / What it does / Why it matters / Things to be careful of
+- **Use cases:** onboarding, vibe-handoff prep, inherited code, understanding what `/bq-auto` did
+- **Next:** another `/bq-explain` or `/bq-handoff` (bundles explanations)
 
 ### `/bq-init`
 - **Purpose:** initialize `.bequite/` tree + baseline state files
@@ -359,7 +379,7 @@ Single source of truth for every BeQuite command. Each entry lists: when to use,
 
 ## Summary
 
-37 commands, 15 skills, 6 modes, 6 phases, 23 gates, 17 hard human gates.
+39 commands, 15 skills, 6 modes, 6 phases, 23 gates, 17 hard human gates.
 
 **Discipline + memory + verified evidence > velocity without a plan.**
 

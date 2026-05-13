@@ -16,9 +16,9 @@ This repo IS the source of the skill pack. Its `.claude/commands/` + `.claude/sk
 
 ---
 
-## Current spec: v3.0.0-alpha.5
+## Current spec: v3.0.0-alpha.7
 
-- **37 slash commands** (`.claude/commands/bequite.md` + 36 × `.claude/commands/bq-*.md`)
+- **39 slash commands** (`.claude/commands/bequite.md` + 38 × `.claude/commands/bq-*.md`)
 - **15 skills** (`.claude/skills/bequite-*/SKILL.md`)
 - **6 explicit modes** — New Project, Existing Audit, Add Feature, Fix Problem, Research Only, Release Readiness
 - **6 workflow phases** — P0 Setup → P1 Framing → P2 Build → P3 Quality → P4 Release → P5 Memory
@@ -29,6 +29,8 @@ This repo IS the source of the skill pack. Its `.claude/commands/` + `.claude/sk
 - **Live edit** — `/bq-live-edit "task"` section-by-section frontend edits with section mapping
 - **Mistake memory** — wired into 7 commands (fix / audit / review / red-team / verify / auto / live-edit); writes to `.bequite/state/MISTAKE_MEMORY.md`
 - **Quick orientation** — `/bq-now` returns one-line status (faster than `/bequite`)
+- **Spec Kit interop** — `/bq-spec "<feature>"` writes one-page `specs/<slug>/spec.md`
+- **Plain-English explainer** — `/bq-explain "<target>"` for files / functions / decisions / artifacts
 - **Public command reference** — `commands.md` at repo root
 
 ---
@@ -37,7 +39,7 @@ This repo IS the source of the skill pack. Its `.claude/commands/` + `.claude/sk
 
 | Need | Path |
 |---|---|
-| Slash commands (37) | `.claude/commands/bequite.md` + `.claude/commands/bq-*.md` |
+| Slash commands (39) | `.claude/commands/bequite.md` + `.claude/commands/bq-*.md` |
 | Skills (15) | `.claude/skills/bequite-*/SKILL.md` |
 | Public command reference | `commands.md` (repo root) |
 | BeQuite memory | `.bequite/` |

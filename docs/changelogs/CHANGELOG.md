@@ -6,12 +6,26 @@ Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANG
 
 ---
 
-## [Unreleased — alpha.7]
+## [Unreleased — alpha.8]
 
 - Live verification of `/bequite` against fresh real-world projects (user-action; installer is ready)
 - Architecture docs expanded from summaries to full reference depth (WORKFLOW_GATES, RESEARCH_DEPTH_STRATEGY, FEATURE_AND_FIX_WORKFLOWS, DEVOPS_CLOUD_SAFETY)
-- Additional trendy commands evaluated (`/bq-spec`, `/bq-explain`, `/bq-undo`, `/bq-cost`)
-- `/bq-help` extended with standardized fields (was excluded in alpha.6 as a meta-reference command)
+- Additional trendy commands (`/bq-undo`, `/bq-cost`) — defer unless user pull is strong
+
+---
+
+## [v3.0.0-alpha.7] — 2026-05-12
+
+### Added
+- `/bq-spec "<feature>"` — Spec Kit-compatible one-page spec writer. Bridges BeQuite to the GitHub Spec Kit ecosystem. Writes `specs/<slug>/spec.md` with What / Why / Who / Acceptance / Out-of-scope / Constraints / Open questions / Success metric. Activates `bequite-product-strategist` for JTBD discipline.
+- `/bq-explain "<target>"` — plain-English explainer for files / functions / decisions / concepts / BeQuite artifacts. 4-section structured output. Read-only. Use cases: onboarding, vibe-handoff prep, understanding inherited code, learning what `/bq-auto` did.
+
+### Changed
+- `bq-help.md` — added alpha.5+ alignment notice at top pointing to `commands.md`; added standardized command fields block at the end; documented updated phase names + commands added in alpha.2+
+- `README.md` — version bump to alpha.7; 39-command badge; new commands added to command map + MVP roadmap
+- `CLAUDE.md` — version bump; new commands referenced
+- `docs/specs/COMMAND_CATALOG.md` — added `/bq-spec` + `/bq-explain` entries
+- `commands.md` — added `/bq-spec` + `/bq-explain` full entries with examples + skill activation
 
 ---
 

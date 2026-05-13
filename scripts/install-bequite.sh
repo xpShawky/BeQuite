@@ -9,7 +9,7 @@
 
 set -uo pipefail
 
-BEQUITE_VERSION="v3.0.0-alpha.8"
+BEQUITE_VERSION="v3.0.0-alpha.10"
 REPO_URL="https://github.com/xpShawky/BeQuite.git"
 TARGET="$(pwd)"
 FROM_LOCAL=""
@@ -80,7 +80,7 @@ fi
 
 # --- 3. .claude/commands/ (37 slash commands) ---
 
-section "Installing .claude/commands/ (42 slash commands)"
+section "Installing .claude/commands/ (43 slash commands)"
 mkdir -p "./.claude/commands"
 cp -r "$SOURCE/.claude/commands/"* "./.claude/commands/"
 count=$(ls -1 ./.claude/commands/*.md 2>/dev/null | wc -l)
@@ -88,7 +88,7 @@ echo "  $(green "$count slash commands installed")"
 
 # --- 4. .claude/skills/bequite-* (15 specialist skills) ---
 
-section "Installing .claude/skills/bequite-* (18 specialist skills)"
+section "Installing .claude/skills/bequite-* (19 specialist skills)"
 mkdir -p "./.claude/skills"
 for skill in "$SOURCE"/.claude/skills/bequite-*/; do
   if [[ -d "$skill" ]]; then
@@ -101,7 +101,7 @@ done
 # --- 5. .bequite/ scaffold (alpha.5: principles + uiux + new state files) ---
 
 section "Scaffolding .bequite/ memory (alpha.5-8: principles, uiux, jobs, money, mistake memory, assumptions)"
-mkdir -p ./.bequite/{state,logs,prompts/user_prompts,prompts/generated_prompts,prompts/model_outputs,audits,plans,tasks,principles,decisions,uiux/screenshots,uiux/archive,jobs,money}
+mkdir -p ./.bequite/{state,logs,prompts/user_prompts,prompts/generated_prompts,prompts/model_outputs,audits,plans,tasks,principles,decisions,uiux/screenshots,uiux/archive,jobs,money,backups}
 echo "  directory scaffold ready"
 
 # Copy alpha.5 templates into target project (preserve existing if present)
@@ -169,8 +169,9 @@ $BQ_MARKER
 - \`/bq-init\` to formally initialize (creates baseline state files).
 - \`/bq-auto [intent] "task"\` for scoped autonomous mode (17 intents).
 - \`/bq-suggest "<situation>"\` for workflow advice — recommends commands + mode.
-- \`/bq-job-finder\` or \`/bq-make-money\` for opportunity discovery (Claude searches; supports \`worldwide_hidden=true\`).
-- BeQuite memory lives in \`.bequite/\` (state / logs / plans / tasks / audits / principles / uiux / jobs / money).
+- \`/bq-job-finder\` or \`/bq-make-money\` for opportunity discovery (Claude searches; deep intelligence + \`worldwide_hidden=true\`).
+- \`/bq-update\` to safely refresh BeQuite itself when a new alpha ships.
+- BeQuite memory lives in \`.bequite/\` (state / logs / plans / tasks / audits / principles / uiux / jobs / money / backups).
 - BeQuite commands live in \`.claude/commands/bequite.md\` + \`.claude/commands/bq-*.md\`.
 - BeQuite skills live in \`.claude/skills/bequite-*/\`.
 
@@ -203,9 +204,11 @@ This project uses **BeQuite** — a lightweight Claude Code skill pack.
 - \`/bq-help\` — full reference (also at \`commands.md\`)
 - \`/bq-auto [intent] "task"\` — scoped autonomous mode
 - \`/bq-suggest "<situation>"\` — workflow advisor
-- \`/bq-job-finder\` / \`/bq-make-money\` — opportunity discovery (Claude searches; \`worldwide_hidden=true\` mode available)
+- \`/bq-job-finder\` / \`/bq-make-money\` — opportunity discovery with deep intelligence + \`worldwide_hidden=true\`
+- \`/bq-update\` — safe BeQuite self-update (backups + non-destructive)
 
 See \`.bequite/\` for memory + state. Named tools are EXAMPLES — see \`.bequite/principles/TOOL_NEUTRALITY.md\`.
+Memory-first principle: see \`docs/architecture/MEMORY_FIRST_BEHAVIOR.md\`.
 
 <!-- /BEQUITE -->
 EOF
@@ -239,13 +242,20 @@ echo "    /bq-auto fix \"..\"     scoped fix mini-cycle"
 echo "    /bq-auto uiux variants=5 \"..\"   generate 5 UI directions"
 echo "    /bq-live-edit \"..\"               section-by-section frontend edits"
 echo
-echo "  $(cyan "Opportunity and Workflows (alpha.8):")"
+echo "  $(cyan "Opportunity and Workflows (alpha.8 + deep intelligence alpha.10):")"
 echo "    /bq-suggest \"<situation>\"        workflow advisor + mode recommendation"
 echo "    /bq-job-finder                   real work opportunities (Claude searches)"
 echo "    /bq-make-money                   earning opportunities + 10 tracks"
 echo "      worldwide_hidden=true          search beyond famous English platforms"
+echo "      trending_now=true              last-30-days surge"
+echo "      community_discovered=true      Reddit / IH / HN / X / forum signals"
+echo "      AI_assisted=true               surface AI-multiplier work paths"
 echo
-echo "  Memory:        .bequite/ (state / logs / plans / tasks / audits / uiux / jobs / money)"
+echo "  $(cyan "Maintenance (alpha.10):")"
+echo "    /bq-update                       safe BeQuite self-update (backups + no overwrites)"
+echo "    /bq-update check                 preview what would change"
+echo
+echo "  Memory:        .bequite/ (state / logs / plans / tasks / audits / uiux / jobs / money / backups)"
 echo "  Commands:      .claude/commands/"
 echo "  Skills:        .claude/skills/"
 echo "  Reference:     commands.md (repo root) — full command catalog"

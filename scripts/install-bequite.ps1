@@ -32,7 +32,7 @@ param(
 )
 
 $ErrorActionPreference = "Continue"
-$BEQUITE_VERSION = "v3.0.0-alpha.8"
+$BEQUITE_VERSION = "v3.0.0-alpha.10"
 
 function Write-Section($text) {
   Write-Host ""
@@ -100,7 +100,7 @@ if ($FromLocal -ne "") {
 
 # --- 3. Copy .claude/commands/ ---
 
-Write-Section "Installing .claude/commands/ (42 slash commands)"
+Write-Section "Installing .claude/commands/ (43 slash commands)"
 $SRC_CMD = Join-Path $SOURCE ".claude\commands"
 if (-not (Test-Path $SRC_CMD)) {
   Exit-Fatal "Source missing $SRC_CMD — is this a valid BeQuite repo?"
@@ -112,7 +112,7 @@ Write-Host "  $count slash commands installed" -ForegroundColor Green
 
 # --- 4. Copy .claude/skills/bequite-* (15 specialist skills) ---
 
-Write-Section "Installing .claude/skills/bequite-* (18 specialist skills)"
+Write-Section "Installing .claude/skills/bequite-* (19 specialist skills)"
 $SRC_SKILLS = Join-Path $SOURCE ".claude\skills"
 if (-not (Test-Path $SRC_SKILLS)) {
   Exit-Fatal "Source missing $SRC_SKILLS"
@@ -142,7 +142,8 @@ $SCAFFOLD = @(
   ".bequite\uiux\screenshots",
   ".bequite\uiux\archive",
   ".bequite\jobs",
-  ".bequite\money"
+  ".bequite\money",
+  ".bequite\backups"
 )
 foreach ($dir in $SCAFFOLD) {
   if (-not (Test-Path $dir)) {
@@ -175,6 +176,18 @@ $TEMPLATES = @{
   ".bequite\money\OPPORTUNITIES.md"       = ".bequite\money\OPPORTUNITIES.md"
   ".bequite\money\TRUST_CHECKS.md"        = ".bequite\money\TRUST_CHECKS.md"
   ".bequite\money\ACTION_PLAN.md"         = ".bequite\money\ACTION_PLAN.md"
+  # alpha.10 deep-intelligence templates (jobs)
+  ".bequite\jobs\HIDDEN_GEMS.md"          = ".bequite\jobs\HIDDEN_GEMS.md"
+  ".bequite\jobs\COMMUNITY_SIGNALS.md"    = ".bequite\jobs\COMMUNITY_SIGNALS.md"
+  ".bequite\jobs\AI_ASSISTED_WORK.md"     = ".bequite\jobs\AI_ASSISTED_WORK.md"
+  # alpha.10 deep-intelligence templates (money)
+  ".bequite\money\HIDDEN_GEMS.md"         = ".bequite\money\HIDDEN_GEMS.md"
+  ".bequite\money\COMMUNITY_SIGNALS.md"   = ".bequite\money\COMMUNITY_SIGNALS.md"
+  ".bequite\money\AI_ASSISTED_PATHS.md"   = ".bequite\money\AI_ASSISTED_PATHS.md"
+  # alpha.10 version + update tracking
+  ".bequite\state\BEQUITE_VERSION.md"     = ".bequite\state\BEQUITE_VERSION.md"
+  ".bequite\state\UPDATE_SOURCE.md"       = ".bequite\state\UPDATE_SOURCE.md"
+  ".bequite\logs\UPDATE_LOG.md"           = ".bequite\logs\UPDATE_LOG.md"
 }
 foreach ($pair in $TEMPLATES.GetEnumerator()) {
   $src = Join-Path $SOURCE $pair.Key
@@ -215,8 +228,9 @@ $BQ_MARKER
 - ``/bq-init`` to formally initialize (creates baseline state files).
 - ``/bq-auto [intent] "task"`` for scoped autonomous mode (17 intents).
 - ``/bq-suggest "<situation>"`` for workflow advice — recommends commands + mode.
-- ``/bq-job-finder`` or ``/bq-make-money`` for opportunity discovery (Claude searches; supports ``worldwide_hidden=true``).
-- BeQuite memory lives in ``.bequite/`` (state / logs / plans / tasks / audits / principles / uiux / jobs / money).
+- ``/bq-job-finder`` or ``/bq-make-money`` for opportunity discovery (Claude searches; deep intelligence + ``worldwide_hidden=true``).
+- ``/bq-update`` to safely refresh BeQuite itself when a new alpha ships.
+- BeQuite memory lives in ``.bequite/`` (state / logs / plans / tasks / audits / principles / uiux / jobs / money / backups).
 - BeQuite commands live in ``.claude/commands/bequite.md`` + ``.claude/commands/bq-*.md``.
 - BeQuite skills live in ``.claude/skills/bequite-*/``.
 
@@ -250,9 +264,11 @@ This project uses **BeQuite** — a lightweight Claude Code skill pack.
 - ``/bq-help`` — full reference (also at ``commands.md``)
 - ``/bq-auto [intent] "task"`` — scoped autonomous mode
 - ``/bq-suggest "<situation>"`` — workflow advisor
-- ``/bq-job-finder`` / ``/bq-make-money`` — opportunity discovery (Claude searches; ``worldwide_hidden=true`` mode available)
+- ``/bq-job-finder`` / ``/bq-make-money`` — opportunity discovery with deep intelligence + ``worldwide_hidden=true``
+- ``/bq-update`` — safe BeQuite self-update (backups + non-destructive)
 
 See ``.bequite/`` for memory + state. Named tools are EXAMPLES — see ``.bequite/principles/TOOL_NEUTRALITY.md``.
+Memory-first principle: see ``docs/architecture/MEMORY_FIRST_BEHAVIOR.md``.
 
 <!-- /BEQUITE -->
 "@
@@ -286,13 +302,20 @@ Write-Host "    /bq-auto fix ""..""    scoped fix mini-cycle" -ForegroundColor W
 Write-Host "    /bq-auto uiux variants=5 ""..""   generate 5 UI directions" -ForegroundColor White
 Write-Host "    /bq-live-edit ""..""              section-by-section frontend edits" -ForegroundColor White
 Write-Host ""
-Write-Host "  Opportunity and Workflows (alpha.8):" -ForegroundColor Cyan
+Write-Host "  Opportunity and Workflows (alpha.8 + deep intelligence alpha.10):" -ForegroundColor Cyan
 Write-Host "    /bq-suggest ""<situation>""       workflow advisor + mode recommendation" -ForegroundColor White
 Write-Host "    /bq-job-finder                   real work opportunities (Claude searches)" -ForegroundColor White
 Write-Host "    /bq-make-money                   earning opportunities + 10 tracks" -ForegroundColor White
 Write-Host "      worldwide_hidden=true          search beyond famous English platforms" -ForegroundColor Gray
+Write-Host "      trending_now=true              last-30-days surge" -ForegroundColor Gray
+Write-Host "      community_discovered=true      Reddit / IH / HN / X / forum signals" -ForegroundColor Gray
+Write-Host "      AI_assisted=true               surface AI-multiplier work paths" -ForegroundColor Gray
 Write-Host ""
-Write-Host "  Memory:        .bequite/ (state / logs / plans / tasks / audits / uiux / jobs / money)" -ForegroundColor Gray
+Write-Host "  Maintenance (alpha.10):" -ForegroundColor Cyan
+Write-Host "    /bq-update                       safe BeQuite self-update (backups + no overwrites)" -ForegroundColor White
+Write-Host "    /bq-update check                 preview what would change" -ForegroundColor White
+Write-Host ""
+Write-Host "  Memory:        .bequite/ (state / logs / plans / tasks / audits / uiux / jobs / money / backups)" -ForegroundColor Gray
 Write-Host "  Commands:      .claude/commands/" -ForegroundColor Gray
 Write-Host "  Skills:        .claude/skills/" -ForegroundColor Gray
 Write-Host "  Reference:     commands.md (repo root) — full command catalog" -ForegroundColor Gray

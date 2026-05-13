@@ -6,11 +6,31 @@ Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANG
 
 ---
 
-## [Unreleased — alpha.11]
+## [Unreleased — alpha.12]
 
-- Installer scripts updated to copy alpha.10 new memory files (HIDDEN_GEMS / COMMUNITY_SIGNALS / AI_ASSISTED_*) + BEQUITE_VERSION.md + UPDATE_SOURCE.md
-- Live verification of `/bequite` against fresh real-world projects (user-action)
+- Live verification of `/bequite` against fresh real-world projects (user-action — installer now feature-complete through alpha.10)
 - Architecture docs expanded from concise summaries to full reference depth
+- `/bq-help` extended with full standardized fields
+
+---
+
+## [v3.0.0-alpha.11] — 2026-05-12
+
+### Added
+- Installer scripts (PowerShell + bash) now copy alpha.10 templates into target projects on `/bq-init`:
+  - jobs deep-intelligence: `HIDDEN_GEMS.md`, `COMMUNITY_SIGNALS.md`, `AI_ASSISTED_WORK.md`
+  - money deep-intelligence: `HIDDEN_GEMS.md`, `COMMUNITY_SIGNALS.md`, `AI_ASSISTED_PATHS.md`
+  - version + update tracking: `BEQUITE_VERSION.md`, `UPDATE_SOURCE.md`, `UPDATE_LOG.md`
+- Directory scaffold extended: `.bequite/backups/`
+- Final install banner now shows "Maintenance (alpha.10)" section with `/bq-update`
+- CLAUDE.md template updated to surface `/bq-update`, deep intelligence flags, and memory-first principle reference
+
+### Changed
+- Installer version messaging: `v3.0.0-alpha.8` → `v3.0.0-alpha.10`
+- Installer banner counts: "42 slash commands" → "43"; "18 specialist skills" → "19"
+
+### Effect
+New BeQuite installs match alpha.10 functionality immediately. `/bq-update` works from day one because BEQUITE_VERSION.md + UPDATE_SOURCE.md are present.
 
 ---
 

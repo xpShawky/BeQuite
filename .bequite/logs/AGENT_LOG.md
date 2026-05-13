@@ -2,6 +2,50 @@
 
 Append-only chronicle of every BeQuite command run. Newest at top.
 
+## 2026-05-12 — alpha.11 ship: installer carries alpha.10 deep-intelligence + version tracking + backups
+
+**Action:** Installer scripts updated so new BeQuite installs land alpha.10 functionality automatically — no manual file copying.
+
+**Updates to `install-bequite.ps1` + `install-bequite.sh`:**
+
+- Bumped `BEQUITE_VERSION` messaging: `v3.0.0-alpha.8` → `v3.0.0-alpha.10`
+- Banner counts: "42 slash commands" → "43"; "18 specialist skills" → "19"
+- Added directory scaffold: `.bequite/backups/`
+- 9 new `copy_template` calls:
+  - jobs deep-intelligence: HIDDEN_GEMS, COMMUNITY_SIGNALS, AI_ASSISTED_WORK
+  - money deep-intelligence: HIDDEN_GEMS, COMMUNITY_SIGNALS, AI_ASSISTED_PATHS
+  - version + update tracking: BEQUITE_VERSION, UPDATE_SOURCE, UPDATE_LOG
+- CLAUDE.md template updated: surfaces `/bq-update`, deep intelligence flags (trending_now / community_discovered / AI_assisted), memory-first principle reference
+- Final banner: new "Maintenance (alpha.10)" section with `/bq-update` + `/bq-update check`
+
+**Templates installed on `/bq-init`** (preserves existing — re-installs never overwrite):
+
+| Category | Files |
+|---|---|
+| alpha.3 | `.bequite/principles/TOOL_NEUTRALITY.md` |
+| alpha.4 | `.bequite/uiux/` 4 templates |
+| alpha.5 | `.bequite/state/MISTAKE_MEMORY.md`, `ASSUMPTIONS.md`, `commands.md` (root) |
+| alpha.8 jobs | 5 base templates |
+| alpha.8 money | 5 base templates |
+| **alpha.10 jobs deep-intel** | `HIDDEN_GEMS.md`, `COMMUNITY_SIGNALS.md`, `AI_ASSISTED_WORK.md` |
+| **alpha.10 money deep-intel** | `HIDDEN_GEMS.md`, `COMMUNITY_SIGNALS.md`, `AI_ASSISTED_PATHS.md` |
+| **alpha.10 version tracking** | `BEQUITE_VERSION.md`, `UPDATE_SOURCE.md`, `UPDATE_LOG.md` |
+
+Total: 22 templates auto-installed (3 + 4 + 3 + 5 + 5 + 3 + 3 + 3 = 26 base files + commands.md + 18 backups/principles/uiux subdirs).
+
+**Effect:** new BeQuite installs match alpha.10 functionality immediately. `/bq-update` works from day one because `BEQUITE_VERSION.md` + `UPDATE_SOURCE.md` are present.
+
+**Article VI honest reporting:**
+- Installer logic verified by code inspection. Not yet end-to-end tested by running `irm | iex` from a fresh repo. The first user install on alpha.11+ will be the real verification.
+- All paths use the preserve-existing pattern (`-not (Test-Path $dst)` in PowerShell; `! -f` in bash) so re-installs don't clobber user work.
+
+**Pending (alpha.12+):**
+- Live verification of `/bequite` against fresh real-world projects (user action; installer now carries everything)
+- Architecture docs expanded from concise summaries to full reference depth (still pending from older roadmaps)
+- `/bq-help` extended with full standardized fields (still pending; current state has alignment notice + brief block)
+
+---
+
 ## 2026-05-12 — alpha.10 ship: deep opportunity intelligence + /bq-update + memory-first behavior
 
 **Action:** User invoked `/bq-auto` with 4 upgrades. Per /bq-auto discipline, no hard gates tripped — continued autonomously.

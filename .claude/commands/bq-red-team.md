@@ -206,6 +206,21 @@ Next: /bq-fix <highest-severity-finding>
 
 ---
 
+## Mistake memory update
+
+Red-team findings are **high-signal**. Every BLOCKER and most HIGH findings should produce a MISTAKE_MEMORY entry:
+
+- Treat the kill-shot question as a **prevention rule** worth grep-ing for forever
+- Tag with the attack-angle category (`[sec]`, `[arch]`, `[testing]`, `[deploy]`, `[scale]`, `[ux]`, `[token]`, `[assume]`, `[tool]`)
+- Include the **exploit example** verbatim (for `[sec]` entries) so future code reviews can search for the pattern
+- Cite related files for follow-up audits
+
+Medium / Low findings: skip MISTAKE_MEMORY unless they're a **pattern** (multiple instances of the same root cause across the codebase).
+
+See `.bequite/state/MISTAKE_MEMORY.md` template.
+
+---
+
 ## Tool neutrality (global rule)
 
 ⚠ **Red Team probes the cost of tool choices that lack justification.**

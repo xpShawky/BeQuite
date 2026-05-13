@@ -138,6 +138,20 @@ Next: /bq-fix <first-blocker>  (if Blocked)
 
 ---
 
+## Mistake memory update
+
+When a review surfaces a finding that's a **repeat of a previous fix** (same pattern, different file), append a MISTAKE_MEMORY entry:
+
+- Note that this is the **second occurrence** of a pattern
+- Update the existing entry's "How to detect next time" with the new detection signal (since the previous one missed this instance)
+- Strengthen the prevention rule
+
+If the review uncovers a **new** pattern worth remembering, add a fresh entry. Skip for one-off issues confined to a single file.
+
+See `.bequite/state/MISTAKE_MEMORY.md` template.
+
+---
+
 ## Tool neutrality (global rule)
 
 ⚠ **Reviews must flag any "use X" claim in the diff that lacks a decision section.**

@@ -1,8 +1,9 @@
-# BeQuite Command Catalog (v3.0.0-alpha.4)
+# BeQuite Command Catalog (v3.0.0-alpha.5)
 
-**Status:** authored 2026-05-11; expanded 2026-05-12 (alpha.4: scoped auto + variants + live edit)
-**Total commands:** 36 (1 root menu + 35 `/bq-*`)
+**Status:** authored 2026-05-11; expanded 2026-05-12 (alpha.4: scoped auto + variants + live edit; alpha.5: /bq-now + mistake memory wiring + --mode flag)
+**Total commands:** 37 (1 root menu + 36 `/bq-*`)
 **Total skills:** 15 (7 baseline + 7 specialist + 1 live-edit)
+**Human-readable reference:** [`commands.md`](../../commands.md) at repo root
 
 Single source of truth for every BeQuite command. Each entry lists: when to use, what it reads, what it writes, required previous gates, quality gate, usual next.
 
@@ -27,6 +28,15 @@ Single source of truth for every BeQuite command. Each entry lists: when to use,
 - **Required gates:** none
 - **Writes:** none
 - **Next:** any command from the list
+
+### `/bq-now` (NEW in alpha.5)
+- **Purpose:** one-line orientation; faster than `/bequite`
+- **Phase:** any
+- **Required gates:** none
+- **Reads:** `.bequite/state/{CURRENT_PHASE,CURRENT_MODE,LAST_RUN,WORKFLOW_GATES,OPEN_QUESTIONS}.md`
+- **Writes:** nothing (read-only)
+- **Output:** single line, e.g. `P2 build · mode: Add Feature · last: /bq-implement T-2.3 ✓ · next: /bq-test`
+- **Next:** command in the `next:` field
 
 ### `/bq-init`
 - **Purpose:** initialize `.bequite/` tree + baseline state files
@@ -349,8 +359,8 @@ Single source of truth for every BeQuite command. Each entry lists: when to use,
 
 ## Summary
 
-36 commands, 15 skills, 6 modes, 6 phases, 23 gates, 17 hard human gates.
+37 commands, 15 skills, 6 modes, 6 phases, 23 gates, 17 hard human gates.
 
 **Discipline + memory + verified evidence > velocity without a plan.**
 
-**Scoped auto-mode means: continue by default until task is complete, tested, verified, and logged. Pause only at hard human gates.**
+**Scoped auto-mode means: continue by default until task is complete, tested, verified, and logged. Pause only at hard human gates. Mode flags (`--mode fast|deep|token-saver`) adjust depth without skipping safety.**

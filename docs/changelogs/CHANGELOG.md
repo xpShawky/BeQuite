@@ -6,13 +6,41 @@ Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANG
 
 ---
 
-## [Unreleased]
+## [Unreleased — alpha.6]
 
-### Added (alpha.5 — pending)
-- Mistake-memory writes wired into 7 commands (`/bq-fix`, `/bq-audit`, `/bq-review`, `/bq-red-team`, `/bq-verify`, `/bq-auto`, `/bq-live-edit`)
-- Fast / Deep / Token-saver mode flags on `/bq-auto`
-- 20 alpha.1 commands retroactively extended with new template sections
+- 20 alpha.1 commands retroactively extended with new template sections (Preconditions / Required gates / Quality gate / Failure behavior)
 - Installer scripts auto-copy `.bequite/principles/TOOL_NEUTRALITY.md` + `.bequite/uiux/` templates into target projects
+- Live verification of `/bequite` against fresh real-world projects (user-action)
+- Architecture docs expanded from summaries to full reference depth
+- Additional trendy commands evaluated (`/bq-spec`, `/bq-explain`, `/bq-undo`, `/bq-cost`)
+
+---
+
+## [v3.0.0-alpha.5] — 2026-05-12
+
+### Added
+- `/bq-now` — one-line orientation command (faster than `/bequite`)
+- `commands.md` at repo root — full human-readable command reference, workflow-ordered, linked from README
+- `--mode fast | deep | token-saver` flag on `/bq-auto` (depth adjustment; does NOT skip safety gates)
+- Mistake-memory writes wired into 7 commands (`/bq-fix`, `/bq-audit`, `/bq-review`, `/bq-red-team`, `/bq-verify`, `/bq-auto`, `/bq-live-edit`)
+
+### Removed
+- `studio/` directory (full Next.js app: marketing + api + dashboard + brand)
+- `docker-compose.yml` (Studio Docker orchestration)
+- `scripts/docker-up.ps1`, `scripts/docker-up.sh` (Studio dev runners)
+- Git history retains all of the above (ADR-004)
+
+### Changed
+- README: badge updated to 37 commands; `commands.md` link surfaced near the top; alpha.5 roadmap consolidated
+- CLAUDE.md: version bump; new file paths; mistake-memory + `/bq-now` + `commands.md` referenced
+- COMMAND_CATALOG.md: `/bq-now` entry added; tallies bumped; pointed at `commands.md`
+
+### Kept (per user "remove only studio") — explicitly NOT removed
+- `cli/`, `tests/`, `template/`, `evidence/`, `examples/`, `prompts/`, `state/`, `skill/`
+- `.dockerignore`, `.env.example`, `Makefile`, `package.json`, `.commitlintrc.json`
+- `scripts/bootstrap.{ps1,sh}`, `scripts/install.{ps1,sh}`
+- `docs/architecture/CLI_AUTHENTICATION_STRATEGY.md`, `docs/runbooks/LOCAL_DEV.md`
+- `BeQuite_MASTER_PROJECT.md`, root `CHANGELOG.md`
 
 ---
 

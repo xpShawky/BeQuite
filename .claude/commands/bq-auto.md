@@ -217,6 +217,42 @@ If paused at a hard gate:
   Resume: /bq-auto <same args>
 ```
 
+## Mode flag — fast / deep / token-saver
+
+`/bq-auto` accepts an optional `--mode` flag that adjusts the **depth** of execution. Hard human gates still apply regardless of mode.
+
+| Mode | Behavior | When to use |
+|---|---|---|
+| `--mode fast` | Skip 11-dim research (use 3 dims: stack + security + scalability); skip multi-plan; skip red-team; full verify still runs | Small fixes; trivial features; prototypes; you trust the existing stack |
+| `--mode deep` | Full 11-dim research; multi-plan prompted; red-team mandatory; full verify + audit | High-stakes new builds; production-bound changes; regulated projects (PCI / HIPAA / etc.) |
+| `--mode token-saver` | Read only files needed for this task; summarize older log entries (keep last 5); cache research; use focused skills (not all 15); avoid loading all docs every session | Long sessions; cost-sensitive work; partial fixes within a feature |
+| (no flag) | Balanced (current default) — full research per intent emphasis table, no red-team unless asked | Most cases |
+
+Examples:
+```
+/bq-auto fix "..." --mode fast
+/bq-auto new "..." --mode deep
+/bq-auto feature "..." --mode token-saver
+```
+
+**Mode flags are token-cost optimizations, NOT safety bypasses.** All 17 hard human gates still apply. All tool-neutrality decision sections still required.
+
+## Mistake memory update
+
+After this command completes, if it surfaced a recurring mistake pattern, an unexpected root cause, or a project-specific lesson, append an entry to `.bequite/state/MISTAKE_MEMORY.md`.
+
+Append when:
+- A repeated bug pattern emerged (same root cause as a previous fix)
+- A finding teaches a project-specific rule (e.g. "this codebase uses Tailwind v4 — don't apply v3 patterns")
+- A failure mode tripped a banned-weasel-word check (the agent caught itself; record so it doesn't recur)
+- A user correction revealed a wrong assumption
+
+Skip if:
+- Trivial one-off (typo, single missing import)
+- Already captured in MISTAKE_MEMORY.md (don't duplicate)
+
+Entry format: see `.bequite/state/MISTAKE_MEMORY.md`.
+
 ## Output format
 
 Narrate each step + sub-step ("Running /bq-clarify…", "Implementing T-2.3…"). Don't ask "should I continue?" between steps unless a hard gate trips.

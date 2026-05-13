@@ -16,17 +16,20 @@ This repo IS the source of the skill pack. Its `.claude/commands/` + `.claude/sk
 
 ---
 
-## Current spec: v3.0.0-alpha.4
+## Current spec: v3.0.0-alpha.5
 
-- **36 slash commands** (`.claude/commands/bequite.md` + 35 × `.claude/commands/bq-*.md`)
+- **37 slash commands** (`.claude/commands/bequite.md` + 36 × `.claude/commands/bq-*.md`)
 - **15 skills** (`.claude/skills/bequite-*/SKILL.md`)
 - **6 explicit modes** — New Project, Existing Audit, Add Feature, Fix Problem, Research Only, Release Readiness
 - **6 workflow phases** — P0 Setup → P1 Framing → P2 Build → P3 Quality → P4 Release → P5 Memory
 - **23 workflow gates** tracked in `.bequite/state/WORKFLOW_GATES.md` (block out-of-order commands)
 - **Phase orchestrators** — `/bq-p0` … `/bq-p5` walk a single phase end-to-end
-- **Scoped autonomous runner** — `/bq-auto [intent] "task"` parses 17 intent types and runs scoped workflow; pauses only at hard human gates
+- **Scoped autonomous runner** — `/bq-auto [intent] [--mode fast|deep|token-saver] "task"` parses 17 intent types; pauses only at hard human gates
 - **UI/UX variants** — `/bq-uiux-variants [N] "task"` generates 1-10 isolated design directions
 - **Live edit** — `/bq-live-edit "task"` section-by-section frontend edits with section mapping
+- **Mistake memory** — wired into 7 commands (fix / audit / review / red-team / verify / auto / live-edit); writes to `.bequite/state/MISTAKE_MEMORY.md`
+- **Quick orientation** — `/bq-now` returns one-line status (faster than `/bequite`)
+- **Public command reference** — `commands.md` at repo root
 
 ---
 
@@ -34,8 +37,9 @@ This repo IS the source of the skill pack. Its `.claude/commands/` + `.claude/sk
 
 | Need | Path |
 |---|---|
-| Slash commands (36) | `.claude/commands/bequite.md` + `.claude/commands/bq-*.md` |
+| Slash commands (37) | `.claude/commands/bequite.md` + `.claude/commands/bq-*.md` |
 | Skills (15) | `.claude/skills/bequite-*/SKILL.md` |
+| Public command reference | `commands.md` (repo root) |
 | BeQuite memory | `.bequite/` |
 | Workflow gate ledger | `.bequite/state/WORKFLOW_GATES.md` |
 | Mode selector | `.bequite/state/CURRENT_MODE.md` |

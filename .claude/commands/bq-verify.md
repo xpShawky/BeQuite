@@ -138,6 +138,19 @@ See `.claude/skills/bequite-release-gate/SKILL.md` for the deeper procedure (CI 
 
 ---
 
+## Mistake memory update
+
+When a verify gate fails, capture the **why** in MISTAKE_MEMORY if the failure is:
+- A pattern (e.g. "TypeScript strict mode catches X every release; we keep silencing it without root-causing")
+- Tied to a **prevention rule** that wasn't there before (e.g. "always run `npm ci` not `npm install` in CI — this release broke because of lockfile drift")
+- A signal that the CI ≠ local parity is slipping
+
+Skip MISTAKE_MEMORY for one-off transient failures (flaky e2e tests, rate-limited external API during smoke). Those are bug reports, not lessons.
+
+See `.bequite/state/MISTAKE_MEMORY.md` template.
+
+---
+
 ## Tool neutrality (global rule)
 
 ⚠ **Verify confirms what was built. The tools used to build it should already have decision sections from earlier phases.**

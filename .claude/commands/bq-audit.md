@@ -194,6 +194,22 @@ Next: /bq-fix <first-blocker-id>  (or /bq-red-team for adversarial review)
 
 ---
 
+## Mistake memory update
+
+Audit findings often reveal **systemic patterns** — the same class of mistake repeated across the codebase (e.g. multiple endpoints missing input validation; multiple pages without empty states). After the audit, append a MISTAKE_MEMORY entry for each pattern (not each instance):
+
+- Category tag (e.g. `[fe][design]`, `[be][validation]`, `[sec][input]`)
+- The pattern (one sentence)
+- Where it appeared (file:line list, top 3-5)
+- Prevention rule (what to check before adding new code)
+- How to detect next time (CI rule, lint config, axe-core check, etc.)
+
+Skip MISTAKE_MEMORY for purely cosmetic findings or one-offs.
+
+See `.bequite/state/MISTAKE_MEMORY.md` template.
+
+---
+
 ## Tool neutrality (global rule)
 
 ⚠ **Audit findings recommend candidates, not commitments.**

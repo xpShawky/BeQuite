@@ -292,6 +292,20 @@ Per the 15-type table above. Always plus `bequite-problem-solver` (the reproduce
 
 ---
 
+## Mistake memory update
+
+After a fix lands, evaluate whether the root cause is a **recurring pattern** in this project. If yes, append an entry to `.bequite/state/MISTAKE_MEMORY.md`:
+
+- One entry per **pattern**, not per **instance** (e.g. "missing await on async DB calls" is a pattern; one missed await on Friday is an instance)
+- Cite the file:line where the pattern occurred
+- Include a **prevention rule** that's concrete enough to grep for or check in CI
+
+Skip MISTAKE_MEMORY for trivial one-offs (typos, single missing import). The file is for **lessons that apply forward**, not a log of every fix.
+
+See `.bequite/state/MISTAKE_MEMORY.md` template + tag system.
+
+---
+
 ## Tool neutrality (global rule)
 
 ⚠ **A fix should rarely introduce a new tool. If it does, the fix mini-spec must include a decision section before the patch lands.**

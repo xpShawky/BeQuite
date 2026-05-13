@@ -219,6 +219,24 @@ Narrate steps 1-9. Pause **only** to ask the user for dev-server URL or section 
 - User says "undo" → read LIVE_EDIT_LOG, restore from "Before" snippet
 - Section not in map AND not findable in source → "I need more context. Can you share a screenshot or describe what's on the page?"
 
+## Mistake memory update
+
+When a live edit surfaces a **frontend pattern worth remembering**, append a MISTAKE_MEMORY entry:
+
+- Design-system slips ("we keep applying `--color-fg-muted` on colored backgrounds; fails AA")
+- Responsive misses ("nav overflows at 360px; cards inside `<details>` don't reflow")
+- Token-discipline violations ("inline `padding: 13px` found in 4 components; refactor when touched")
+- Accessibility patterns ("focus rings missing on icon-only buttons")
+- Section-mapping fixes ("PricingCards.tsx was wrong file; actual section is `app/(marketing)/pricing/page.tsx`")
+
+Tag with `[fe]` + sub-tags (`[design]`, `[a11y]`, `[responsive]`, `[token]`). Update SECTION_MAP.md if the mapping changed.
+
+Skip for purely cosmetic preferences (color tweaks the user requested).
+
+See `.bequite/state/MISTAKE_MEMORY.md` template.
+
+---
+
 ## Tool neutrality (global rule)
 
 ⚠ **Every tool named in this command (Playwright, Chromatic, Percy, Storybook, axe-core, Tailwind, etc.) is an EXAMPLE, not a default.**

@@ -2,6 +2,72 @@
 
 Append-only chronicle of every BeQuite command run. Newest at top.
 
+## 2026-05-12 — v3.0.0-alpha.5 ship: studio cleanup + /bq-now + mistake memory wiring + --mode flag + commands.md
+
+**Action:** User invoked `/bq-auto` with a focused scope: delete only `studio/` (not other heavy folders), continue with v1 features, add trendy/catchy commands, create `commands.md` linked from README, revise all md files, push final to GitHub.
+
+**Studio cleanup (executed — user authorized):**
+- `git rm -r studio/` (Studio Next.js app: marketing + api + dashboard + brand)
+- `git rm docker-compose.yml` (Studio compose orchestration)
+- `git rm scripts/docker-up.ps1 scripts/docker-up.sh` (Studio dev runner)
+- **Kept** (per user instruction "remove studio only and files related to studio"):
+  - `cli/`, `tests/`, `template/`, `evidence/`, `examples/`, `prompts/`, `state/`, `skill/`
+  - `.dockerignore`, `.env.example`, `Makefile`, `package.json`, `.commitlintrc.json`
+  - `scripts/bootstrap.{ps1,sh}`, `scripts/install.{ps1,sh}` (CLI installers; not Studio)
+  - `docs/architecture/CLI_AUTHENTICATION_STRATEGY.md`, `docs/runbooks/LOCAL_DEV.md`
+  - `BeQuite_MASTER_PROJECT.md`, root `CHANGELOG.md` — preserved at root
+
+**New (v1 features delivered):**
+- `.claude/commands/bq-now.md` — quick orientation; one-line status + next command
+- `commands.md` (repo root) — full human-readable command reference; workflow-ordered; linked from README
+- `--mode fast|deep|token-saver` flag added to `/bq-auto` (depth adjustment; does NOT skip safety gates)
+- Mistake memory wired into 7 commands:
+  - `/bq-fix` — pattern recognition for recurring root causes
+  - `/bq-audit` — systemic patterns across the codebase
+  - `/bq-review` — repeat patterns from previous fixes
+  - `/bq-red-team` — every BLOCKER + most HIGH findings become MISTAKE_MEMORY entries with attack-angle tags
+  - `/bq-verify` — patterned failures (CI ≠ local drift, recurring strict-mode silencing)
+  - `/bq-auto` — auto-mode appends entries for surfaced patterns
+  - `/bq-live-edit` — frontend patterns (design-system slips, responsive misses, token violations)
+
+**Updated:**
+- `README.md` — version bump to alpha.5; badge shows 37 commands; explicit `commands.md` link surfaced near the top; command map updated; roadmap moved alpha.4 items to "MVP now" and deferred remaining items to alpha.6
+- `CLAUDE.md` — version bump; new file paths; mistake memory + `/bq-now` + `commands.md` referenced
+- `docs/specs/COMMAND_CATALOG.md` — added `/bq-now` entry; bumped tallies; pointed at `commands.md`
+- `docs/changelogs/CHANGELOG.md` — alpha.5 Unreleased section moved to released; alpha.6 pending
+
+**Tally:**
+- Commands: 36 → 37 (+1: `/bq-now`)
+- Skills: 15 (unchanged)
+- Hard human gates: 17 (unchanged)
+- Mistake-memory-wired commands: 0 → 7
+- New top-level docs: 1 (`commands.md`)
+- Architecture docs: 4 (alpha.4 wrote 4 missing ones — total 7 active)
+
+**Trendy/catchy command research outcome:**
+Considered candidates (per user's deep-research ask): `/bq-spec` (Spec Kit interop), `/bq-explain` (plain-English file explainer), `/bq-undo` (rollback last command), `/bq-cost` (session token spend), `/bq-vibe` (vibe-handoff). Added only `/bq-now` (highest daily-driver impact); deferred others to alpha.6+ to keep the slash-command surface lightweight per FEATURE_EXPANSION_ROADMAP discipline.
+
+**Pending (alpha.6 — explicitly deferred):**
+- 20 alpha.1 commands retroactively extended with new template sections (Preconditions / Required gates / Quality gate / Failure behavior) — mechanical work; substantial
+- Installer auto-copies `.bequite/principles/TOOL_NEUTRALITY.md` + `.bequite/uiux/` templates into target projects on `/bq-init` (script update)
+- Live verification of `/bequite` inside Claude Code against a fresh real-world project (user action)
+- Architecture docs expanded from concise summaries to full reference depth (WORKFLOW_GATES / RESEARCH_DEPTH_STRATEGY / FEATURE_AND_FIX_WORKFLOWS / DEVOPS_CLOUD_SAFETY)
+- Additional trendy commands evaluated above (`/bq-spec`, `/bq-explain`, `/bq-undo`, `/bq-cost`)
+
+**Heavy-app status:**
+- alpha.1 → alpha.4: "paused, on disk"
+- alpha.5 (this commit): **`studio/` + studio-specific files removed from main branch; preserved in git history**
+- Other heavy assets (`cli/`, `tests/`, `template/`, `evidence/`, `examples/`, root state/skill/prompts) **explicitly preserved** per user instruction
+
+**Article VI honest reporting:**
+- Studio cleanup executed surgically — only studio/ + 3 closely-related files. Everything else kept per user's "don't remove other than studio" constraint
+- `/bq-now`, mistake-memory wiring, and `--mode` flag are STRUCTURALLY in place (text + spec). The agent runtime behavior of reading/writing MISTAKE_MEMORY.md and respecting `--mode` is per-command interpretation; not enforced by harness hooks
+- `commands.md` is human-readable; the canonical agent-readable specs remain at `.claude/commands/<name>.md`
+- NOT live-tested in Claude Code against a real project this session — same caveat as alpha.2/.3/.4
+- Installer scripts NOT yet updated to copy new alpha.5 templates — deferred to alpha.6
+
+---
+
 ## 2026-05-12 — GitHub-ready cleanup pass (v3.0.0-alpha.5 prep — Phase A non-destructive)
 
 **Action:** User invoked `/bq-auto` with a major cleanup + README polish task. The old Studio / heavy CLI / TUI direction must be removed from the GitHub-facing project. README rewritten for VIP coders + new-user clarity.

@@ -4,11 +4,13 @@
 
 A lightweight skill pack + memory system. Install once. Works everywhere Claude Code runs.
 
-**Latest:** `v3.0.0-alpha.4` · **Previous:** `v3.0.0-alpha.3` · MIT · by [@xpShawky](https://github.com/xpShawky)
+**Latest:** `v3.0.0-alpha.5` · **Previous:** `v3.0.0-alpha.4` · MIT · by [@xpShawky](https://github.com/xpShawky)
+
+**📖 Full command reference: [`commands.md`](commands.md)** — every command explained, ordered by workflow.
 
 <p>
   <a href="#install"><img alt="Install" src="https://img.shields.io/badge/install-one_command-0ea5e9?style=flat-square"></a>
-  <a href="#how-to-use"><img alt="36 commands" src="https://img.shields.io/badge/slash_commands-36-7c3aed?style=flat-square"></a>
+  <a href="commands.md"><img alt="37 commands" src="https://img.shields.io/badge/slash_commands-37-7c3aed?style=flat-square"></a>
   <a href="#how-to-use"><img alt="15 skills" src="https://img.shields.io/badge/skills-15-10b981?style=flat-square"></a>
   <a href="#workflow"><img alt="6 phases" src="https://img.shields.io/badge/phases-6-f59e0b?style=flat-square"></a>
   <a href="#what-bequite-is-not"><img alt="No Docker" src="https://img.shields.io/badge/no-Docker-64748b?style=flat-square"></a>
@@ -23,7 +25,7 @@ A lightweight skill pack + memory system. Install once. Works everywhere Claude 
 
 It gives every project:
 
-- **36 slash commands** — `/bq-init`, `/bq-research`, `/bq-plan`, `/bq-feature`, `/bq-fix`, `/bq-auto`, `/bq-uiux-variants`, `/bq-live-edit`, …
+- **37 slash commands** — `/bq-init`, `/bq-research`, `/bq-plan`, `/bq-feature`, `/bq-fix`, `/bq-auto`, `/bq-uiux-variants`, `/bq-live-edit`, `/bq-now`, … (full reference: [`commands.md`](commands.md))
 - **15 specialist skills** — researcher, product-strategist, backend-architect, database-architect, security-reviewer, devops-cloud, frontend-quality, ux-ui-designer, testing-gate, release-gate, live-edit, scraping-automation, problem-solver, multi-model-planning, project-architect
 - **6 workflow phases** with **mandatory gates** that block out-of-order commands
 - **Persistent memory** in `.bequite/` — state, plans, audits, logs, mistake memory
@@ -68,7 +70,7 @@ curl -fsSL https://raw.githubusercontent.com/xpShawky/BeQuite/main/scripts/insta
 
 This copies:
 
-- `.claude/commands/` — 36 slash commands
+- `.claude/commands/` — 37 slash commands
 - `.claude/skills/bequite-*/` — 15 specialist skills
 - `.bequite/` — memory + logs + plans + tasks + uiux + principles
 - A short `BeQuite` section appended to your `CLAUDE.md`
@@ -166,13 +168,14 @@ BeQuite:  Blocked — PLAN_APPROVED is ❌ pending.
 
 ---
 
-## Command map (36 commands)
+## Command map (37 commands)
 
-Organized by phase, not alphabetically.
+Organized by phase, not alphabetically. **Full details for every command:** [`commands.md`](commands.md).
 
 ### Root
 - `/bequite` — gate-aware menu + recommended next 3
 - `/bq-help` — full command reference
+- `/bq-now` — one-line orientation (faster than `/bequite`)
 
 ### Phase 0 — Setup and Discovery
 - `/bq-init` — initialize `.bequite/` in this repo
@@ -213,11 +216,16 @@ Organized by phase, not alphabetically.
 
 ### Orchestrators
 - `/bq-p0` … `/bq-p5` — walk one phase end-to-end
-- `/bq-auto [intent] "task"` — scoped autonomous runner (17 intents)
+- `/bq-auto [intent] [--mode fast|deep|token-saver] "task"` — scoped autonomous runner (17 intents)
 
 ### UI/UX (alpha.4)
 - `/bq-uiux-variants [N] "scope"` — generate 1-10 isolated UI directions
 - `/bq-live-edit "task"` — section-by-section frontend edits
+
+### Quick orientation (alpha.5)
+- `/bq-now` — single-line status; faster than `/bequite`
+
+**For full procedural detail on every command:** see [`commands.md`](commands.md).
 
 ---
 
@@ -351,24 +359,26 @@ BeQuite is markdown files + a directory scaffold. That's the whole product.
 
 ## Roadmap
 
-### MVP (now — v3.0.0-alpha.4)
-- ✅ 36 slash commands across 6 phases
+### MVP (now — v3.0.0-alpha.5)
+- ✅ 37 slash commands across 6 phases
 - ✅ 15 specialist skills
 - ✅ Mandatory workflow gates (23 gates)
 - ✅ 17 hard human gates in auto-mode
-- ✅ Scoped autonomous runner (17 intents)
+- ✅ Scoped autonomous runner (17 intents) with `--mode fast|deep|token-saver`
 - ✅ UI/UX variants (1-10 isolated directions)
 - ✅ Live edit workflow (section-mapped)
-- ✅ Tool neutrality principle
-- ✅ Mistake memory
+- ✅ Tool neutrality principle (ADR-003)
+- ✅ Mistake memory wired into 7 commands (fix / audit / review / red-team / verify / auto / live-edit)
+- ✅ `/bq-now` — one-line orientation
+- ✅ `commands.md` — full command reference, workflow-ordered
+- ✅ Studio direction removed from main (history preserved in git, ADR-004)
+- ✅ 4 architecture docs created (WORKFLOW_GATES, RESEARCH_DEPTH_STRATEGY, FEATURE_AND_FIX_WORKFLOWS, DEVOPS_CLOUD_SAFETY)
 
-### v1 (next)
-- Mistake-memory writes wired into 7 commands (fix / audit / review / red-team / verify / auto / live-edit)
-- Fast / Deep / Token-saver mode flags on `/bq-auto`
-- 20 alpha.1 commands extended with new template sections
+### v1 (next — alpha.6)
+- 20 alpha.1 commands extended with new template sections (Preconditions / Required gates / Quality gate / Failure behavior)
 - Installer auto-copies `.bequite/principles/`, `.bequite/uiux/` templates into target projects
-- 4 missing architecture docs filled out (WORKFLOW_GATES, RESEARCH_DEPTH_STRATEGY, FEATURE_AND_FIX_WORKFLOWS, DEVOPS_CLOUD_SAFETY)
 - Live verification of `/bequite` against fresh real-world projects
+- Architecture docs expanded (from concise summaries to full reference content)
 
 ### v2 (later, roadmap only — see `FEATURE_EXPANSION_ROADMAP.md`)
 - Grouped feature families: `/bq-build-bot`, `/bq-monitor`, `/bq-automation`, `/bq-content`, `/bq-data`, `/bq-report`, `/bq-saas` (names TBD)

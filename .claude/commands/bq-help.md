@@ -246,5 +246,6 @@ Additional commands not listed above (alpha.2+):
 - `/bq-uiux-variants`, `/bq-live-edit` (UI workflow — alpha.4)
 - `/bq-now` (one-line orientation — alpha.5)
 - `/bq-spec`, `/bq-explain` (alpha.7)
+- `/bq-suggest`, `/bq-job-finder`, `/bq-make-money` (Opportunity and Workflows — alpha.8)
 
 For the complete picture: [`commands.md`](../../commands.md).

@@ -4,13 +4,13 @@
 
 A lightweight skill pack + memory system. Install once. Works everywhere Claude Code runs.
 
-**Latest:** `v3.0.0-alpha.7` · **Previous:** `v3.0.0-alpha.6` · MIT · by [@xpShawky](https://github.com/xpShawky)
+**Latest:** `v3.0.0-alpha.8` · **Previous:** `v3.0.0-alpha.7` · MIT · by [@xpShawky](https://github.com/xpShawky)
 
 **📖 Full command reference: [`commands.md`](commands.md)** — every command explained, ordered by workflow.
 
 <p>
   <a href="#install"><img alt="Install" src="https://img.shields.io/badge/install-one_command-0ea5e9?style=flat-square"></a>
-  <a href="commands.md"><img alt="39 commands" src="https://img.shields.io/badge/slash_commands-39-7c3aed?style=flat-square"></a>
+  <a href="commands.md"><img alt="42 commands" src="https://img.shields.io/badge/slash_commands-42-7c3aed?style=flat-square"></a>
   <a href="#how-to-use"><img alt="15 skills" src="https://img.shields.io/badge/skills-15-10b981?style=flat-square"></a>
   <a href="#workflow"><img alt="6 phases" src="https://img.shields.io/badge/phases-6-f59e0b?style=flat-square"></a>
   <a href="#what-bequite-is-not"><img alt="No Docker" src="https://img.shields.io/badge/no-Docker-64748b?style=flat-square"></a>
@@ -25,8 +25,8 @@ A lightweight skill pack + memory system. Install once. Works everywhere Claude 
 
 It gives every project:
 
-- **39 slash commands** — `/bq-init`, `/bq-research`, `/bq-plan`, `/bq-feature`, `/bq-fix`, `/bq-auto`, `/bq-uiux-variants`, `/bq-live-edit`, `/bq-now`, `/bq-spec`, `/bq-explain`, … (full reference: [`commands.md`](commands.md))
-- **15 specialist skills** — researcher, product-strategist, backend-architect, database-architect, security-reviewer, devops-cloud, frontend-quality, ux-ui-designer, testing-gate, release-gate, live-edit, scraping-automation, problem-solver, multi-model-planning, project-architect
+- **42 slash commands** — `/bq-init`, `/bq-research`, `/bq-plan`, `/bq-feature`, `/bq-fix`, `/bq-auto`, `/bq-uiux-variants`, `/bq-live-edit`, `/bq-now`, `/bq-spec`, `/bq-explain`, `/bq-suggest`, `/bq-job-finder`, `/bq-make-money`, … (full reference: [`commands.md`](commands.md))
+- **18 specialist skills** — researcher, product-strategist, backend-architect, database-architect, security-reviewer, devops-cloud, frontend-quality, ux-ui-designer, testing-gate, release-gate, live-edit, scraping-automation, problem-solver, multi-model-planning, project-architect, workflow-advisor, job-finder, make-money
 - **6 workflow phases** with **mandatory gates** that block out-of-order commands
 - **Persistent memory** in `.bequite/` — state, plans, audits, logs, mistake memory
 - **Tool neutrality** — every named tool is a candidate, not a default
@@ -70,8 +70,8 @@ curl -fsSL https://raw.githubusercontent.com/xpShawky/BeQuite/main/scripts/insta
 
 This copies:
 
-- `.claude/commands/` — 39 slash commands
-- `.claude/skills/bequite-*/` — 15 specialist skills
+- `.claude/commands/` — 42 slash commands
+- `.claude/skills/bequite-*/` — 18 specialist skills
 - `.bequite/` — memory + logs + plans + tasks + uiux + principles
 - A short `BeQuite` section appended to your `CLAUDE.md`
 
@@ -227,7 +227,26 @@ Organized by phase, not alphabetically. **Full details for every command:** [`co
 ### Quick orientation (alpha.5)
 - `/bq-now` — single-line status; faster than `/bequite`
 
+### Opportunity and Workflows (alpha.8)
+- `/bq-suggest "<situation>"` — workflow advisor; recommends the best commands + mode for your goal
+- `/bq-job-finder` — find real work opportunities (jobs, freelance, AI gigs); supports `worldwide_hidden=true`
+- `/bq-make-money` — find legitimate earning opportunities ranked by track; supports `worldwide_hidden=true` for Hidden Gems
+
 **For full procedural detail on every command:** see [`commands.md`](commands.md).
+
+### 🌍 Worldwide Hidden Opportunity Search (alpha.8)
+
+`/bq-job-finder` and `/bq-make-money` both support `worldwide_hidden=true` — searches **beyond** famous English platforms and the user's home country. Finds overlooked legitimate opportunities in non-English markets, country-specific microtask platforms, regional freelance boards, AI training task platforms, and niche communities.
+
+Searches multilingual: Portuguese, Spanish, German, French, Italian, Turkish, Polish, Romanian, Indonesian, Hindi, Arabic, English. Per-opportunity trust check: legitimacy / country eligibility / payout method / VPN policy / ID verification / upfront-fee red flags / scam reports / realistic payout / time to first payout / why hidden.
+
+```
+/bq-make-money worldwide_hidden=true "Find hidden legitimate earning opportunities worldwide"
+/bq-job-finder worldwide_hidden=true "Find overlooked remote tasks and AI-assisted work opportunities"
+/bq-make-money track=highest-payout worldwide_hidden=true
+```
+
+**Safety-first.** No scams. No fraud. No fake reviews. No platform abuse. No CAPTCHA farms. No VPN misrepresentation. No upfront-fee scams. No unrealistic income promises.
 
 ---
 
@@ -361,9 +380,9 @@ BeQuite is markdown files + a directory scaffold. That's the whole product.
 
 ## Roadmap
 
-### MVP (now — v3.0.0-alpha.7)
-- ✅ 39 slash commands across 6 phases
-- ✅ 15 specialist skills
+### MVP (now — v3.0.0-alpha.8)
+- ✅ 42 slash commands across 6 phases + Opportunity & Workflows
+- ✅ 18 specialist skills
 - ✅ Mandatory workflow gates (23 gates)
 - ✅ 17 hard human gates in auto-mode
 - ✅ Scoped autonomous runner (17 intents) with `--mode fast|deep|token-saver`
@@ -379,12 +398,16 @@ BeQuite is markdown files + a directory scaffold. That's the whole product.
 - ✅ 4 architecture docs created (WORKFLOW_GATES, RESEARCH_DEPTH_STRATEGY, FEATURE_AND_FIX_WORKFLOWS, DEVOPS_CLOUD_SAFETY)
 - ✅ Installer auto-copies alpha.5 templates into target projects (alpha.6)
 - ✅ 19 alpha.1 commands extended with standardized fields (alpha.6); 36 of 39 commands have full template
+- ✅ `/bq-suggest` — workflow advisor (alpha.8)
+- ✅ `/bq-job-finder` — real work opportunity finder with worldwide_hidden mode (alpha.8)
+- ✅ `/bq-make-money` — earning opportunity finder with 10 tracks + Hidden Gems (alpha.8)
+- ✅ Strict safety rules across opportunity commands (no scams, no fraud, no abuse)
 
-### v1 (next — alpha.8)
+### v1 (next — alpha.9)
 - Live verification of `/bequite` against fresh real-world projects (user action)
 - Architecture docs expanded (from concise summaries to full reference content)
 - `/bq-help` extended with full standardized fields
-- `bq-undo` and `bq-cost` commands evaluated (if user pull is strong)
+- Installer updated to copy `.bequite/jobs/` + `.bequite/money/` templates
 
 ### v2 (later, roadmap only — see `FEATURE_EXPANSION_ROADMAP.md`)
 - Grouped feature families: `/bq-build-bot`, `/bq-monitor`, `/bq-automation`, `/bq-content`, `/bq-data`, `/bq-report`, `/bq-saas` (names TBD)

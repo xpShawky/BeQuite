@@ -6,11 +6,40 @@ Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANG
 
 ---
 
-## [Unreleased — alpha.8]
+## [Unreleased — alpha.9]
 
-- Live verification of `/bequite` against fresh real-world projects (user-action; installer is ready)
-- Architecture docs expanded from summaries to full reference depth (WORKFLOW_GATES, RESEARCH_DEPTH_STRATEGY, FEATURE_AND_FIX_WORKFLOWS, DEVOPS_CLOUD_SAFETY)
-- Additional trendy commands (`/bq-undo`, `/bq-cost`) — defer unless user pull is strong
+- Live verification of `/bequite` against fresh real-world projects (user-action)
+- Installer updated to copy `.bequite/jobs/` + `.bequite/money/` templates into target projects
+- Architecture docs expanded from summaries to full reference depth
+- `/bq-help` extended with full standardized fields (currently has alignment notice + block at end)
+
+---
+
+## [v3.0.0-alpha.8] — 2026-05-12
+
+### Added — Opportunity and Workflows
+
+- `/bq-suggest "<situation>"` — BeQuite workflow advisor; recommends best commands/skills/mode/gates for the goal. Read-only. Activates `bequite-workflow-advisor` skill (knows all 42 commands + 18 skills + 23 gates + 17 hard human gates).
+- `/bq-job-finder` — real work opportunity finder. Intake → JOB_PROFILE.md → live research → trust check → ranked classification → pitches. Supports `worldwide_hidden=true` (multilingual hidden opportunities).
+- `/bq-make-money` — earning opportunity finder. 10 tracks (highest-payout / easiest-start / fastest-first-dollar / long-term-stable / ai-assisted / no-calls / remote-global / local-only / beginner / skilled). Supports `worldwide_hidden=true` for Hidden Gems. 7-day action plan output. Repeat-search comparison.
+- 3 new skills: `bequite-workflow-advisor`, `bequite-job-finder`, `bequite-make-money`
+- New memory folders: `.bequite/jobs/` (5 templates: JOB_PROFILE, JOB_SEARCH_LOG, OPPORTUNITIES, APPLICATION_TRACKER, PITCH_TEMPLATES); `.bequite/money/` (5 templates: MONEY_PROFILE, MONEY_SEARCH_LOG, OPPORTUNITIES, TRUST_CHECKS, ACTION_PLAN)
+- Strict safety rules across opportunity commands: no scams, fake reviews, VPN misrepresentation, upfront-fee, identity misuse, CAPTCHA farms, platform abuse, fake accounts, fake engagement, spam, unrealistic income promises
+
+### Changed
+
+- `/bequite` root menu — added "Opportunity and Workflows" section
+- `/bq-help` — added new commands to alpha.2+ list
+- `README.md` — version bump to alpha.8; 42-command badge; new commands + Worldwide Hidden Opportunity Search section in main body
+- `CLAUDE.md` — version bump; new commands referenced; new memory paths in "Where things live"
+- `docs/specs/COMMAND_CATALOG.md` — full entries for 3 new commands; tallies bumped
+- `commands.md` — Opportunity and Workflows section with examples + Worldwide Hidden Opportunity Search explainer
+
+### Constraints honored
+
+- No heavy app added · no dashboard added · no big CLI added · no heavy dependencies added by default
+- Commands + skills + docs + memory updates only
+- No actual job APIs or browser automation runtime added — live research happens via WebFetch/WebSearch when the user invokes the command
 
 ---
 

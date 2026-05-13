@@ -1,8 +1,8 @@
-# BeQuite Command Catalog (v3.0.0-alpha.7)
+# BeQuite Command Catalog (v3.0.0-alpha.8)
 
-**Status:** authored 2026-05-11; expanded 2026-05-12 across alpha.2–alpha.7
-**Total commands:** 39 (1 root menu + 38 `/bq-*`)
-**Total skills:** 15 (7 baseline + 7 specialist + 1 live-edit)
+**Status:** authored 2026-05-11; expanded 2026-05-12 across alpha.2–alpha.8
+**Total commands:** 42 (1 root menu + 41 `/bq-*`)
+**Total skills:** 18 (7 baseline + 7 specialist + 1 live-edit + 3 opportunity)
 **Human-readable reference:** [`commands.md`](../../commands.md) at repo root
 
 Single source of truth for every BeQuite command. Each entry lists: when to use, what it reads, what it writes, required previous gates, quality gate, usual next.
@@ -377,9 +377,43 @@ Single source of truth for every BeQuite command. Each entry lists: when to use,
 
 ---
 
+## Opportunity and Workflows (alpha.8)
+
+### `/bq-suggest "<situation>"`
+- **Purpose:** workflow advisor; recommends best commands/skills/mode for your goal
+- **Phase:** Any (read-only)
+- **Required gates:** `BEQUITE_INITIALIZED`
+- **Reads:** `.bequite/state/*` (all)
+- **Writes:** `LAST_RUN.md`, `AGENT_LOG.md`
+- **Skills activated:** `bequite-workflow-advisor`
+- **Output:** structured recommendation — workflow / skills / mode / required gates / one next command + why NOT each alternative
+
+### `/bq-job-finder`
+- **Purpose:** find real work opportunities (jobs, freelance, tasks, AI gigs)
+- **Phase:** Any (lifestyle/career)
+- **Required gates:** `BEQUITE_INITIALIZED`
+- **Modes:** default (country-focused) | `worldwide_hidden=true` (multilingual hidden opportunities)
+- **Reads:** `.bequite/jobs/*` (if prior search exists)
+- **Writes:** `.bequite/jobs/{JOB_PROFILE, JOB_SEARCH_LOG, OPPORTUNITIES, APPLICATION_TRACKER, PITCH_TEMPLATES}.md`
+- **Skills activated:** `bequite-job-finder`
+- **Safety:** strict — no scams / fake reviews / VPN misrepresentation / upfront-fee / identity misuse / CAPTCHA farms
+
+### `/bq-make-money`
+- **Purpose:** find legitimate earning opportunities; 10 tracks (highest-payout / easiest-start / fastest-first-dollar / long-term / AI-assisted / no-calls / remote / local / beginner / skilled)
+- **Phase:** Any
+- **Required gates:** `BEQUITE_INITIALIZED`
+- **Modes:** default | `worldwide_hidden=true` (Hidden Gems section)
+- **Reads:** `.bequite/money/*` (if prior search exists)
+- **Writes:** `.bequite/money/{MONEY_PROFILE, MONEY_SEARCH_LOG, OPPORTUNITIES, TRUST_CHECKS, ACTION_PLAN}.md`
+- **Skills activated:** `bequite-make-money`
+- **Safety:** strict — no fraud / fake accounts / platform abuse / spam / VPN / upfront-fee / unrealistic claims
+- **Output:** ranked by 10 categories + Hidden Gems section + 7-day action plan + trust checks
+
+---
+
 ## Summary
 
-39 commands, 15 skills, 6 modes, 6 phases, 23 gates, 17 hard human gates.
+42 commands, 18 skills, 6 modes, 6 phases, 23 gates, 17 hard human gates.
 
 **Discipline + memory + verified evidence > velocity without a plan.**
 

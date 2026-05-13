@@ -16,10 +16,10 @@ This repo IS the source of the skill pack. Its `.claude/commands/` + `.claude/sk
 
 ---
 
-## Current spec: v3.0.0-alpha.7
+## Current spec: v3.0.0-alpha.8
 
-- **39 slash commands** (`.claude/commands/bequite.md` + 38 × `.claude/commands/bq-*.md`)
-- **15 skills** (`.claude/skills/bequite-*/SKILL.md`)
+- **42 slash commands** (`.claude/commands/bequite.md` + 41 × `.claude/commands/bq-*.md`)
+- **18 skills** (`.claude/skills/bequite-*/SKILL.md`)
 - **6 explicit modes** — New Project, Existing Audit, Add Feature, Fix Problem, Research Only, Release Readiness
 - **6 workflow phases** — P0 Setup → P1 Framing → P2 Build → P3 Quality → P4 Release → P5 Memory
 - **23 workflow gates** tracked in `.bequite/state/WORKFLOW_GATES.md` (block out-of-order commands)
@@ -31,6 +31,9 @@ This repo IS the source of the skill pack. Its `.claude/commands/` + `.claude/sk
 - **Quick orientation** — `/bq-now` returns one-line status (faster than `/bequite`)
 - **Spec Kit interop** — `/bq-spec "<feature>"` writes one-page `specs/<slug>/spec.md`
 - **Plain-English explainer** — `/bq-explain "<target>"` for files / functions / decisions / artifacts
+- **Workflow advisor** — `/bq-suggest "<situation>"` recommends best commands/mode for the goal (alpha.8)
+- **Job finder** — `/bq-job-finder` finds real work opportunities; supports `worldwide_hidden=true` (alpha.8)
+- **Make money finder** — `/bq-make-money` finds legitimate earning opportunities; 10 tracks + Hidden Gems (alpha.8)
 - **Public command reference** — `commands.md` at repo root
 
 ---
@@ -39,7 +42,9 @@ This repo IS the source of the skill pack. Its `.claude/commands/` + `.claude/sk
 
 | Need | Path |
 |---|---|
-| Slash commands (39) | `.claude/commands/bequite.md` + `.claude/commands/bq-*.md` |
+| Slash commands (42) | `.claude/commands/bequite.md` + `.claude/commands/bq-*.md` |
+| Jobs memory | `.bequite/jobs/` (JOB_PROFILE, JOB_SEARCH_LOG, OPPORTUNITIES, APPLICATION_TRACKER, PITCH_TEMPLATES) |
+| Money memory | `.bequite/money/` (MONEY_PROFILE, MONEY_SEARCH_LOG, OPPORTUNITIES, TRUST_CHECKS, ACTION_PLAN) |
 | Skills (15) | `.claude/skills/bequite-*/SKILL.md` |
 | Public command reference | `commands.md` (repo root) |
 | BeQuite memory | `.bequite/` |

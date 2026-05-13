@@ -2,6 +2,111 @@
 
 Append-only chronicle of every BeQuite command run. Newest at top.
 
+## 2026-05-12 — alpha.8 ship: /bq-suggest + /bq-job-finder + /bq-make-money + worldwide_hidden mode
+
+**Action:** User invoked `/bq-auto` with a feature-shaped task (3 new capabilities). Per /bq-auto discipline, no hard gates tripped — continued autonomously through the full task.
+
+**New commands (3):**
+
+### /bq-suggest "<situation>"
+
+BeQuite workflow advisor. Reads user's situation + state, recommends best commands / skills / mode / required gates / one next command. Read-only. Activates `bequite-workflow-advisor` skill (knows all 42 commands + 18 skills + 23 gates + 17 hard human gates + mode flags).
+
+Output structure:
+- Recommended workflow (1-5 commands in order)
+- Skills activated
+- Mode recommendation (fast / deep / token-saver / default)
+- Auto vs. scoped vs. phase vs. individual
+- Required gates + optional gates
+- Missing information (one question max)
+- One recommended next command
+- Why NOT each alternative
+
+### /bq-job-finder
+
+Real work opportunity discovery. Intake form → JOB_PROFILE.md → live research at runtime → trust check per platform → ranked classification → pitches.
+
+Supports `worldwide_hidden=true` mode — searches beyond country/English platforms across multilingual sources (Portuguese / Spanish / German / French / Italian / Turkish / Polish / Romanian / Indonesian / Hindi / Arabic + English) and country-specific platforms.
+
+Categories: Best fit / Easy start / High pay / Fast application / Needs portfolio / Needs learning / Risky / Not recommended / Hidden Gems.
+
+Strict safety: no scams / fake reviews / VPN misrepresentation / upfront-fee / identity misuse / CAPTCHA farms.
+
+### /bq-make-money
+
+Earning opportunity discovery with 10 tracks (highest-payout / easiest-start / fastest-first-dollar / long-term-stable / ai-assisted / no-calls / remote-global / local-only / beginner / skilled).
+
+Supports `worldwide_hidden=true` for Hidden Gems section. 7-day action plan output. Repeat-search behavior compares with previous run + marks 🆕 / ✅ / ❌ / ⚠ / ⬆ / 🔍.
+
+Strict safety: no fraud / fake accounts / platform abuse / spam / VPN / upfront-fee / unrealistic claims.
+
+**New skills (3):**
+
+- `bequite-workflow-advisor` — recommendation engine; knows entire BeQuite surface
+- `bequite-job-finder` — platform knowledge + trust check criteria + safety rules + worldwide hidden methodology
+- `bequite-make-money` — track-based knowledge + 10-track filtering + Hidden Gems methodology
+
+**New memory folders:**
+
+- `.bequite/jobs/` — 5 templates: JOB_PROFILE, JOB_SEARCH_LOG, OPPORTUNITIES, APPLICATION_TRACKER, PITCH_TEMPLATES
+- `.bequite/money/` — 5 templates: MONEY_PROFILE, MONEY_SEARCH_LOG, OPPORTUNITIES, TRUST_CHECKS, ACTION_PLAN
+
+**Updated:**
+
+- `/bequite` root menu — added "Opportunity and Workflows" section with /bq-suggest, /bq-job-finder, /bq-make-money
+- `/bq-help` — added Opportunity & Workflows commands to the alpha.2+ commands list
+- `README.md` — version bump to alpha.8; 42-command badge; new commands in command map + roadmap + Worldwide Hidden Opportunity Search section
+- `CLAUDE.md` — version bump; new commands referenced; new memory paths
+- `docs/specs/COMMAND_CATALOG.md` — added full entries for 3 new commands + bumped tallies
+- `commands.md` — added Opportunity and Workflows section with full entries + Worldwide Hidden Opportunity Search explanation
+
+**Tally after alpha.8:**
+
+- Commands: 39 → 42 (+3)
+- Skills: 15 → 18 (+3)
+- Memory folders: +2 (`.bequite/jobs/`, `.bequite/money/`)
+- Memory templates: +10
+- Hard human gates: 17 (unchanged)
+- Workflow gates: 23 (unchanged)
+
+**Cumulative version state:**
+
+- v3.0.0-alpha.1: lightweight skill pack MVP (24 commands, 7 skills)
+- v3.0.0-alpha.2: mandatory workflow gates + 6 modes + 7 specialist skills
+- v3.0.0-alpha.3: tool neutrality principle
+- v3.0.0-alpha.4: scoped /bq-auto + variants + live edit (36 commands, 15 skills)
+- v3.0.0-alpha.5: studio cleanup + /bq-now + mistake memory + --mode + commands.md (37/15)
+- v3.0.0-alpha.6: installer auto-copies + 19 commands extended (37/15)
+- v3.0.0-alpha.7: /bq-spec + /bq-explain + bq-help alignment (39/15)
+- v3.0.0-alpha.8 (this commit): /bq-suggest + /bq-job-finder + /bq-make-money + worldwide_hidden (42/18)
+
+**Constraints honored:**
+
+- ✅ No heavy app added
+- ✅ No dashboard added
+- ✅ No big CLI added
+- ✅ No heavy dependencies added by default
+- ✅ Commands + skills + docs + memory updates only
+- ✅ No actual scraping runtime / job API / browser automation in commands (research happens via available WebFetch/WebSearch at runtime per command)
+- ✅ Tool neutrality enforced (platforms named are candidates, not endorsements)
+- ✅ Safety rules documented exhaustively for opportunity commands
+
+**Pending (alpha.9):**
+
+- Live verification of `/bequite` against fresh real-world projects (user action)
+- Installer updated to copy `.bequite/jobs/` + `.bequite/money/` templates into target projects
+- Architecture docs expanded from concise summaries to full reference depth
+- `/bq-help` extended with full standardized fields (only has alignment notice + brief block currently)
+
+**Article VI honest reporting:**
+
+- All 3 new commands + 3 new skills + 10 memory templates are STRUCTURALLY in place. The agent's runtime behavior (the actual intake conversation, the live web research, the trust checks) is per-command documented in Steps + Output format sections.
+- No actual job APIs or browser automation runtime added (per user constraint). Live web research happens at runtime via available WebFetch/WebSearch when the user invokes the command — the command files document the sources and methodology.
+- v3.0.0-alpha.8 is NOT git-tagged yet (user-gated per release discipline).
+- Installer scripts NOT yet updated to copy `.bequite/jobs/` + `.bequite/money/` templates to target projects — listed as alpha.9 work.
+
+---
+
 ## 2026-05-12 — alpha.7 ship: /bq-spec + /bq-explain + bq-help alignment
 
 **Action:** User said "continue" — picking up the remaining alpha.7 work after alpha.6 (installer + 19 commands extension) landed.

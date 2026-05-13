@@ -4,7 +4,7 @@
 >
 > For full procedural detail per command, click through to the matching file at `.claude/commands/<name>.md`.
 
-**Version:** v3.0.0-alpha.7 · 39 slash commands · 15 specialist skills · 6 workflow phases · 23 workflow gates · 17 hard human gates
+**Version:** v3.0.0-alpha.8 · 42 slash commands · 18 specialist skills · 6 workflow phases · 23 workflow gates · 17 hard human gates
 
 ---
 
@@ -614,6 +614,82 @@ Lightweight section-by-section frontend live edit.
   ```
 - **Strategy doc:** [`docs/architecture/LIVE_EDIT_STRATEGY.md`](docs/architecture/LIVE_EDIT_STRATEGY.md)
 - **Full spec:** [`.claude/commands/bq-live-edit.md`](.claude/commands/bq-live-edit.md)
+
+---
+
+## Opportunity and Workflows (NEW in alpha.8)
+
+### `/bq-suggest "<situation>"`
+
+BeQuite workflow advisor — recommends the best commands, skills, gates, and mode for your goal. Read-only.
+
+- **Phase:** Any
+- **Purpose:** lost in the command catalog? describe your situation → get a structured recommendation (workflow / skills / mode / one next command)
+- **Required gates:** `BEQUITE_INITIALIZED`
+- **Skills activated:** `bequite-workflow-advisor`
+- **Examples:**
+  ```
+  /bq-suggest "I want to improve UI/UX and security"
+  /bq-suggest "I have a broken frontend and API"
+  /bq-suggest "I want to build a scraper and deploy it on VPS"
+  /bq-suggest "I have a project idea and want to know where to start"
+  /bq-suggest "I need UX + backend + testing"
+  ```
+- **Full spec:** [`.claude/commands/bq-suggest.md`](.claude/commands/bq-suggest.md)
+
+### `/bq-job-finder`
+
+Find real work opportunities — full-time / part-time / remote / freelance / tasks / AI gigs — based on country + skills + languages + AI tools + payment methods.
+
+- **Phase:** Any (lifestyle / career command)
+- **Modes:** default (country-focused) | `worldwide_hidden=true` (overlooked multilingual platforms)
+- **Required gates:** `BEQUITE_INITIALIZED`
+- **Writes:** `.bequite/jobs/` 5 files
+- **Skills activated:** `bequite-job-finder`
+- **Safety:** strict — no scams / fake reviews / VPN misrepresentation / upfront-fee / identity misuse / CAPTCHA farms
+- **Examples:**
+  ```
+  /bq-job-finder
+  /bq-job-finder "Remote AI-assisted gigs"
+  /bq-job-finder worldwide_hidden=true
+  /bq-job-finder worldwide_hidden=true "Find overlooked remote tasks"
+  ```
+- **Full spec:** [`.claude/commands/bq-job-finder.md`](.claude/commands/bq-job-finder.md)
+
+### `/bq-make-money`
+
+Find legitimate earning opportunities — 10 tracks (highest payout / easiest start / fastest first dollar / long-term / AI-assisted / no-calls / remote / local / beginner / skilled).
+
+- **Phase:** Any (lifestyle / earning command)
+- **Modes:** default | `worldwide_hidden=true` (Hidden Gems section)
+- **Required gates:** `BEQUITE_INITIALIZED`
+- **Writes:** `.bequite/money/` 5 files + 7-day action plan
+- **Skills activated:** `bequite-make-money`
+- **Safety:** strict — no fraud / fake accounts / platform abuse / spam / VPN / upfront-fee / unrealistic claims
+- **Repeat-search behavior:** compares with previous run; marks 🆕 / ✅ / ❌ / ⚠ / ⬆ / 🔍
+- **Examples:**
+  ```
+  /bq-make-money "Egypt, AI image editing, 3 hours daily, want remote tasks"
+  /bq-make-money "Find easy AI-assisted tasks with real payout"
+  /bq-make-money worldwide_hidden=true "Find hidden legitimate earning opportunities worldwide"
+  /bq-make-money track=highest-payout country=Egypt skills='AI tools, writing, image editing'
+  /bq-make-money track=easiest-start worldwide_hidden=true
+  ```
+- **Full spec:** [`.claude/commands/bq-make-money.md`](.claude/commands/bq-make-money.md)
+
+### 🌍 Worldwide Hidden Opportunity Search
+
+Both `/bq-job-finder` and `/bq-make-money` support `worldwide_hidden=true` — searches beyond user's country + famous English platforms. Finds overlooked legitimate opportunities in:
+- Non-English markets (Portuguese, Spanish, German, French, Italian, Turkish, Polish, Romanian, Indonesian, Hindi, Arabic + English)
+- Country-specific microtask platforms (Yandex Toloka, Wuzzuf, Brighter Monday, Get on Board, Wantedly, etc.)
+- AI training task platforms (Outlier, Mercor, Mindrift, Surge, Data Annotation)
+- Research panels (User Interviews, Respondent, dscout, Prolific)
+- Testing platforms (UserTesting, UserBrain, Userlytics)
+- App-based earning programs (Premise, Field Agent, Streetbees)
+- Small companies hiring globally
+- Niche platforms by skill / region
+
+Per-opportunity trust check: legitimacy / country eligibility / payout method / VPN policy / ID verification / upfront-fee red flags / scam reports / realistic payout / time to first payout / why hidden.
 
 ---
 

@@ -113,6 +113,11 @@ Command map (34 commands, ordered by workflow phase):
     /bq-recover         resume after a session break
     /bq-handoff         generate HANDOFF.md
 
+  Opportunity and Workflows
+    /bq-suggest         workflow advisor — recommend commands for your situation
+    /bq-job-finder      find real work opportunities (jobs, freelance, AI gigs)
+    /bq-make-money      find legitimate earning opportunities (tracks + Hidden Gems)
+
   Phase orchestrators
     /bq-p0              walk Phase 0 in order
     /bq-p1              walk Phase 1 in order

@@ -1,0 +1,17 @@
+# Presentation assets
+
+This directory holds:
+- Extracted brand-kit assets (logos, wordmarks, mood images)
+- Project-specific imagery the deck uses
+- Icons, charts, diagrams referenced by `SLIDE_PLAN.md`
+
+`/bq-presentation` writes here when source material is provided or when assets are generated.
+
+Subdirectories often used:
+- `images/` — photographs, illustrations
+- `icons/` — icon set (one consistent style)
+- `logos/` — brand wordmarks, primary marks
+- `mood/` — reference mood images
+- `charts/` — chart sources (CSV / JSON / SVG)
+
+The `outputs/` sibling directory holds the rendered presentation files (PPTX, HTML, PDF exports).

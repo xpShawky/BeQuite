@@ -1,9 +1,10 @@
-# BeQuite Command Catalog (v3.0.0-alpha.12)
+# BeQuite Command Catalog (v3.0.0-alpha.13)
 
-**Status:** authored 2026-05-11; expanded 2026-05-12 across alpha.2–alpha.10; 4 operating modes added 2026-05-12 (alpha.12)
-**Total commands:** 43 (1 root menu + 42 `/bq-*`)
-**Total skills:** 20 (7 baseline + 7 specialist + 1 live-edit + 3 opportunity + 1 updater + 1 delegate-planner)
+**Status:** authored 2026-05-11; expanded 2026-05-12 across alpha.2–alpha.10; 4 operating modes added 2026-05-12 (alpha.12); Presentation Builder added 2026-05-13 (alpha.13)
+**Total commands:** 44 (1 root menu + 43 `/bq-*`)
+**Total skills:** 21 (7 baseline + 7 specialist + 1 live-edit + 3 opportunity + 1 updater + 1 delegate-planner + 1 presentation-builder)
 **Operating modes (alpha.12):** 4 composable — Deep / Fast / Token Saver (alias `lean`) / Delegate
+**Creative + Content Workflows (alpha.13):** `/bq-presentation`
 **Human-readable reference:** [`commands.md`](../../commands.md) at repo root
 
 Single source of truth for every BeQuite command. Each entry lists: when to use, what it reads, what it writes, required previous gates, quality gate, usual next.
@@ -412,6 +413,33 @@ Single source of truth for every BeQuite command. Each entry lists: when to use,
 
 ---
 
+## Creative and Content Workflows (alpha.13)
+
+### `/bq-presentation` (NEW in alpha.13)
+- **Purpose:** premium PPTX or HTML presentation builder from topic / files / brand assets / research; world-class output
+- **Phase:** Any (creative + content; orthogonal to P0–P5)
+- **Required gates:** `BEQUITE_INITIALIZED`
+- **Inputs:** natural language; options as `key=value` or `[bracketed list]` or positional (`format`, `variants`, `source`, `strict`, `creative`, `audience`, `style`, `duration`, `language`, `topic`, `brand`, `references`, `notes`, `motion`)
+- **Reads:** core memory + source files (PDF / Word / folder / URLs) + brand assets if given + `.bequite/presentations/*` if prior run
+- **Writes:** `.bequite/presentations/{PRESENTATION_BRIEF, CONTENT_OUTLINE, SLIDE_PLAN, DESIGN_BRIEF, MOTION_PLAN, SPEAKER_NOTES, REFERENCES, EXPORT_LOG}.md`; `PRESENTATION_VARIANTS_REPORT.md` when `variants>1`; `.bequite/presentations/{assets,outputs}/`
+- **Skills activated:** `bequite-presentation-builder`, `bequite-ux-ui-designer`, `bequite-frontend-quality` (HTML quality), `bequite-researcher` (when sources require fetch)
+- **Output formats:**
+  - **PPTX** — institutional / lecture / offline / speaker notes / Office users; morph-like motion via stable object IDs across slides
+  - **HTML** — cinematic / responsive / product demo; restrained CSS/JS motion (title glow, staged bullets, card focus, light sweep)
+  - **Both** — same content plan, two renders
+- **Strict vs creative:**
+  - **Strict** — PDF / Word / scientific source preserved; no unsupported claims; every fact in `REFERENCES.md`
+  - **Creative** — topic-only / keynote / marketing; may add hooks + structure; assumptions marked
+- **Variants:** 1–10 different design directions (Academic Clean / Premium Cinematic / Corporate Keynote / Medical Conference / Minimal Lecture / Dark Futuristic / Light Editorial / Data-Dashboard / Student-Friendly / Brand-Led — candidates only)
+- **Quality gate sets:** N/A (creative workflow — verification produces 14-item checklist result, not a phase gate)
+- **Hard human gates relevant:** tool install (python-pptx / pptxgenjs / reveal.js / Slidev / Playwright etc. never auto-installed); external publishing (SlideShare / Google Slides / SharePoint); variant winner selection; brand-asset usage rights
+- **Operating modes (composable):** `deep` / `fast` / `token-saver` (`lean`) / `delegate`
+- **Verification (14 items):** one purpose per slide, readable text, not crowded, strong hook, clear story flow, correct refs, purposeful imagery, consistent brand, earned animations, non-distracting transitions, aligned speaker notes, suitable format, supported claims (strict), usable output
+- **Tool neutrality:** all libraries are CANDIDATES; decision section required before install
+- **Next:** user picks variant if `variants>1`; render output if implementation requested; `/bq-verify` if shipping artifact
+
+---
+
 ## Maintenance (alpha.10)
 
 ### `/bq-update` (NEW in alpha.10)
@@ -508,7 +536,7 @@ Verdict per task: ✅ APPROVED · ⚠ APPROVED-WITH-COMMENTS · ❌ REJECTED.
 
 ## Summary
 
-43 commands, 20 skills, 6 workflow modes, **4 operating modes**, 6 phases, 23 gates, 17 hard human gates.
+44 commands, 21 skills, 6 workflow modes, **4 operating modes**, 6 phases, 23 gates, 17 hard human gates, **Creative + Content Workflows (alpha.13)**.
 
 **Discipline + memory + verified evidence > velocity without a plan.**
 

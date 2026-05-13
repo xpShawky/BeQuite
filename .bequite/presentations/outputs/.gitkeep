@@ -1,0 +1,14 @@
+# Presentation outputs
+
+Rendered presentation files land here.
+
+Layout:
+- `<slug>.pptx` — single PPTX
+- `<slug>/index.html` + `assets/` — HTML deck root
+- `v1/...`, `v2/...` — variant outputs when `variants>1`
+- `<slug>.pdf` — optional PDF export
+- `<slug>-handout.pdf` — optional handout (1-up / 2-up / 6-up layouts)
+
+`/bq-presentation` writes here only when the user explicitly requests implementation. Until then, only planning artifacts (BRIEF, OUTLINE, SLIDE_PLAN, DESIGN_BRIEF, MOTION_PLAN, SPEAKER_NOTES, REFERENCES) exist.
+
+The tool used for rendering is decided per `.bequite/principles/TOOL_NEUTRALITY.md` (no default library installed).

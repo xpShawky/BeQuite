@@ -9,7 +9,7 @@
 
 set -uo pipefail
 
-BEQUITE_VERSION="v3.0.0-alpha.10"
+BEQUITE_VERSION="v3.0.0-alpha.13"
 REPO_URL="https://github.com/xpShawky/BeQuite.git"
 TARGET="$(pwd)"
 FROM_LOCAL=""
@@ -80,15 +80,15 @@ fi
 
 # --- 3. .claude/commands/ (37 slash commands) ---
 
-section "Installing .claude/commands/ (43 slash commands)"
+section "Installing .claude/commands/ (44 slash commands)"
 mkdir -p "./.claude/commands"
 cp -r "$SOURCE/.claude/commands/"* "./.claude/commands/"
 count=$(ls -1 ./.claude/commands/*.md 2>/dev/null | wc -l)
 echo "  $(green "$count slash commands installed")"
 
-# --- 4. .claude/skills/bequite-* (15 specialist skills) ---
+# --- 4. .claude/skills/bequite-* (21 specialist skills) ---
 
-section "Installing .claude/skills/bequite-* (19 specialist skills)"
+section "Installing .claude/skills/bequite-* (21 specialist skills)"
 mkdir -p "./.claude/skills"
 for skill in "$SOURCE"/.claude/skills/bequite-*/; do
   if [[ -d "$skill" ]]; then
@@ -100,8 +100,8 @@ done
 
 # --- 5. .bequite/ scaffold (alpha.5: principles + uiux + new state files) ---
 
-section "Scaffolding .bequite/ memory (alpha.5-8: principles, uiux, jobs, money, mistake memory, assumptions)"
-mkdir -p ./.bequite/{state,logs,prompts/user_prompts,prompts/generated_prompts,prompts/model_outputs,audits,plans,tasks,principles,decisions,uiux/screenshots,uiux/archive,jobs,money,backups}
+section "Scaffolding .bequite/ memory (alpha.5-13: principles, uiux, jobs, money, mistake memory, assumptions, delegate, presentations)"
+mkdir -p ./.bequite/{state,logs,prompts/user_prompts,prompts/generated_prompts,prompts/model_outputs,audits,plans,tasks,principles,decisions,uiux/screenshots,uiux/archive,jobs,money,backups,presentations/assets,presentations/outputs}
 echo "  directory scaffold ready"
 
 # Copy alpha.5 templates into target project (preserve existing if present)
@@ -155,6 +155,25 @@ copy_template ".bequite/money/AI_ASSISTED_PATHS.md"   ".bequite/money/AI_ASSISTE
 copy_template ".bequite/state/BEQUITE_VERSION.md"     ".bequite/state/BEQUITE_VERSION.md"
 copy_template ".bequite/state/UPDATE_SOURCE.md"       ".bequite/state/UPDATE_SOURCE.md"
 copy_template ".bequite/logs/UPDATE_LOG.md"           ".bequite/logs/UPDATE_LOG.md"
+
+# alpha.12 — delegate task pack + mode history
+copy_template ".bequite/state/MODE_HISTORY.md"                  ".bequite/state/MODE_HISTORY.md"
+copy_template ".bequite/tasks/DELEGATE_TASKS.md"                ".bequite/tasks/DELEGATE_TASKS.md"
+copy_template ".bequite/tasks/DELEGATE_INSTRUCTIONS.md"         ".bequite/tasks/DELEGATE_INSTRUCTIONS.md"
+copy_template ".bequite/tasks/DELEGATE_ACCEPTANCE_CRITERIA.md"  ".bequite/tasks/DELEGATE_ACCEPTANCE_CRITERIA.md"
+copy_template ".bequite/tasks/DELEGATE_TEST_PLAN.md"            ".bequite/tasks/DELEGATE_TEST_PLAN.md"
+copy_template ".bequite/audits/DELEGATE_REVIEW_REPORT.md"       ".bequite/audits/DELEGATE_REVIEW_REPORT.md"
+
+# alpha.13 — presentation builder
+copy_template ".bequite/presentations/PRESENTATION_BRIEF.md"            ".bequite/presentations/PRESENTATION_BRIEF.md"
+copy_template ".bequite/presentations/CONTENT_OUTLINE.md"               ".bequite/presentations/CONTENT_OUTLINE.md"
+copy_template ".bequite/presentations/SLIDE_PLAN.md"                    ".bequite/presentations/SLIDE_PLAN.md"
+copy_template ".bequite/presentations/DESIGN_BRIEF.md"                  ".bequite/presentations/DESIGN_BRIEF.md"
+copy_template ".bequite/presentations/MOTION_PLAN.md"                   ".bequite/presentations/MOTION_PLAN.md"
+copy_template ".bequite/presentations/SPEAKER_NOTES.md"                 ".bequite/presentations/SPEAKER_NOTES.md"
+copy_template ".bequite/presentations/REFERENCES.md"                    ".bequite/presentations/REFERENCES.md"
+copy_template ".bequite/presentations/PRESENTATION_VARIANTS_REPORT.md"  ".bequite/presentations/PRESENTATION_VARIANTS_REPORT.md"
+copy_template ".bequite/presentations/EXPORT_LOG.md"                    ".bequite/presentations/EXPORT_LOG.md"
 
 # Copy commands.md at repo root (top-level reference)
 if [[ -f "$SOURCE/commands.md" && ! -f "./commands.md" ]]; then
@@ -270,7 +289,21 @@ echo "  $(cyan "Maintenance (alpha.10):")"
 echo "    /bq-update                       safe BeQuite self-update (backups + no overwrites)"
 echo "    /bq-update check                 preview what would change"
 echo
-echo "  Memory:        .bequite/ (state / logs / plans / tasks / audits / uiux / jobs / money / backups)"
+echo "  $(cyan "Operating modes (alpha.12 — composable):")"
+echo "    /bq-auto deep \"..\"               full 11-dim research + red-team for quality-critical work"
+echo "    /bq-auto fast \"..\"               short discovery; still tests + verifies"
+echo "    /bq-auto token-saver \"..\"        (alias: lean) low context cost; reuse cached research"
+echo "    /bq-auto delegate \"..\"           strong model architects + cheap model implements + strong model reviews"
+echo
+echo "  $(cyan "Creative + Content Workflows (alpha.13):")"
+echo "    /bq-presentation Create a lecture about X       natural language; quotes optional"
+echo "    /bq-presentation format=pptx variants=3 ...     PPTX with 3 design directions"
+echo "    /bq-presentation format=html ...                cinematic browser slides"
+echo "    /bq-presentation format=both ...                same content, two renders"
+echo "    /bq-presentation strict=true source=...         preserve source (PDF / Word / scientific)"
+echo "    /bq-presentation creative=true ...              topic-only; add hooks + story"
+echo
+echo "  Memory:        .bequite/ (state / logs / plans / tasks / audits / uiux / jobs / money / presentations / backups)"
 echo "  Commands:      .claude/commands/"
 echo "  Skills:        .claude/skills/"
 echo "  Reference:     commands.md (repo root) — full command catalog"

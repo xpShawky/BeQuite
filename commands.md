@@ -4,7 +4,7 @@
 >
 > For full procedural detail per command, click through to the matching file at `.claude/commands/<name>.md`.
 
-**Version:** v3.0.0-alpha.12 · 43 slash commands · 20 specialist skills · 6 workflow phases · **4 composable operating modes** · 23 workflow gates · 17 hard human gates
+**Version:** v3.0.0-alpha.13 · 44 slash commands · 21 specialist skills · 6 workflow phases · **4 composable operating modes** · 23 workflow gates · 17 hard human gates · **Creative + Content Workflows** (alpha.13)
 
 ---
 
@@ -21,6 +21,9 @@
 - [Phase orchestrators](#phase-orchestrators)
 - [Autonomous mode](#autonomous-mode)
 - [UI / UX](#ui--ux)
+- [Opportunity and Workflows (alpha.8 + alpha.10)](#opportunity-and-workflows-new-in-alpha8)
+- [Creative and Content Workflows (alpha.13)](#creative-and-content-workflows-alpha13)
+- [Maintenance (alpha.10)](#maintenance-alpha10)
 - [Quick orientation](#quick-orientation)
 - [How to read this file](#how-to-read-this-file)
 
@@ -808,6 +811,50 @@ Both `/bq-job-finder` and `/bq-make-money` support `worldwide_hidden=true` — s
 - Niche platforms by skill / region
 
 Per-opportunity trust check: legitimacy / country eligibility / payout method / VPN policy / ID verification / upfront-fee red flags / scam reports / realistic payout / time to first payout / why hidden.
+
+---
+
+## Creative and Content Workflows (alpha.13)
+
+### `/bq-presentation` (NEW in alpha.13)
+
+Premium PPTX or HTML presentation builder. World-class output — feels designed by a professional human, not a generic AI deck.
+
+- **Phase:** Any (creative + content; orthogonal to P0–P5)
+- **Purpose:** generate a complete presentation from a topic, files, brand assets, or research — including content strategy, slide-by-slide plan, design brief, motion plan, speaker notes, references
+- **When to use:** "Create a lecture about X" / "Make a deck about Y" / "Turn this PDF into slides" / "PowerPoint about Z" / "Cinematic browser deck" / "5 design directions for a lecture"
+- **When NOT to use:** one-page spec (use `/bq-spec`); implementation plan (use `/bq-plan`); research report (use `/bq-research`); code work (use `/bq-feature` or `/bq-fix`)
+- **Required gates:** `BEQUITE_INITIALIZED`
+- **Syntax (quotes optional — natural language understood):**
+  ```
+  /bq-presentation Create a lecture about study skills
+  /bq-presentation format=pptx variants=3 topic=infection-control
+  /bq-presentation [format=pptx, variants=3, style=premium, audience=doctors] Create a lecture about infection control
+  /bq-presentation strict=true source=folder ./materials Turn this material into slides
+  /bq-presentation creative=true Create a premium keynote-style presentation from this topic
+  /bq-auto presentation format=both variants=3 Create a premium lecture about AI agents
+  ```
+- **Recognized options:** `format` (pptx / html / both / auto), `variants` (1–10), `source` (folder / pdf / word / docx / url / mixed / topic-only), `strict` / `creative`, `audience`, `style`, `duration`, `language`, `topic`, `brand`, `references`, `notes`, `motion`
+- **Writes:** `.bequite/presentations/{PRESENTATION_BRIEF, CONTENT_OUTLINE, SLIDE_PLAN, DESIGN_BRIEF, MOTION_PLAN, SPEAKER_NOTES, REFERENCES, EXPORT_LOG}.md`, `PRESENTATION_VARIANTS_REPORT.md` (when `variants>1`), `assets/`, `outputs/`
+- **Skills activated:** `bequite-presentation-builder`, `bequite-ux-ui-designer`, `bequite-frontend-quality` (HTML quality), `bequite-researcher` (when sources require fetch)
+- **Hard human gates relevant to presentations:** tool installation (python-pptx / pptxgenjs / reveal.js / Slidev / Playwright etc. — never auto-installed); external publishing (SlideShare / Google Slides / SharePoint — user-only); variant winner selection (when `variants>1`); brand-asset usage rights
+- **Format pick:** PPTX (institutional / lecture / offline / speaker notes / Office users) vs HTML (cinematic motion / responsive / browser delivery / product demo) vs both (same content, two rendering strengths) — picked by audience + venue + delivery, not silently defaulted
+- **Strict vs creative:** strict (PDF / Word / scientific source — no unsupported claims; every fact traces to `REFERENCES.md`) vs creative (topic-only / keynote — may add hooks + structure; assumptions marked)
+- **Variants discipline:** different design directions (not color swaps) — Academic Clean / Premium Cinematic / Corporate Keynote / Medical Conference / Minimal Lecture / Dark Futuristic / Light Editorial / Data-Dashboard / Student-Friendly / Brand-Led (candidates, not defaults)
+- **Motion discipline:**
+  - **PPTX:** morph-like planning — same object across sequential slides with stable IDs; duplicate slides for movement; 1–2 transformations at a time; sparse micro-slides; 0.3–0.8s timing
+  - **HTML:** restrained CSS/JS — title glow intro / staged bullet reveal / card focus / light sweep / smooth section transitions — every effect earns its place
+- **Brand asset extraction:** when user provides logo / assets — extract palette + typography mood + layout mood + icon style; write `DESIGN_BRIEF.md` BEFORE building any slide; never use logos/imagery without rights
+- **Operating modes (composable):**
+  - `deep` — full 11-dim research before content strategy; multi-variant strongly suggested
+  - `fast` — skip extensive research; tight slide count; one variant
+  - `token-saver` (alias `lean`) — reuse cached research; targeted reads; compact briefs
+  - `delegate` — strong model writes BRIEF + OUTLINE + DESIGN_BRIEF + MOTION_PLAN; cheap model fills SLIDE_PLAN + SPEAKER_NOTES; strong model reviews
+- **Verification (14-item checklist):** one purpose per slide / readable text / not crowded / strong hook / clear story flow / correct references / purposeful images / consistent branding / earned animations / non-distracting transitions / aligned speaker notes / suitable format / supported claims (strict) / usable output
+- **Tool neutrality:** every PPTX library, HTML slide framework, animation library is a CANDIDATE per `.bequite/principles/TOOL_NEUTRALITY.md`. Decision section required before any install. Candidates only: python-pptx, pptxgenjs, reveal.js, Slidev, Marp, Spectacle, Impress.js, GSAP, Motion One, Playwright (for PDF export). None installed by default.
+- **Strategy doc / skill:** [`.claude/skills/bequite-presentation-builder/SKILL.md`](.claude/skills/bequite-presentation-builder/SKILL.md)
+- **Full spec:** [`.claude/commands/bq-presentation.md`](.claude/commands/bq-presentation.md)
+- **Memory layout:** [`.bequite/presentations/`](.bequite/presentations/)
 
 ---
 

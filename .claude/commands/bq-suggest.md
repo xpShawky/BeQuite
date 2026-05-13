@@ -40,6 +40,22 @@ Examples:
 - `/bq-suggest "I want fast mode only"`
 - `/bq-suggest "I want deep mode with research and red-team"`
 - `/bq-suggest "I need UX + backend + testing"`
+- `/bq-suggest "Build a PowerPoint about infection control for doctors"`
+- `/bq-suggest "Turn this Word file into a lecture"`
+- `/bq-suggest "Cinematic keynote deck from a topic"`
+
+### Presentation keyword triggers (alpha.13)
+
+If the user mentions any of: **slides, presentation, lecture, PowerPoint, PPTX, keynote, course lesson, screen recording, explain this topic visually, make a deck, convert PDF to slides, make lecture from Word file** — recommend `/bq-presentation`.
+
+Format-pick guidance to surface:
+- **PPTX** — editable in PowerPoint / lecture / institutional / offline / speaker recording / Office users
+- **HTML** — cinematic motion / responsive / browser delivery / product demo / interactive
+- **Both** — same content, two rendering strengths
+
+Strict-vs-creative:
+- **strict=true** — Word / PDF / scientific / institutional material → preserve source; no unsupported claims
+- **creative=true** — topic-only / keynote / marketing deck → may add hooks + structure (assumptions marked)
 
 ## Preconditions
 
@@ -104,6 +120,10 @@ Decision tree (high-level):
 | "Understand inherited code" | `/bq-explain "..."` |
 | "Find work / job" | `/bq-job-finder` |
 | "Find income opportunity" | `/bq-make-money` |
+| "Create a presentation / slides / lecture / deck / keynote" | `/bq-presentation` |
+| "Turn this PDF / Word into slides" | `/bq-presentation strict=true source=<file>` |
+| "PowerPoint about X" | `/bq-presentation format=pptx` |
+| "Cinematic browser slides" | `/bq-presentation format=html` |
 | "Pre-release verify" | `/bq-verify` → `/bq-release` |
 | "Returning after break" | `/bq-recover` first; then `/bq-now` to confirm |
 | "Where do I stand right now" | `/bq-now` (faster than `/bequite`) |

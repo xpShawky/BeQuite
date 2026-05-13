@@ -1,11 +1,11 @@
 # BeQuite installed version
 
-**Version:** v3.0.0-alpha.12
-**Updated:** 2026-05-12
+**Version:** v3.0.0-alpha.13
+**Updated:** 2026-05-13
 **Source:** github
 **Source path / repo:** xpShawky/BeQuite (branch: main)
-**Previous version:** v3.0.0-alpha.11
-**Last check:** 2026-05-12
+**Previous version:** v3.0.0-alpha.12
+**Last check:** 2026-05-13
 **Update count:** 0 (this is the seed file; updates from /bq-update increment)
 
 ---
@@ -26,6 +26,19 @@ Reading this file lets `/bq-update` know:
 ## Update history
 
 (Populated by `/bq-update` runs — newest at top.)
+
+### 2026-05-13 — alpha.13 ship
+- `/bq-presentation` added (premium PPTX / HTML builder)
+- `bequite-presentation-builder` skill added
+- `.bequite/presentations/` memory folder with 9 templates added
+- Installer carries presentation templates
+- Commands: 43 → 44; Skills: 20 → 21
+
+### 2026-05-12 — alpha.12 ship
+- 4 composable operating modes (Deep / Fast / Token Saver `lean` / Delegate)
+- `bequite-delegate-planner` skill added
+- Delegate task pack + MODE_HISTORY added
+- Skills: 19 → 20
 
 ### 2026-05-12 — seeded
 - Initial seed at v3.0.0-alpha.10 (the version this seed file was authored at)

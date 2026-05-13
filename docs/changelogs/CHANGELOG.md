@@ -6,12 +6,101 @@ Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANG
 
 ---
 
-## [Unreleased — alpha.13]
+## [Unreleased — alpha.14]
 
-- Installer updated to copy 5 delegate templates + MODE_HISTORY.md
-- USING_BEQUITE_COMMANDS.md updated with mode examples + delegate walkthrough
+- USING_BEQUITE_COMMANDS.md updated with /bq-presentation walkthrough + delegate walkthrough
 - Cross-references: MULTI_MODEL_PLANNING_STRATEGY.md ↔ delegate; MEMORY_FIRST_BEHAVIOR.md ↔ token-saver; RESEARCH_DEPTH_STRATEGY.md ↔ deep
-- Live verification of all 4 modes against a real project (user action)
+- Live verification of all 4 modes + /bq-presentation against a real project (user action)
+- Decision: optional `/bq-deck` alias for `/bq-presentation` if user pressure demands
+
+---
+
+## [v3.0.0-alpha.13] — 2026-05-13
+
+### Added — Creative and Content Workflows category
+
+- **`/bq-presentation`** — premium PPTX or HTML presentation builder. World-class output, designed to feel professional rather than generic AI.
+  - Natural-language syntax (quotes optional)
+  - Options: `format` (pptx / html / both / auto), `variants` (1–10), `source` (folder / pdf / word / docx / url / mixed / topic-only), `strict` / `creative`, `audience`, `style`, `duration`, `language`, `topic`, `brand`, `references`, `notes`, `motion`
+  - Strict mode preserves source claims (PDF / Word / scientific source) — no unsupported facts
+  - Creative mode adds structure (hooks, story arcs, examples) with assumptions marked
+  - Variants 1–10: different design directions (Academic Clean / Premium Cinematic / Corporate Keynote / Medical Conference / Minimal Lecture / Dark Futuristic / Light Editorial / Data-Dashboard / Student-Friendly / Brand-Led — candidates only)
+  - **Morph-like PPTX motion** — same object across sequential slides with stable IDs; duplicate slides for movement; 1–2 transformations at a time; 0.3–0.8s timing
+  - **HTML motion vocabulary** — title glow, staged bullets, card focus, light sweep, smooth section transitions (every effect earns its place; no random animation)
+  - Brand asset extraction (palette / typography / layout / icon style — writes `DESIGN_BRIEF.md` BEFORE any slide)
+  - 14-item verification checklist
+  - Operating modes composable: `deep` / `fast` / `token-saver` / `delegate`
+  - Tool neutrality: python-pptx / pptxgenjs / reveal.js / Slidev / Marp / Spectacle / Impress.js / GSAP / Motion One / Playwright are CANDIDATES only — none installed by default
+- **`bequite-presentation-builder`** skill — encodes the 14-step workflow, PPTX vs HTML decision rule, morph-like discipline, AI-slop reject list, variants discipline, strict-vs-creative content rules, brand-asset extraction, verification checklist
+- **`.bequite/presentations/`** memory folder with 9 templates:
+  - `PRESENTATION_BRIEF.md` — what / why / who / format / strict-vs-creative
+  - `CONTENT_OUTLINE.md` — title / hook / story arc / slide outline / references plan
+  - `SLIDE_PLAN.md` — slide-by-slide content (purpose / headline / body / visual / speaker-note pointer / source / motion ref)
+  - `DESIGN_BRIEF.md` — palette / typography / grid / icon style / AI-slop reject list / brand extraction
+  - `MOTION_PLAN.md` — PPTX morph-like discipline + HTML motion vocabulary + audience-fit motion baseline
+  - `SPEAKER_NOTES.md` — per-slide talking points (strict-mode source-traced; creative-mode assumptions marked)
+  - `REFERENCES.md` — sources, citations, attribution, anti-hallucination check
+  - `PRESENTATION_VARIANTS_REPORT.md` — per-variant visual direction + pros/cons + recommendation; user picks winner
+  - `EXPORT_LOG.md` — every export attempt + tool chosen + verification result
+  - `assets/.gitkeep`, `outputs/.gitkeep`
+
+### Changed
+
+- README.md — new "Creative and Content Workflows (alpha.13)" section + version bump to alpha.13 + skill count 20 → 21 + command count 43 → 44 + skill list updated
+- commands.md — new "Creative and Content Workflows (alpha.13)" section with full `/bq-presentation` spec + ToC entry + version bump
+- `.claude/commands/bequite.md` — new "Creative and Content Workflows (alpha.13)" block in root menu
+- `.claude/commands/bq-help.md` — added `/bq-presentation` to alpha.5+ surface list
+- `.claude/commands/bq-suggest.md` — added presentation keyword triggers (slides / presentation / lecture / PowerPoint / PPTX / keynote / deck / convert PDF / Word file → slides)
+- `.claude/skills/bequite-workflow-advisor/SKILL.md` — added `/bq-presentation` routing patterns + new "Creative + Content" command-table row
+- `docs/specs/COMMAND_CATALOG.md` — full `/bq-presentation` entry + tallies bumped to 44 commands / 21 skills
+- `CLAUDE.md` — spec bumped to alpha.13 + Creative + Content Workflows mention + presentation memory path
+- `scripts/install-bequite.{ps1,sh}` — bumped to alpha.13 + scaffold `.bequite/presentations/` (+ `assets/`, `outputs/`) + copy the 9 presentation templates + updated install banner
+- `BEQUITE_VERSION.md` — bumped to alpha.13
+
+### Naming decisions
+
+- One canonical command: `/bq-presentation`. Optional alias `/bq-deck` deferred to alpha.14 (avoid command clutter; alpha.13 is 44 commands — enough).
+- Skill is `bequite-presentation-builder` (consistent with naming convention).
+- Memory folder is `.bequite/presentations/` (plural, parallel to `jobs/`, `money/`, `uiux/`).
+
+### Parser discipline (important)
+
+- Natural language understood — quotes NOT required
+- Mode words (`deep`, `fast`, `delegate`, `uiux`, `presentation`, `pptx`, `html`) treated as flags ONLY when:
+  - `key=value`
+  - inside brackets `[format=pptx, variants=3]`
+  - immediately after the command name as known flag
+  - clearly separated from the natural-language task
+- If a word appears naturally inside the topic text (e.g. "explain fast learning") it stays as topic text, NOT a mode
+
+### Acceptance (alpha.13 — all met)
+
+- `/bq-presentation` command file exists with full spec ✅
+- `bequite-presentation-builder` skill exists ✅
+- README mentions presentation capability + new section ✅
+- commands.md has full entry ✅
+- COMMAND_CATALOG.md updated ✅
+- `/bequite` root menu shows Creative + Content Workflows ✅
+- `/bq-help` updated ✅
+- `/bq-suggest` recommends `/bq-presentation` for slide/lecture/PowerPoint/PDF/Word keywords ✅
+- `bequite-workflow-advisor` routes presentation queries ✅
+- Memory folder `.bequite/presentations/` exists with 9 templates + assets/ + outputs/ ✅
+- Strict vs creative documented ✅
+- PPTX vs HTML decision logic documented ✅
+- Variants discipline (1–10, different *directions*) documented ✅
+- Morph-like PPTX motion planning documented ✅
+- Source / reference handling documented ✅
+- AGENT_LOG updated ✅
+- CHANGELOG updated (this entry) ✅
+- Installer carries the new templates ✅
+- No heavy dependencies added ✅ (no python-pptx, pptxgenjs, reveal.js, Slidev, Playwright — all candidates only)
+
+### Not done (deferred to alpha.14)
+
+- USING_BEQUITE_COMMANDS.md walkthrough with worked presentation example
+- `/bq-deck` alias (only if user demand justifies)
+- Decision section example in `DECISIONS.md` for a chosen PPTX library (will run when user invokes `/bq-presentation` for real implementation)
+- Live verification on a real project (user action)
 
 ---
 

@@ -16,10 +16,11 @@ This repo IS the source of the skill pack. Its `.claude/commands/` + `.claude/sk
 
 ---
 
-## Current spec: v3.0.0-alpha.12
+## Current spec: v3.0.0-alpha.13
 
-- **43 slash commands** (`.claude/commands/bequite.md` + 42 × `.claude/commands/bq-*.md`)
-- **20 skills** (`.claude/skills/bequite-*/SKILL.md`) — adds `bequite-delegate-planner` in alpha.12
+- **44 slash commands** (`.claude/commands/bequite.md` + 43 × `.claude/commands/bq-*.md`) — adds `/bq-presentation` in alpha.13
+- **21 skills** (`.claude/skills/bequite-*/SKILL.md`) — adds `bequite-presentation-builder` in alpha.13 (alpha.12 added `bequite-delegate-planner`)
+- **Creative + Content Workflows (alpha.13)** — `/bq-presentation` produces premium PPTX or HTML decks from topic / files / brand assets / research. Strict (preserves source) vs creative (adds structure). Variants 1–10. Morph-like motion for PPTX, CSS/JS for HTML. Memory at `.bequite/presentations/`.
 - **4 composable operating modes** (alpha.12) — Deep / Fast / Token Saver (alias `lean`) / Delegate. Set per command with `--mode <mode>` or as positional flags. All 17 hard human gates apply regardless of mode. Tracked in `.bequite/state/CURRENT_MODE.md` and `MODE_HISTORY.md`. Full table in `commands.md` § Operating Modes and `docs/architecture/AUTO_MODE_STRATEGY.md` §11.
 - **Memory-first behavior** — every action-taking command reads core memory (state / mode / phase / gates / last-run / mistake-memory / mode-history) before acting; see `docs/architecture/MEMORY_FIRST_BEHAVIOR.md`
 - **6 explicit workflow modes** — New Project, Existing Audit, Add Feature, Fix Problem, Research Only, Release Readiness (these are the workflow-level modes; the 4 operating modes above are orthogonal depth/cost flags)
@@ -55,7 +56,8 @@ This repo IS the source of the skill pack. Its `.claude/commands/` + `.claude/sk
 | Mode history (alpha.12) | `.bequite/state/MODE_HISTORY.md` |
 | Delegate task pack (alpha.12) | `.bequite/tasks/DELEGATE_TASKS.md`, `DELEGATE_INSTRUCTIONS.md`, `DELEGATE_ACCEPTANCE_CRITERIA.md`, `DELEGATE_TEST_PLAN.md` |
 | Delegate review report (alpha.12) | `.bequite/audits/DELEGATE_REVIEW_REPORT.md` |
-| Skills (20) | `.claude/skills/bequite-*/SKILL.md` |
+| Presentation memory (alpha.13) | `.bequite/presentations/` (PRESENTATION_BRIEF, CONTENT_OUTLINE, SLIDE_PLAN, DESIGN_BRIEF, MOTION_PLAN, SPEAKER_NOTES, REFERENCES, PRESENTATION_VARIANTS_REPORT, EXPORT_LOG + assets/ + outputs/) |
+| Skills (21) | `.claude/skills/bequite-*/SKILL.md` |
 | Public command reference | `commands.md` (repo root) |
 | BeQuite memory | `.bequite/` |
 | Workflow gate ledger | `.bequite/state/WORKFLOW_GATES.md` |

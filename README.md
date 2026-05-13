@@ -4,14 +4,14 @@
 
 A lightweight skill pack + memory system. Install once. Works everywhere Claude Code runs.
 
-**Latest:** `v3.0.0-alpha.12` · **Previous:** `v3.0.0-alpha.11` · MIT · by [@xpShawky](https://github.com/xpShawky)
+**Latest:** `v3.0.0-alpha.13` · **Previous:** `v3.0.0-alpha.12` · MIT · by [@xpShawky](https://github.com/xpShawky)
 
 **📖 Full command reference: [`commands.md`](commands.md)** — every command explained, ordered by workflow.
 
 <p>
   <a href="#install"><img alt="Install" src="https://img.shields.io/badge/install-one_command-0ea5e9?style=flat-square"></a>
-  <a href="commands.md"><img alt="43 commands" src="https://img.shields.io/badge/slash_commands-43-7c3aed?style=flat-square"></a>
-  <a href="#how-to-use"><img alt="20 skills" src="https://img.shields.io/badge/skills-20-10b981?style=flat-square"></a>
+  <a href="commands.md"><img alt="44 commands" src="https://img.shields.io/badge/slash_commands-44-7c3aed?style=flat-square"></a>
+  <a href="#how-to-use"><img alt="21 skills" src="https://img.shields.io/badge/skills-21-10b981?style=flat-square"></a>
   <a href="#operating-modes"><img alt="4 modes" src="https://img.shields.io/badge/operating_modes-4-ec4899?style=flat-square"></a>
   <a href="#workflow"><img alt="6 phases" src="https://img.shields.io/badge/phases-6-f59e0b?style=flat-square"></a>
   <a href="#what-bequite-is-not"><img alt="No Docker" src="https://img.shields.io/badge/no-Docker-64748b?style=flat-square"></a>
@@ -26,8 +26,8 @@ A lightweight skill pack + memory system. Install once. Works everywhere Claude 
 
 It gives every project:
 
-- **43 slash commands** — `/bq-init`, `/bq-research`, `/bq-plan`, `/bq-feature`, `/bq-fix`, `/bq-auto`, `/bq-uiux-variants`, `/bq-live-edit`, `/bq-now`, `/bq-spec`, `/bq-explain`, `/bq-suggest`, `/bq-job-finder`, `/bq-make-money`, `/bq-update`, … (full reference: [`commands.md`](commands.md))
-- **20 specialist skills** — researcher, product-strategist, backend-architect, database-architect, security-reviewer, devops-cloud, frontend-quality, ux-ui-designer, testing-gate, release-gate, live-edit, scraping-automation, problem-solver, multi-model-planning, project-architect, workflow-advisor, job-finder, make-money, updater, **delegate-planner** (alpha.12)
+- **44 slash commands** — `/bq-init`, `/bq-research`, `/bq-plan`, `/bq-feature`, `/bq-fix`, `/bq-auto`, `/bq-uiux-variants`, `/bq-live-edit`, `/bq-now`, `/bq-spec`, `/bq-explain`, `/bq-suggest`, `/bq-job-finder`, `/bq-make-money`, `/bq-update`, `/bq-presentation` (alpha.13), … (full reference: [`commands.md`](commands.md))
+- **21 specialist skills** — researcher, product-strategist, backend-architect, database-architect, security-reviewer, devops-cloud, frontend-quality, ux-ui-designer, testing-gate, release-gate, live-edit, scraping-automation, problem-solver, multi-model-planning, project-architect, workflow-advisor, job-finder, make-money, updater, delegate-planner (alpha.12), **presentation-builder** (alpha.13)
 - **4 composable operating modes** — Deep / Fast / Token Saver / Delegate (alpha.12). See [Operating Modes](#operating-modes) below.
 - **6 workflow phases** with **mandatory gates** that block out-of-order commands
 - **Persistent memory** in `.bequite/` — state, plans, audits, logs, mistake memory, **mode history**
@@ -298,6 +298,9 @@ Organized by phase, not alphabetically. **Full details for every command:** [`co
 - `/bq-suggest "<situation>"` — workflow advisor; recommends the best commands + mode for your goal
 - `/bq-job-finder` — find real work opportunities (jobs, freelance, AI gigs); deep intelligence: community signals + trending + AI-assisted + 11 tracks
 - `/bq-make-money` — find legitimate earning opportunities; deep intelligence + Hidden Gems + community signals + AI-assisted paths
+
+### Creative and Content Workflows (alpha.13)
+- `/bq-presentation` — world-class PPTX or HTML presentations from topic / folder / Word doc / PDF / images / transcript / brand assets / URLs; variants 1–10; strict mode (no unsupported claims) vs creative mode; morph-like motion planning for PPTX; CSS/JS motion for HTML; brand asset extraction; tool-neutral (no library installed by default)
 
 ### Maintenance (alpha.10)
 - `/bq-update` — update BeQuite itself (safe, non-destructive; modes: check / safe / force / local / github)

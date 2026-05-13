@@ -32,7 +32,7 @@ param(
 )
 
 $ErrorActionPreference = "Continue"
-$BEQUITE_VERSION = "v3.0.0-alpha.10"
+$BEQUITE_VERSION = "v3.0.0-alpha.13"
 
 function Write-Section($text) {
   Write-Host ""
@@ -100,7 +100,7 @@ if ($FromLocal -ne "") {
 
 # --- 3. Copy .claude/commands/ ---
 
-Write-Section "Installing .claude/commands/ (43 slash commands)"
+Write-Section "Installing .claude/commands/ (44 slash commands)"
 $SRC_CMD = Join-Path $SOURCE ".claude\commands"
 if (-not (Test-Path $SRC_CMD)) {
   Exit-Fatal "Source missing $SRC_CMD — is this a valid BeQuite repo?"
@@ -112,7 +112,7 @@ Write-Host "  $count slash commands installed" -ForegroundColor Green
 
 # --- 4. Copy .claude/skills/bequite-* (15 specialist skills) ---
 
-Write-Section "Installing .claude/skills/bequite-* (19 specialist skills)"
+Write-Section "Installing .claude/skills/bequite-* (21 specialist skills)"
 $SRC_SKILLS = Join-Path $SOURCE ".claude\skills"
 if (-not (Test-Path $SRC_SKILLS)) {
   Exit-Fatal "Source missing $SRC_SKILLS"
@@ -126,7 +126,7 @@ Get-ChildItem $SRC_SKILLS -Directory -Filter "bequite-*" | ForEach-Object {
 
 # --- 5. Create .bequite/ scaffold (alpha.5-alpha.8: principles + uiux + jobs + money + new state files) ---
 
-Write-Section "Scaffolding .bequite/ memory (alpha.5-8: principles, uiux, jobs, money, mistake memory, assumptions)"
+Write-Section "Scaffolding .bequite/ memory (alpha.5-13: principles, uiux, jobs, money, mistake memory, assumptions, delegate, presentations)"
 
 $SCAFFOLD = @(
   ".bequite\state",
@@ -143,7 +143,9 @@ $SCAFFOLD = @(
   ".bequite\uiux\archive",
   ".bequite\jobs",
   ".bequite\money",
-  ".bequite\backups"
+  ".bequite\backups",
+  ".bequite\presentations\assets",
+  ".bequite\presentations\outputs"
 )
 foreach ($dir in $SCAFFOLD) {
   if (-not (Test-Path $dir)) {
@@ -188,6 +190,23 @@ $TEMPLATES = @{
   ".bequite\state\BEQUITE_VERSION.md"     = ".bequite\state\BEQUITE_VERSION.md"
   ".bequite\state\UPDATE_SOURCE.md"       = ".bequite\state\UPDATE_SOURCE.md"
   ".bequite\logs\UPDATE_LOG.md"           = ".bequite\logs\UPDATE_LOG.md"
+  # alpha.12 delegate task pack + mode history
+  ".bequite\state\MODE_HISTORY.md"                    = ".bequite\state\MODE_HISTORY.md"
+  ".bequite\tasks\DELEGATE_TASKS.md"                  = ".bequite\tasks\DELEGATE_TASKS.md"
+  ".bequite\tasks\DELEGATE_INSTRUCTIONS.md"           = ".bequite\tasks\DELEGATE_INSTRUCTIONS.md"
+  ".bequite\tasks\DELEGATE_ACCEPTANCE_CRITERIA.md"    = ".bequite\tasks\DELEGATE_ACCEPTANCE_CRITERIA.md"
+  ".bequite\tasks\DELEGATE_TEST_PLAN.md"              = ".bequite\tasks\DELEGATE_TEST_PLAN.md"
+  ".bequite\audits\DELEGATE_REVIEW_REPORT.md"         = ".bequite\audits\DELEGATE_REVIEW_REPORT.md"
+  # alpha.13 presentation builder
+  ".bequite\presentations\PRESENTATION_BRIEF.md"            = ".bequite\presentations\PRESENTATION_BRIEF.md"
+  ".bequite\presentations\CONTENT_OUTLINE.md"               = ".bequite\presentations\CONTENT_OUTLINE.md"
+  ".bequite\presentations\SLIDE_PLAN.md"                    = ".bequite\presentations\SLIDE_PLAN.md"
+  ".bequite\presentations\DESIGN_BRIEF.md"                  = ".bequite\presentations\DESIGN_BRIEF.md"
+  ".bequite\presentations\MOTION_PLAN.md"                   = ".bequite\presentations\MOTION_PLAN.md"
+  ".bequite\presentations\SPEAKER_NOTES.md"                 = ".bequite\presentations\SPEAKER_NOTES.md"
+  ".bequite\presentations\REFERENCES.md"                    = ".bequite\presentations\REFERENCES.md"
+  ".bequite\presentations\PRESENTATION_VARIANTS_REPORT.md"  = ".bequite\presentations\PRESENTATION_VARIANTS_REPORT.md"
+  ".bequite\presentations\EXPORT_LOG.md"                    = ".bequite\presentations\EXPORT_LOG.md"
 }
 foreach ($pair in $TEMPLATES.GetEnumerator()) {
   $src = Join-Path $SOURCE $pair.Key
@@ -315,7 +334,21 @@ Write-Host "  Maintenance (alpha.10):" -ForegroundColor Cyan
 Write-Host "    /bq-update                       safe BeQuite self-update (backups + no overwrites)" -ForegroundColor White
 Write-Host "    /bq-update check                 preview what would change" -ForegroundColor White
 Write-Host ""
-Write-Host "  Memory:        .bequite/ (state / logs / plans / tasks / audits / uiux / jobs / money / backups)" -ForegroundColor Gray
+Write-Host "  Operating modes (alpha.12 — composable):" -ForegroundColor Cyan
+Write-Host "    /bq-auto deep ""..""              full 11-dim research + red-team for quality-critical work" -ForegroundColor White
+Write-Host "    /bq-auto fast ""..""              short discovery; still tests + verifies" -ForegroundColor White
+Write-Host "    /bq-auto token-saver ""..""       (alias: lean) low context cost; reuse cached research" -ForegroundColor White
+Write-Host "    /bq-auto delegate ""..""          strong model architects + cheap model implements + strong model reviews" -ForegroundColor White
+Write-Host ""
+Write-Host "  Creative + Content Workflows (alpha.13):" -ForegroundColor Cyan
+Write-Host "    /bq-presentation Create a lecture about X       natural language; quotes optional" -ForegroundColor White
+Write-Host "    /bq-presentation format=pptx variants=3 ...     PPTX with 3 design directions" -ForegroundColor White
+Write-Host "    /bq-presentation format=html ...                cinematic browser slides" -ForegroundColor White
+Write-Host "    /bq-presentation format=both ...                same content, two renders" -ForegroundColor White
+Write-Host "    /bq-presentation strict=true source=...         preserve source (PDF / Word / scientific)" -ForegroundColor White
+Write-Host "    /bq-presentation creative=true ...              topic-only; add hooks + story" -ForegroundColor White
+Write-Host ""
+Write-Host "  Memory:        .bequite/ (state / logs / plans / tasks / audits / uiux / jobs / money / presentations / backups)" -ForegroundColor Gray
 Write-Host "  Commands:      .claude/commands/" -ForegroundColor Gray
 Write-Host "  Skills:        .claude/skills/" -ForegroundColor Gray
 Write-Host "  Reference:     commands.md (repo root) — full command catalog" -ForegroundColor Gray

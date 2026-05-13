@@ -248,6 +248,7 @@ Additional commands not listed above (alpha.2+):
 - `/bq-spec`, `/bq-explain` (alpha.7)
 - `/bq-suggest`, `/bq-job-finder`, `/bq-make-money` (Opportunity and Workflows — alpha.8)
 - `/bq-update` (Maintenance — alpha.10; safe BeQuite self-update with backup + conflict surfacing)
+- `/bq-presentation` (Creative and Content Workflows — alpha.13; premium PPTX / HTML presentations with variants, strict-vs-creative modes, morph-like motion planning)
 
 ### Alpha.10 deep intelligence for opportunity commands
 

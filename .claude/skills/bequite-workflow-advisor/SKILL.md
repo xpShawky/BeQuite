@@ -31,6 +31,7 @@ Invoked by `/bq-suggest`.
 | UI | `/bq-uiux-variants`, `/bq-live-edit` |
 | Advisor | `/bq-suggest` (you are here when invoked) |
 | Opportunities | `/bq-job-finder`, `/bq-make-money` |
+| Creative + Content (alpha.13) | `/bq-presentation` |
 
 ### All 15 specialist skills
 
@@ -84,6 +85,11 @@ New Project · Existing Audit · Add Feature · Fix Problem · Research Only · 
 | "Show me the menu" | `/bequite` |
 | "Find work" | `/bq-job-finder` |
 | "Find income" | `/bq-make-money` |
+| "Build a presentation / slides / lecture / deck / keynote" | `/bq-presentation` |
+| "PowerPoint about X" | `/bq-presentation format=pptx` |
+| "Cinematic browser slides for X" | `/bq-presentation format=html` |
+| "Turn PDF/Word into slides (strict)" | `/bq-presentation strict=true source=<path>` |
+| "Several visual directions for a lecture" | `/bq-presentation variants=3..5` |
 
 ### By mode choice (4 modes + balanced default)
 

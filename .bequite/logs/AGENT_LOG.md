@@ -2,6 +2,94 @@
 
 Append-only chronicle of every BeQuite command run. Newest at top.
 
+## 2026-05-13 — alpha.13 ship: Creative & Content Workflows — /bq-presentation
+
+**Action:** User invoked `/bq-auto presentation` for adding the Presentation Builder capability. Per /bq-auto discipline, continued autonomously — no hard gates tripped.
+
+**User goal (verbatim):** Add /bq-presentation slash command + bequite-presentation-builder skill + memory folder + docs/installer update. Keep BeQuite lightweight — no Studio, heavy CLI, dashboard, or heavy deps. Build the infrastructure; don't render an actual deck yet.
+
+**Naming decisions:**
+- Single canonical command: `/bq-presentation`. Optional alias `/bq-deck` deferred to alpha.14 (avoid command clutter).
+- Skill: `bequite-presentation-builder` (consistent with `bequite-*` naming).
+- Memory folder: `.bequite/presentations/` (plural, parallel to `jobs/`, `money/`, `uiux/`).
+
+**Parser discipline (important):**
+- Natural language understood — quotes NOT required
+- Mode words treated as flags ONLY when `key=value`, bracketed, or clearly separated from natural-language task. "The presentation should explain fast learning" → `fast` is topic text, NOT Fast Mode.
+
+**New files (12):**
+- `.claude/commands/bq-presentation.md` (~13K — full command spec, 13-step workflow, parser rules, mode integration, hard gates, tool neutrality)
+- `.claude/skills/bequite-presentation-builder/SKILL.md` (~9K — PPTX vs HTML, morph-like discipline, motion vocabulary, AI-slop rejects, variants, strict-vs-creative, brand extraction, verification checklist)
+- `.bequite/presentations/PRESENTATION_BRIEF.md`
+- `.bequite/presentations/CONTENT_OUTLINE.md`
+- `.bequite/presentations/SLIDE_PLAN.md`
+- `.bequite/presentations/DESIGN_BRIEF.md`
+- `.bequite/presentations/MOTION_PLAN.md`
+- `.bequite/presentations/SPEAKER_NOTES.md`
+- `.bequite/presentations/REFERENCES.md`
+- `.bequite/presentations/PRESENTATION_VARIANTS_REPORT.md`
+- `.bequite/presentations/EXPORT_LOG.md`
+- `.bequite/presentations/assets/.gitkeep`, `.bequite/presentations/outputs/.gitkeep`
+
+**Updated:**
+- `.claude/commands/bequite.md` — root menu: new "Creative and Content Workflows (alpha.13)" section
+- `.claude/commands/bq-help.md` — added `/bq-presentation` to alpha.5+ surface
+- `.claude/commands/bq-suggest.md` — added 5 keyword triggers (slides / presentation / lecture / PowerPoint / PDF→slides) + new "Presentation keyword triggers (alpha.13)" section with format-pick + strict-vs-creative guidance
+- `.claude/skills/bequite-workflow-advisor/SKILL.md` — added 5 routing rows + new "Creative + Content (alpha.13)" command-table row
+- `README.md` — new "Creative and Content Workflows (alpha.13)" section; version bump to alpha.13; commands 43→44; skills 20→21; "presentation-builder" added to skill list
+- `commands.md` — new top-level "Creative and Content Workflows (alpha.13)" section with full `/bq-presentation` entry + ToC entry + version bump
+- `CLAUDE.md` — spec bumped to alpha.13; Creative + Content Workflows mention; new memory path entry
+- `docs/specs/COMMAND_CATALOG.md` — full `/bq-presentation` entry + tallies bumped to 44 commands / 21 skills + presentation summary
+- `docs/changelogs/CHANGELOG.md` — alpha.13 released entry + alpha.14 unreleased section
+
+**Acceptance check (all 18 criteria met):**
+1. `/bq-presentation` exists ✅
+2. `bequite-presentation-builder` skill exists ✅
+3. README mentions presentation capability ✅
+4. commands.md mentions it with full spec ✅
+5. command catalog updated ✅
+6. `/bequite` root menu updated ✅
+7. `/bq-help` updated ✅
+8. `/bq-suggest` recommends it for keyword triggers ✅
+9. memory folder `.bequite/presentations/` exists with 9 templates + assets/ + outputs/ ✅
+10. strict vs creative mode documented ✅
+11. PPTX vs HTML decision logic documented ✅
+12. variants supported in docs ✅
+13. motion / morph-like planning documented ✅
+14. source / reference handling documented ✅
+15. AGENT_LOG updated (this entry) ✅
+16. CHANGELOG updated ✅
+17. installer scripts updated ✅
+18. no heavy deps added (python-pptx / pptxgenjs / reveal.js / Slidev / Playwright are candidates only) ✅
+
+**Article VI honest reporting — what's NOT done:**
+- USING_BEQUITE_COMMANDS.md walkthrough with worked example (deferred to alpha.14; the user asked for the infrastructure; rendering an actual deck is the next `/bq-presentation` invocation)
+- `/bq-deck` alias (intentionally deferred; lightweight discipline)
+- Live verification on a real presentation (user action — next time user invokes `/bq-presentation`)
+- A chosen PPTX library decision ADR (will be written when user actually renders output; tool neutrality requires decision per project)
+
+**Tool neutrality observance:**
+- No PPTX library installed
+- No HTML slide framework installed
+- No animation library installed
+- No browser export tool installed
+- All candidates listed in `.claude/commands/bq-presentation.md::Step 11` and `bequite-presentation-builder` skill
+- Decision section required before any future install per `.bequite/principles/TOOL_NEUTRALITY.md`
+
+**Mode tracking:**
+Append-only entry to `.bequite/state/MODE_HISTORY.md`:
+- Mode: balanced (no flag) — appropriate for documentation work
+- Outcome: SUCCESS — all 18 acceptance criteria met
+- Approx cost: medium (large doc writes; no tool installs; no rendering)
+- Tests: N/A (documentation; verification was acceptance-criteria check)
+
+**Next:**
+- `git add -A && git commit && git push` (alpha.13 to xpShawky/BeQuite main)
+- Bump `BEQUITE_VERSION.md` and update `LAST_RUN.md` (this run)
+- alpha.14 pending: USING_BEQUITE_COMMANDS walkthrough, optional `/bq-deck` alias, live verification
+
+---
+
 ## 2026-05-12 — alpha.12 ship: 4 composable operating modes (Deep / Fast / Token Saver / Delegate)
 
 **Action:** User invoked `/bq-auto` for mode-system documentation. Per /bq-auto discipline, continued autonomously — no hard gates tripped.

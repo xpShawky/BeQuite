@@ -118,6 +118,9 @@ Command map (34 commands, ordered by workflow phase):
     /bq-job-finder      find real work opportunities (jobs, freelance, AI gigs + community + hidden gems)
     /bq-make-money      find legitimate earning opportunities (10 tracks + Hidden Gems + AI-assisted paths)
 
+  Creative and Content Workflows (alpha.13)
+    /bq-presentation    premium PPTX or HTML presentation builder (variants, strict/creative, morph-like motion)
+
   Maintenance
     /bq-update          update BeQuite itself (safe + non-destructive)
     /bq-memory          read / write BeQuite memory snapshots

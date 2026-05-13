@@ -247,5 +247,10 @@ Additional commands not listed above (alpha.2+):
 - `/bq-now` (one-line orientation — alpha.5)
 - `/bq-spec`, `/bq-explain` (alpha.7)
 - `/bq-suggest`, `/bq-job-finder`, `/bq-make-money` (Opportunity and Workflows — alpha.8)
+- `/bq-update` (Maintenance — alpha.10; safe BeQuite self-update with backup + conflict surfacing)
+
+### Alpha.10 deep intelligence for opportunity commands
+
+`/bq-job-finder` and `/bq-make-money` now search **community signals** (Reddit / IH / HN / Product Hunt / X / forums) + **trending short-window** opportunities + **AI-assisted paths** in addition to standard platforms. New tracks: `worldwide_hidden`, `trending_now`, `community_discovered`, `AI_assisted`, `no_calls`, `fast_first_payout`, `highest_payout`, `beginner_friendly`, `skilled_remote`, `local_country`, `non_english_platforms`. New memory files: `HIDDEN_GEMS.md`, `COMMUNITY_SIGNALS.md`, `AI_ASSISTED_WORK.md` / `AI_ASSISTED_PATHS.md`.
 
 For the complete picture: [`commands.md`](../../commands.md).

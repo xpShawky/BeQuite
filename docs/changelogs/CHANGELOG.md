@@ -6,11 +6,59 @@ Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANG
 
 ---
 
-## [Unreleased — alpha.10]
+## [Unreleased — alpha.11]
 
-- Live verification of `/bequite` against fresh real-world projects (user-action — installer is now feature-complete)
+- Installer scripts updated to copy alpha.10 new memory files (HIDDEN_GEMS / COMMUNITY_SIGNALS / AI_ASSISTED_*) + BEQUITE_VERSION.md + UPDATE_SOURCE.md
+- Live verification of `/bequite` against fresh real-world projects (user-action)
 - Architecture docs expanded from concise summaries to full reference depth
-- `/bq-help` extended with full standardized fields (currently has alignment notice + brief block)
+
+---
+
+## [v3.0.0-alpha.10] — 2026-05-12
+
+### Added
+
+#### Maintenance command
+- `/bq-update` — safely update BeQuite (commands / skills / docs / templates) from GitHub or local source. Modes: check / safe (default) / force / source=local / source=github. Backs up before changes; never overwrites project memory; surfaces conflicts as `.bequite-update.md` sibling files.
+- `bequite-updater` skill — version detection / source resolution / SHA-256 diff / merge per file class / conflict handling / logging / rollback / test-after-update discipline.
+- Memory files: `.bequite/state/BEQUITE_VERSION.md`, `.bequite/state/UPDATE_SOURCE.md`, `.bequite/logs/UPDATE_LOG.md`, `.bequite/backups/`
+
+#### Deep Opportunity Intelligence
+- `/bq-job-finder` + `/bq-make-money` extended with deep intelligence:
+  - **Community + conversation sources:** Reddit / Indie Hackers / Hacker News / Product Hunt / X / public LinkedIn / Facebook / Discord / Slack / YouTube creator communities / app reviews
+  - **Trending + short-window opportunities:** new AI task platforms, data labeling campaigns, app testing, research panels, browser panels
+  - **AI-assisted work paths:** catalog of work where AI stack is a multiplier
+  - **Hidden Gems** logic with full per-gem fields
+- **11 new tracks:** `worldwide_hidden`, `trending_now`, `community_discovered`, `AI_assisted`, `no_calls`, `fast_first_payout`, `highest_payout`, `beginner_friendly`, `skilled_remote`, `local_country`, `non_english_platforms` — stackable
+- **Multi-language search:** 13 languages + user-listed
+- **Per-opportunity required fields:** confidence level added (in addition to existing trust check fields)
+- 6 new memory files: `.bequite/jobs/{HIDDEN_GEMS,COMMUNITY_SIGNALS,AI_ASSISTED_WORK}.md` + `.bequite/money/{HIDDEN_GEMS,COMMUNITY_SIGNALS,AI_ASSISTED_PATHS}.md`
+
+#### Memory-First Behavior
+- `docs/architecture/MEMORY_FIRST_BEHAVIOR.md` — universal principle for all action-taking commands
+- Core memory list + optional memory list + per-command read/write matrix for all 43 commands
+- Token-saving memory strategy
+- Auto-mode memory strategy
+- Mistake memory strategy
+- Standardized memory preflight + writeback templates
+
+### Changed
+
+- `/bequite` root menu — added "Maintenance" section with `/bq-update`
+- `/bq-help` — added `/bq-update` + alpha.10 deep intelligence note
+- `README.md` — version bump to alpha.10; 43-command badge; new Opportunity and Workflows + Maintenance sections in command map; deep intelligence highlighted
+- `CLAUDE.md` — version bump; memory-first principle referenced; new memory paths
+- `docs/specs/COMMAND_CATALOG.md` — added `/bq-update` entry; added deep intelligence flags table; tallies bumped to 43/19
+- `commands.md` — added Maintenance section with full `/bq-update` entry
+
+### Tally
+
+- Commands: 42 → 43 (+1)
+- Skills: 18 → 19 (+1)
+- New memory files: +9 (6 opportunity + 3 version/update)
+- New memory directory: +1 (backups/)
+- Architecture docs: +1 (MEMORY_FIRST_BEHAVIOR.md)
+- New tracks: +11 (deep intelligence flags)
 
 ---
 

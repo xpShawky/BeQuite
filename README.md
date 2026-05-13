@@ -4,13 +4,13 @@
 
 A lightweight skill pack + memory system. Install once. Works everywhere Claude Code runs.
 
-**Latest:** `v3.0.0-alpha.8` · **Previous:** `v3.0.0-alpha.7` · MIT · by [@xpShawky](https://github.com/xpShawky)
+**Latest:** `v3.0.0-alpha.10` · **Previous:** `v3.0.0-alpha.9` · MIT · by [@xpShawky](https://github.com/xpShawky)
 
 **📖 Full command reference: [`commands.md`](commands.md)** — every command explained, ordered by workflow.
 
 <p>
   <a href="#install"><img alt="Install" src="https://img.shields.io/badge/install-one_command-0ea5e9?style=flat-square"></a>
-  <a href="commands.md"><img alt="42 commands" src="https://img.shields.io/badge/slash_commands-42-7c3aed?style=flat-square"></a>
+  <a href="commands.md"><img alt="43 commands" src="https://img.shields.io/badge/slash_commands-43-7c3aed?style=flat-square"></a>
   <a href="#how-to-use"><img alt="15 skills" src="https://img.shields.io/badge/skills-15-10b981?style=flat-square"></a>
   <a href="#workflow"><img alt="6 phases" src="https://img.shields.io/badge/phases-6-f59e0b?style=flat-square"></a>
   <a href="#what-bequite-is-not"><img alt="No Docker" src="https://img.shields.io/badge/no-Docker-64748b?style=flat-square"></a>
@@ -25,8 +25,8 @@ A lightweight skill pack + memory system. Install once. Works everywhere Claude 
 
 It gives every project:
 
-- **42 slash commands** — `/bq-init`, `/bq-research`, `/bq-plan`, `/bq-feature`, `/bq-fix`, `/bq-auto`, `/bq-uiux-variants`, `/bq-live-edit`, `/bq-now`, `/bq-spec`, `/bq-explain`, `/bq-suggest`, `/bq-job-finder`, `/bq-make-money`, … (full reference: [`commands.md`](commands.md))
-- **18 specialist skills** — researcher, product-strategist, backend-architect, database-architect, security-reviewer, devops-cloud, frontend-quality, ux-ui-designer, testing-gate, release-gate, live-edit, scraping-automation, problem-solver, multi-model-planning, project-architect, workflow-advisor, job-finder, make-money
+- **43 slash commands** — `/bq-init`, `/bq-research`, `/bq-plan`, `/bq-feature`, `/bq-fix`, `/bq-auto`, `/bq-uiux-variants`, `/bq-live-edit`, `/bq-now`, `/bq-spec`, `/bq-explain`, `/bq-suggest`, `/bq-job-finder`, `/bq-make-money`, `/bq-update`, … (full reference: [`commands.md`](commands.md))
+- **19 specialist skills** — researcher, product-strategist, backend-architect, database-architect, security-reviewer, devops-cloud, frontend-quality, ux-ui-designer, testing-gate, release-gate, live-edit, scraping-automation, problem-solver, multi-model-planning, project-architect, workflow-advisor, job-finder, make-money, updater
 - **6 workflow phases** with **mandatory gates** that block out-of-order commands
 - **Persistent memory** in `.bequite/` — state, plans, audits, logs, mistake memory
 - **Tool neutrality** — every named tool is a candidate, not a default
@@ -227,10 +227,16 @@ Organized by phase, not alphabetically. **Full details for every command:** [`co
 ### Quick orientation (alpha.5)
 - `/bq-now` — single-line status; faster than `/bequite`
 
-### Opportunity and Workflows (alpha.8)
+### Opportunity and Workflows (alpha.8 + deepened in alpha.10)
 - `/bq-suggest "<situation>"` — workflow advisor; recommends the best commands + mode for your goal
-- `/bq-job-finder` — find real work opportunities (jobs, freelance, AI gigs); supports `worldwide_hidden=true`
-- `/bq-make-money` — find legitimate earning opportunities ranked by track; supports `worldwide_hidden=true` for Hidden Gems
+- `/bq-job-finder` — find real work opportunities (jobs, freelance, AI gigs); deep intelligence: community signals + trending + AI-assisted + 11 tracks
+- `/bq-make-money` — find legitimate earning opportunities; deep intelligence + Hidden Gems + community signals + AI-assisted paths
+
+### Maintenance (alpha.10)
+- `/bq-update` — update BeQuite itself (safe, non-destructive; modes: check / safe / force / local / github)
+- `/bq-memory` — memory snapshots
+- `/bq-recover` — resume after a break
+- `/bq-handoff` — generate HANDOFF.md
 
 **For full procedural detail on every command:** see [`commands.md`](commands.md).
 

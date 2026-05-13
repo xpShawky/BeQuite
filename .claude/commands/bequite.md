@@ -115,8 +115,14 @@ Command map (34 commands, ordered by workflow phase):
 
   Opportunity and Workflows
     /bq-suggest         workflow advisor — recommend commands for your situation
-    /bq-job-finder      find real work opportunities (jobs, freelance, AI gigs)
-    /bq-make-money      find legitimate earning opportunities (tracks + Hidden Gems)
+    /bq-job-finder      find real work opportunities (jobs, freelance, AI gigs + community + hidden gems)
+    /bq-make-money      find legitimate earning opportunities (10 tracks + Hidden Gems + AI-assisted paths)
+
+  Maintenance
+    /bq-update          update BeQuite itself (safe + non-destructive)
+    /bq-memory          read / write BeQuite memory snapshots
+    /bq-recover         resume after a session break
+    /bq-handoff         generate HANDOFF.md
 
   Phase orchestrators
     /bq-p0              walk Phase 0 in order

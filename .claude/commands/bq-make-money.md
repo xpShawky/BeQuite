@@ -311,6 +311,99 @@ Next:
   - Re-run /bq-make-money in 2-4 weeks for fresh results
 ```
 
+## Deep Intelligence (alpha.10)
+
+Beyond standard "make money online" content, Claude searches **community signals**, **trending short-window** opportunities, **non-English platforms**, and **AI-assisted earning paths**. Especially valuable in `worldwide_hidden=true` and `community_discovered` modes.
+
+### Community + conversation sources
+
+- **Reddit:** r/WorkOnline, r/beermoney, r/freelance, r/digitalnomad, country-specific subs (r/Egypt, r/IndiaSpeaks, r/brasil, etc.)
+- **Indie Hackers** — founder/maker income posts
+- **Hacker News** — "Who's hiring?" threads + side-project discussions
+- **Product Hunt** — newly-launched paid programs
+- **X/Twitter** — public payout threads, founders sharing rates
+- **Public LinkedIn posts** — task announcements, contractor calls
+- **Public Facebook groups** — country / language / niche specific
+- **Discord / Slack public channels** — gig posts
+- **YouTube comments + creator communities** — actual payout reports
+- **App reviews** — payout proof vs. complaints (Trustpilot, App Store, Play Store)
+
+### Trending + short-window
+
+- New AI task platforms (launched < 6 months ago)
+- New data labeling campaigns (time-limited)
+- App testing campaigns (rotating slots)
+- Browser/search panel programs (regional rollouts)
+- Research panel openings (User Interviews / dscout / Respondent waves)
+- Temporary remote task campaigns
+- Local-language tasks (regional surges)
+- Non-English microtask platforms (Yandex Toloka, regional)
+- Newly launched creator/AI tools paying testers
+- Hidden regional opportunities
+
+### AI-assisted earning paths
+
+See `.bequite/money/AI_ASSISTED_PATHS.md` for the full catalog. Surfaced when user has AI tools in `MONEY_PROFILE.md`. Where the AI stack is a **multiplier** (not just a tool): AI image / video / agent building / automation / data cleaning / content / research / lead research / social batching / scripts / product descriptions / landing copy / ad ideation / vibe-coded website building / spreadsheet automation / AI tool reviewer programs.
+
+### Hidden Gems
+
+Saved to `.bequite/money/HIDDEN_GEMS.md`. Lesser-known but legitimate earning opportunities — community-discovered, regional, non-English, trending, AI-assisted, overlooked.
+
+Per gem: name / country / language / source type / why hidden / evidence / payout method / eligibility / AI tools that help / difficulty / time to first payout / risk / trust score / first action / why it fits user.
+
+### Deep search tracks (11 flags)
+
+| Track flag | What it optimizes for |
+|---|---|
+| `worldwide_hidden=true` | Search beyond country / famous English platforms; multilingual |
+| `trending_now=true` | Focus on opportunities trending in the last 30 days |
+| `community_discovered=true` | Prioritize community-signal-sourced opportunities |
+| `AI_assisted=true` | Surface paths where user's AI stack is a multiplier |
+| `no_calls=true` | Async-only |
+| `fast_first_payout=true` | Optimize for time-to-first-payout |
+| `highest_payout=true` | Top $/hour or $/task |
+| `beginner_friendly=true` | No prior experience needed |
+| `skilled_remote=true` | Premium skilled remote |
+| `local_country=true` | Tied to user's country + language |
+| `non_english_platforms=true` | Specifically search non-English markets |
+
+Tracks can stack:
+```
+/bq-make-money worldwide_hidden=true trending_now=true AI_assisted=true
+/bq-make-money track=community_discovered "Find hidden opportunities people are discussing in public communities"
+/bq-make-money non_english_platforms=true "Search non-English platforms worldwide"
+/bq-make-money update=true "Refresh previous results and find newly trending opportunities"
+/bq-make-money track=highest-payout country=Egypt skills='AI tools, writing, image editing'
+```
+
+### New memory files (alpha.10)
+
+In addition to the 5 existing `.bequite/money/` templates, Claude now writes to:
+- `.bequite/money/HIDDEN_GEMS.md` — community-discovered + hidden opportunities
+- `.bequite/money/COMMUNITY_SIGNALS.md` — Reddit / IH / X / HN / forum signals captured per run
+- `.bequite/money/AI_ASSISTED_PATHS.md` — AI-assisted earning paths catalog
+
+### Language expansion
+
+When worldwide / hidden / non-English modes enabled, Claude searches multilingual: English / Arabic / Spanish / Portuguese / German / French / Italian / Turkish / Polish / Lithuanian / Romanian / Indonesian / Hindi + user-listed languages.
+
+### Per-opportunity required fields
+
+Every opportunity in `OPPORTUNITIES.md` must include:
+
+- legitimacy status (verified / decent / unverified / flagged)
+- payout method
+- country eligibility
+- required documents (ID / tax ID / residency)
+- account requirements
+- skill requirements
+- scam signals (any flagged)
+- payout complaints (if found)
+- risk level (low / medium / high)
+- **confidence level** (Claude's confidence in this assessment: high / medium / low)
+
+If uncertain — mark clearly. Don't claim verification we don't have.
+
 ## Safety rules (strict)
 
 ❌ NO fraud / fake accounts / fake reviews / fake engagement

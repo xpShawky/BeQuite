@@ -16,10 +16,11 @@ This repo IS the source of the skill pack. Its `.claude/commands/` + `.claude/sk
 
 ---
 
-## Current spec: v3.0.0-alpha.8
+## Current spec: v3.0.0-alpha.10
 
-- **42 slash commands** (`.claude/commands/bequite.md` + 41 × `.claude/commands/bq-*.md`)
-- **18 skills** (`.claude/skills/bequite-*/SKILL.md`)
+- **43 slash commands** (`.claude/commands/bequite.md` + 42 × `.claude/commands/bq-*.md`)
+- **19 skills** (`.claude/skills/bequite-*/SKILL.md`)
+- **Memory-first behavior** — every action-taking command reads core memory (state / mode / phase / gates / last-run / mistake-memory) before acting; see `docs/architecture/MEMORY_FIRST_BEHAVIOR.md`
 - **6 explicit modes** — New Project, Existing Audit, Add Feature, Fix Problem, Research Only, Release Readiness
 - **6 workflow phases** — P0 Setup → P1 Framing → P2 Build → P3 Quality → P4 Release → P5 Memory
 - **23 workflow gates** tracked in `.bequite/state/WORKFLOW_GATES.md` (block out-of-order commands)
@@ -33,7 +34,9 @@ This repo IS the source of the skill pack. Its `.claude/commands/` + `.claude/sk
 - **Plain-English explainer** — `/bq-explain "<target>"` for files / functions / decisions / artifacts
 - **Workflow advisor** — `/bq-suggest "<situation>"` recommends best commands/mode for the goal (alpha.8)
 - **Job finder** — `/bq-job-finder` finds real work opportunities; supports `worldwide_hidden=true` (alpha.8)
-- **Make money finder** — `/bq-make-money` finds legitimate earning opportunities; 10 tracks + Hidden Gems (alpha.8)
+- **Make money finder** — `/bq-make-money` finds legitimate earning opportunities; 10 tracks + Hidden Gems (alpha.8); deep intelligence with community signals + trending + AI-assisted (alpha.10)
+- **BeQuite self-update** — `/bq-update` safely refreshes commands / skills / docs from GitHub or local source; never overwrites project memory (alpha.10)
+- **Memory-first** — every action command reads core memory before acting (alpha.10; see MEMORY_FIRST_BEHAVIOR.md)
 - **Public command reference** — `commands.md` at repo root
 
 ---
@@ -42,9 +45,11 @@ This repo IS the source of the skill pack. Its `.claude/commands/` + `.claude/sk
 
 | Need | Path |
 |---|---|
-| Slash commands (42) | `.claude/commands/bequite.md` + `.claude/commands/bq-*.md` |
-| Jobs memory | `.bequite/jobs/` (JOB_PROFILE, JOB_SEARCH_LOG, OPPORTUNITIES, APPLICATION_TRACKER, PITCH_TEMPLATES) |
-| Money memory | `.bequite/money/` (MONEY_PROFILE, MONEY_SEARCH_LOG, OPPORTUNITIES, TRUST_CHECKS, ACTION_PLAN) |
+| Slash commands (43) | `.claude/commands/bequite.md` + `.claude/commands/bq-*.md` |
+| Jobs memory | `.bequite/jobs/` (JOB_PROFILE, JOB_SEARCH_LOG, OPPORTUNITIES, APPLICATION_TRACKER, PITCH_TEMPLATES, HIDDEN_GEMS, COMMUNITY_SIGNALS, AI_ASSISTED_WORK) |
+| Money memory | `.bequite/money/` (MONEY_PROFILE, MONEY_SEARCH_LOG, OPPORTUNITIES, TRUST_CHECKS, ACTION_PLAN, HIDDEN_GEMS, COMMUNITY_SIGNALS, AI_ASSISTED_PATHS) |
+| Version + update tracking | `.bequite/state/BEQUITE_VERSION.md`, `UPDATE_SOURCE.md`; `.bequite/logs/UPDATE_LOG.md`; `.bequite/backups/` |
+| Memory-first doc | `docs/architecture/MEMORY_FIRST_BEHAVIOR.md` |
 | Skills (15) | `.claude/skills/bequite-*/SKILL.md` |
 | Public command reference | `commands.md` (repo root) |
 | BeQuite memory | `.bequite/` |

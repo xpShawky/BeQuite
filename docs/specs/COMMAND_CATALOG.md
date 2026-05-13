@@ -1,8 +1,8 @@
-# BeQuite Command Catalog (v3.0.0-alpha.8)
+# BeQuite Command Catalog (v3.0.0-alpha.10)
 
-**Status:** authored 2026-05-11; expanded 2026-05-12 across alpha.2–alpha.8
-**Total commands:** 42 (1 root menu + 41 `/bq-*`)
-**Total skills:** 18 (7 baseline + 7 specialist + 1 live-edit + 3 opportunity)
+**Status:** authored 2026-05-11; expanded 2026-05-12 across alpha.2–alpha.10
+**Total commands:** 43 (1 root menu + 42 `/bq-*`)
+**Total skills:** 19 (7 baseline + 7 specialist + 1 live-edit + 3 opportunity + 1 updater)
 **Human-readable reference:** [`commands.md`](../../commands.md) at repo root
 
 Single source of truth for every BeQuite command. Each entry lists: when to use, what it reads, what it writes, required previous gates, quality gate, usual next.
@@ -411,9 +411,45 @@ Single source of truth for every BeQuite command. Each entry lists: when to use,
 
 ---
 
+## Maintenance (alpha.10)
+
+### `/bq-update` (NEW in alpha.10)
+- **Purpose:** safely update BeQuite (commands / skills / docs / templates) from GitHub or local source
+- **Phase:** Maintenance (not part of P0-P5)
+- **Required gates:** `BEQUITE_INITIALIZED`; git on PATH (for github source)
+- **Modes:** `check` (preview only) / safe (default — backup + merge) / `force` / `source=local path=X` / `source=github repo=X branch=Y` or `tag=Y`
+- **Reads:** `.bequite/state/BEQUITE_VERSION.md`, `UPDATE_SOURCE.md`
+- **Writes:** `BEQUITE_VERSION.md`, `UPDATE_SOURCE.md`, `UPDATE_LOG.md`, `.bequite/backups/<timestamp>/`
+- **Skills activated:** `bequite-updater`
+- **Hard rules:** never overwrites project memory (PROJECT_STATE / DECISIONS / MISTAKE_MEMORY / jobs / money / research / etc.); always backs up before changing `.claude/commands/` or `.claude/skills/`; local edits surface as `.bequite-update.md` sibling files
+
+## Deep intelligence flags (alpha.10) for `/bq-job-finder` and `/bq-make-money`
+
+11 new flags can stack:
+
+| Flag | Purpose |
+|---|---|
+| `worldwide_hidden=true` | Search beyond country / famous English platforms |
+| `trending_now=true` | Last-30-days surge opportunities |
+| `community_discovered=true` | Prioritize community-signal-sourced opportunities |
+| `AI_assisted=true` | Surface paths where user's AI stack is a multiplier |
+| `no_calls=true` | Async-only |
+| `fast_first_payout=true` | Time-to-first-payout optimized |
+| `highest_payout=true` | Top $/hour or $/task |
+| `beginner_friendly=true` | No prior experience |
+| `skilled_remote=true` | Premium skilled remote |
+| `local_country=true` | Tied to country + language |
+| `non_english_platforms=true` | Specifically search non-English markets |
+
+New memory files (alpha.10):
+- `.bequite/jobs/{HIDDEN_GEMS,COMMUNITY_SIGNALS,AI_ASSISTED_WORK}.md`
+- `.bequite/money/{HIDDEN_GEMS,COMMUNITY_SIGNALS,AI_ASSISTED_PATHS}.md`
+
+---
+
 ## Summary
 
-42 commands, 18 skills, 6 modes, 6 phases, 23 gates, 17 hard human gates.
+43 commands, 19 skills, 6 modes, 6 phases, 23 gates, 17 hard human gates.
 
 **Discipline + memory + verified evidence > velocity without a plan.**
 

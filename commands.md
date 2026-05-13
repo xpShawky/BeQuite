@@ -4,7 +4,7 @@
 >
 > For full procedural detail per command, click through to the matching file at `.claude/commands/<name>.md`.
 
-**Version:** v3.0.0-alpha.8 · 42 slash commands · 18 specialist skills · 6 workflow phases · 23 workflow gates · 17 hard human gates
+**Version:** v3.0.0-alpha.10 · 43 slash commands · 19 specialist skills · 6 workflow phases · 23 workflow gates · 17 hard human gates
 
 ---
 
@@ -690,6 +690,28 @@ Both `/bq-job-finder` and `/bq-make-money` support `worldwide_hidden=true` — s
 - Niche platforms by skill / region
 
 Per-opportunity trust check: legitimacy / country eligibility / payout method / VPN policy / ID verification / upfront-fee red flags / scam reports / realistic payout / time to first payout / why hidden.
+
+---
+
+## Maintenance (alpha.10)
+
+### `/bq-update` (NEW in alpha.10)
+
+Safely update BeQuite itself (commands, skills, docs, templates) without re-running the full installer.
+
+- **Purpose:** refresh BeQuite when a new alpha ships; never overwrites project memory; backs up before changes
+- **Phase:** Maintenance (not part of P0-P5)
+- **Required gates:** `BEQUITE_INITIALIZED`; git on PATH (for github source)
+- **Modes:**
+  - `/bq-update` — safe default (backup + merge from GitHub main)
+  - `/bq-update check` — preview what would change
+  - `/bq-update force` — skip conflict-pause (use carefully)
+  - `/bq-update source=local path="..."` — update from local clone
+  - `/bq-update source=github repo="..." tag="v3.0.0-alpha.9"` — pinned version
+- **Writes:** `BEQUITE_VERSION.md`, `UPDATE_SOURCE.md`, `UPDATE_LOG.md`, `.bequite/backups/<timestamp>/`
+- **Hard rules:** never overwrites `.bequite/state/{PROJECT_STATE,DECISIONS,MISTAKE_MEMORY,...}.md`, `.bequite/jobs/`, `.bequite/money/`, `.bequite/research/`, your audits/plans/tasks
+- **Conflict handling:** local edits to `.claude/commands/*.md` surface as `<file>.bequite-update.md` sibling files for manual review
+- **Full spec:** [`.claude/commands/bq-update.md`](.claude/commands/bq-update.md)
 
 ---
 

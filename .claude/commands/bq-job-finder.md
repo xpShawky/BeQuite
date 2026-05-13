@@ -284,6 +284,101 @@ Next:
   - Re-run /bq-job-finder weekly for fresh results
 ```
 
+## Deep Intelligence (alpha.10)
+
+Beyond normal job boards, Claude searches **community and conversation** sources, **trending short-window** opportunities, and **AI-assisted** paths. These often surface opportunities people in the user's country usually don't find via regular searches.
+
+### Community + conversation sources
+
+- **Reddit communities** (r/forhire, r/HireMyHired, r/WorkOnline, r/freelance, r/digitalnomad, r/remotejs, country-specific subs)
+- **Indie Hackers** — paying gig discussions, founder hires
+- **Hacker News** — "Who's hiring?" monthly threads + comments
+- **Product Hunt** — discussions on newly-launched tools paying testers / contractors
+- **X/Twitter** — public hashtags `#hiring`, `#remoteok`, `#freelance`; public threads by founders/CEOs
+- **Public LinkedIn posts** — `#hiring` + role-specific tags
+- **Public Facebook groups** — country / language / niche specific (when accessible)
+- **Discord / Slack public communities** — channels where contracts are posted (when accessible)
+- **YouTube creator communities** — comments on tutorials about earning paths
+- **App reviews** — Trustpilot / Reddit threads discussing actual payout vs. marketed
+- **Local + country-specific forums** — non-English where applicable
+
+### Trending + short-window opportunities
+
+Claude looks specifically for:
+- New AI task platforms (recently launched, < 6 months old)
+- New data labeling campaigns (often time-limited)
+- App testing campaigns (UserTesting / UserBrain campaigns running this week)
+- Search / browser panel programs (typically rotating)
+- Research panel openings (User Interviews / dscout / Respondent often have limited slots)
+- Temporary remote task campaigns (companies hiring contractors fast)
+- Local-language tasks (Arabic / Portuguese / Spanish surge moments)
+- Non-English microtask platforms (Yandex Toloka campaigns, regional)
+- Newly launched creator/AI tools paying real testers
+- Hidden regional opportunities (one-time campaigns by local startups)
+
+### AI-assisted work paths
+
+Surfaced when user's profile has AI tools. See `.bequite/jobs/AI_ASSISTED_WORK.md` for the full catalog. Highlights:
+
+- AI image / video generation service for clients
+- AI agent / chatbot building
+- AI automation setup (n8n / Make / Zapier — per tool neutrality)
+- Data cleaning with AI
+- Content writing / research / lead research with AI
+- Social media batching / scripts / ad creative ideation
+- Basic website building with AI (Lovable / Bolt / v0 / Cursor / Claude Code)
+- Spreadsheet + report automation
+
+### Hidden Gems
+
+Saved to `.bequite/jobs/HIDDEN_GEMS.md`. A hidden gem is an opportunity that is:
+- Not common in normal search results
+- Discussed in communities
+- Region- or language-specific
+- Newly trending or underrated
+- Suitable for AI-assisted work
+- Overlooked by users in the target country
+- Has realistic payout potential
+- Passes legitimacy checks
+
+Per gem: name / country / language / source type / why hidden / evidence / payout / eligibility / AI tools that help / difficulty / time to first payout / risk / trust score / first action / why it fits user.
+
+### Deep search tracks (11 new flags)
+
+| Track flag | What it optimizes for |
+|---|---|
+| `worldwide_hidden=true` | Search beyond country / famous English platforms; multilingual |
+| `trending_now=true` | Focus on opportunities trending in the last 30 days |
+| `community_discovered=true` | Prioritize community-signal-sourced opportunities |
+| `AI_assisted=true` | Surface paths where user's AI stack is a multiplier |
+| `no_calls=true` | Async-only, text-based |
+| `fast_first_payout=true` | Optimize for time-to-first-payout |
+| `highest_payout=true` | Top $/hour or $/task |
+| `beginner_friendly=true` | No prior experience needed |
+| `skilled_remote=true` | Premium skilled remote work |
+| `local_country=true` | Tied to user's country + language |
+| `non_english_platforms=true` | Specifically search non-English markets |
+
+Examples:
+```
+/bq-job-finder AI_assisted=true country=Egypt "Find jobs and tasks I can do with AI tools"
+/bq-job-finder worldwide_hidden=true trending_now=true
+/bq-job-finder track=community_discovered "Find hidden opportunities people are discussing in public communities"
+/bq-job-finder non_english_platforms=true
+/bq-job-finder update=true "Refresh previous results and find newly trending opportunities"
+```
+
+### New memory files (alpha.10)
+
+In addition to the 5 existing `.bequite/jobs/` templates, Claude now writes to:
+- `.bequite/jobs/HIDDEN_GEMS.md` — community-discovered + hidden opportunities
+- `.bequite/jobs/COMMUNITY_SIGNALS.md` — Reddit / IH / X / HN / forum signals captured per run
+- `.bequite/jobs/AI_ASSISTED_WORK.md` — AI-assisted work catalog filtered by user's tool stack
+
+### Language expansion (when worldwide / hidden / non-English modes)
+
+Claude searches multilingual when relevant: English / Arabic / Spanish / Portuguese / German / French / Italian / Turkish / Polish / Lithuanian / Romanian / Indonesian / Hindi (and any user-listed language). The agent doesn't assume only English platforms matter.
+
 ## Safety and trust rules
 
 Per `bequite-job-finder` skill — strict NEVER list:

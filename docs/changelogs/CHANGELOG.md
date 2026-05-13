@@ -1,0 +1,111 @@
+# BeQuite Changelog
+
+Format: [Keep a Changelog v1.1](https://keepachangelog.com/en/1.1.0/) · Versioning: [Semantic Versioning](https://semver.org/).
+
+Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANGELOG-legacy.md`](../legacy/CHANGELOG-legacy.md) after Phase B cleanup.
+
+---
+
+## [Unreleased]
+
+### Added (alpha.5 — pending)
+- Mistake-memory writes wired into 7 commands (`/bq-fix`, `/bq-audit`, `/bq-review`, `/bq-red-team`, `/bq-verify`, `/bq-auto`, `/bq-live-edit`)
+- Fast / Deep / Token-saver mode flags on `/bq-auto`
+- 20 alpha.1 commands retroactively extended with new template sections
+- Installer scripts auto-copy `.bequite/principles/TOOL_NEUTRALITY.md` + `.bequite/uiux/` templates into target projects
+
+---
+
+## [v3.0.0-alpha.4] — 2026-05-12
+
+### Added — workflow upgrades
+- **Scoped `/bq-auto`** — parses `$ARGUMENTS` for 17 intent types (`new | existing | feature | fix | uiux | frontend | backend | database | security | testing | devops | scraping | automation | deploy | live-edit | variants | release`). Continues by default; pauses only at 17 hard human gates.
+- **UI/UX variants** — `/bq-uiux-variants [N]` generates 1-10 isolated design directions. Each lives in `/uiux/v1` route or `src/uiux-variants/Variant01/` component. Original UI untouched. User picks winner; agent merges.
+- **Live edit workflow** — `/bq-live-edit` lightweight section-by-section frontend edits. Maps visible sections to source files (SECTION_MAP.md). Three-tier browser inspection (Playwright MCP → project-local Playwright → code-only).
+- New skill: `bequite-live-edit`
+- New strategy docs: AUTO_MODE_STRATEGY, UIUX_VARIANTS_STRATEGY, LIVE_EDIT_STRATEGY
+- New memory tree: `.bequite/uiux/` (SECTION_MAP, LIVE_EDIT_LOG, UIUX_VARIANTS_REPORT, selected-variant, screenshots/, archive/)
+
+### Changed (alpha.4)
+- `/bq-auto` fully rewritten — 17 intents + 17 hard human gates (replaced alpha.2's 12)
+- CLAUDE.md updated to v3.0.0-alpha.4 spec; 36 commands, 15 skills
+- COMMAND_CATALOG.md added bq-uiux-variants, bq-live-edit; expanded bq-auto entry
+- USING_BEQUITE_COMMANDS.md added v3.0.0-alpha.4 examples section
+- 5 existing skills extended with activation lists
+
+### Tally
+- Commands: 34 → 36 (+2)
+- Skills: 14 → 15 (+1)
+- Auto intents: 0 → 17
+- Hard human gates in /bq-auto: 12 → 17
+- Architecture docs: 1 → 4
+
+---
+
+## [v3.0.0-alpha.3] — 2026-05-11
+
+### Added — tool neutrality
+- `.bequite/principles/TOOL_NEUTRALITY.md` — canonical source of truth
+- `docs/decisions/ADR-003-tool-neutrality.md` — formalizes the decision
+- **10 decision questions** every major tool pick must answer
+- **Decision section format** required before tool adoption
+- **Do-not-auto-install defaults** — no deps / frontend libs / Docker / testing frameworks / monitoring / auth libs added by default
+- **Research-depth rule** — 11 dimensions; tool choice AFTER project understanding
+
+### Changed (alpha.3)
+- CLAUDE.md — tool neutrality is now Core Operating Rule #1
+- All 11 tool-touching skills updated with Tool Neutrality block
+- All 8 tool-touching commands updated with Tool Neutrality block
+- Standardized phrasing: "X is one candidate. Research and compare against other options. Use it only if it fits this project."
+
+---
+
+## [v3.0.0-alpha.2] — 2026-05-11
+
+### Added — mandatory workflow gates + scoped modes + specialist skills
+- **23 workflow gates** at `.bequite/state/WORKFLOW_GATES.md`
+- **6 explicit modes** — New Project, Existing Audit, Add Feature, Fix Problem, Research Only, Release Readiness
+- **10 new commands** — `/bq-mode`, `/bq-new`, `/bq-existing`, `/bq-feature` (12-type router), `/bq-auto`, `/bq-p0` through `/bq-p5`
+- **Phase orchestrators** — `/bq-p0` … `/bq-p5` walk one phase end-to-end
+- **Autonomous runner** — `/bq-auto` walks all phases with 12 hard human gates
+- **7 new specialist skills** — researcher (11 dims), product-strategist, ux-ui-designer, backend-architect, database-architect, security-reviewer, devops-cloud
+- **Add Feature 12-type router** + **Fix 15-type router**
+- ADR-002 — mandatory workflow gates
+- COMMAND_CATALOG.md — single source of truth
+
+### Changed (alpha.2)
+- `/bequite` root menu now gate-aware
+- `/bq-research` expanded from 1 dim → 11 dims
+- `/bq-plan` activates multi-skill thinking (15 sections including §11 security and §12 devops)
+- `/bq-multi-plan` enforces unbiased external prompts (zero mention of Claude's plan)
+- `/bq-fix` reproduce-first procedure with 15-type classification
+- CLAUDE.md reflects 34 commands, 14 skills, modes, gates
+
+---
+
+## [v3.0.0-alpha.1] — 2026-05-11
+
+### Added — lightweight skill pack MVP
+- 24 slash commands at `.claude/commands/`
+- 7 focused skills at `.claude/skills/`
+- `.bequite/` memory tree (state, logs, plans, tasks, prompts, audits)
+- Lightweight installer scripts (`scripts/install-bequite.{ps1,sh}`)
+- ADR-001 — lightweight-skill-pack-first decision
+- README rewritten to lead with skill-pack install
+- CLAUDE.md shortened to point at `.claude/` + `.bequite/`
+
+### Paused (kept on disk; not deleted in alpha.1)
+- `studio/` (marketing + dashboard + api + brand)
+- `docker-compose.yml`, `.dockerignore`, Dockerfiles
+- `tests/e2e/`
+- `scripts/docker-up.{ps1,sh}`
+- Root `package.json` + `Makefile`
+- `cli/` (Python CLI)
+
+(Per DIRECTION_RESET_AUDIT.md — deletion gated on explicit user approval; delivered in alpha.5 cleanup phase B.)
+
+---
+
+## Pre-reset history (v0.1.0 → v2.0.0-alpha.6)
+
+Heavy-direction lineage: Studio + Docker + heavy CLI. Archived at `docs/legacy/CHANGELOG-legacy.md` (after Phase B cleanup completes).

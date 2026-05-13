@@ -2,6 +2,71 @@
 
 Append-only chronicle of every BeQuite command run. Newest at top.
 
+## 2026-05-12 — GitHub-ready cleanup pass (v3.0.0-alpha.5 prep — Phase A non-destructive)
+
+**Action:** User invoked `/bq-auto` with a major cleanup + README polish task. The old Studio / heavy CLI / TUI direction must be removed from the GitHub-facing project. README rewritten for VIP coders + new-user clarity.
+
+**Phase A files created/updated (non-destructive, this commit):**
+- `.bequite/audits/GITHUB_READY_CLEANUP_AUDIT.md` — full repo inventory, what to keep / remove / rewrite / archive
+- `README.md` — full rewrite, 12 sections (hero / what is / why / install / quickstart / how-to-use / command-map / architecture / examples / feature-highlights / tool-neutrality / what-it-is-NOT / roadmap / off-label uses / docs / contributing / license / maintainer)
+- `CLAUDE.md` — dropped "two-track history" framing; references retired heavy direction as history, not "paused"
+- `docs/decisions/ADR-004-no-heavy-studio-or-cli.md` — formalizes the cleanup decision
+- `.bequite/state/MISTAKE_MEMORY.md` — new memory file with template + tag system + pruning rules
+- `.bequite/state/ASSUMPTIONS.md` — new memory file with template
+- `.bequite/plans/FEATURE_EXPANSION_ROADMAP.md` — proposed 8 future commands grouped into 7 feature families (Bot & automation, Scraping, Marketing & content, Research & intelligence, Product builders, Data & reports, Vertical packs). Plus Fast/Deep/Token-saver mode flags
+- `docs/architecture/WORKFLOW_GATES.md` — workflow gate strategy (23 gates, 17 hard human gates, mode-specific overrides)
+- `docs/architecture/RESEARCH_DEPTH_STRATEGY.md` — 11-dimension research model + per-mode emphasis table
+- `docs/architecture/FEATURE_AND_FIX_WORKFLOWS.md` — 12-type feature router + 15-type fix router
+- `docs/architecture/DEVOPS_CLOUD_SAFETY.md` — production safety gates + monitoring + rollback discipline
+- `docs/changelogs/CHANGELOG.md` — slim, Keep-a-Changelog-compliant; covers alpha.1 → alpha.4 + Unreleased
+
+**Phase B (DESTRUCTIVE — pauses for user authorization):**
+The following deletion list is proposed. Will NOT execute without explicit user OK (per ADR-002 hard human gate "destructive file deletion" + ADR-004):
+
+Heavy-direction folders (entire tree):
+- `studio/`, `cli/`, `tests/`, `template/`, `evidence/`, `examples/`, `prompts/`, `state/`, `skill/`
+
+Heavy-direction files:
+- `docker-compose.yml`, `.dockerignore`, `.env.example`, `Makefile`, `package.json`, `.commitlintrc.json`
+- `scripts/docker-up.{ps1,sh}`, `scripts/bootstrap.{ps1,sh}`, `scripts/install.{ps1,sh}`
+- `docs/architecture/CLI_AUTHENTICATION_STRATEGY.md`
+- `docs/runbooks/LOCAL_DEV.md`
+
+Archive (move, not delete):
+- `BeQuite_MASTER_PROJECT.md` → `docs/legacy/MASTER_PROJECT.md`
+- `CHANGELOG.md` (148KB heavy lineage) → `docs/legacy/CHANGELOG-legacy.md`; replace root `CHANGELOG.md` with slim pointer
+
+Keep with caveat:
+- `BEQUITE_BOOTSTRAP_BRIEF.md` — historical brief, stays at root
+- `.bequite/memory/` — internal v2.x Memory Bank, stays (not in public docs)
+- `.github/` — needs audit to ensure workflows don't reference removed paths
+
+**Phase C — final commit + push (after user OK on Phase B):**
+- `git rm -r` the heavy paths
+- Move 2 large historical docs to `docs/legacy/`
+- Audit + clean `.github/workflows/`
+- Commit + push
+- Optional tag v3.0.0-alpha.5
+
+**Pending phase A also:**
+- Mistake-memory writes need wiring into 7 commands (`/bq-fix`, `/bq-audit`, `/bq-review`, `/bq-red-team`, `/bq-verify`, `/bq-auto`, `/bq-live-edit`) — deferred to alpha.5
+- Fast / Deep / Token-saver mode flags on `/bq-auto` — deferred to alpha.5
+- 20 alpha.1 commands extended with new template sections — deferred to alpha.5
+
+**Result:** repo is now GitHub-ready in terms of public-facing docs + README. Cleanup of heavy folders pauses for user authorization (ADR-002 hard human gate).
+
+**Heavy-app status:**
+- alpha.1 → alpha.4: "paused, on disk"
+- alpha.5 (proposed, this audit): "removed from main branch; preserved in git history"
+
+**Article VI honest reporting:**
+- README is rewritten; not yet rendered + reviewed on github.com
+- 4 new architecture docs are stubs that summarize existing inline content; can be expanded later
+- The destructive Phase B is intentionally NOT executed in this commit; requires user explicit OK
+- Mistake memory + assumptions templates exist; the agent does NOT automatically write to them yet (commands need wiring in alpha.5)
+
+---
+
 ## 2026-05-12 — workflow upgrades (v3.0.0-alpha.4): scoped auto + UI variants + live edit
 
 **Action:** User requested three workflow upgrades to keep BeQuite lightweight while making it more useful:

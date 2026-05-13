@@ -12,7 +12,7 @@ BeQuite is a **lightweight Claude Code skill pack** you install into any project
 
 This repo IS the source of the skill pack. Its `.claude/commands/` + `.claude/skills/` are the files that get copied into target projects by `scripts/install-bequite.{ps1,sh}`.
 
-The heavy `studio/` directory (Next.js marketing + dashboard + Hono API + Docker compose) and Python CLI are **paused, not deleted** — see `.bequite/audits/DIRECTION_RESET_AUDIT.md` (Cycle 2).
+**Direction:** lightweight only. No Studio. No heavy CLI / TUI. No localhost dashboard. No Docker. No frontend / API / database / 3D required by default (ADR-004).
 
 ---
 
@@ -40,12 +40,12 @@ The heavy `studio/` directory (Next.js marketing + dashboard + Hono API + Docker
 | Workflow gate ledger | `.bequite/state/WORKFLOW_GATES.md` |
 | Mode selector | `.bequite/state/CURRENT_MODE.md` |
 | Phase selector | `.bequite/state/CURRENT_PHASE.md` |
-| Project's own Memory Bank | `.bequite/memory/` (v2.x history) |
-| Direction reset audit | `.bequite/audits/DIRECTION_RESET_AUDIT.md` |
-| Paused Studio | `studio/` |
-| Paused Docker | `docker-compose.yml`, `Dockerfile`, `.dockerignore` |
-| Paused e2e tests | `tests/e2e/` |
-| Paused Python CLI | `cli/` |
+| Project's own Memory Bank | `.bequite/memory/` (v2.x history, internal) |
+| Direction reset audit (Cycle 1+2) | `.bequite/audits/DIRECTION_RESET_AUDIT.md` |
+| GitHub-ready cleanup audit | `.bequite/audits/GITHUB_READY_CLEANUP_AUDIT.md` |
+| Mistake memory | `.bequite/state/MISTAKE_MEMORY.md` |
+| Assumptions | `.bequite/state/ASSUMPTIONS.md` |
+| Feature expansion roadmap | `.bequite/plans/FEATURE_EXPANSION_ROADMAP.md` |
 | Original brief | `BEQUITE_BOOTSTRAP_BRIEF.md` |
 | Master file | `BeQuite_MASTER_PROJECT.md` |
 | Install scripts | `scripts/install-bequite.{ps1,sh}` |
@@ -251,11 +251,8 @@ The active Doctrine(s) are declared in `.bequite/state/DECISIONS.md`. If none de
 
 ---
 
-## Two-track history
+## History
 
-This repo has gone through two design tracks. Both are preserved:
+BeQuite went through a v0.1.0 → v2.0.0-alpha.6 heavy-direction lineage (Studio + Docker + multi-app). That direction is **retired** (ADR-004 — "no heavy Studio or CLI in the GitHub-facing project"). Git history retains the heavy assets; the active main branch is lightweight-only.
 
-- **v0.1.0 → v2.0.0-alpha.6 (paused):** the heavy app — Studio + Docker + multi-app. See `CHANGELOG.md`, ADR-008..016, `studio/`.
-- **v3.0.0+ (current):** the lightweight skill pack with mandatory gates. See ADR-001, ADR-002, `.claude/`, `.bequite/`.
-
-The two tracks can coexist on disk. Track 1 is paused; track 2 is the current MVP path.
+The current MVP path is v3.0.0+ (lightweight command + skill pack with mandatory gates + tool neutrality). See ADR-001 (lightweight skill pack first), ADR-002 (mandatory workflow gates), ADR-003 (tool neutrality), ADR-004 (no heavy Studio or CLI).

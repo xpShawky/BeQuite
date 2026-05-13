@@ -1,12 +1,60 @@
 # BeQuite
 
-> **A lightweight Claude Code skill pack.** Install once into any project, get a strong workflow + memory + quality gates. No Docker. No dashboard. No heavy install.
+> **The thinking layer for AI coding agents.** Make Claude Code plan, research, test, verify, and ship — without skipping critical thinking.
 
-By **xpShawky** ([Ahmed Shawky](https://github.com/xpShawky)). MIT.
+A lightweight skill pack + memory system. Install once. Works everywhere Claude Code runs.
+
+**Latest:** `v3.0.0-alpha.4` · **Previous:** `v3.0.0-alpha.3` · MIT · by [@xpShawky](https://github.com/xpShawky)
+
+<p>
+  <a href="#install"><img alt="Install" src="https://img.shields.io/badge/install-one_command-0ea5e9?style=flat-square"></a>
+  <a href="#how-to-use"><img alt="36 commands" src="https://img.shields.io/badge/slash_commands-36-7c3aed?style=flat-square"></a>
+  <a href="#how-to-use"><img alt="15 skills" src="https://img.shields.io/badge/skills-15-10b981?style=flat-square"></a>
+  <a href="#workflow"><img alt="6 phases" src="https://img.shields.io/badge/phases-6-f59e0b?style=flat-square"></a>
+  <a href="#what-bequite-is-not"><img alt="No Docker" src="https://img.shields.io/badge/no-Docker-64748b?style=flat-square"></a>
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-000000?style=flat-square"></a>
+</p>
 
 ---
 
-## Install (one command)
+## What is BeQuite?
+
+**BeQuite is a lightweight command-and-skill layer that turns Claude Code into a disciplined senior engineer.** No Docker. No dashboard. No heavy runtime. Just markdown files that make the agent think before it codes.
+
+It gives every project:
+
+- **36 slash commands** — `/bq-init`, `/bq-research`, `/bq-plan`, `/bq-feature`, `/bq-fix`, `/bq-auto`, `/bq-uiux-variants`, `/bq-live-edit`, …
+- **15 specialist skills** — researcher, product-strategist, backend-architect, database-architect, security-reviewer, devops-cloud, frontend-quality, ux-ui-designer, testing-gate, release-gate, live-edit, scraping-automation, problem-solver, multi-model-planning, project-architect
+- **6 workflow phases** with **mandatory gates** that block out-of-order commands
+- **Persistent memory** in `.bequite/` — state, plans, audits, logs, mistake memory
+- **Tool neutrality** — every named tool is a candidate, not a default
+
+Designed for Claude Code first. Skill format follows the Anthropic SKILL.md spec.
+
+---
+
+## Why BeQuite?
+
+AI coding agents have predictable failure modes. BeQuite addresses each:
+
+| Common AI mistake | BeQuite's defense |
+|---|---|
+| Skips discovery — starts coding immediately | `/bq-discover` writes a `DISCOVERY_REPORT.md` first |
+| Produces weak plans built on stale memory | `/bq-research` covers 11 dimensions with verified 2026 evidence |
+| Forgets context between sessions | `.bequite/` memory + `/bq-recover` resumes from last green checkpoint |
+| Claims "done" without testing | `/bq-verify` runs the full gate matrix; banned weasel words rejected |
+| Makes UI bugs (hidden text, dead buttons, AI-slop gradients) | `bequite-frontend-quality` + `bequite-ux-ui-designer` skills enforce 10 principles + reject 15 anti-patterns |
+| Overbuilds — installs deps "just in case" | Tool neutrality rule: every tool needs a decision section |
+| Leaves broken setup steps | Iron Law X: every change ships in operationally complete state |
+| Doesn't think about security / scale / deployment | 11-dimension research + 7 specialist skills cover each domain |
+| Restarts the whole lifecycle for a tiny fix | Scoped auto-mode runs only the relevant scope |
+| Pauses on every step for approval | Auto-mode continues by default; pauses only at 17 hard human gates |
+
+---
+
+## Install
+
+One command. Run it from inside the project folder you want to enhance.
 
 ```powershell
 # Windows
@@ -18,198 +66,369 @@ irm https://raw.githubusercontent.com/xpShawky/BeQuite/main/scripts/install-bequ
 curl -fsSL https://raw.githubusercontent.com/xpShawky/BeQuite/main/scripts/install-bequite.sh | bash
 ```
 
-Run from inside the project folder you want to enhance. It copies:
+This copies:
 
-- `.claude/commands/` — 24 slash commands
-- `.claude/skills/bequite-*/` — 7 focused skills
-- `.bequite/` — persistent memory + logs + plans + tasks
+- `.claude/commands/` — 36 slash commands
+- `.claude/skills/bequite-*/` — 15 specialist skills
+- `.bequite/` — memory + logs + plans + tasks + uiux + principles
 - A short `BeQuite` section appended to your `CLAUDE.md`
 
-No dependencies installed. No daemons started. Just markdown files + a directory scaffold. **Idempotent** — won't overwrite your `.bequite/` memory unless you pass `--force`.
+**No dependencies installed. No daemons started. No Docker.** Just markdown files.
+
+Idempotent — won't overwrite your `.bequite/` memory unless you pass `--force`.
 
 ---
 
-## Use (inside Claude Code)
-
-After install, type these commands in Claude Code:
+## Quick start (3 minutes)
 
 ```
-/bequite              # the menu — shows status + recommended next 3 commands
-/bq-help              # full reference for every command
-/bq-init              # formally initialize (write baseline state)
-/bq-discover          # inspect this repo + write DISCOVERY_REPORT.md
-/bq-doctor            # environment health check
+1. Open the project in Claude Code
+2. Type:    /bequite
+3. Read:    the menu shows state + recommends next 3 commands
+4. Type:    the first recommended command
+5. From there: BeQuite drives until you ship
 ```
 
-That's typically all you need to onboard. From there, the workflow runs in five phases:
+Or skip straight to autonomous mode:
 
-### Phase 0 — Setup and Understanding
-`/bequite` · `/bq-help` · `/bq-init` · `/bq-discover` · `/bq-doctor`
-
-### Phase 1 — Problem Framing
-`/bq-clarify` · `/bq-research` · `/bq-scope` · `/bq-plan` · `/bq-multi-plan`
-
-### Phase 2 — Build
-`/bq-assign` · `/bq-implement` · `/bq-add-feature` · `/bq-fix`
-
-### Phase 3 — Quality
-`/bq-test` · `/bq-audit` · `/bq-review` · `/bq-red-team`
-
-### Phase 4 — Ship
-`/bq-verify` · `/bq-release` · `/bq-changelog`
-
-### Phase 5 — Continue Later
-`/bq-memory` · `/bq-recover` · `/bq-handoff`
-
-Every command has YAML frontmatter so Claude Code surfaces it in the command picker. Each command's file (in `.claude/commands/`) is fully self-contained markdown — the actual procedure the agent follows.
+```
+/bq-auto new "Build a SaaS dashboard for clinic bookings"
+/bq-auto fix "Fix hidden text on the dashboard"
+/bq-auto uiux variants=5 "Five dashboard design directions"
+/bq-live-edit "Make the pricing cards less crowded"
+```
 
 ---
 
-## What BeQuite does for you
+## How to use
 
-BeQuite is a **thinking + execution system** for AI coding agents:
+### For beginners
 
-- **Discipline** — every change runs through specification → plan → tasks → implementation → tests → verification.
-- **Memory** — `.bequite/` keeps state across sessions. `/bq-recover` resumes where you left off.
-- **Skeptic gate** — `/bq-red-team` actively tries to find what's broken in your plan before you ship it.
-- **Honest reporting** — banned weasel words (`should`, `probably`, `seems to`, `appears to`, `I think it works`, `might`, `hopefully`, `in theory`). Pass or fail; no maybes.
-- **Iron Law X** — every change ships in operationally complete state. No "feature added but needs restart."
-- **PhantomRaven defense** — never imports a package without verifying it actually exists.
-- **Doctrine-driven** — per-project rule packs (`default-web-saas`, `cli-tool`, `ai-automation`, `fintech-pci`, `mena-bilingual`, etc.) shape the agent's behavior.
+| Situation | Command |
+|---|---|
+| **I have a new project (empty folder)** | `/bq-new` or `/bq-auto new "what you're building"` |
+| **I have an existing project I want audited** | `/bq-existing` or `/bq-auto existing "specific concern"` |
+| **I want to add a feature** | `/bq-feature "feature description"` or `/bq-auto feature "..."` |
+| **I want to fix a bug** | `/bq-fix "what's broken"` or `/bq-auto fix "..."` |
+| **I want to improve UI/UX** | `/bq-uiux-variants 5 "what to redesign"` or `/bq-auto uiux ...` |
+| **I want a live edit (text, spacing, colors)** | `/bq-live-edit "section + change"` |
+| **I want to build automation/scraping** | `/bq-auto scraping "what to scrape"` or `/bq-auto automation "..."` |
+| **I want release readiness** | `/bq-verify` then `/bq-release` |
+| **I'm coming back after a break** | `/bq-recover` — finds last green checkpoint |
+
+### For advanced users
+
+| Capability | Command |
+|---|---|
+| **Auto mode (full lifecycle)** | `/bq-auto "task"` — agent runs P0 → P5; pauses only at hard human gates |
+| **Phase orchestrators** | `/bq-p0` … `/bq-p5` — run one phase end-to-end |
+| **Scoped auto mode (17 intents)** | `/bq-auto fix "..."` / `uiux` / `security` / `backend` / `database` / `deploy` / etc. — runs only the relevant scope |
+| **Multi-model planning** | `/bq-multi-plan` — independent Claude + ChatGPT/Gemini plans, then merged |
+| **UI/UX variants (1-10 directions)** | `/bq-uiux-variants [N] "scope"` — isolated routes; user picks winner |
+| **Live edit workflow** | `/bq-live-edit "task"` — section-mapped frontend edits |
+| **Adversarial review** | `/bq-red-team` — Skeptic mode; 8 attack angles |
+| **Full audit** | `/bq-audit` — 10-area product audit with severity-tagged findings |
+| **Memory snapshot** | `/bq-memory snapshot` — checkpoint before risky work |
+| **Mistake memory** | Auto-updated by `/bq-fix`, `/bq-audit`, `/bq-review`, `/bq-red-team`, `/bq-verify`, `/bq-auto`, `/bq-live-edit` |
+| **Handoff to another engineer** | `/bq-handoff` — writes `HANDOFF.md` |
+
+### Workflow
+
+The 6 phases (gates prevent skipping):
+
+```
+P0 Setup and Discovery        — learn what's there
+  /bq-init  /bq-mode  /bq-discover  /bq-doctor
+
+P1 Product Framing and Research — decide what to build
+  /bq-clarify  /bq-research  /bq-scope  /bq-plan  /bq-multi-plan
+
+P2 Planning and Build           — build it
+  /bq-assign  /bq-implement  /bq-feature  /bq-fix
+
+P3 Quality and Review           — confirm it works
+  /bq-test  /bq-audit  /bq-review  /bq-red-team
+
+P4 Release                      — ship
+  /bq-verify  /bq-release  /bq-changelog
+
+P5 Memory and Handoff           — continue or hand off
+  /bq-memory  /bq-recover  /bq-handoff
+```
+
+A command refuses to run when its required gates aren't met. Example:
+
+```
+You:      /bq-implement
+BeQuite:  Blocked — PLAN_APPROVED is ❌ pending.
+          Run /bq-plan first, or use /bq-auto for autonomous scoped mode.
+```
 
 ---
 
-## Architecture: skill pack + memory
+## Command map (36 commands)
+
+Organized by phase, not alphabetically.
+
+### Root
+- `/bequite` — gate-aware menu + recommended next 3
+- `/bq-help` — full command reference
+
+### Phase 0 — Setup and Discovery
+- `/bq-init` — initialize `.bequite/` in this repo
+- `/bq-mode` — select / show workflow mode
+- `/bq-new` — begin a New Project workflow
+- `/bq-existing` — begin an Existing Project Audit
+- `/bq-discover` — inspect repo → `DISCOVERY_REPORT.md`
+- `/bq-doctor` — environment health → `DOCTOR_REPORT.md`
+
+### Phase 1 — Product Framing and Research
+- `/bq-clarify` — 3-5 high-value clarifying questions
+- `/bq-research` — 11-dimension verified evidence
+- `/bq-scope` — lock IN / OUT / NON-GOALS
+- `/bq-plan` — write `IMPLEMENTATION_PLAN.md` (15 sections, no code yet)
+- `/bq-multi-plan` — unbiased multi-model planning (manual paste, ToS-clean)
+
+### Phase 2 — Planning and Build
+- `/bq-assign` — break plan into atomic tasks
+- `/bq-implement` — implement ONE task at a time
+- `/bq-feature` — Add Feature workflow (12-type router)
+- `/bq-fix` — Fix workflow (15-type router; reproduce-first)
+
+### Phase 3 — Quality and Review
+- `/bq-test` — run + write tests
+- `/bq-audit` — 10-area full project audit
+- `/bq-review` — review uncommitted diff + recent commits
+- `/bq-red-team` — adversarial Skeptic review (8 attack angles)
+
+### Phase 4 — Release
+- `/bq-verify` — full local gate matrix
+- `/bq-release` — release prep (prints commands; you run `git push`/`git tag`)
+- `/bq-changelog` — categorize commits per Keep a Changelog
+
+### Phase 5 — Memory and Handoff
+- `/bq-memory` — read / write snapshots
+- `/bq-recover` — resume after a break; finds last green checkpoint
+- `/bq-handoff` — generate `HANDOFF.md` for another engineer
+
+### Orchestrators
+- `/bq-p0` … `/bq-p5` — walk one phase end-to-end
+- `/bq-auto [intent] "task"` — scoped autonomous runner (17 intents)
+
+### UI/UX (alpha.4)
+- `/bq-uiux-variants [N] "scope"` — generate 1-10 isolated UI directions
+- `/bq-live-edit "task"` — section-by-section frontend edits
+
+---
+
+## Architecture
 
 ```
 your-project/
 ├── .claude/
-│   ├── commands/                  ← 24 slash commands (markdown)
-│   │   ├── bequite.md             /bequite (root menu)
-│   │   ├── bq-help.md             /bq-help
-│   │   ├── bq-init.md             /bq-init
-│   │   ├── ... (21 more)
-│   │   └── bq-handoff.md          /bq-handoff
-│   └── skills/                    ← 7 focused skills (deeper procedures)
-│       ├── bequite-project-architect/SKILL.md
-│       ├── bequite-problem-solver/SKILL.md
+│   ├── commands/              ← 36 slash commands (markdown)
+│   │   ├── bequite.md
+│   │   ├── bq-init.md
+│   │   └── … (34 more)
+│   └── skills/                ← 15 specialist skills
+│       ├── bequite-researcher/SKILL.md
+│       ├── bequite-product-strategist/SKILL.md
+│       ├── bequite-ux-ui-designer/SKILL.md
+│       ├── bequite-backend-architect/SKILL.md
+│       ├── bequite-database-architect/SKILL.md
+│       ├── bequite-security-reviewer/SKILL.md
+│       ├── bequite-devops-cloud/SKILL.md
 │       ├── bequite-frontend-quality/SKILL.md
 │       ├── bequite-testing-gate/SKILL.md
 │       ├── bequite-release-gate/SKILL.md
+│       ├── bequite-live-edit/SKILL.md
 │       ├── bequite-scraping-automation/SKILL.md
-│       └── bequite-multi-model-planning/SKILL.md
-├── .bequite/                      ← persistent memory
+│       ├── bequite-problem-solver/SKILL.md
+│       ├── bequite-multi-model-planning/SKILL.md
+│       └── bequite-project-architect/SKILL.md
+├── .bequite/                  ← persistent memory
+│   ├── principles/
+│   │   └── TOOL_NEUTRALITY.md
 │   ├── state/
 │   │   ├── PROJECT_STATE.md
+│   │   ├── CURRENT_MODE.md
 │   │   ├── CURRENT_PHASE.md
+│   │   ├── WORKFLOW_GATES.md
 │   │   ├── LAST_RUN.md
 │   │   ├── DECISIONS.md
-│   │   └── OPEN_QUESTIONS.md
-│   ├── logs/
-│   │   ├── AGENT_LOG.md           append-only
-│   │   ├── CHANGELOG.md
-│   │   └── ERROR_LOG.md
-│   ├── prompts/
-│   │   ├── user_prompts/
-│   │   ├── generated_prompts/
-│   │   └── model_outputs/         (for /bq-multi-plan manual paste)
-│   ├── audits/                    DISCOVERY_REPORT, DOCTOR_REPORT, FULL_PROJECT_AUDIT, VERIFY_REPORT, REVIEW-*, RED_TEAM-*
-│   ├── plans/                     IMPLEMENTATION_PLAN, SCOPE, feature-*
-│   └── tasks/                     TASK_LIST.md
-└── CLAUDE.md                       ← short BeQuite section appended
+│   │   ├── OPEN_QUESTIONS.md
+│   │   ├── ASSUMPTIONS.md
+│   │   └── MISTAKE_MEMORY.md
+│   ├── logs/                  ← AGENT_LOG, CHANGELOG, ERROR_LOG
+│   ├── research/              ← (created on demand)
+│   ├── audits/                ← DISCOVERY_REPORT, DOCTOR_REPORT, AUDIT, VERIFY_REPORT, REVIEW-*, RED_TEAM-*
+│   ├── plans/                 ← IMPLEMENTATION_PLAN, SCOPE, FEATURE_EXPANSION_ROADMAP
+│   ├── tasks/                 ← TASK_LIST, CURRENT_TASK
+│   ├── prompts/               ← user/generated/model_outputs
+│   ├── uiux/                  ← SECTION_MAP, LIVE_EDIT_LOG, UIUX_VARIANTS_REPORT, selected-variant, screenshots, archive
+│   └── handoff/               ← (created on demand)
+└── CLAUDE.md                  ← BeQuite section appended on install
 ```
 
-That's it. No `node_modules`. No `package.json` from BeQuite. No Docker.
+That's the whole footprint. No `node_modules`, no Docker, no Python, no daemons.
 
 ---
 
-## Workflow example — adding a feature to a real project
+## Examples
+
+Practical, real-world calls:
 
 ```
-You: /bequite
-BeQuite: shows the menu — "Recommended next: /bq-discover"
+/bq-auto new "Build a SaaS dashboard for clinic bookings"
+/bq-auto fix "Fix hidden text and dead buttons on localhost:3000"
+/bq-auto uiux variants=5 "Create 5 dashboard design directions"
+/bq-auto security "Audit and patch OWASP top 10 coverage"
+/bq-auto deploy "Plan + execute VPS deployment with safety gates"
 
-You: /bq-discover
-BeQuite: writes .bequite/audits/DISCOVERY_REPORT.md
-         "Detected: Next.js 15 + Drizzle + Supabase. Run /bq-doctor"
+/bq-live-edit "Make the pricing cards less crowded"
+/bq-live-edit "Improve the empty state on /dashboard"
+/bq-live-edit "Fix mobile layout overflow on hero"
 
-You: /bq-doctor
-BeQuite: writes .bequite/audits/DOCTOR_REPORT.md
-         "Node ✓ npm ✓ Docker ✓ ports 3000-3002 free. Ready"
-
-You: /bq-add-feature "CSV export on bookings page"
-BeQuite: writes a mini-spec, asks for approval
-         (you say yes)
-         implements the feature, writes a test, updates CHANGELOG
-
-You: /bq-test
-BeQuite: 47 unit + 4 e2e all pass. Updates state.
-
-You: /bq-review
-BeQuite: writes REVIEW-<timestamp>.md
-         Verdict: Approved-with-comments (one nit about column ordering)
-
-You: (fix the nit)
-You: /bq-verify
-BeQuite: full gate matrix — install + lint + types + tests + build + smoke
-         All green. Updates VERIFY_REPORT.md.
-
-You: /bq-release
-BeQuite: bumps version, moves [Unreleased] → [1.3.0], prints git tag commands
-         (you copy the commands and run them)
+/bq-multi-plan
+/bq-verify
+/bq-red-team
+/bq-recover
 ```
-
-Total: about 30 minutes for a small feature, end to end, with discipline.
 
 ---
 
-## Why a skill pack instead of a dashboard
+## Feature highlights
 
-BeQuite previously had a full Studio (marketing site + dashboard + Hono API + xterm terminal + Docker compose). It was impressive. It was also:
-
-- Heavy: ~3GB Docker images, ~60s first build, requires Node 20 + Bun + Docker
-- Fragile: 14 install-path bugs caught in 48 hours during one audit cycle
-- Wrong abstraction: users live inside Claude Code, not in a separate browser tab
-
-The skill pack:
-- Is a `cp -r` install
-- Lives where the user already works (Claude Code)
-- Has zero install bugs because there's nothing heavy to break
-- Focuses on the **thinking** (commands + skills + memory) instead of the **visualization**
-
-The Studio is **paused, not deleted** (see `.bequite/audits/DIRECTION_RESET_AUDIT.md`). It's still in `studio/` and `docker-compose.yml` if you ever want it back.
+- **Mandatory workflow gates** — `.bequite/state/WORKFLOW_GATES.md` blocks out-of-order commands. Can't `/bq-implement` without `PLAN_APPROVED ✅`.
+- **Next best command** — every command tells you what to run next. `/bequite` shows the recommended next 3 based on current state.
+- **Scoped auto mode** — `/bq-auto fix "..."` doesn't restart the whole project lifecycle. It runs only the relevant scope.
+- **Deep research before planning** — `/bq-research` covers 11 dimensions (stack, product, competitors, failures, success, user journey, UX/UI, security, scalability, deployment, differentiation). Live WebFetch, not memory.
+- **UI/UX variants** — 1-10 isolated design directions; user picks winner; agent merges. Original UI stays intact until selection.
+- **Live edit workflow** — section-mapped frontend edits. Maps visible sections to source files; applies the smallest possible edit; verifies via build + (optional) screenshots. **Never auto-installs browser tools.**
+- **Mistake memory** — `.bequite/state/MISTAKE_MEMORY.md` captures every fix + prevention rule. Re-read on session start.
+- **Before/after proof** — every edit logged with before/after diff. No "should work" claims.
+- **Fresh install check** — `/bq-doctor` validates env on every cycle.
+- **Red-team review** — `/bq-red-team` actively tries 9 attack angles (security, architecture, testing, deployment, scalability, UX, token-waste, hidden assumptions, tool-choice).
+- **Multi-model planning** — `/bq-multi-plan` runs unbiased Claude + ChatGPT/Gemini plans (manual paste, ToS-clean), merges them.
+- **Release readiness** — `/bq-verify` full gate matrix; `/bq-release` never auto-pushes (you run `git push`/`git tag`).
+- **DevOps/cloud safety gates** — production server / VPS / Nginx / SSL changes always pause for user.
+- **Scraping and automation skill** — `bequite-scraping-automation` enforces Article VIII (robots.txt respect, polite-rate default, no captcha-solving).
+- **Tool neutrality** — every named tool is a candidate, not a default. Decision sections required before adopting.
+- **Bot/product builder roadmap** — see [`docs/specs/FEATURE_EXPANSION_ROADMAP.md`](.bequite/plans/FEATURE_EXPANSION_ROADMAP.md) for the family of future feature commands.
 
 ---
 
-## Optional: the BeQuite Python CLI
+## Tool neutrality (the golden rule)
 
-If you also want the Python CLI (`bequite` + `bq` console scripts) — useful for scripting and CI — install separately:
+Every tool, library, framework, design system, or workflow mentioned anywhere in BeQuite is an **example**, not a fixed mandatory choice.
 
-```powershell
-# Windows
-irm https://raw.githubusercontent.com/xpShawky/BeQuite/main/scripts/bootstrap.ps1 | iex
-```
+❌ **Do not say:** "Use X."
+✅ **Say:** "X is one candidate. Research and compare against other options. Use it only if it fits this project."
 
-```bash
-# macOS / Linux
-curl -fsSL https://raw.githubusercontent.com/xpShawky/BeQuite/main/scripts/bootstrap.sh | bash
-```
+Before any major tool pick, the agent answers 10 decision questions:
 
-This is an **optional supplemental tool**, not required for the skill pack. The skill pack does everything the CLI does, just inside Claude Code.
+1. Project type? · 2. Actual problem? · 3. Scale? · 4. Constraints? · 5. Existing stack? · 6. UX needed? · 7. Failure risks? · 8. Proven tools? · 9. Overkill? · 10. Best output / least complexity?
+
+Then writes a decision section: Problem / Options / Sources / Best option / Why it fits / Why others rejected / Risk / Cost / Test plan / Rollback plan.
+
+Full rule: [`.bequite/principles/TOOL_NEUTRALITY.md`](.bequite/principles/TOOL_NEUTRALITY.md) · ADR-003.
+
+---
+
+## What BeQuite is NOT
+
+- ❌ Not a heavy IDE
+- ❌ Not a Studio / dashboard
+- ❌ Not a replacement for Claude Code (it runs **inside** Claude Code)
+- ❌ Not a dependency-heavy framework
+- ❌ Not a one-click magic app generator
+- ❌ Not a tool that skips testing or judgment
+- ❌ Not a Python CLI / Docker stack / npm package
+
+BeQuite is markdown files + a directory scaffold. That's the whole product.
+
+---
+
+## Roadmap
+
+### MVP (now — v3.0.0-alpha.4)
+- ✅ 36 slash commands across 6 phases
+- ✅ 15 specialist skills
+- ✅ Mandatory workflow gates (23 gates)
+- ✅ 17 hard human gates in auto-mode
+- ✅ Scoped autonomous runner (17 intents)
+- ✅ UI/UX variants (1-10 isolated directions)
+- ✅ Live edit workflow (section-mapped)
+- ✅ Tool neutrality principle
+- ✅ Mistake memory
+
+### v1 (next)
+- Mistake-memory writes wired into 7 commands (fix / audit / review / red-team / verify / auto / live-edit)
+- Fast / Deep / Token-saver mode flags on `/bq-auto`
+- 20 alpha.1 commands extended with new template sections
+- Installer auto-copies `.bequite/principles/`, `.bequite/uiux/` templates into target projects
+- 4 missing architecture docs filled out (WORKFLOW_GATES, RESEARCH_DEPTH_STRATEGY, FEATURE_AND_FIX_WORKFLOWS, DEVOPS_CLOUD_SAFETY)
+- Live verification of `/bequite` against fresh real-world projects
+
+### v2 (later, roadmap only — see `FEATURE_EXPANSION_ROADMAP.md`)
+- Grouped feature families: `/bq-build-bot`, `/bq-monitor`, `/bq-automation`, `/bq-content`, `/bq-data`, `/bq-report`, `/bq-saas` (names TBD)
+- Bot builder, website change monitor, scraping product factory, lead finder, report generator, QA bot, decision support, etc.
+- Off-label uses: lecture builder, academic writing, marketing campaign builder, course builder, support bot, sales agent (everything goes through the same gates + skills + memory)
+
+**Not overpromised. The lightweight skill pack stays lightweight.** Future commands are grouped families, not 100 new slash commands.
+
+---
+
+## Off-label use cases
+
+BeQuite was designed for shipping software. The same discipline applies elsewhere:
+
+- **Lecture / course builder** — research-before-planning works for educational content too
+- **Academic writing** — the 11-dimension research model is excellent for literature review
+- **Research assistant** — `/bq-research` + `/bq-multi-plan` on its own is a competitive intelligence engine
+- **Marketing campaign builder** — JTBD + persona + differentiation tests (from `bequite-product-strategist`)
+- **Bot maker / automation factory** — Article VIII discipline + n8n/Make/Zapier as candidates (per tool neutrality)
+- **Booking automation** — full lifecycle from /bq-clarify to /bq-deploy
+- **Internal tool builder** — small SaaS dashboards with all the gates
+- **Style cloner / persona simulator** — multi-model planning makes the prompts independently
+- **Auto documentation builder** — the same workflow that ships code also ships docs
+- **Tender / proposal writer** — 11-dimension research + product-strategist + write discipline
+- **Medical / pharmacy assistant builder** — domain-specific knowledge plus safety gates
+
+The lightweight skill pack is the core. Any project that benefits from "research → plan → build → verify → log" benefits from BeQuite.
 
 ---
 
 ## Docs
 
-- **Install runbook:** [`docs/runbooks/INSTALL_BEQUITE_IN_PROJECT.md`](docs/runbooks/INSTALL_BEQUITE_IN_PROJECT.md)
-- **Using BeQuite commands:** [`docs/runbooks/USING_BEQUITE_COMMANDS.md`](docs/runbooks/USING_BEQUITE_COMMANDS.md)
+- **Install:** [`docs/runbooks/INSTALL_BEQUITE_IN_PROJECT.md`](docs/runbooks/INSTALL_BEQUITE_IN_PROJECT.md)
+- **Using BeQuite:** [`docs/runbooks/USING_BEQUITE_COMMANDS.md`](docs/runbooks/USING_BEQUITE_COMMANDS.md)
 - **Architecture:** [`docs/architecture/LIGHTWEIGHT_SKILL_PACK_ARCHITECTURE.md`](docs/architecture/LIGHTWEIGHT_SKILL_PACK_ARCHITECTURE.md)
+- **Auto-mode strategy:** [`docs/architecture/AUTO_MODE_STRATEGY.md`](docs/architecture/AUTO_MODE_STRATEGY.md)
+- **UI/UX variants strategy:** [`docs/architecture/UIUX_VARIANTS_STRATEGY.md`](docs/architecture/UIUX_VARIANTS_STRATEGY.md)
+- **Live edit strategy:** [`docs/architecture/LIVE_EDIT_STRATEGY.md`](docs/architecture/LIVE_EDIT_STRATEGY.md)
+- **Multi-model planning:** [`docs/architecture/MULTI_MODEL_PLANNING_STRATEGY.md`](docs/architecture/MULTI_MODEL_PLANNING_STRATEGY.md)
+- **Command catalog:** [`docs/specs/COMMAND_CATALOG.md`](docs/specs/COMMAND_CATALOG.md)
 - **MVP scope:** [`docs/specs/MVP_LIGHTWEIGHT_SCOPE.md`](docs/specs/MVP_LIGHTWEIGHT_SCOPE.md)
-- **Decision record:** [`docs/decisions/ADR-001-lightweight-skill-pack-first.md`](docs/decisions/ADR-001-lightweight-skill-pack-first.md)
-- **Direction-reset audit:** [`.bequite/audits/DIRECTION_RESET_AUDIT.md`](.bequite/audits/DIRECTION_RESET_AUDIT.md)
-- **Original brief:** [`BEQUITE_BOOTSTRAP_BRIEF.md`](BEQUITE_BOOTSTRAP_BRIEF.md)
-- **Master file:** [`BeQuite_MASTER_PROJECT.md`](BeQuite_MASTER_PROJECT.md)
-- **CHANGELOG:** [`CHANGELOG.md`](CHANGELOG.md)
+- **Tool neutrality:** [`.bequite/principles/TOOL_NEUTRALITY.md`](.bequite/principles/TOOL_NEUTRALITY.md)
+- **ADRs:** [`docs/decisions/`](docs/decisions/) (4 decisions)
+- **Feature roadmap:** [`.bequite/plans/FEATURE_EXPANSION_ROADMAP.md`](.bequite/plans/FEATURE_EXPANSION_ROADMAP.md)
+- **Changelog:** [`docs/changelogs/CHANGELOG.md`](docs/changelogs/CHANGELOG.md)
+- **Agent log:** [`docs/changelogs/AGENT_LOG.md`](docs/changelogs/AGENT_LOG.md)
+
+---
+
+## Contributing
+
+BeQuite is opinionated. PRs welcome for:
+
+- New skills (per `bequite-skill-creator` pattern)
+- Doctrine packs (per-industry rule packs)
+- Bug fixes
+- Documentation improvements
+- Off-label use case write-ups
+
+Open an issue first for anything that adds a new top-level slash command or changes the gate model.
 
 ---
 
@@ -220,3 +439,5 @@ MIT. See [LICENSE](LICENSE).
 ## Maintainer
 
 **Ahmed Shawky** ([@xpShawky](https://github.com/xpShawky)).
+
+Built in Egypt 🇪🇬. Available in English; doctrine packs for Arabic + RTL on the roadmap.

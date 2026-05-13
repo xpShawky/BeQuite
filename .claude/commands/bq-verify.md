@@ -118,6 +118,24 @@ Next: /bq-release  (if PASS)
 
 See `.claude/skills/bequite-release-gate/SKILL.md` for the deeper procedure (CI parity, ship-vs-not decision tree, etc.).
 
+## Standardized command fields (alpha.6)
+
+**Phase:** P4 — Release
+**When NOT to use:** trivial change with no user impact (use `/bq-test` for a faster check); verify already ran < 1h ago + no new changes (cached state still valid).
+**Preconditions:** `BEQUITE_INITIALIZED`, `TEST_DONE`, `REVIEW_DONE`
+**Required previous gates:** `BEQUITE_INITIALIZED`, `TEST_DONE`, `REVIEW_DONE`
+**Quality gate:**
+- All applicable gates green
+- `VERIFY_REPORT.md` written with per-gate status
+- Honest PASS or FAIL (no "probably")
+- Marks `VERIFY_PASS ✅` only on PASS
+**Failure behavior:**
+- Any required gate red → verdict = FAIL; do NOT mark `VERIFY_PASS`; recommend `/bq-fix`
+- Optional gate yellow (warnings) → verdict can still be PASS; note in report
+- CI ≠ local parity discovered → log to `MISTAKE_MEMORY.md`; fix the script that diverged
+**Memory updates:** Sets `VERIFY_PASS ✅` on PASS. Updates `CURRENT_PHASE.md` to "P4 — verified". Appends parity-drift patterns to `MISTAKE_MEMORY.md`.
+**Log updates:** `AGENT_LOG.md`. `VERIFY_REPORT.md` (overwrites or timestamps).
+
 ## Memory files this command reads
 
 - `.bequite/audits/DISCOVERY_REPORT.md`

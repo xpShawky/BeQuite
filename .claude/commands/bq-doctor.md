@@ -181,6 +181,23 @@ Next: </bq-fix or /bq-clarify or /bq-plan based on blocker count>
 - Do NOT install missing tools — report only.
 - Do NOT touch `.env`.
 
+## Standardized command fields (alpha.6)
+
+**Phase:** P0 — Setup and Discovery
+**When NOT to use:** never blocked — environment probe is read-only and safe at any time. Skip only if you're confident the env is fine and want to save a few seconds.
+**Preconditions:** `BEQUITE_INITIALIZED`
+**Required previous gates:** `BEQUITE_INITIALIZED`
+**Quality gate:**
+- `DOCTOR_REPORT.md` written
+- Each probe has explicit green/yellow/red status
+- Missing tools / ports / env vars listed with install hints
+- Marks `DOCTOR_DONE ✅`
+**Failure behavior:**
+- Critical tool missing (e.g. Node when project is Next.js) → write report; advance gate; user fixes env separately
+- Bash probe fails on a single tool → mark that tool red; continue with the rest
+**Memory updates:** Sets `DOCTOR_DONE ✅`. Writes `DOCTOR_REPORT.md`.
+**Log updates:** `AGENT_LOG.md`.
+
 ## Memory files this command reads
 
 - `.bequite/audits/DISCOVERY_REPORT.md`

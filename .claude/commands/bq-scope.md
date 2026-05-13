@@ -120,6 +120,23 @@ Next: /bq-plan — write the implementation plan from these boundaries
 - **Be specific about NON-GOALS.** "Won't ship X because Y" is reviewable. "Out of scope" alone is not.
 - The user can override anything; this is a facilitation command, not a gate.
 
+## Standardized command fields (alpha.6)
+
+**Phase:** P1 — Product Framing and Research
+**When NOT to use:** scope already locked and stable — use `/bq-feature` to add inside scope, or amend `SCOPE.md` directly + re-`/bq-scope` for scope changes.
+**Preconditions:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`
+**Required previous gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`; `RESEARCH_DONE` (recommended, not required)
+**Quality gate:**
+- `SCOPE.md` exists with IN / OUT / NON-GOALS clearly written
+- Every IN item has a concrete acceptance signal
+- User has explicitly confirmed
+- Marks `SCOPE_LOCKED ✅`
+**Failure behavior:**
+- User keeps moving items between IN/OUT → re-draft once; if disagreement persists, ask which underlying assumption is unresolved (log to `ASSUMPTIONS.md`)
+- Scope conflicts with prior `DECISIONS.md` entry → surface the conflict; require user resolution before advancing
+**Memory updates:** Sets `SCOPE_LOCKED ✅`. Writes `SCOPE.md`. Appends decision entry to `DECISIONS.md`.
+**Log updates:** `AGENT_LOG.md`.
+
 ## Memory files this command reads
 
 - `.bequite/audits/DISCOVERY_REPORT.md`

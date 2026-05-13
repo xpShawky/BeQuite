@@ -185,6 +185,24 @@ Next: /bq-fix <highest-severity-finding>
 - **Severity is honest.** Don't downgrade something to MEDIUM because the codebase already has lots of HIGH findings.
 - **Kill-shot questions must be specific.** "Have you thought about scale?" is not specific. "What happens when sign-up fires 100 times in 1 second from the same IP?" is.
 
+## Standardized command fields (alpha.6)
+
+**Phase:** P3 — Quality and Review
+**When NOT to use:** code is mid-flight (red-team is for completed work); regulated-context paranoia not warranted (use `/bq-review`).
+**Preconditions:** `BEQUITE_INITIALIZED`
+**Required previous gates:** `BEQUITE_INITIALIZED` (`REVIEW_DONE` recommended — red-team is adversarial follow-up to a normal review)
+**Quality gate:**
+- `RED_TEAM-<timestamp>.md` written
+- All 9 attack angles addressed (security / architecture / testing / deployment / scalability / UX / token-waste / hidden assumptions / tool-choice)
+- Each finding severity-tagged + kill-shot question + (for security) exploit example
+- Mistake-memory entries for BLOCKER + HIGH findings
+- Marks `RED_TEAM_DONE ⚪ optional ✅`
+**Failure behavior:**
+- "Nothing found" verdict → look harder; red-team's job is to find. If truly clean, document why.
+- Conflicts with prior reviewer verdict (review = Approved, red-team = Blocked) → red-team wins; loop back to `/bq-fix`
+**Memory updates:** Sets `RED_TEAM_DONE ⚪ optional ✅`. Appends BLOCKER+HIGH entries to `MISTAKE_MEMORY.md` with attack-angle tags.
+**Log updates:** `AGENT_LOG.md`.
+
 ## Memory files this command reads
 
 - The current diff

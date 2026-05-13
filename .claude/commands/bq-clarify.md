@@ -110,6 +110,25 @@ Next: /bq-research (if any answer needs evidence) or /bq-plan (write the plan)
 - Each question must propose a **recommended default** so the user can quickly accept.
 - Do NOT ask questions whose answers are already in the discovered repo state.
 
+## Standardized command fields (alpha.6)
+
+**Phase:** P1 — Product Framing and Research
+**When NOT to use:** code is already shipping and scope is locked. Use `/bq-fix` for targeted issues; `/bq-feature` for additions.
+**Preconditions:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`
+**Required previous gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`
+**Quality gate:**
+- Exactly 3-5 questions asked (not more, not zero)
+- Each has a recommended default
+- Answers recorded in `OPEN_QUESTIONS.md` + `DECISIONS.md`
+- No questions about info already in DISCOVERY_REPORT
+- Marks `CLARIFY_DONE ✅`
+**Failure behavior:**
+- User says "all defaults" → accept all recommended defaults; mark resolved
+- User skips one → note as "still open"; do not block downstream
+- User refuses entirely → use defaults; log "user-deferred"; advance gate
+**Memory updates:** Sets `CLARIFY_DONE ✅`. Appends to `OPEN_QUESTIONS.md` + `DECISIONS.md`.
+**Log updates:** `AGENT_LOG.md`.
+
 ## Memory files this command reads
 
 - `.bequite/audits/DISCOVERY_REPORT.md`

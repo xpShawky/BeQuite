@@ -97,6 +97,24 @@ Next: /bq-review (if some still failing) or /bq-implement (if all green and task
 - **New tests for new code.** Every `/bq-implement` or `/bq-add-feature` that doesn't write a test is incomplete.
 - See `.claude/skills/bequite-testing-gate/SKILL.md` for the deeper test-discipline procedures (test pyramid, contract tests, snapshot rules, etc.).
 
+## Standardized command fields (alpha.6)
+
+**Phase:** P3 — Quality and Review
+**When NOT to use:** no code changed since last test run (waste of cycles); or no test framework exists yet (use `/bq-feature testing` to set one up — never auto-install).
+**Preconditions:** `BEQUITE_INITIALIZED`
+**Required previous gates:** `BEQUITE_INITIALIZED`
+**Quality gate:**
+- All tests run (none silently skipped)
+- All tests pass — green
+- Coverage gap report written for changed files
+- Marks `TEST_DONE ✅`
+**Failure behavior:**
+- Tests red → write specific failure to `ERROR_LOG.md`; recommend `/bq-fix`
+- No test framework detected → don't auto-install (tool neutrality); recommend `/bq-feature testing`
+- Flaky test (pass on retry) → log to `MISTAKE_MEMORY.md`; flag for stabilization
+**Memory updates:** Sets `TEST_DONE ✅` when all green. May write new test files.
+**Log updates:** `AGENT_LOG.md`. `MISTAKE_MEMORY.md` for flaky-test patterns.
+
 ## Memory files this command reads
 
 - `.bequite/audits/DISCOVERY_REPORT.md`

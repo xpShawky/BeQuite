@@ -198,6 +198,22 @@ Example:
 - Run shell commands
 - Make decisions (the user picks from recommendations)
 
+## Standardized command fields (alpha.6)
+
+**Phase:** Any (read-only meta command)
+**When NOT to use:** you want a one-line answer (use `/bq-now` — faster); you're already mid-flow inside `/bq-auto` (it's already gate-aware).
+**Preconditions:** none (read-only)
+**Required previous gates:** none
+**Quality gate:**
+- Output includes Status block, Phase gates block, Recommended next 3 commands
+- Recommendations are gate-aware (never recommend a command whose required gates aren't met)
+- Blocked-attempt note shown if user previously hit an out-of-order command
+**Failure behavior:**
+- BeQuite not installed → recommend `/bq-init` as the only option
+- State files corrupted → suggest `/bq-recover`
+**Memory updates:** none (read-only)
+**Log updates:** none (read-only navigation aid; does not pollute `AGENT_LOG.md`)
+
 ## Memory files this command reads
 
 - `.bequite/state/PROJECT_STATE.md`

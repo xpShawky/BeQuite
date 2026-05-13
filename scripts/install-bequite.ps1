@@ -3,9 +3,9 @@
   Install BeQuite (lightweight skill pack) into the current project.
 
 .DESCRIPTION
-  Copies the BeQuite slash commands, skills, and memory scaffold into your
-  current project directory. No heavy dependencies. No Docker. No database.
-  No frontend. No localhost app. Just files.
+  Copies the BeQuite slash commands, skills, principles, memory scaffold,
+  and command reference into your project directory. No heavy dependencies.
+  No Docker. No database. No frontend. No localhost app. Just markdown files.
 
   By default, this script downloads from the BeQuite GitHub repo. If you've
   already cloned BeQuite locally, pass -FromLocal <path> to copy from there.
@@ -32,6 +32,7 @@ param(
 )
 
 $ErrorActionPreference = "Continue"
+$BEQUITE_VERSION = "v3.0.0-alpha.5"
 
 function Write-Section($text) {
   Write-Host ""
@@ -49,7 +50,7 @@ $REPO_URL = "https://github.com/xpShawky/BeQuite.git"
 $TARGET = (Get-Location).Path
 
 Write-Host ""
-Write-Host "  BeQuite installer (lightweight skill pack)" -ForegroundColor Yellow
+Write-Host "  BeQuite installer ($BEQUITE_VERSION — lightweight skill pack)" -ForegroundColor Yellow
 Write-Host "  Target: $TARGET"
 Write-Host ""
 
@@ -99,7 +100,7 @@ if ($FromLocal -ne "") {
 
 # --- 3. Copy .claude/commands/ ---
 
-Write-Section "Installing .claude/commands/"
+Write-Section "Installing .claude/commands/ (37 slash commands)"
 $SRC_CMD = Join-Path $SOURCE ".claude\commands"
 if (-not (Test-Path $SRC_CMD)) {
   Exit-Fatal "Source missing $SRC_CMD — is this a valid BeQuite repo?"
@@ -109,9 +110,9 @@ Copy-Item -Path "$SRC_CMD\*" -Destination ".\.claude\commands\" -Recurse -Force
 $count = (Get-ChildItem .\.claude\commands\*.md).Count
 Write-Host "  $count slash commands installed" -ForegroundColor Green
 
-# --- 4. Copy .claude/skills/bequite-* ---
+# --- 4. Copy .claude/skills/bequite-* (15 specialist skills) ---
 
-Write-Section "Installing .claude/skills/bequite-*"
+Write-Section "Installing .claude/skills/bequite-* (15 specialist skills)"
 $SRC_SKILLS = Join-Path $SOURCE ".claude\skills"
 if (-not (Test-Path $SRC_SKILLS)) {
   Exit-Fatal "Source missing $SRC_SKILLS"
@@ -123,9 +124,9 @@ Get-ChildItem $SRC_SKILLS -Directory -Filter "bequite-*" | ForEach-Object {
   Write-Host "  + $skillName"
 }
 
-# --- 5. Create .bequite/ scaffold (only if not already present, even with --Force we preserve memory) ---
+# --- 5. Create .bequite/ scaffold (alpha.5: principles + uiux + new state files) ---
 
-Write-Section "Scaffolding .bequite/ memory"
+Write-Section "Scaffolding .bequite/ memory (alpha.5: principles, uiux, mistake memory, assumptions)"
 
 $SCAFFOLD = @(
   ".bequite\state",
@@ -135,14 +136,44 @@ $SCAFFOLD = @(
   ".bequite\prompts\model_outputs",
   ".bequite\audits",
   ".bequite\plans",
-  ".bequite\tasks"
+  ".bequite\tasks",
+  ".bequite\principles",
+  ".bequite\decisions",
+  ".bequite\uiux\screenshots",
+  ".bequite\uiux\archive"
 )
 foreach ($dir in $SCAFFOLD) {
   if (-not (Test-Path $dir)) {
     New-Item -ItemType Directory -Path $dir -Force | Out-Null
   }
 }
-Write-Host "  scaffold ready"
+Write-Host "  directory scaffold ready"
+
+# Copy alpha.5 template files into target project
+$TEMPLATES = @{
+  ".bequite\principles\TOOL_NEUTRALITY.md" = ".bequite\principles\TOOL_NEUTRALITY.md"
+  ".bequite\state\MISTAKE_MEMORY.md"      = ".bequite\state\MISTAKE_MEMORY.md"
+  ".bequite\state\ASSUMPTIONS.md"          = ".bequite\state\ASSUMPTIONS.md"
+  ".bequite\uiux\SECTION_MAP.md"          = ".bequite\uiux\SECTION_MAP.md"
+  ".bequite\uiux\LIVE_EDIT_LOG.md"        = ".bequite\uiux\LIVE_EDIT_LOG.md"
+  ".bequite\uiux\UIUX_VARIANTS_REPORT.md" = ".bequite\uiux\UIUX_VARIANTS_REPORT.md"
+  ".bequite\uiux\selected-variant.md"     = ".bequite\uiux\selected-variant.md"
+}
+foreach ($pair in $TEMPLATES.GetEnumerator()) {
+  $src = Join-Path $SOURCE $pair.Key
+  $dst = ".\$($pair.Value)"
+  if ((Test-Path $src) -and (-not (Test-Path $dst))) {
+    Copy-Item -Path $src -Destination $dst -Force
+    Write-Host "  + $($pair.Value)"
+  }
+}
+
+# Copy commands.md at repo root (top-level reference)
+$CMDS_MD_SRC = Join-Path $SOURCE "commands.md"
+if ((Test-Path $CMDS_MD_SRC) -and (-not (Test-Path ".\commands.md"))) {
+  Copy-Item -Path $CMDS_MD_SRC -Destination ".\commands.md" -Force
+  Write-Host "  + commands.md (full command reference at repo root)"
+}
 
 # --- 6. Append BeQuite section to CLAUDE.md if missing ---
 
@@ -155,24 +186,29 @@ if (-not (Test-Path $CLAUDE_MD)) {
   Set-Content -Path $CLAUDE_MD -Encoding utf8 -Value @"
 # CLAUDE.md
 
-This project uses **BeQuite** — a lightweight Claude Code skill pack.
+This project uses **BeQuite $BEQUITE_VERSION** — a lightweight Claude Code skill pack.
 
 $BQ_MARKER
 
 ## How to use BeQuite here
 
 - Run ``/bequite`` to see the menu.
-- Run ``/bq-help`` for the full command reference.
+- Run ``/bq-now`` for one-line orientation (faster than ``/bequite``).
+- Run ``/bq-help`` for the full command reference (or open ``commands.md``).
 - ``/bq-init`` to formally initialize (creates baseline state files).
+- ``/bq-auto [intent] "task"`` for scoped autonomous mode (17 intents).
 - BeQuite memory lives in ``.bequite/``.
 - BeQuite commands live in ``.claude/commands/bequite.md`` + ``.claude/commands/bq-*.md``.
 - BeQuite skills live in ``.claude/skills/bequite-*/``.
 
 ## Core operating rules (BeQuite)
 
-- Never claim a task is "done" unless ``/bq-verify`` passes.
-- Always update ``.bequite/logs/AGENT_LOG.md`` when you take a real action.
-- Banned weasel words in completion reports: should, probably, seems to, appears to, I think it works, might, hopefully, in theory.
+1. **Tool neutrality** — named tools are EXAMPLES, not commands. See ``.bequite/principles/TOOL_NEUTRALITY.md``.
+2. Never claim a task is "done" unless ``/bq-verify`` passes.
+3. Always update ``.bequite/logs/AGENT_LOG.md`` when you take a real action.
+4. Always update ``.bequite/state/WORKFLOW_GATES.md`` when a gate is met.
+5. Banned weasel words: should, probably, seems to, appears to, I think it works, might, hopefully, in theory.
+6. No out-of-order commands — gate system blocks them.
 
 <!-- /BEQUITE -->
 "@
@@ -186,11 +222,16 @@ $BQ_MARKER
 
 $BQ_MARKER
 
-# BeQuite
+# BeQuite $BEQUITE_VERSION
 
 This project uses **BeQuite** — a lightweight Claude Code skill pack.
 
-Run ``/bequite`` to see the menu. See ``.bequite/`` for memory + state.
+- ``/bequite`` — gate-aware menu
+- ``/bq-now`` — one-line status
+- ``/bq-help`` — full reference (also at ``commands.md``)
+- ``/bq-auto [intent] "task"`` — scoped autonomous mode
+
+See ``.bequite/`` for memory + state. Named tools are EXAMPLES — see ``.bequite/principles/TOOL_NEUTRALITY.md``.
 
 <!-- /BEQUITE -->
 "@
@@ -208,16 +249,25 @@ if ($FromLocal -eq "" -and $TMP -and (Test-Path $TMP)) {
 
 # --- 8. Done ---
 
-Write-Section "BeQuite installed"
+Write-Section "BeQuite $BEQUITE_VERSION installed"
 Write-Host ""
 Write-Host "  Run inside Claude Code:" -ForegroundColor Cyan
-Write-Host "    /bequite        the menu" -ForegroundColor White
-Write-Host "    /bq-help        full command reference" -ForegroundColor White
-Write-Host "    /bq-init        formally initialize this project" -ForegroundColor White
-Write-Host "    /bq-discover    inspect this repo" -ForegroundColor White
-Write-Host "    /bq-doctor      environment health" -ForegroundColor White
+Write-Host "    /bequite              gate-aware menu + next 3 recommendations" -ForegroundColor White
+Write-Host "    /bq-now               one-line orientation (faster than /bequite)" -ForegroundColor White
+Write-Host "    /bq-help              full command reference" -ForegroundColor White
+Write-Host "    /bq-init              formally initialize this project" -ForegroundColor White
+Write-Host "    /bq-discover          inspect this repo" -ForegroundColor White
+Write-Host "    /bq-doctor            environment health" -ForegroundColor White
+Write-Host ""
+Write-Host "  Autonomous:" -ForegroundColor Cyan
+Write-Host "    /bq-auto new ""..""    full P0->P5 lifecycle" -ForegroundColor White
+Write-Host "    /bq-auto fix ""..""    scoped fix mini-cycle" -ForegroundColor White
+Write-Host "    /bq-auto uiux variants=5 ""..""   generate 5 UI directions" -ForegroundColor White
+Write-Host "    /bq-live-edit ""..""              section-by-section frontend edits" -ForegroundColor White
 Write-Host ""
 Write-Host "  Memory:        .bequite/" -ForegroundColor Gray
 Write-Host "  Commands:      .claude/commands/" -ForegroundColor Gray
 Write-Host "  Skills:        .claude/skills/" -ForegroundColor Gray
+Write-Host "  Reference:     commands.md (repo root) — full command catalog" -ForegroundColor Gray
+Write-Host "  Tool rule:     .bequite/principles/TOOL_NEUTRALITY.md" -ForegroundColor Gray
 Write-Host ""

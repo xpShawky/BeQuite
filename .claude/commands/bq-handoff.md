@@ -211,6 +211,23 @@ Suggest the receiver:
 - **No "tribal knowledge."** If a fact isn't in `.bequite/` memory, ask the user to add it before generating the handoff.
 - **Cite where each fact came from.** "Stack: Next.js 15 (DISCOVERY_REPORT.md §3.1)" is better than "Stack: Next.js 15."
 
+## Standardized command fields (alpha.6)
+
+**Phase:** P5 — Memory and Handoff
+**When NOT to use:** solo project with no second engineer in sight (use `/bq-memory snapshot` instead — same info, less ceremony).
+**Preconditions:** `BEQUITE_INITIALIZED`
+**Required previous gates:** `BEQUITE_INITIALIZED`
+**Quality gate:**
+- `HANDOFF.md` at repo root with both sections (engineer + vibe-handoff)
+- Receiver checklist included
+- No secrets in the doc (env vars referenced by name only)
+- Marks `HANDOFF_DONE ⚪ optional ✅`
+**Failure behavior:**
+- Critical missing info (e.g. no DISCOVERY_REPORT) → run `/bq-discover` first; do not produce a partial handoff
+- Secret pattern detected in draft → strip + redact; flag for user re-review
+**Memory updates:** Sets `HANDOFF_DONE ⚪ optional ✅`. Writes `HANDOFF.md`.
+**Log updates:** `AGENT_LOG.md`.
+
 ## Memory files this command reads
 
 - All `.bequite/*` (broad)

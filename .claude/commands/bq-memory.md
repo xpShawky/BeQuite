@@ -143,6 +143,23 @@ Next: <command-suggestion based on what's in memory>
 - **Don't truncate the user's view.** If they say `show state.decisions`, print all of it.
 - **Snapshot files are timestamped + immutable.** Never overwrite a SNAPSHOT-*.md.
 
+## Standardized command fields (alpha.6)
+
+**Phase:** P5 — Memory and Handoff (or anytime)
+**When NOT to use:** mid-implementation when state is in flux (snapshot first, then continue); use `/bq-recover` to read snapshots, not `/bq-memory`.
+**Preconditions:** `BEQUITE_INITIALIZED`
+**Required previous gates:** `BEQUITE_INITIALIZED`
+**Subcommands:** `show`, `snapshot`, `refresh`
+**Quality gate:**
+- For `snapshot`: `MEMORY_SNAPSHOT_<date>.md` written; rolled-up state captured; marks `MEMORY_SNAPSHOT ✅`
+- For `show`: human-readable output of requested section
+- For `refresh`: state files re-read; agent context updated
+**Failure behavior:**
+- State file unreadable → log to `ERROR_LOG.md`; write partial snapshot with what is readable; flag the missing pieces
+- No state to snapshot (fresh repo) → suggest `/bq-init` first
+**Memory updates:** Writes new snapshot file (on `snapshot` subcommand). No mutation otherwise.
+**Log updates:** `AGENT_LOG.md`.
+
 ## Memory files this command reads
 
 - All `.bequite/state/*.md`

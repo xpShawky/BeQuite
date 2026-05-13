@@ -173,6 +173,24 @@ Next: /bq-fix <first-blocker-id>  (or /bq-red-team for adversarial review)
 - **Be honest about untested areas.** Note "not audited — no API in this repo" rather than skipping.
 - **Don't fix during audit.** Just document. Fixes happen in `/bq-fix`.
 
+## Standardized command fields (alpha.6)
+
+**Phase:** P3 — Quality and Review
+**When NOT to use:** small targeted bug (use `/bq-fix`); single-file review (use `/bq-review`); fresh project with no code yet (audit needs something to audit).
+**Preconditions:** `BEQUITE_INITIALIZED`
+**Required previous gates:** `BEQUITE_INITIALIZED` (`DISCOVERY_DONE` recommended)
+**Quality gate:**
+- `FULL_PROJECT_AUDIT.md` written
+- Each finding severity-tagged (BLOCKER / HIGH / MEDIUM / LOW)
+- Each finding cites file:line + suggested fix
+- Mistake-memory entries appended for systemic patterns
+- Marks `AUDIT_DONE ✅`
+**Failure behavior:**
+- Audit reveals a critical missing capability (e.g. no tests, no auth) → flag as BLOCKER + recommend `/bq-feature` for that domain
+- No file:line cite-able → finding is too vague; refine or drop
+**Memory updates:** Sets `AUDIT_DONE ✅` (optional gate unless Release Readiness mode). Appends systemic-pattern entries to `MISTAKE_MEMORY.md`.
+**Log updates:** `AGENT_LOG.md`.
+
 ## Memory files this command reads
 
 - `.bequite/audits/*.md` (prior audits)

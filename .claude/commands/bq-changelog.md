@@ -121,6 +121,24 @@ Next: /bq-release  (if you were prepping a release)
 - **Version in semver** (`MAJOR.MINOR.PATCH`).
 - **Link compare URLs at the bottom** (`[1.3.0]: https://github.com/.../compare/v1.2.0...v1.3.0`) if the project uses GitHub.
 
+## Standardized command fields (alpha.6)
+
+**Phase:** P4 — Release
+**When NOT to use:** no commits since last CHANGELOG entry; cosmetic-only commits (typos, comment fixes) with no user impact.
+**Preconditions:** `BEQUITE_INITIALIZED`
+**Required previous gates:** `BEQUITE_INITIALIZED`
+**Quality gate:**
+- Commits since last tag categorized per Keep a Changelog v1.1
+- Sections: Added / Changed / Deprecated / Removed / Fixed / Security (each present if applicable)
+- Entries are user-visible (no "Refactored lib/csv.ts" — that's internal)
+- No banned weasel words in entries
+- Marks `CHANGELOG_READY ✅`
+**Failure behavior:**
+- Commits have weak messages → suggest user re-message via `git commit --amend` (don't auto-edit)
+- Breaking change detected but not in CHANGELOG under `### Removed` / `### Changed` → flag as quality issue
+**Memory updates:** Sets `CHANGELOG_READY ✅`. Updates `CHANGELOG.md`.
+**Log updates:** `AGENT_LOG.md`.
+
 ## Memory files this command reads
 
 - `CHANGELOG.md` (or wherever it lives)

@@ -115,6 +115,23 @@ Other options:
 - **Show recent context concisely.** If the user wants more detail, they'll ask via `/bq-memory show`.
 - **Be honest if the trail is cold.** "No memory found — run `/bq-init` first" is fine.
 
+## Standardized command fields (alpha.6)
+
+**Phase:** P5 — Memory and Handoff (or anytime resuming)
+**When NOT to use:** fresh session in a fresh repo where you remember context (run `/bq-now` for one-line orientation instead).
+**Preconditions:** `BEQUITE_INITIALIZED`
+**Required previous gates:** `BEQUITE_INITIALIZED`
+**Quality gate:**
+- All `.bequite/` files read
+- Last green checkpoint identified
+- Recovery summary printed: what was happening / next safe step
+- `LAST_RUN.md` updated with recovery context
+**Failure behavior:**
+- State files corrupted / inconsistent → write `RECOVERY_REPORT.md`; print what's recoverable + what's lost; suggest manual review
+- Last green checkpoint > 30 days old → flag as stale; suggest user verify the project hasn't drifted
+**Memory updates:** Updates `LAST_RUN.md` with recovery summary. Does NOT mutate other state.
+**Log updates:** `AGENT_LOG.md` entry "recovery completed".
+
 ## Memory files this command reads
 
 - All `.bequite/state/*.md`

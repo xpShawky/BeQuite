@@ -118,6 +118,24 @@ Next: /bq-implement — pick off T-1.1
 - **Mark dependencies explicitly.** "T-2.2 depends on T-2.1" is part of the task entry.
 - **Only mark parallel: true when N > 5 + truly independent.** Otherwise, serial is safer (AkitaOnRails 2026).
 
+## Standardized command fields (alpha.6)
+
+**Phase:** P2 — Planning and Build
+**When NOT to use:** no plan exists yet (run `/bq-plan` first); or you're in Add Feature / Fix Problem mode (use `/bq-feature` / `/bq-fix` instead — those are self-contained).
+**Preconditions:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`, `PLAN_APPROVED`
+**Required previous gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`, `PLAN_APPROVED`
+**Quality gate:**
+- `TASK_LIST.md` exists
+- Every task is ≤5 minutes of focused work
+- Every task has ONE acceptance criterion
+- Tasks are dependency-ordered
+- Marks `ASSIGN_DONE ✅`
+**Failure behavior:**
+- Plan is too vague to extract atomic tasks → return to `/bq-plan` for clarification; do not advance
+- Tasks accumulate dependencies (T-2.1 needs T-1.3 needs T-2.7) → flag circular dep; re-order or split
+**Memory updates:** Sets `ASSIGN_DONE ✅`. Writes `TASK_LIST.md`.
+**Log updates:** `AGENT_LOG.md`.
+
 ## Memory files this command reads
 
 - `.bequite/plans/IMPLEMENTATION_PLAN.md`

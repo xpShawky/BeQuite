@@ -111,6 +111,26 @@ Next: /bq-fix or /bq-clarify (or just answer the blocker question yourself, then
 - **Stop on blocker.** Never skip a blocker silently.
 - **Update TASK_LIST.md after every state change.**
 
+## Standardized command fields (alpha.6)
+
+**Phase:** P2 — Planning and Build
+**When NOT to use:** no tasks pending (TASK_LIST empty) — use `/bq-feature` or `/bq-fix` for new work. Or you want to do a feature-shaped or bug-shaped task that isn't on the list — use those commands directly.
+**Preconditions:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`, `PLAN_APPROVED`, `ASSIGN_DONE`
+**Required previous gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`, `PLAN_APPROVED`, `ASSIGN_DONE`
+**Quality gate:**
+- Task marked `[x]` complete
+- Acceptance criterion verified
+- Test for the change is passing
+- No banned weasel words in completion claim
+- No destructive op executed
+- No new dep installed without decision section (tool neutrality)
+**Failure behavior:**
+- Test red after change → roll back via `git stash`; log to `ERROR_LOG.md`; retry once; if still red, mark task `[!]` blocked and pause
+- 3 consecutive failures on the same task → pause; ask user
+- Blocker discovered → mark `[!]` blocked with one-line reason; pick next non-dependent task
+**Memory updates:** Updates `TASK_LIST.md` (`[ ]` → `[x]`). Marks `IMPLEMENT_DONE ✅` when list empty. Updates `LAST_RUN.md`.
+**Log updates:** `AGENT_LOG.md` entry per task. `CHANGELOG.md` `[Unreleased]` per user-visible change.
+
 ## Memory files this command reads
 
 - `.bequite/tasks/TASK_LIST.md`

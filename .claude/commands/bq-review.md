@@ -116,6 +116,25 @@ Next: /bq-fix <first-blocker>  (if Blocked)
 - **Praise when warranted.** A short positive note builds trust + reduces friction.
 - **No drive-by suggestions.** If you spot something unrelated to this diff, log it to OPEN_QUESTIONS.md or AGENT_LOG.md, don't add it to this review.
 
+## Standardized command fields (alpha.6)
+
+**Phase:** P3 — Quality and Review
+**When NOT to use:** no uncommitted changes + no recent commits (nothing to review); whole-project audit needed (use `/bq-audit`).
+**Preconditions:** `BEQUITE_INITIALIZED`; git repo with diff or recent commits
+**Required previous gates:** `BEQUITE_INITIALIZED`
+**Quality gate:**
+- `REVIEW-<timestamp>.md` written
+- Per-file commentary with correctness / tests / security / style fields
+- Verdict explicit: Approved / Approved-with-comments / Blocked
+- Mistake-memory entries appended for repeat-pattern findings
+- Marks `REVIEW_DONE ✅`
+**Failure behavior:**
+- No diff to review → exit with hint to run `/bq-implement` first
+- New dep added in the diff without a decision section → BLOCKER (tool neutrality)
+- Banned weasel word in commit message → flag as finding; don't auto-edit history
+**Memory updates:** Sets `REVIEW_DONE ✅`. Appends repeat-pattern entries to `MISTAKE_MEMORY.md`.
+**Log updates:** `AGENT_LOG.md`.
+
 ## Memory files this command reads
 
 - The current diff (via `git diff`, `git log`)

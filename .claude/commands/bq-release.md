@@ -100,6 +100,26 @@ To publish to PyPI / npm (if applicable):
 
 See `.claude/skills/bequite-release-gate/SKILL.md` for the deeper procedure (CI parity, signing, npm 2FA, etc.).
 
+## Standardized command fields (alpha.6)
+
+**Phase:** P4 — Release
+**When NOT to use:** verify hasn't passed yet (run `/bq-verify` first); CHANGELOG `[Unreleased]` is empty (nothing to release).
+**Preconditions:** `BEQUITE_INITIALIZED`, `VERIFY_PASS`, `CHANGELOG_READY`
+**Required previous gates:** `BEQUITE_INITIALIZED`, `VERIFY_PASS`, `CHANGELOG_READY`
+**Quality gate:**
+- Version bumped in manifest (per semver: patch / minor / major matches CHANGELOG content)
+- CHANGELOG `[Unreleased]` moved to `[vX.Y.Z]` with date
+- Release commands printed (NOT executed — user runs `git push` + `git tag`)
+- Marks `RELEASE_READY ✅` after user confirms they ran the commands
+**Failure behavior:**
+- Verify > 24h old → recommend re-running `/bq-verify` first (stale verify is a risk)
+- Manifest unreadable → ask user which file holds the version
+- Pre-1.0 with breaking change → require explicit user OK before bumping minor (per release-gate skill)
+**Memory updates:** Bumps version in manifest(s). Moves CHANGELOG entry. Sets `RELEASE_READY ✅` after user confirmation.
+**Log updates:** `AGENT_LOG.md`. CHANGELOG section header updated.
+
+**Hard human gate (#17):** the actual `git push origin main`, `git tag -a vX.Y.Z`, and `git push origin vX.Y.Z` commands are user-run. Auto-mode prints them; never executes them.
+
 ## Memory files this command reads
 
 - `.bequite/audits/VERIFY_REPORT.md`

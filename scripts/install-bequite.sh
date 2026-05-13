@@ -9,6 +9,7 @@
 
 set -uo pipefail
 
+BEQUITE_VERSION="v3.0.0-alpha.5"
 REPO_URL="https://github.com/xpShawky/BeQuite.git"
 TARGET="$(pwd)"
 FROM_LOCAL=""
@@ -33,7 +34,7 @@ cyan()   { printf '\033[36m%s\033[0m' "$*"; }
 section() { echo; echo "$(yellow "==> $1")"; }
 
 echo
-echo "  $(yellow "BeQuite installer (lightweight skill pack)")"
+echo "  $(yellow "BeQuite installer ($BEQUITE_VERSION — lightweight skill pack)")"
 echo "  Target: $TARGET"
 echo
 
@@ -77,17 +78,17 @@ else
   SOURCE="$TMP"
 fi
 
-# --- 3. .claude/commands/ ---
+# --- 3. .claude/commands/ (37 slash commands) ---
 
-section "Installing .claude/commands/"
+section "Installing .claude/commands/ (37 slash commands)"
 mkdir -p "./.claude/commands"
 cp -r "$SOURCE/.claude/commands/"* "./.claude/commands/"
 count=$(ls -1 ./.claude/commands/*.md 2>/dev/null | wc -l)
 echo "  $(green "$count slash commands installed")"
 
-# --- 4. .claude/skills/bequite-* ---
+# --- 4. .claude/skills/bequite-* (15 specialist skills) ---
 
-section "Installing .claude/skills/bequite-*"
+section "Installing .claude/skills/bequite-* (15 specialist skills)"
 mkdir -p "./.claude/skills"
 for skill in "$SOURCE"/.claude/skills/bequite-*/; do
   if [[ -d "$skill" ]]; then
@@ -97,11 +98,35 @@ for skill in "$SOURCE"/.claude/skills/bequite-*/; do
   fi
 done
 
-# --- 5. .bequite/ scaffold ---
+# --- 5. .bequite/ scaffold (alpha.5: principles + uiux + new state files) ---
 
-section "Scaffolding .bequite/ memory"
-mkdir -p ./.bequite/{state,logs,prompts/user_prompts,prompts/generated_prompts,prompts/model_outputs,audits,plans,tasks}
-echo "  scaffold ready"
+section "Scaffolding .bequite/ memory (alpha.5: principles, uiux, mistake memory, assumptions)"
+mkdir -p ./.bequite/{state,logs,prompts/user_prompts,prompts/generated_prompts,prompts/model_outputs,audits,plans,tasks,principles,decisions,uiux/screenshots,uiux/archive}
+echo "  directory scaffold ready"
+
+# Copy alpha.5 templates into target project (preserve existing if present)
+copy_template() {
+  local src_rel="$1"
+  local dst_rel="$2"
+  if [[ -f "$SOURCE/$src_rel" && ! -f "./$dst_rel" ]]; then
+    cp "$SOURCE/$src_rel" "./$dst_rel"
+    echo "  + $dst_rel"
+  fi
+}
+
+copy_template ".bequite/principles/TOOL_NEUTRALITY.md" ".bequite/principles/TOOL_NEUTRALITY.md"
+copy_template ".bequite/state/MISTAKE_MEMORY.md"      ".bequite/state/MISTAKE_MEMORY.md"
+copy_template ".bequite/state/ASSUMPTIONS.md"          ".bequite/state/ASSUMPTIONS.md"
+copy_template ".bequite/uiux/SECTION_MAP.md"          ".bequite/uiux/SECTION_MAP.md"
+copy_template ".bequite/uiux/LIVE_EDIT_LOG.md"        ".bequite/uiux/LIVE_EDIT_LOG.md"
+copy_template ".bequite/uiux/UIUX_VARIANTS_REPORT.md" ".bequite/uiux/UIUX_VARIANTS_REPORT.md"
+copy_template ".bequite/uiux/selected-variant.md"      ".bequite/uiux/selected-variant.md"
+
+# Copy commands.md at repo root (top-level reference)
+if [[ -f "$SOURCE/commands.md" && ! -f "./commands.md" ]]; then
+  cp "$SOURCE/commands.md" "./commands.md"
+  echo "  + commands.md (full command reference at repo root)"
+fi
 
 # --- 6. CLAUDE.md ---
 
@@ -113,24 +138,29 @@ if [[ ! -f "./CLAUDE.md" ]]; then
   cat > ./CLAUDE.md <<EOF
 # CLAUDE.md
 
-This project uses **BeQuite** — a lightweight Claude Code skill pack.
+This project uses **BeQuite $BEQUITE_VERSION** — a lightweight Claude Code skill pack.
 
 $BQ_MARKER
 
 ## How to use BeQuite here
 
 - Run \`/bequite\` to see the menu.
-- Run \`/bq-help\` for the full command reference.
+- Run \`/bq-now\` for one-line orientation (faster than \`/bequite\`).
+- Run \`/bq-help\` for the full command reference (or open \`commands.md\`).
 - \`/bq-init\` to formally initialize (creates baseline state files).
+- \`/bq-auto [intent] "task"\` for scoped autonomous mode (17 intents).
 - BeQuite memory lives in \`.bequite/\`.
 - BeQuite commands live in \`.claude/commands/bequite.md\` + \`.claude/commands/bq-*.md\`.
 - BeQuite skills live in \`.claude/skills/bequite-*/\`.
 
 ## Core operating rules (BeQuite)
 
-- Never claim a task is "done" unless \`/bq-verify\` passes.
-- Always update \`.bequite/logs/AGENT_LOG.md\` when you take a real action.
-- Banned weasel words: should, probably, seems to, appears to, I think it works, might, hopefully, in theory.
+1. **Tool neutrality** — named tools are EXAMPLES, not commands. See \`.bequite/principles/TOOL_NEUTRALITY.md\`.
+2. Never claim a task is "done" unless \`/bq-verify\` passes.
+3. Always update \`.bequite/logs/AGENT_LOG.md\` when you take a real action.
+4. Always update \`.bequite/state/WORKFLOW_GATES.md\` when a gate is met.
+5. Banned weasel words: should, probably, seems to, appears to, I think it works, might, hopefully, in theory.
+6. No out-of-order commands — gate system blocks them.
 
 <!-- /BEQUITE -->
 EOF
@@ -143,11 +173,16 @@ else
 
 $BQ_MARKER
 
-# BeQuite
+# BeQuite $BEQUITE_VERSION
 
 This project uses **BeQuite** — a lightweight Claude Code skill pack.
 
-Run \`/bequite\` to see the menu. See \`.bequite/\` for memory + state.
+- \`/bequite\` — gate-aware menu
+- \`/bq-now\` — one-line status
+- \`/bq-help\` — full reference (also at \`commands.md\`)
+- \`/bq-auto [intent] "task"\` — scoped autonomous mode
+
+See \`.bequite/\` for memory + state. Named tools are EXAMPLES — see \`.bequite/principles/TOOL_NEUTRALITY.md\`.
 
 <!-- /BEQUITE -->
 EOF
@@ -165,16 +200,25 @@ fi
 
 # --- 8. Done ---
 
-section "BeQuite installed"
+section "BeQuite $BEQUITE_VERSION installed"
 echo
 echo "  $(cyan "Run inside Claude Code:")"
-echo "    /bequite        the menu"
-echo "    /bq-help        full command reference"
-echo "    /bq-init        formally initialize this project"
-echo "    /bq-discover    inspect this repo"
-echo "    /bq-doctor      environment health"
+echo "    /bequite              gate-aware menu + next 3 recommendations"
+echo "    /bq-now               one-line orientation (faster than /bequite)"
+echo "    /bq-help              full command reference"
+echo "    /bq-init              formally initialize this project"
+echo "    /bq-discover          inspect this repo"
+echo "    /bq-doctor            environment health"
+echo
+echo "  $(cyan "Autonomous:")"
+echo "    /bq-auto new \"..\"     full P0->P5 lifecycle"
+echo "    /bq-auto fix \"..\"     scoped fix mini-cycle"
+echo "    /bq-auto uiux variants=5 \"..\"   generate 5 UI directions"
+echo "    /bq-live-edit \"..\"               section-by-section frontend edits"
 echo
 echo "  Memory:        .bequite/"
 echo "  Commands:      .claude/commands/"
 echo "  Skills:        .claude/skills/"
+echo "  Reference:     commands.md (repo root) — full command catalog"
+echo "  Tool rule:     .bequite/principles/TOOL_NEUTRALITY.md"
 echo

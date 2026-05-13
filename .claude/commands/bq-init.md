@@ -214,6 +214,23 @@ Next:  /bq-discover     inspect the repo + write DISCOVERY_REPORT.md
        /bq-clarify      (new projects only) ask the user 3-5 questions
 ```
 
+## Standardized command fields (alpha.6)
+
+**Phase:** P0 — Setup and Discovery
+**When NOT to use:** `.bequite/` is already initialized and has real content — use `/bq-recover` instead to avoid overwriting memory.
+**Preconditions:** writable working directory; not running inside `node_modules`/`vendor`/etc.
+**Required previous gates:** none (this is the entry point)
+**Quality gate:**
+- `.bequite/` tree exists with all 8 subdirs
+- All 8 baseline state files written
+- `CLAUDE.md` has BeQuite section
+- Marks `BEQUITE_INITIALIZED ✅` in `WORKFLOW_GATES.md`
+**Failure behavior:**
+- `.bequite/` exists with content → refuse + ask user before overwriting; suggest `/bq-recover`
+- Write fails on any file → log + exit; do NOT partial-init
+**Memory updates:** Sets `BEQUITE_INITIALIZED ✅`. Creates all baseline state files.
+**Log updates:** First entry in `AGENT_LOG.md`. CHANGELOG `[Unreleased]` initialized.
+
 ## Memory files this command reads
 
 - `CLAUDE.md` (if exists)

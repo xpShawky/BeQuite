@@ -6,13 +6,30 @@ Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANG
 
 ---
 
-## [Unreleased — alpha.6]
+## [Unreleased — alpha.7]
 
-- 20 alpha.1 commands retroactively extended with new template sections (Preconditions / Required gates / Quality gate / Failure behavior)
-- Installer scripts auto-copy `.bequite/principles/TOOL_NEUTRALITY.md` + `.bequite/uiux/` templates into target projects
-- Live verification of `/bequite` against fresh real-world projects (user-action)
-- Architecture docs expanded from summaries to full reference depth
+- Live verification of `/bequite` against fresh real-world projects (user-action; installer is ready)
+- Architecture docs expanded from summaries to full reference depth (WORKFLOW_GATES, RESEARCH_DEPTH_STRATEGY, FEATURE_AND_FIX_WORKFLOWS, DEVOPS_CLOUD_SAFETY)
 - Additional trendy commands evaluated (`/bq-spec`, `/bq-explain`, `/bq-undo`, `/bq-cost`)
+- `/bq-help` extended with standardized fields (was excluded in alpha.6 as a meta-reference command)
+
+---
+
+## [v3.0.0-alpha.6] — 2026-05-12
+
+### Added
+- Installer scripts (both PowerShell + bash) updated to copy alpha.5 templates into target projects:
+  - `.bequite/principles/TOOL_NEUTRALITY.md`
+  - `.bequite/state/MISTAKE_MEMORY.md`, `ASSUMPTIONS.md`
+  - `.bequite/uiux/SECTION_MAP.md`, `LIVE_EDIT_LOG.md`, `UIUX_VARIANTS_REPORT.md`, `selected-variant.md`
+  - `.bequite/uiux/screenshots/`, `.bequite/uiux/archive/`
+  - `commands.md` at project root
+- 19 alpha.1 commands extended with "Standardized command fields (alpha.6)" section: bq-init, bq-discover, bq-doctor, bq-clarify, bq-scope, bq-assign, bq-implement, bq-test, bq-audit, bq-review, bq-red-team, bq-verify, bq-release, bq-changelog, bq-memory, bq-recover, bq-handoff, bequite (root), bq-add-feature
+- Each gained: Phase / When NOT to use / Preconditions / Required previous gates / Quality gate (success criteria) / Failure behavior / Memory updates / Log updates
+
+### Changed
+- Installer CLAUDE.md template (created or appended) now references `/bq-now`, `/bq-auto`, `commands.md`, TOOL_NEUTRALITY.md, gates
+- Installer end-of-install message highlights autonomous mode + new commands
 
 ---
 

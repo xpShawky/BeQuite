@@ -2,6 +2,65 @@
 
 Append-only chronicle of every BeQuite command run. Newest at top.
 
+## 2026-05-12 — alpha.6 ship: installer auto-copies alpha.5 templates + 19 alpha.1 commands extended with standardized fields
+
+**Action:** User said "continue" — picking up the deferred alpha.6 work.
+
+**Installer scripts updated (both PowerShell + bash):**
+- Bumped version messaging to `v3.0.0-alpha.5`
+- Added directory scaffold for `.bequite/principles/`, `.bequite/decisions/`, `.bequite/uiux/screenshots/`, `.bequite/uiux/archive/`
+- Copy alpha.5 template files into target project (preserves existing):
+  - `.bequite/principles/TOOL_NEUTRALITY.md`
+  - `.bequite/state/MISTAKE_MEMORY.md`
+  - `.bequite/state/ASSUMPTIONS.md`
+  - `.bequite/uiux/SECTION_MAP.md`
+  - `.bequite/uiux/LIVE_EDIT_LOG.md`
+  - `.bequite/uiux/UIUX_VARIANTS_REPORT.md`
+  - `.bequite/uiux/selected-variant.md`
+- Copy `commands.md` to target project root
+- Updated CLAUDE.md template (created or appended) to reference `/bq-now`, `/bq-auto`, `commands.md`, TOOL_NEUTRALITY.md, gates
+- Refreshed end-of-install message to highlight autonomous mode + new commands
+
+**19 alpha.1 commands extended with Standardized fields (alpha.6) section:**
+- bq-init, bq-discover, bq-doctor, bq-clarify, bq-scope, bq-assign, bq-implement, bq-test, bq-audit, bq-review, bq-red-team, bq-verify, bq-release, bq-changelog, bq-memory, bq-recover, bq-handoff, bequite (root menu), bq-add-feature (legacy alias)
+
+Each gained:
+- **Phase** (P0..P5 or Any)
+- **When NOT to use** — specific anti-patterns per command
+- **Preconditions** — what must be true to run
+- **Required previous gates** — explicit list of WORKFLOW_GATES dependencies
+- **Quality gate (success criteria)** — bulleted concrete conditions
+- **Failure behavior** — per-failure-mode response
+- **Memory updates** — which gates ticked + state files touched
+- **Log updates** — AGENT_LOG always; CHANGELOG when user-visible
+
+**Tally after alpha.6:**
+- Commands with full template: 36 of 37 (only `/bq-help` lacks the block — it's a meta reference command)
+- New skills: 0
+- Total commands: 37
+- Total skills: 15
+
+**Cumulative version state:**
+- v3.0.0-alpha.1: lightweight skill pack MVP (24 commands, 7 skills)
+- v3.0.0-alpha.2: mandatory workflow gates + 6 modes + 7 specialist skills (34 commands, 14 skills)
+- v3.0.0-alpha.3: tool neutrality principle (no command count change)
+- v3.0.0-alpha.4: scoped /bq-auto + variants + live edit (36 commands, 15 skills)
+- v3.0.0-alpha.5: studio cleanup + /bq-now + mistake memory wiring + --mode flag + commands.md (37 commands, 15 skills)
+- v3.0.0-alpha.6 (this commit): installer auto-copies templates + 19 commands extended with standardized fields
+
+**Pending (alpha.7):**
+- Live verification of `/bequite` inside Claude Code against a fresh real-world project (user action — installer is now ready)
+- Architecture docs expanded from concise summaries to full reference depth (4 docs)
+- Additional trendy commands evaluated (`/bq-spec`, `/bq-explain`, `/bq-undo`, `/bq-cost`) — defer unless user pull is strong
+- bq-help.md extended with standardized fields (was excluded; less critical for a meta reference command)
+
+**Article VI honest reporting:**
+- Installer scripts: tested logic by inspecting the code paths. NOT yet end-to-end tested by running `irm | iex` from a fresh repo. The first user install on alpha.6+ will be the real verification.
+- 19 commands gained a standardized fields block at the bottom (before "## Memory files this command reads"). The original command procedures are unchanged; the new block ADDS the missing labeled sections.
+- bq-help.md was excluded from this pass because it's a meta-reference command with a different structure. Listed as alpha.7 pending.
+
+---
+
 ## 2026-05-12 — v3.0.0-alpha.5 ship: studio cleanup + /bq-now + mistake memory wiring + --mode flag + commands.md
 
 **Action:** User invoked `/bq-auto` with a focused scope: delete only `studio/` (not other heavy folders), continue with v1 features, add trendy/catchy commands, create `commands.md` linked from README, revise all md files, push final to GitHub.

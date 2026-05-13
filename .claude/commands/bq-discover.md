@@ -206,6 +206,23 @@ Next:  /bq-doctor          environment health check
 - Be specific: say "Next.js 15.5.18" not "React app".
 - Be honest: if you can't determine something, list it in section 11.
 
+## Standardized command fields (alpha.6)
+
+**Phase:** P0 — Setup and Discovery
+**When NOT to use:** completely empty folder with no source code — use `/bq-new` instead.
+**Preconditions:** `BEQUITE_INITIALIZED`
+**Required previous gates:** `BEQUITE_INITIALIZED`
+**Quality gate:**
+- `DISCOVERY_REPORT.md` written with all 11 sections
+- Stack detected (or explicitly marked "unknown")
+- Risks + missing-info surfaced
+- Marks `DISCOVERY_DONE ✅`
+**Failure behavior:**
+- No manifests + no source → write minimal report; suggest `/bq-new`
+- Read fails on a file → skip + note in report; don't abort the whole discover
+**Memory updates:** Sets `DISCOVERY_DONE ✅`. Writes `DISCOVERY_REPORT.md`.
+**Log updates:** `AGENT_LOG.md` entry with summary.
+
 ## Memory files this command reads
 
 - All package manifests

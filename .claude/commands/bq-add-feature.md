@@ -129,6 +129,18 @@ Next: /bq-review (review your own changes) or /bq-test (full test sweep)
 - **Add a test.** Every new feature has at least one test. No exceptions for "trivial" features.
 - **Update CHANGELOG.** Even small features.
 
+## Standardized command fields (alpha.6)
+
+**Phase:** P2 — Planning and Build
+**Status:** legacy alias — `/bq-feature` is the canonical command (alpha.2). This file remains for backwards compatibility.
+**When NOT to use:** prefer `/bq-feature` for all new feature work — it includes the 12-type router + specialist skill activation.
+**Preconditions:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`
+**Required previous gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`
+**Quality gate:** same as `/bq-feature` — mini-spec exists, user confirmed, files compile, test passes, acceptance verified, CHANGELOG updated
+**Failure behavior:** same as `/bq-feature`
+**Memory updates:** sets `FEATURE_DONE ✅`
+**Log updates:** `AGENT_LOG.md`; CHANGELOG `[Unreleased]`
+
 ## Memory files this command reads
 
 - `.bequite/state/PROJECT_STATE.md`

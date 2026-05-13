@@ -9,7 +9,7 @@
 
 set -uo pipefail
 
-BEQUITE_VERSION="v3.0.0-alpha.5"
+BEQUITE_VERSION="v3.0.0-alpha.8"
 REPO_URL="https://github.com/xpShawky/BeQuite.git"
 TARGET="$(pwd)"
 FROM_LOCAL=""
@@ -80,7 +80,7 @@ fi
 
 # --- 3. .claude/commands/ (37 slash commands) ---
 
-section "Installing .claude/commands/ (37 slash commands)"
+section "Installing .claude/commands/ (42 slash commands)"
 mkdir -p "./.claude/commands"
 cp -r "$SOURCE/.claude/commands/"* "./.claude/commands/"
 count=$(ls -1 ./.claude/commands/*.md 2>/dev/null | wc -l)
@@ -88,7 +88,7 @@ echo "  $(green "$count slash commands installed")"
 
 # --- 4. .claude/skills/bequite-* (15 specialist skills) ---
 
-section "Installing .claude/skills/bequite-* (15 specialist skills)"
+section "Installing .claude/skills/bequite-* (18 specialist skills)"
 mkdir -p "./.claude/skills"
 for skill in "$SOURCE"/.claude/skills/bequite-*/; do
   if [[ -d "$skill" ]]; then
@@ -100,8 +100,8 @@ done
 
 # --- 5. .bequite/ scaffold (alpha.5: principles + uiux + new state files) ---
 
-section "Scaffolding .bequite/ memory (alpha.5: principles, uiux, mistake memory, assumptions)"
-mkdir -p ./.bequite/{state,logs,prompts/user_prompts,prompts/generated_prompts,prompts/model_outputs,audits,plans,tasks,principles,decisions,uiux/screenshots,uiux/archive}
+section "Scaffolding .bequite/ memory (alpha.5-8: principles, uiux, jobs, money, mistake memory, assumptions)"
+mkdir -p ./.bequite/{state,logs,prompts/user_prompts,prompts/generated_prompts,prompts/model_outputs,audits,plans,tasks,principles,decisions,uiux/screenshots,uiux/archive,jobs,money}
 echo "  directory scaffold ready"
 
 # Copy alpha.5 templates into target project (preserve existing if present)
@@ -114,13 +114,32 @@ copy_template() {
   fi
 }
 
+# alpha.3 — tool neutrality
 copy_template ".bequite/principles/TOOL_NEUTRALITY.md" ".bequite/principles/TOOL_NEUTRALITY.md"
+
+# alpha.5 — mistake memory + assumptions
 copy_template ".bequite/state/MISTAKE_MEMORY.md"      ".bequite/state/MISTAKE_MEMORY.md"
 copy_template ".bequite/state/ASSUMPTIONS.md"          ".bequite/state/ASSUMPTIONS.md"
+
+# alpha.4 — UI/UX
 copy_template ".bequite/uiux/SECTION_MAP.md"          ".bequite/uiux/SECTION_MAP.md"
 copy_template ".bequite/uiux/LIVE_EDIT_LOG.md"        ".bequite/uiux/LIVE_EDIT_LOG.md"
 copy_template ".bequite/uiux/UIUX_VARIANTS_REPORT.md" ".bequite/uiux/UIUX_VARIANTS_REPORT.md"
 copy_template ".bequite/uiux/selected-variant.md"      ".bequite/uiux/selected-variant.md"
+
+# alpha.8 — jobs
+copy_template ".bequite/jobs/JOB_PROFILE.md"          ".bequite/jobs/JOB_PROFILE.md"
+copy_template ".bequite/jobs/JOB_SEARCH_LOG.md"       ".bequite/jobs/JOB_SEARCH_LOG.md"
+copy_template ".bequite/jobs/OPPORTUNITIES.md"        ".bequite/jobs/OPPORTUNITIES.md"
+copy_template ".bequite/jobs/APPLICATION_TRACKER.md"  ".bequite/jobs/APPLICATION_TRACKER.md"
+copy_template ".bequite/jobs/PITCH_TEMPLATES.md"      ".bequite/jobs/PITCH_TEMPLATES.md"
+
+# alpha.8 — money
+copy_template ".bequite/money/MONEY_PROFILE.md"       ".bequite/money/MONEY_PROFILE.md"
+copy_template ".bequite/money/MONEY_SEARCH_LOG.md"    ".bequite/money/MONEY_SEARCH_LOG.md"
+copy_template ".bequite/money/OPPORTUNITIES.md"       ".bequite/money/OPPORTUNITIES.md"
+copy_template ".bequite/money/TRUST_CHECKS.md"        ".bequite/money/TRUST_CHECKS.md"
+copy_template ".bequite/money/ACTION_PLAN.md"         ".bequite/money/ACTION_PLAN.md"
 
 # Copy commands.md at repo root (top-level reference)
 if [[ -f "$SOURCE/commands.md" && ! -f "./commands.md" ]]; then
@@ -144,12 +163,14 @@ $BQ_MARKER
 
 ## How to use BeQuite here
 
-- Run \`/bequite\` to see the menu.
+- Run \`/bequite\` to see the gate-aware menu.
 - Run \`/bq-now\` for one-line orientation (faster than \`/bequite\`).
 - Run \`/bq-help\` for the full command reference (or open \`commands.md\`).
 - \`/bq-init\` to formally initialize (creates baseline state files).
 - \`/bq-auto [intent] "task"\` for scoped autonomous mode (17 intents).
-- BeQuite memory lives in \`.bequite/\`.
+- \`/bq-suggest "<situation>"\` for workflow advice — recommends commands + mode.
+- \`/bq-job-finder\` or \`/bq-make-money\` for opportunity discovery (Claude searches; supports \`worldwide_hidden=true\`).
+- BeQuite memory lives in \`.bequite/\` (state / logs / plans / tasks / audits / principles / uiux / jobs / money).
 - BeQuite commands live in \`.claude/commands/bequite.md\` + \`.claude/commands/bq-*.md\`.
 - BeQuite skills live in \`.claude/skills/bequite-*/\`.
 
@@ -181,6 +202,8 @@ This project uses **BeQuite** — a lightweight Claude Code skill pack.
 - \`/bq-now\` — one-line status
 - \`/bq-help\` — full reference (also at \`commands.md\`)
 - \`/bq-auto [intent] "task"\` — scoped autonomous mode
+- \`/bq-suggest "<situation>"\` — workflow advisor
+- \`/bq-job-finder\` / \`/bq-make-money\` — opportunity discovery (Claude searches; \`worldwide_hidden=true\` mode available)
 
 See \`.bequite/\` for memory + state. Named tools are EXAMPLES — see \`.bequite/principles/TOOL_NEUTRALITY.md\`.
 
@@ -216,7 +239,13 @@ echo "    /bq-auto fix \"..\"     scoped fix mini-cycle"
 echo "    /bq-auto uiux variants=5 \"..\"   generate 5 UI directions"
 echo "    /bq-live-edit \"..\"               section-by-section frontend edits"
 echo
-echo "  Memory:        .bequite/"
+echo "  $(cyan "Opportunity and Workflows (alpha.8):")"
+echo "    /bq-suggest \"<situation>\"        workflow advisor + mode recommendation"
+echo "    /bq-job-finder                   real work opportunities (Claude searches)"
+echo "    /bq-make-money                   earning opportunities + 10 tracks"
+echo "      worldwide_hidden=true          search beyond famous English platforms"
+echo
+echo "  Memory:        .bequite/ (state / logs / plans / tasks / audits / uiux / jobs / money)"
 echo "  Commands:      .claude/commands/"
 echo "  Skills:        .claude/skills/"
 echo "  Reference:     commands.md (repo root) — full command catalog"

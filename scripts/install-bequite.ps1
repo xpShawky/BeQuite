@@ -32,7 +32,7 @@ param(
 )
 
 $ErrorActionPreference = "Continue"
-$BEQUITE_VERSION = "v3.0.0-alpha.5"
+$BEQUITE_VERSION = "v3.0.0-alpha.8"
 
 function Write-Section($text) {
   Write-Host ""
@@ -100,7 +100,7 @@ if ($FromLocal -ne "") {
 
 # --- 3. Copy .claude/commands/ ---
 
-Write-Section "Installing .claude/commands/ (37 slash commands)"
+Write-Section "Installing .claude/commands/ (42 slash commands)"
 $SRC_CMD = Join-Path $SOURCE ".claude\commands"
 if (-not (Test-Path $SRC_CMD)) {
   Exit-Fatal "Source missing $SRC_CMD — is this a valid BeQuite repo?"
@@ -112,7 +112,7 @@ Write-Host "  $count slash commands installed" -ForegroundColor Green
 
 # --- 4. Copy .claude/skills/bequite-* (15 specialist skills) ---
 
-Write-Section "Installing .claude/skills/bequite-* (15 specialist skills)"
+Write-Section "Installing .claude/skills/bequite-* (18 specialist skills)"
 $SRC_SKILLS = Join-Path $SOURCE ".claude\skills"
 if (-not (Test-Path $SRC_SKILLS)) {
   Exit-Fatal "Source missing $SRC_SKILLS"
@@ -124,9 +124,9 @@ Get-ChildItem $SRC_SKILLS -Directory -Filter "bequite-*" | ForEach-Object {
   Write-Host "  + $skillName"
 }
 
-# --- 5. Create .bequite/ scaffold (alpha.5: principles + uiux + new state files) ---
+# --- 5. Create .bequite/ scaffold (alpha.5-alpha.8: principles + uiux + jobs + money + new state files) ---
 
-Write-Section "Scaffolding .bequite/ memory (alpha.5: principles, uiux, mistake memory, assumptions)"
+Write-Section "Scaffolding .bequite/ memory (alpha.5-8: principles, uiux, jobs, money, mistake memory, assumptions)"
 
 $SCAFFOLD = @(
   ".bequite\state",
@@ -140,7 +140,9 @@ $SCAFFOLD = @(
   ".bequite\principles",
   ".bequite\decisions",
   ".bequite\uiux\screenshots",
-  ".bequite\uiux\archive"
+  ".bequite\uiux\archive",
+  ".bequite\jobs",
+  ".bequite\money"
 )
 foreach ($dir in $SCAFFOLD) {
   if (-not (Test-Path $dir)) {
@@ -149,15 +151,30 @@ foreach ($dir in $SCAFFOLD) {
 }
 Write-Host "  directory scaffold ready"
 
-# Copy alpha.5 template files into target project
+# Copy alpha.5–alpha.8 template files into target project (preserves existing)
 $TEMPLATES = @{
+  # alpha.3 principles
   ".bequite\principles\TOOL_NEUTRALITY.md" = ".bequite\principles\TOOL_NEUTRALITY.md"
+  # alpha.5 mistake memory + assumptions
   ".bequite\state\MISTAKE_MEMORY.md"      = ".bequite\state\MISTAKE_MEMORY.md"
   ".bequite\state\ASSUMPTIONS.md"          = ".bequite\state\ASSUMPTIONS.md"
+  # alpha.4 UI/UX
   ".bequite\uiux\SECTION_MAP.md"          = ".bequite\uiux\SECTION_MAP.md"
   ".bequite\uiux\LIVE_EDIT_LOG.md"        = ".bequite\uiux\LIVE_EDIT_LOG.md"
   ".bequite\uiux\UIUX_VARIANTS_REPORT.md" = ".bequite\uiux\UIUX_VARIANTS_REPORT.md"
   ".bequite\uiux\selected-variant.md"     = ".bequite\uiux\selected-variant.md"
+  # alpha.8 jobs
+  ".bequite\jobs\JOB_PROFILE.md"          = ".bequite\jobs\JOB_PROFILE.md"
+  ".bequite\jobs\JOB_SEARCH_LOG.md"       = ".bequite\jobs\JOB_SEARCH_LOG.md"
+  ".bequite\jobs\OPPORTUNITIES.md"        = ".bequite\jobs\OPPORTUNITIES.md"
+  ".bequite\jobs\APPLICATION_TRACKER.md"  = ".bequite\jobs\APPLICATION_TRACKER.md"
+  ".bequite\jobs\PITCH_TEMPLATES.md"      = ".bequite\jobs\PITCH_TEMPLATES.md"
+  # alpha.8 money
+  ".bequite\money\MONEY_PROFILE.md"       = ".bequite\money\MONEY_PROFILE.md"
+  ".bequite\money\MONEY_SEARCH_LOG.md"    = ".bequite\money\MONEY_SEARCH_LOG.md"
+  ".bequite\money\OPPORTUNITIES.md"       = ".bequite\money\OPPORTUNITIES.md"
+  ".bequite\money\TRUST_CHECKS.md"        = ".bequite\money\TRUST_CHECKS.md"
+  ".bequite\money\ACTION_PLAN.md"         = ".bequite\money\ACTION_PLAN.md"
 }
 foreach ($pair in $TEMPLATES.GetEnumerator()) {
   $src = Join-Path $SOURCE $pair.Key
@@ -192,12 +209,14 @@ $BQ_MARKER
 
 ## How to use BeQuite here
 
-- Run ``/bequite`` to see the menu.
+- Run ``/bequite`` to see the gate-aware menu.
 - Run ``/bq-now`` for one-line orientation (faster than ``/bequite``).
 - Run ``/bq-help`` for the full command reference (or open ``commands.md``).
 - ``/bq-init`` to formally initialize (creates baseline state files).
 - ``/bq-auto [intent] "task"`` for scoped autonomous mode (17 intents).
-- BeQuite memory lives in ``.bequite/``.
+- ``/bq-suggest "<situation>"`` for workflow advice — recommends commands + mode.
+- ``/bq-job-finder`` or ``/bq-make-money`` for opportunity discovery (Claude searches; supports ``worldwide_hidden=true``).
+- BeQuite memory lives in ``.bequite/`` (state / logs / plans / tasks / audits / principles / uiux / jobs / money).
 - BeQuite commands live in ``.claude/commands/bequite.md`` + ``.claude/commands/bq-*.md``.
 - BeQuite skills live in ``.claude/skills/bequite-*/``.
 
@@ -230,6 +249,8 @@ This project uses **BeQuite** — a lightweight Claude Code skill pack.
 - ``/bq-now`` — one-line status
 - ``/bq-help`` — full reference (also at ``commands.md``)
 - ``/bq-auto [intent] "task"`` — scoped autonomous mode
+- ``/bq-suggest "<situation>"`` — workflow advisor
+- ``/bq-job-finder`` / ``/bq-make-money`` — opportunity discovery (Claude searches; ``worldwide_hidden=true`` mode available)
 
 See ``.bequite/`` for memory + state. Named tools are EXAMPLES — see ``.bequite/principles/TOOL_NEUTRALITY.md``.
 
@@ -265,7 +286,13 @@ Write-Host "    /bq-auto fix ""..""    scoped fix mini-cycle" -ForegroundColor W
 Write-Host "    /bq-auto uiux variants=5 ""..""   generate 5 UI directions" -ForegroundColor White
 Write-Host "    /bq-live-edit ""..""              section-by-section frontend edits" -ForegroundColor White
 Write-Host ""
-Write-Host "  Memory:        .bequite/" -ForegroundColor Gray
+Write-Host "  Opportunity and Workflows (alpha.8):" -ForegroundColor Cyan
+Write-Host "    /bq-suggest ""<situation>""       workflow advisor + mode recommendation" -ForegroundColor White
+Write-Host "    /bq-job-finder                   real work opportunities (Claude searches)" -ForegroundColor White
+Write-Host "    /bq-make-money                   earning opportunities + 10 tracks" -ForegroundColor White
+Write-Host "      worldwide_hidden=true          search beyond famous English platforms" -ForegroundColor Gray
+Write-Host ""
+Write-Host "  Memory:        .bequite/ (state / logs / plans / tasks / audits / uiux / jobs / money)" -ForegroundColor Gray
 Write-Host "  Commands:      .claude/commands/" -ForegroundColor Gray
 Write-Host "  Skills:        .claude/skills/" -ForegroundColor Gray
 Write-Host "  Reference:     commands.md (repo root) — full command catalog" -ForegroundColor Gray

@@ -6,12 +6,30 @@ Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANG
 
 ---
 
-## [Unreleased — alpha.9]
+## [Unreleased — alpha.10]
 
-- Live verification of `/bequite` against fresh real-world projects (user-action)
-- Installer updated to copy `.bequite/jobs/` + `.bequite/money/` templates into target projects
-- Architecture docs expanded from summaries to full reference depth
-- `/bq-help` extended with full standardized fields (currently has alignment notice + block at end)
+- Live verification of `/bequite` against fresh real-world projects (user-action — installer is now feature-complete)
+- Architecture docs expanded from concise summaries to full reference depth
+- `/bq-help` extended with full standardized fields (currently has alignment notice + brief block)
+
+---
+
+## [v3.0.0-alpha.9] — 2026-05-12
+
+### Added
+- Installer scripts (PowerShell + bash) now copy alpha.8 opportunity-memory templates into target projects on `/bq-init`:
+  - `.bequite/jobs/` — JOB_PROFILE, JOB_SEARCH_LOG, OPPORTUNITIES, APPLICATION_TRACKER, PITCH_TEMPLATES
+  - `.bequite/money/` — MONEY_PROFILE, MONEY_SEARCH_LOG, OPPORTUNITIES, TRUST_CHECKS, ACTION_PLAN
+- Directory scaffold extended: `.bequite/jobs/`, `.bequite/money/`
+- Final install banner includes "Opportunity and Workflows (alpha.8)" section listing `/bq-suggest`, `/bq-job-finder`, `/bq-make-money` + the `worldwide_hidden=true` flag
+
+### Changed
+- Installer version messaging: `v3.0.0-alpha.5` → `v3.0.0-alpha.8`
+- Installer banner counts: "37 slash commands" → "42"; "15 specialist skills" → "18"
+- CLAUDE.md template (created on first install) now references the 3 new opportunity commands
+
+### Effect
+New BeQuite installs match alpha.8 functionality immediately — no manual file copying.
 
 ---
 

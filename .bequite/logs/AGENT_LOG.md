@@ -2,6 +2,45 @@
 
 Append-only chronicle of every BeQuite command run. Newest at top.
 
+## 2026-05-12 — alpha.9 ship: installer copies alpha.8 jobs + money templates
+
+**Action:** Installer scripts updated to carry the alpha.8 memory templates into target projects on `/bq-init`. Without this, new BeQuite installs were missing the 10 opportunity-template files even though the commands referenced them.
+
+**Updates to `scripts/install-bequite.ps1` + `scripts/install-bequite.sh`:**
+
+- Bumped `BEQUITE_VERSION` messaging: `v3.0.0-alpha.5` → `v3.0.0-alpha.8`
+- Banner counts: "37 slash commands" → "42"; "15 specialist skills" → "18"
+- Added directory scaffold: `.bequite/jobs/`, `.bequite/money/`
+- Added 10 new `copy_template` calls (5 jobs + 5 money templates)
+- CLAUDE.md template additions: surface `/bq-suggest`, `/bq-job-finder`, `/bq-make-money` + the `worldwide_hidden=true` flag
+- Final install banner now shows "Opportunity and Workflows (alpha.8)" section with the 3 new commands
+
+**Templates now installed automatically into target projects:**
+
+| Category | File |
+|---|---|
+| alpha.3 | `.bequite/principles/TOOL_NEUTRALITY.md` |
+| alpha.5 | `.bequite/state/MISTAKE_MEMORY.md`, `ASSUMPTIONS.md` |
+| alpha.4 | `.bequite/uiux/SECTION_MAP.md`, `LIVE_EDIT_LOG.md`, `UIUX_VARIANTS_REPORT.md`, `selected-variant.md` |
+| alpha.5 | `commands.md` at project root |
+| **alpha.8 — jobs** | `.bequite/jobs/JOB_PROFILE.md`, `JOB_SEARCH_LOG.md`, `OPPORTUNITIES.md`, `APPLICATION_TRACKER.md`, `PITCH_TEMPLATES.md` |
+| **alpha.8 — money** | `.bequite/money/MONEY_PROFILE.md`, `MONEY_SEARCH_LOG.md`, `OPPORTUNITIES.md`, `TRUST_CHECKS.md`, `ACTION_PLAN.md` |
+
+All `copy_template` calls preserve existing files (don't overwrite — the user's intake/log/results stay intact across re-installs).
+
+**Effect:** new BeQuite installs now match alpha.8 functionality immediately — no manual file copying required.
+
+**Article VI honest reporting:**
+- Installer logic verified by code inspection. Not yet end-to-end tested by running `irm | iex` from a fresh repo. The first user install on alpha.9+ will be the real verification.
+- Version string is `v3.0.0-alpha.8` in messaging (templates ARE alpha.8; the installer code itself can be thought of as alpha.9 since it adds the new copy operations).
+
+**Pending (alpha.10):**
+- Live verification of `/bequite` against fresh real-world projects (user action — installer is now feature-complete)
+- `/bq-help` extended with full standardized fields (currently has alignment notice + brief block)
+- Architecture docs expanded from concise summaries to full reference depth
+
+---
+
 ## 2026-05-12 — alpha.8 hotfix: clarify Claude-side search + add "How to use" section to README
 
 **Action:** User clarified that:

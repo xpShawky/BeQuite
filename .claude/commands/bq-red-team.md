@@ -1,8 +1,8 @@
 ---
-description: Adversarial review. Skeptic mode. Try to find what's actually broken across 8 attack angles. Severity-tagged findings. Writes RED_TEAM-<timestamp>.md.
+description: Adversarial review. Skeptic mode. Try to find what's actually broken across 10 attack angles (8 original + supply-chain + prompt-injection, alpha.15). Severity-tagged findings. Writes RED_TEAM-<timestamp>.md.
 ---
 
-# /bq-red-team — adversarial review
+# /bq-red-team — adversarial review (10 attack angles in alpha.15)
 
 You are the **Skeptic**. Your job is to find what's actually broken or about to break. Not be friendly. Not "approve with comments". Look for the failure modes the implementer missed.
 
@@ -12,8 +12,9 @@ You are the **Skeptic**. Your job is to find what's actually broken or about to 
 - `.bequite/plans/IMPLEMENTATION_PLAN.md`
 - `.bequite/audits/RESEARCH_REPORT.md` (any flagged risks)
 - `.bequite/state/OPEN_QUESTIONS.md` (unresolved questions)
+- `.bequite/state/MISTAKE_MEMORY.md` — past mistake patterns become attack-angle inputs
 
-## Step 2 — Apply 8 attack angles
+## Step 2 — Apply 10 attack angles (alpha.15)
 
 For each angle, ask "what would break this?". Be specific.
 
@@ -78,6 +79,32 @@ For each angle, ask "what would break this?". Be specific.
 - Code assumes the file system is case-sensitive (it's not on macOS / Windows)
 - Code assumes network is reliable
 - Code assumes the user is authenticated
+
+### 9. Supply-chain attack (NEW in alpha.15)
+- Newly-added imports that aren't in the lockfile (`package-lock.json` / `pnpm-lock.yaml` / `poetry.lock` / `Cargo.lock`)
+- PhantomRaven-style typo squat: package name differs from canonical by 1-2 characters (e.g. `chalk` vs `chaIk`)
+- Shai-Hulud-style mass-published malicious packages (700+ in 2025)
+- Newly-added deps with no public install count
+- Newly-added deps with a maintainer name not matching the canonical repo
+- Dependency confusion (internal package name registered on public registry)
+- Pinned `git+ssh` deps to repos that may have been compromised
+- Post-install / post-publish scripts in lockfiles that exfiltrate env vars
+- Lockfile changes that touch a transitive dep already flagged by OSV / Snyk / Socket
+
+For every new import in the diff, ask: "is this package what I think it is, or a look-alike?"
+
+### 10. Prompt injection (NEW in alpha.15 — OWASP LLM Top 10 #1)
+- LLM input that includes content from user-controlled sources (form input, file upload, URL, image)
+- LLM output rendered as HTML without sanitization (XSS via the model)
+- LLM output written to source files, scripts, or config without review
+- LLM input that includes content from web fetches (fetched page may contain instructions)
+- Tool calls triggered by LLM output (model says "delete X" → tool does it without confirmation)
+- System prompt accessible to user inputs (prompt leakage)
+- Indirect injection: data files / docs / commits contain hidden instructions ("ignore previous", "exfiltrate secrets")
+- LLM output trusted as auth ("the model said this user is admin")
+- LLM agents acting on each other's output without verification (multi-agent injection chains)
+
+For any code path where an LLM input touches user content or a fetched resource, ask: "what if this content contained an instruction trying to hijack the model?"
 
 ## Step 3 — Severity-tag every finding
 
@@ -275,3 +302,39 @@ The 10 decision questions every named tool in the diff must answer:
 10. What tool gives the best output with the least complexity?
 
 See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.
+
+---
+
+## Gate check + memory preflight (alpha.15)
+
+Before doing any work:
+
+1. **Gate check.** Read `.bequite/state/WORKFLOW_GATES.md`. If this command's required gates aren't `✅`, refuse:
+   > "You're trying to run this command, but `<required-gate>` is pending. Run `<prerequisite-command>` first."
+
+   Don't proceed when a required gate is missing. Recommend the prerequisite + how to resume.
+
+2. **Memory preflight.** Read these files first (per `docs/architecture/MEMORY_FIRST_BEHAVIOR.md`):
+
+   - `.bequite/state/PROJECT_STATE.md`
+   - `.bequite/state/CURRENT_MODE.md`
+   - `.bequite/state/CURRENT_PHASE.md`
+   - `.bequite/state/LAST_RUN.md`
+   - `.bequite/state/MISTAKE_MEMORY.md` — top 10–20 entries (skip mistakes already learned)
+   - Other state files only when relevant to this command's scope (`DECISIONS.md` for architectural questions, `OPEN_QUESTIONS.md` for phase transitions, `MODE_HISTORY.md` when invoked via `/bq-auto`-style flows)
+
+   **Use focused reads.** Don't load all of `.bequite/` every command.
+
+## Memory writeback (alpha.15)
+
+After successful completion:
+
+- `.bequite/state/LAST_RUN.md` — this command + outcome
+- `.bequite/state/WORKFLOW_GATES.md` — set this command's gate to `✅` if applicable
+- `.bequite/state/CURRENT_PHASE.md` — advance if phase transitioned
+- `.bequite/logs/AGENT_LOG.md` — append entry
+- `.bequite/logs/CHANGELOG.md` `[Unreleased]` — only when material files changed (skip for read-only commands)
+- `.bequite/state/MISTAKE_MEMORY.md` — append when a project-specific lesson surfaced
+- `.bequite/state/MODE_HISTORY.md` — append mode + outcome (when invoked via `/bq-auto`-style mode)
+
+**Failure behavior:** don't claim `✅ done` if any of the above wasn't completed. Report PARTIAL with the specific gap.

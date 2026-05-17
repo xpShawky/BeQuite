@@ -2,6 +2,73 @@
 
 Append-only chronicle of every BeQuite command run. Newest at top.
 
+## 2026-05-17 — alpha.15 ship: mechanical-repair release (audit findings implemented)
+
+**Action:** User invoked `/bq-auto deep "implement the alpha.15 mechanical repairs per the audit findings"`. Per /bq-auto discipline, continued autonomously — no hard gates tripped.
+
+**No new features.** This implements the deferred items from alpha.14's audit reports.
+
+**Files modified / created (~50 files):**
+
+Commands (16 updated with memory-first + gate-check + writeback):
+- bq-assign, bq-audit, bq-changelog, bq-clarify, bq-discover, bq-doctor, bq-handoff, bq-implement, bq-memory, bq-recover, bq-red-team, bq-release, bq-review, bq-scope, bq-test, bq-verify
+
+Skills (19 updated with When NOT to use + Quality gate sections):
+- 15 received both: backend-architect, database-architect, devops-cloud, frontend-quality, job-finder, make-money, presentation-builder, problem-solver, product-strategist, project-architect, release-gate, scraping-automation, security-reviewer, testing-gate, ux-ui-designer
+- 1 received only When NOT to use: workflow-advisor
+- 3 received only Quality gate: live-edit, researcher, multi-model-planning
+
+Red-team expansion (alpha.15 — 8 → 10 angles):
+- New angle 9: Supply-chain attack (PhantomRaven / Shai-Hulud / dependency confusion)
+- New angle 10: Prompt injection (OWASP LLM Top 10 #1)
+- bq-red-team.md description + body updated
+
+Doc cleanup (stale heavy-direction docs moved to docs/legacy/):
+- 9 top-level docs/*.md → docs/legacy/
+- docs/audits/*.md → docs/legacy/audits/
+- docs/RELEASES/*.md → docs/legacy/RELEASES/
+- docs/merge/*.md → docs/legacy/merge/
+- empty docs/planning_runs/ → docs/legacy/planning_runs/
+- New docs/legacy/README.md explains archive
+
+Updated docs:
+- docs/architecture/LIGHTWEIGHT_SKILL_PACK_ARCHITECTURE.md (counts refreshed)
+- docs/runbooks/USING_BEQUITE_COMMANDS.md (walkthroughs for 4 modes + Presentation + bq-auto + feature-addition rule)
+- bequite-workflow-advisor SKILL.md (39 → 44 commands, 15 → 21 skills, 3 → 4 modes)
+
+New memory file:
+- .bequite/MEMORY_INDEX.md (orientation doc)
+
+Version + log updates:
+- .bequite/state/BEQUITE_VERSION.md (alpha.15)
+- docs/changelogs/CHANGELOG.md (alpha.15 release + alpha.16 unreleased)
+
+**Tool-neutral:**
+- No new dependencies
+- No Studio reintroduced
+- No heavy CLI added
+- Lightweight direction preserved
+
+**Mode tracking:**
+- Mode: deep (audit findings → focused mechanical implementation)
+- Outcome: SUCCESS — all priority deferred items from alpha.14 audit landed
+- Approx cost: medium-high (~50 files touched)
+- Tests: N/A (no executable code change; verification was per-file completeness check)
+
+**Article VI honest reporting — what's NOT done:**
+- 20 commands still lack the alpha.6 standardized-fields template (mechanical batch; deferred to alpha.16)
+- Skill description: YAML field length audit (deferred to alpha.16)
+- Tool-neutrality reminder backport to alpha.2-era skills (deferred to alpha.16)
+- Live user verification of `/bq-presentation` for a real deck (user action)
+- Live cross-session delegate flow on a real feature (user action)
+- ADR for Claude Code hooks machine-enforcement (alpha.16+ draft)
+
+**Next:**
+- git commit + push as alpha.15
+- alpha.16 pending: standardized-fields backport, skill desc audit, tool-neutrality block backport, hooks ADR
+
+---
+
 ## 2026-05-17 — alpha.14 ship: discipline-restoration audit (BeQuite eats its own food)
 
 **Action:** User invoked `/bq-auto deep` for a full consistency, workflow, research, command, skill, docs, and memory repair pass. Trigger: alpha.13's Presentation Builder shipped without going through the full BeQuite workflow.

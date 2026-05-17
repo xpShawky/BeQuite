@@ -209,3 +209,19 @@ Use it sparingly. The multi-model overhead is ~10 minutes per cycle.
 - **Showing Model B's answer to Model A and asking "is this right?"** That's Debate mode, not Parallel. Mode it correctly.
 - **Picking the "more confident" response.** Confidence is not correctness. Use the tie-break order.
 - **Merging by averaging.** Some choices are binary. Pick one + cite why.
+
+---
+
+## Quality gate (alpha.15)
+
+Before claiming this skill's work complete:
+
+- [ ] Artifacts produced match the skill's expected outputs
+- [ ] All discipline rules in this skill were respected
+- [ ] No banned weasel words in any completion claim
+- [ ] Any tool / library added has a decision section per `.bequite/principles/TOOL_NEUTRALITY.md`
+- [ ] Acceptance criteria for the invoking command's task are met
+- [ ] `.bequite/state/MISTAKE_MEMORY.md` updated when a project-specific lesson surfaced
+- [ ] `.bequite/logs/AGENT_LOG.md` entry appended
+
+If any item fails, do not claim done — report PARTIAL with the specific gap.

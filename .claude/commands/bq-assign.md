@@ -152,3 +152,39 @@ Next: /bq-implement — pick off T-1.1
 ## Usual next command
 
 `/bq-implement` — pick off the first task
+
+---
+
+## Gate check + memory preflight (alpha.15)
+
+Before doing any work:
+
+1. **Gate check.** Read `.bequite/state/WORKFLOW_GATES.md`. If this command's required gates aren't `✅`, refuse:
+   > "You're trying to run this command, but `<required-gate>` is pending. Run `<prerequisite-command>` first."
+
+   Don't proceed when a required gate is missing. Recommend the prerequisite + how to resume.
+
+2. **Memory preflight.** Read these files first (per `docs/architecture/MEMORY_FIRST_BEHAVIOR.md`):
+
+   - `.bequite/state/PROJECT_STATE.md`
+   - `.bequite/state/CURRENT_MODE.md`
+   - `.bequite/state/CURRENT_PHASE.md`
+   - `.bequite/state/LAST_RUN.md`
+   - `.bequite/state/MISTAKE_MEMORY.md` — top 10–20 entries (skip mistakes already learned)
+   - Other state files only when relevant to this command's scope (`DECISIONS.md` for architectural questions, `OPEN_QUESTIONS.md` for phase transitions, `MODE_HISTORY.md` when invoked via `/bq-auto`-style flows)
+
+   **Use focused reads.** Don't load all of `.bequite/` every command.
+
+## Memory writeback (alpha.15)
+
+After successful completion:
+
+- `.bequite/state/LAST_RUN.md` — this command + outcome
+- `.bequite/state/WORKFLOW_GATES.md` — set this command's gate to `✅` if applicable
+- `.bequite/state/CURRENT_PHASE.md` — advance if phase transitioned
+- `.bequite/logs/AGENT_LOG.md` — append entry
+- `.bequite/logs/CHANGELOG.md` `[Unreleased]` — only when material files changed (skip for read-only commands)
+- `.bequite/state/MISTAKE_MEMORY.md` — append when a project-specific lesson surfaced
+- `.bequite/state/MODE_HISTORY.md` — append mode + outcome (when invoked via `/bq-auto`-style mode)
+
+**Failure behavior:** don't claim `✅ done` if any of the above wasn't completed. Report PARTIAL with the specific gap.

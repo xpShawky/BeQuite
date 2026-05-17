@@ -429,3 +429,158 @@ You: /bq-live-edit "Fix mobile layout on hero"
 **Lightweight.** No heavy Studio. No separate app. No Figma clone. **Does NOT auto-install Playwright** — uses code inspection if browser automation isn't already available.
 
 Full strategy: `docs/architecture/LIVE_EDIT_STRATEGY.md`.
+
+---
+
+## Walkthroughs added in alpha.15
+
+### Walkthrough — Operating modes (alpha.12)
+
+BeQuite has **4 composable operating modes**: Deep / Fast / Token Saver (alias `lean`) / Delegate. All 17 hard human gates still apply regardless of mode.
+
+#### Deep Mode — quality-critical work
+
+```
+/bq-auto deep "Build a SaaS dashboard for clinic booking"
+/bq-research deep "Stack, security, deployment for medical SaaS in MENA region"
+/bq-feature deep "Add booking automation module"
+```
+
+Full 11-dim research, multi-plan prompted, red-team mandatory at phase transitions, searches beyond obvious sources (Reddit / HN / Product Hunt / niche forums / non-English markets). Use for production, regulated work, new builds, security-critical changes.
+
+#### Fast Mode — small scoped work
+
+```
+/bq-auto fast "Fix the dashboard text contrast"
+/bq-fix fast "Install error on /bq-init"
+/bq-feature fast "Add export button to reports table"
+```
+
+Shortcuts discovery if recent DISCOVERY_REPORT exists; 3-dim research (stack + security + scale); reuses memory; skips multi-plan + red-team. **Still tests + verifies + logs.** Not low-quality mode. Use for trivial scoped fixes, trusted stack, prototypes.
+
+#### Token Saver Mode (alias `lean`)
+
+```
+/bq-auto token-saver "Update one config file"
+/bq-auto lean "Same as above; shorter alias"
+/bq-review token-saver "Review only current diff"
+```
+
+Reads core memory only; summaries before full files; reuses prior research; targeted greps over broad reads; compact reports. **Not the same as Fast.** Fast optimizes speed; Token Saver optimizes token cost. **Token-saving, NOT token-free.**
+
+#### Delegate Mode — Architect Delegate pattern
+
+Two-session workflow. Strong model architects + reviews; cheap model implements. 40–70% cost savings on large features.
+
+Session 1 (strong model — Opus / GPT-5 class):
+
+```
+/bq-auto deep delegate "Build the e-commerce checkout module"
+```
+
+Writes `.bequite/tasks/DELEGATE_TASKS.md`, `DELEGATE_INSTRUCTIONS.md`, `DELEGATE_ACCEPTANCE_CRITERIA.md`, `DELEGATE_TEST_PLAN.md`.
+
+Session 2 (cheap model — Sonnet / smaller, separate Claude Code session):
+
+```
+/bq-implement delegate
+```
+
+Executes per the task pack — no architectural decisions.
+
+Session 3 (strong model — back):
+
+```
+/bq-review delegate
+```
+
+Writes `.bequite/audits/DELEGATE_REVIEW_REPORT.md` with per-task verdicts (✅ APPROVED / ⚠ APPROVED-WITH-COMMENTS / ❌ REJECTED). Strong model fixes or re-instructs.
+
+Use for large features with clear shape + precise acceptance criteria. Don't use for tiny tasks or exploratory work.
+
+#### Mode composition
+
+```
+/bq-auto fast token-saver "Quick small fix with low context"
+/bq-auto deep token-saver "Thorough planning with compact output"
+/bq-auto deep delegate "Strong model architects new feature"
+/bq-auto fast delegate "Cheap impl of well-understood feature"
+```
+
+Conflicts (`fast` + `deep`): agent asks one question and defaults sanely. Mode tracking: every `/bq-auto` run appends to `.bequite/state/MODE_HISTORY.md`.
+
+---
+
+### Walkthrough — `/bq-presentation` (alpha.13)
+
+Premium PPTX or HTML presentation builder. Natural language; quotes optional.
+
+Common patterns:
+
+```
+/bq-presentation Create a lecture about infection control for doctors, 30 minutes, premium style
+
+/bq-presentation format=pptx variants=3 topic=infection-control audience=doctors
+
+/bq-presentation [format=both, variants=3, style=cinematic, audience=tech-executives] Create a keynote about AI agents
+
+/bq-presentation strict=true source=folder ./course-materials Turn this material into slides
+
+/bq-presentation creative=true Create a premium keynote-style deck about study skills
+
+/bq-auto presentation format=both variants=5 deep "Create a premium lecture about AI agents"
+```
+
+What runs:
+
+1. Parses natural language + options (`format` / `variants` / `source` / `strict` / `creative` / `audience` / `style` / `duration` / `language` / `brand`)
+2. Reads core memory + source files
+3. Writes 9 artifacts to `.bequite/presentations/` (BRIEF / OUTLINE / SLIDE_PLAN / DESIGN_BRIEF / MOTION_PLAN / SPEAKER_NOTES / REFERENCES / VARIANTS_REPORT / EXPORT_LOG)
+4. When `variants>1`: pauses for user winner selection (hard human gate)
+5. When user requests implementation: renders PPTX or HTML (tool-neutral — decision section required)
+
+Strict vs Creative:
+
+- `strict=true` — PDF / Word / scientific source preserved; don't invent facts; every claim traces to `REFERENCES.md`
+- `creative=true` — Topic-only / keynote / marketing; may add hooks + story arcs; assumptions explicitly marked
+
+PPTX vs HTML:
+
+- PPTX — Institutional / lecture / offline / Office users / speaker recording
+- HTML — Cinematic / responsive / product demo / interactive
+- both — Same content; two renders for different audiences
+
+Full reference: `.claude/commands/bq-presentation.md` and `.claude/skills/bequite-presentation-builder/SKILL.md`.
+
+---
+
+### Walkthrough — `/bq-auto` for everything (the umbrella)
+
+`/bq-auto` is the most powerful command. Dispatches to the right workflow based on intent.
+
+```
+/bq-auto new "Build a SaaS bookings dashboard for clinics"
+/bq-auto existing "Audit this repo for security gaps"
+/bq-auto feature "Add user-export-to-CSV"
+/bq-auto fix "Hidden text on /pricing"
+/bq-auto uiux variants=5 "Redesign the marketing site"
+/bq-auto security "Run security review + fix OWASP-A03 findings"
+/bq-auto deploy "Plan VPS deployment with safety gates"
+/bq-auto presentation format=both variants=3 "Premium lecture about AI agents"
+```
+
+Auto mode continues by default. Pauses only at the 17 hard human gates (destructive ops, DB migrations, prod / VPS / SSL, secrets, paid services, scope contradictions, variant winner selection, cost ceilings, repeated failures, etc.).
+
+Full strategy: `docs/architecture/AUTO_MODE_STRATEGY.md`.
+
+---
+
+### The global feature-addition rule (alpha.14)
+
+When working on BeQuite itself (or any project where BeQuite acts as the meta-system), every new feature must travel through the 15-step workflow defined in `docs/architecture/WORKFLOW_GATES.md` § "Feature-addition workflow (alpha.14 — global rule)":
+
+1. Memory entry → 2. Research → 3. Scope → 4. Plan → 5. Tasks → 6. Implement → 7-13. Docs + logs + changelog → 14. `/bq-verify` → 15. Version bump
+
+Even when the user provides a detailed spec inline, the agent must not shortcut to implementation. Exemptions: hotfixes + doc-only changes + skill additions activated only from existing commands can skip steps 2-5.
+
+See `.bequite/audits/FEATURE_WORKFLOW_AUDIT.md` for the alpha.13 precedent that motivated this rule.

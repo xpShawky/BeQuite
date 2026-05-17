@@ -16,7 +16,7 @@ Invoked by `/bq-suggest`.
 
 ## What this skill knows
 
-### All 39 commands (organized by phase)
+### All 44 commands + 1 deprecated alias (organized by phase, alpha.15)
 
 | Phase | Commands |
 |---|---|
@@ -33,9 +33,9 @@ Invoked by `/bq-suggest`.
 | Opportunities | `/bq-job-finder`, `/bq-make-money` |
 | Creative + Content (alpha.13) | `/bq-presentation` |
 
-### All 15 specialist skills
+### All 21 specialist skills (alpha.15)
 
-researcher, product-strategist, ux-ui-designer, frontend-quality, backend-architect, database-architect, security-reviewer, devops-cloud, testing-gate, release-gate, scraping-automation, problem-solver, multi-model-planning, project-architect, live-edit
+researcher, product-strategist, ux-ui-designer, frontend-quality, backend-architect, database-architect, security-reviewer, devops-cloud, testing-gate, release-gate, scraping-automation, problem-solver, multi-model-planning, project-architect, live-edit, **workflow-advisor** (alpha.8), **job-finder** (alpha.8), **make-money** (alpha.8), **updater** (alpha.10), **delegate-planner** (alpha.12), **presentation-builder** (alpha.13)
 
 ### The 23 workflow gates
 
@@ -54,9 +54,9 @@ New Project · Existing Audit · Add Feature · Fix Problem · Research Only · 
 
 1. Destructive file deletion · 2. DB migration on shared/prod · 3. Production server change · 4. VPS/Nginx/SSL · 5. Paid service signup · 6. Secret rotation · 7. Auth/security model · 8. Architecture change · 9. Deleting old impl · 10. Scope contradiction · 11. Manual-approval flag · 12. Cost ceiling · 13. Wall-clock ceiling · 14. Banned weasel words · 15. 3 consecutive failures · 16. UI variant winner selection · 17. Release git push/tag
 
-### The mode flags (/bq-auto)
+### The mode flags (/bq-auto) — alpha.12 expanded to 4 modes
 
-`--mode fast` · `--mode deep` · `--mode token-saver` · (no flag — balanced default)
+`--mode fast` · `--mode deep` · `--mode token-saver` (alias: `lean`) · `--mode delegate` · (no flag — balanced default) — composable
 
 ### The 17 intent types (/bq-auto)
 
@@ -246,3 +246,14 @@ The advisor produces structured recommendation:
 - `docs/architecture/AUTO_MODE_STRATEGY.md` — when scoped auto helps
 - `docs/architecture/WORKFLOW_GATES.md` — gate map
 - `docs/specs/COMMAND_CATALOG.md` — terse machine-readable catalog
+
+---
+
+## When NOT to use this skill (alpha.15)
+
+- A specific command is already obviously the right one (just run it)
+- Mid-flow inside `/bq-auto` (it's already gate-aware + routes itself)
+- Asking for one-line orientation — use `/bq-now`
+- Looking at gate state — use `/bequite`
+
+The advisor exists to bridge user-situation → BeQuite-surface. If the surface is already obvious, skip the advisor and act.

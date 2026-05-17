@@ -204,3 +204,29 @@ Write a decision section before adopting (Problem / Options / Sources / Best opt
 **Do not auto-install scraping tools.** No scraping dep added by default. The skill stays dormant unless the project explicitly needs scraping/automation.
 
 See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.
+
+---
+
+## When NOT to use this skill (alpha.15)
+
+- The task at hand doesn't touch this skill's domain — defer to the right specialist skill
+- A faster / simpler skill covers the same need — pick the simpler one and document why
+- The skill's core invariants don't apply to the current project (e.g. regulated-mode rules on a prototype)
+- The command that would activate this skill is already running with another specialist that fits better
+
+If unsure, surface the trade-off in the command's output and let the user decide.
+
+## Quality gate (alpha.15)
+
+Before claiming this skill's work complete:
+
+- [ ] Artifacts produced match the skill's expected outputs
+- [ ] All discipline rules in this skill were respected (not just glanced at)
+- [ ] No banned weasel words in any completion claim — `should`, `probably`, `seems to`, `appears to`, `might`, `hopefully`, `in theory`
+- [ ] Any tool / library / framework added during this run has a decision section per `.bequite/principles/TOOL_NEUTRALITY.md`
+- [ ] Acceptance criteria for the invoking command's task are met (or honestly reported as PARTIAL / FAIL)
+- [ ] `.bequite/state/MISTAKE_MEMORY.md` updated when a project-specific lesson surfaced
+- [ ] `.bequite/logs/AGENT_LOG.md` entry appended for the run
+- [ ] Memory state files (LAST_RUN, WORKFLOW_GATES, CURRENT_PHASE) updated when gate state changed
+
+If any item fails, do not claim done — report PARTIAL with the specific gap.

@@ -6,20 +6,83 @@ Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANG
 
 ---
 
-## [Unreleased — alpha.15]
+## [Unreleased — alpha.16]
 
-- Add `## Files to read` memory-first preflight to 18 commands lacking it
-- Add alpha.6 standardized fields section to 20 commands lacking it
-- Add gate-refusal logic to 14 commands lacking explicit refusal
-- Add `## Quality gate` to 18 skills lacking it
-- Add `## When NOT to use` to 16 skills lacking it
-- Add 2 red-team angles: supply-chain (PhantomRaven-style) + prompt-injection (LLM Top 10 #1)
-- USING_BEQUITE_COMMANDS.md walkthrough examples for Presentation Builder + Delegate Mode + each operating mode
-- Move stale heavy-direction docs to `docs/legacy/`
-- Update `LIGHTWEIGHT_SKILL_PACK_ARCHITECTURE.md` counts (44 commands, 21 skills, 4 modes)
-- `MEMORY_INDEX.md` at `.bequite/` root listing every state file with role
-- Skill `description:` YAML length audit (target <300 chars)
+- Skill `description:` YAML length audit (target <300 chars) for Anthropic Skills activation matching
+- Add per-command standardized-fields template (alpha.6 schema) to 20 commands lacking it
+- Backport tool-neutrality reminder blocks to older alpha.2-era skills
 - Optional `/bq-deck` alias for `/bq-presentation` if user demand justifies
+- Live verification on a real project (user action): invoke `/bq-presentation` for an actual deck; invoke `/bq-auto deep delegate` for a real cross-session delegate workflow
+- ADR draft for Claude Code hooks (PreToolUse / Stop) for machine-enforcement of banned weasel words + secret scan + destructive op block
+- Sliding-window archival for `AGENT_LOG.md` (entries older than 90 days → `AGENT_LOG-<date>.md` archive)
+- Cross-reference docs: MULTI_MODEL_PLANNING_STRATEGY.md ↔ delegate; MEMORY_FIRST_BEHAVIOR.md ↔ token-saver; RESEARCH_DEPTH_STRATEGY.md ↔ deep
+
+---
+
+## [v3.0.0-alpha.15] — 2026-05-17
+
+### Mechanical-repair release — audit findings implemented
+
+alpha.14 wrote 7 audit reports identifying mechanical repairs needed. alpha.15 implements them. No new features.
+
+### Added
+
+- **Memory-first preflight + gate check + memory writeback** sections added to 16 commands that lacked them:
+  `/bq-assign`, `/bq-audit`, `/bq-changelog`, `/bq-clarify`, `/bq-discover`, `/bq-doctor`, `/bq-handoff`, `/bq-implement`, `/bq-memory`, `/bq-recover`, `/bq-red-team`, `/bq-release`, `/bq-review`, `/bq-scope`, `/bq-test`, `/bq-verify`
+  Each section instructs the agent to (1) check required gates in `.bequite/state/WORKFLOW_GATES.md` and refuse with prerequisite recommendation if unmet, (2) read core memory files (PROJECT_STATE / CURRENT_MODE / CURRENT_PHASE / LAST_RUN / MISTAKE_MEMORY) with focused reads, (3) writeback to LAST_RUN + WORKFLOW_GATES + CURRENT_PHASE + AGENT_LOG + CHANGELOG + MISTAKE_MEMORY + MODE_HISTORY as relevant.
+- **`## When NOT to use this skill` + `## Quality gate` sections added** to skills lacking them:
+  - Both sections added to 15 skills (backend-architect, database-architect, devops-cloud, frontend-quality, job-finder, make-money, presentation-builder, problem-solver, product-strategist, project-architect, release-gate, scraping-automation, security-reviewer, testing-gate, ux-ui-designer)
+  - Only `When NOT to use` added to workflow-advisor (already had Quality gate)
+  - Only `Quality gate` added to live-edit, researcher, multi-model-planning (already had When NOT to use)
+- **2 new red-team attack angles** added to `/bq-red-team` (now 10 total, up from 8):
+  - **Supply-chain attack** (alpha.15 #9) — PhantomRaven typo-squat, Shai-Hulud mass-publishing, dependency confusion, post-install scripts, lockfile changes touching transitive deps flagged by OSV/Snyk/Socket
+  - **Prompt injection** (alpha.15 #10) — OWASP LLM Top 10 #1 — user-controlled LLM inputs, unsanitized model output rendered as HTML, indirect injection via fetched pages, prompt leakage, agent-to-agent injection chains
+- **`docs/legacy/`** directory created with README explaining the archive
+- **`.bequite/MEMORY_INDEX.md`** created — comprehensive index of every directory under `.bequite/` with file purposes + read-order guidance + maintainer note
+
+### Changed
+
+- **Stale heavy-direction docs moved to `docs/legacy/`** (per `COMMAND_CLUTTER_REVIEW.md`):
+  - 9 top-level: AUTONOMOUS-MODE / DOCTRINE-AUTHORING / HOSTS / HOW-IT-WORKS / INSTALL / MAINTAINER / QUICKSTART / README / SECURITY
+  - `docs/audits/` (6 files) → `docs/legacy/audits/`
+  - `docs/RELEASES/` (2 files) → `docs/legacy/RELEASES/`
+  - `docs/merge/` (1 file) → `docs/legacy/merge/`
+  - Empty `docs/planning_runs/` moved
+- **`docs/architecture/LIGHTWEIGHT_SKILL_PACK_ARCHITECTURE.md` counts refreshed** — was "24 commands / 7 skills"; now "44 active commands + 1 deprecated alias / 21 skills / 4 operating modes / orthogonal workflows". Diagram + memory tree updated.
+- **`docs/runbooks/USING_BEQUITE_COMMANDS.md` extended** with 4 new walkthrough sections:
+  - Operating modes (Deep / Fast / Token Saver / Delegate) — per-mode examples + composition + tracking
+  - `/bq-presentation` — pattern examples + strict-vs-creative + PPTX-vs-HTML decision
+  - `/bq-auto` — umbrella walkthrough showing all intents
+  - Global feature-addition rule (alpha.14 reminder)
+- **`bequite-workflow-advisor` SKILL.md** — internal knowledge bumped from "39 commands / 15 skills / 3 modes" to "44 + 1 deprecated / 21 / 4 composable modes". Added alpha.13 Creative + Content row to the situation routing table.
+- **`/bq-red-team` description** updated to reflect 10 angles (was 8)
+- **`BEQUITE_VERSION.md`** bumped to alpha.15; previous = alpha.14; update history extended
+
+### Deferred to alpha.16 (Article VI honest reporting)
+
+- Per-command standardized-fields template (alpha.6 schema) for the 20 commands still missing it — mechanical batch
+- Skill `description:` YAML length audit (target <300 chars for Anthropic Skills activation matching)
+- Backport tool-neutrality reminder blocks to alpha.2-era skills
+- Live verification by user (real presentation; real delegate cross-session flow)
+- ADR draft for Claude Code hooks (machine-enforcement)
+- Sliding-window AGENT_LOG archival
+- Cross-reference between architecture docs
+
+### Acceptance (alpha.15)
+
+- 16 commands have memory-first + gate-check + writeback ✅
+- 18 skills have `## When NOT to use` ✅ (all 21 now have it)
+- 18 skills have `## Quality gate` ✅ (all 21 now have it)
+- 2 new red-team angles documented + listed in command description ✅
+- Stale docs moved to legacy ✅
+- `LIGHTWEIGHT_SKILL_PACK_ARCHITECTURE.md` refreshed ✅
+- `MEMORY_INDEX.md` created ✅
+- USING_BEQUITE_COMMANDS walkthroughs added ✅
+- workflow-advisor SKILL counts refreshed ✅
+- No new features ✅
+- No Studio reintroduced ✅
+- Lightweight direction preserved ✅
+- alpha.15 tagged + pushed (this commit)
 
 ---
 

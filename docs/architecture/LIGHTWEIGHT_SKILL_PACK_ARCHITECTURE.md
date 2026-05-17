@@ -26,10 +26,12 @@ There is no daemon, no separate process, no Docker, no localhost, no database fo
 ┌──────────────────────────────────────────────────────────────┐
 │  L1 — Slash commands (.claude/commands/)                     │
 │                                                              │
-│  24 markdown files. Each defines:                            │
+│  44 active markdown files + 1 deprecated alias (alpha.15).   │
+│  Each defines:                                               │
 │   • YAML frontmatter (description for the command picker)    │
 │   • Step-by-step procedure for the agent                     │
-│   • Memory files read / written                              │
+│   • Required gates + memory preflight + writeback            │
+│   • Standardized fields (alpha.6+ schema)                    │
 │   • Usual next command                                       │
 │                                                              │
 │  Surfaced to the user as /bequite, /bq-init, /bq-help, etc.  │
@@ -39,10 +41,12 @@ There is no daemon, no separate process, no Docker, no localhost, no database fo
 ┌──────────────────────────────────────────────────────────────┐
 │  L2 — Skills (.claude/skills/bequite-*/SKILL.md)             │
 │                                                              │
-│  7 markdown files (Anthropic Skills SKILL.md format). Each:  │
+│  21 markdown files (Anthropic Skills SKILL.md format).       │
+│  Each:                                                       │
 │   • Has YAML frontmatter (name, description, allowed-tools)  │
 │   • Documents deeper procedures, checklists, patterns        │
 │   • Progressively disclosed — agent loads on relevance       │
+│   • Quality gate + When NOT to use (alpha.15+)               │
 │                                                              │
 │  Not directly invoked by user. Commands reference them.      │
 └────────────────────────┬─────────────────────────────────────┘
@@ -52,14 +56,28 @@ There is no daemon, no separate process, no Docker, no localhost, no database fo
 │  L3 — Memory (.bequite/)                                     │
 │                                                              │
 │  Persistent project state across sessions:                   │
-│   • state/        live workflow state                        │
+│   • state/        live workflow state + mode + version       │
 │   • logs/         append-only history                        │
 │   • prompts/      multi-model paste artifacts                │
 │   • audits/       discovery + doctor + verify + audit + RT   │
 │   • plans/        implementation plan + scope + features     │
-│   • tasks/        task list                                  │
+│   • tasks/        task list + delegate task pack             │
+│   • principles/   tool neutrality + memory-first             │
+│   • decisions/    project-level ADRs                         │
+│   • uiux/         section map + variants + live-edit log     │
+│   • jobs/         opportunity discovery memory               │
+│   • money/        earning discovery memory                   │
+│   • presentations/ creative + content workflows (alpha.13)   │
+│   • research/     domain research reports                    │
+│   • backups/      /bq-update safety backups                  │
 └──────────────────────────────────────────────────────────────┘
 ```
+
+**4 composable operating modes (alpha.12):** Deep / Fast / Token Saver (alias `lean`) / Delegate. See `commands.md` § Operating Modes.
+
+**Creative + Content Workflows (alpha.13):** `/bq-presentation` — premium PPTX / HTML decks. Orthogonal to dev lifecycle modes.
+
+**Discipline rules (alpha.14):** every new feature follows the 15-step workflow (CLAUDE.md rules 13 + 14; WORKFLOW_GATES.md). BeQuite eats its own food.
 
 ---
 

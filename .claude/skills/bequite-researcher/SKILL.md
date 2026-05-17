@@ -261,3 +261,19 @@ The 10 decision questions:
 Write a decision section before adopting (Problem / Options / Sources / Best option / Why it fits / Why others rejected / Risk / Cost / Test plan / Rollback plan). Short inline for small projects; full ADR at `.bequite/decisions/ADR-XXX-<tool>-choice.md` for large / regulated work.
 
 See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.
+
+---
+
+## Quality gate (alpha.15)
+
+Before claiming this skill's work complete:
+
+- [ ] Artifacts produced match the skill's expected outputs
+- [ ] All discipline rules in this skill were respected
+- [ ] No banned weasel words in any completion claim
+- [ ] Any tool / library added has a decision section per `.bequite/principles/TOOL_NEUTRALITY.md`
+- [ ] Acceptance criteria for the invoking command's task are met
+- [ ] `.bequite/state/MISTAKE_MEMORY.md` updated when a project-specific lesson surfaced
+- [ ] `.bequite/logs/AGENT_LOG.md` entry appended
+
+If any item fails, do not claim done — report PARTIAL with the specific gap.

@@ -1,6 +1,6 @@
 ---
 name: bequite-security-reviewer
-description: Security review procedures — OWASP Web App Top 10 (2021/2025), OWASP LLM Top 10 (2025), supply-chain defense (PhantomRaven / Shai-Hulud), secrets handling, auth flow review, input validation, CORS / CSP, dependency CVE scanning, threat modeling, penetration-readiness. Loaded by /bq-plan, /bq-feature, /bq-fix, /bq-audit, /bq-review.
+description: Security review — OWASP Web Top 10 (2021/2025), OWASP LLM Top 10 (2025), supply-chain defense (PhantomRaven / Shai-Hulud), secrets, auth, input validation, CORS / CSP, CVE scan, threat modeling. Loaded by /bq-plan, /bq-feature, /bq-fix, /bq-audit, /bq-review.
 allowed-tools: Read, Glob, Grep, WebFetch, WebSearch, Bash
 ---
 

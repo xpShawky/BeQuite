@@ -1,6 +1,6 @@
 ---
 name: bequite-researcher
-description: Deep verified-evidence procedures for the 11-dimension research model (stack, product, competitors, failures, success, user journey, UX/UI, security, scalability, deployment, differentiation). WebFetch-first, never memory-first. Anti-PhantomRaven defense. Loaded by /bq-research and /bq-plan when fresh evidence is required.
+description: Deep verified-evidence procedures for the 11-dim research model (stack, product, competitors, failures, success, user journey, UX, security, scalability, deployment, differentiation). WebFetch-first. Anti-PhantomRaven defense. Loaded by /bq-research and /bq-plan.
 allowed-tools: Read, Glob, Grep, WebFetch, WebSearch, Bash
 ---
 

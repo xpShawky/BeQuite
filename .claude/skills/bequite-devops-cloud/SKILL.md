@@ -1,6 +1,6 @@
 ---
 name: bequite-devops-cloud
-description: DevOps + cloud procedures — CI/CD pipelines, preview deploys, rollback strategy, env-var management, secrets discipline, monitoring + alerting, cost ceilings, IaC patterns, server/VPS safety, database migration approval, blue-green + canary, runbooks. Hard human gates for production-touching changes. Loaded by /bq-plan, /bq-feature, /bq-verify, /bq-release.
+description: DevOps + cloud procedures — CI/CD, preview deploys, rollback, env-vars, secrets, monitoring, cost ceilings, IaC, VPS safety, DB migration approval, blue-green + canary, runbooks. Hard gates for prod changes. Loaded by /bq-plan, /bq-feature, /bq-verify, /bq-release.
 allowed-tools: Read, Glob, Grep, WebFetch, WebSearch, Bash
 ---
 

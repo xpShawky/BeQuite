@@ -1,9 +1,18 @@
 # Last BeQuite command
 
-**Command:** v3.0.0-alpha.15 — Mechanical-repair release (audit findings implemented)
+**Command:** v3.0.0-alpha.16 — Clean stable alpha (closes alpha.14 audit cycle)
 **Timestamp:** 2026-05-17 (UTC)
 **Commit:** (set after `git commit` lands)
-**Result:** SUCCESS — ~50 files touched implementing the alpha.14 audit findings. No new features.
+**Result:** SUCCESS — 13 files touched. No new features.
+  - 8 skill descriptions trimmed (Anthropic Skills activation matching)
+  - bequite-workflow-advisor description refreshed (stale 39/15/3 → current 44/21/4)
+  - ADR-005 written for opt-in Claude Code hooks (PreToolUse destructive-block + secret-scan + Stop banned-weasel-word) — implementation deferred to alpha.17+
+  - Cross-references added between MEMORY_FIRST / RESEARCH_DEPTH / MULTI_MODEL_PLANNING architecture docs
+**Next suggested:** **Pause for live verification by user.** Invoke `/bq-presentation Create a lecture about <real-topic>` for an actual deck, OR `/bq-auto deep delegate "<real-feature>"` for a real cross-session delegate workflow. Alternatively: alpha.17 implementation (`.claude/hooks/*` per ADR-005).
+
+**Prior runs in this cycle (preserved):**
+- v3.0.0-alpha.15 — Mechanical-repair release implementing alpha.14 audit findings (16 commands + 19 skills + 2 new red-team angles + stale doc cleanup + MEMORY_INDEX)
+- v3.0.0-alpha.14 — Discipline-restoration audit (BeQuite eats its own food). 7 audit reports + global feature-addition rule.
   - 16 commands: memory-first preflight + gate-check + writeback added
   - 19 skills: When NOT to use + Quality gate added (depending on what each already had)
   - 2 new red-team angles (supply-chain + prompt-injection) → /bq-red-team now has 10 angles

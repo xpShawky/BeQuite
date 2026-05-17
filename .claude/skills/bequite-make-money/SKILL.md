@@ -1,6 +1,6 @@
 ---
 name: bequite-make-money
-description: Earning opportunity discovery + verification. Knows tracks (highest-payout / easiest-start / fastest-first-dollar / long-term / AI-assisted / no-calls / remote / local / beginner / skilled), local + global + hidden platforms; classifies by trust + fit; strict safety (no fraud, no fake accounts, no platform abuse, no CAPTCHA bypass, no spam, no VPN misrepresentation, no upfront-fee scams, no unrealistic promises). Invoked by /bq-make-money.
+description: Earning opportunity discovery + verification. 10 tracks (highest-payout / easiest-start / fastest-first-dollar / AI-assisted / no-calls / remote / local / beginner / skilled / long-term). Local + global + hidden platforms. Strict safety (no fraud / scams / VPN misrepresentation / upfront-fee). Invoked by /bq-make-money.
 allowed-tools: Read, Glob, Grep, WebFetch, WebSearch, Write
 ---
 

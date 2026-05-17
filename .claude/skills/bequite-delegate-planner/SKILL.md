@@ -1,6 +1,6 @@
 ---
 name: bequite-delegate-planner
-description: Delegate Mode workflow — strong model architects + writes implementation task packs that a cheaper / smaller model can implement safely, then strong model reviews. Cost-saving without quality loss. Invoked by /bq-auto delegate, /bq-plan delegate, /bq-assign delegate, /bq-review delegate. Cross-session: planner writes a task pack the implementer reads in a separate Claude session.
+description: Delegate Mode workflow — strong model writes task packs that a cheaper model implements safely; strong model reviews. Cost-saving without quality loss. Cross-session pattern. Invoked by /bq-auto delegate / /bq-plan delegate / /bq-assign delegate / /bq-review delegate.
 allowed-tools: Read, Glob, Grep, Edit, Write
 ---
 

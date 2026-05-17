@@ -2,6 +2,74 @@
 
 Append-only chronicle of every BeQuite command run. Newest at top.
 
+## 2026-05-17 — alpha.16 ship: clean stable alpha (skill desc audit + ADR-005 + cross-refs)
+
+**Action:** User invoked `/bq-auto deep` to implement the alpha.16 deferred items + asked for a "clean version" of BeQuite. Per /bq-auto discipline, continued autonomously — no hard gates tripped.
+
+**No new features.** This closes the alpha.14 audit cycle.
+
+**Files modified / created:**
+
+Skills (8 description trims + workflow-advisor content refresh):
+- bequite-make-money (~450 → ~280 chars)
+- bequite-delegate-planner (~370 → ~250)
+- bequite-ux-ui-designer (~325 → ~290)
+- bequite-job-finder (~330 → ~280)
+- bequite-researcher (~330 → ~270)
+- bequite-security-reviewer (~320 → ~280)
+- bequite-devops-cloud (~360 → ~270)
+- bequite-workflow-advisor — description refreshed (39→44 commands, 15→21 skills, 3→4 modes; previously stale from alpha.12)
+
+ADR-005:
+- docs/decisions/ADR-005-claude-code-hooks-for-machine-enforcement.md — proposes opt-in PreToolUse + Stop hooks for safety enforcement; implementation deferred to alpha.17+ with full 4-version migration plan
+
+Cross-references:
+- docs/architecture/MEMORY_FIRST_BEHAVIOR.md — Related strategies block added
+- docs/architecture/RESEARCH_DEPTH_STRATEGY.md — same
+- docs/architecture/MULTI_MODEL_PLANNING_STRATEGY.md — header repositioned from "Phase-1 docs-only" to "Active (alpha.16); Delegate Mode is the production form"
+
+Version + log + changelog:
+- BEQUITE_VERSION.md (alpha.16)
+- AGENT_LOG.md (this entry)
+- CHANGELOG.md (alpha.16 release + alpha.17 unreleased)
+- LAST_RUN.md (refreshed)
+
+**Tool-neutral:**
+- No new dependencies
+- No Studio reintroduced
+- No heavy CLI added
+- Lightweight direction preserved
+
+**Mode tracking:**
+- Mode: deep — clean-stable-alpha pass closing the alpha.14 audit cycle
+- Outcome: SUCCESS — all priority alpha.16 deferred items landed; remaining items realistically scoped to alpha.17+
+- Approx cost: medium (~13 files touched)
+- Tests: N/A (documentation + frontmatter trim; no executable change)
+
+**Article VI honest reporting:**
+
+Done in alpha.16:
+- Skill desc audit (8 trimmed; 1 refreshed)
+- ADR-005 written
+- Cross-references added
+
+Deferred to alpha.17+ (explicitly documented in CHANGELOG):
+- Hooks implementation (ADR-005 is design only)
+- AGENT_LOG sliding-window archival (log not large enough yet)
+- 20-command standardized-fields backport — partial credit already from alpha.15's memory-first/gate-check/writeback; full backport requires per-command unique content
+- Live user verification (user action)
+
+Verified during alpha.16 review:
+- All 21 skills already include tool-neutrality language (no separate backport needed)
+- All 21 skills now have valid frontmatter + Quality gate + When NOT to use
+- All 44 active commands + 1 deprecated alias load correctly
+
+**Next:**
+- git commit + push as alpha.16
+- Wait for user invocation: `/bq-presentation` for a real deck, or `/bq-auto deep delegate` for a real cross-session feature
+
+---
+
 ## 2026-05-17 — alpha.15 ship: mechanical-repair release (audit findings implemented)
 
 **Action:** User invoked `/bq-auto deep "implement the alpha.15 mechanical repairs per the audit findings"`. Per /bq-auto discipline, continued autonomously — no hard gates tripped.

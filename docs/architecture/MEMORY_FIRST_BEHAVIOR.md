@@ -4,6 +4,12 @@
 **Adopted:** 2026-05-12 (alpha.10)
 **Reference:** ADR-002 (workflow gates), TOOL_NEUTRALITY.md, AUTO_MODE_STRATEGY.md
 
+**Related strategies (alpha.16 cross-refs):**
+- `AUTO_MODE_STRATEGY.md` §11 "Operating modes" — **Token Saver Mode** is the operating mode that most rewards good memory-first discipline (reuse cached state instead of re-fetching)
+- `RESEARCH_DEPTH_STRATEGY.md` — research outputs (RESEARCH_REPORT.md) are exactly what Token Saver Mode reuses
+- `MULTI_MODEL_PLANNING_STRATEGY.md` + `bequite-delegate-planner` skill — **Delegate Mode** reuses cached state across sessions; memory-first is what makes the strong→cheap→strong handoff work
+- `WORKFLOW_GATES.md` § "Feature-addition workflow (alpha.14)" — step 1 is "add feature request to memory"; memory-first is how the next session resumes that work
+
 ---
 
 ## The principle

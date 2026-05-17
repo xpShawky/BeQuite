@@ -6,16 +6,65 @@ Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANG
 
 ---
 
-## [Unreleased — alpha.16]
+## [Unreleased — alpha.17]
 
-- Skill `description:` YAML length audit (target <300 chars) for Anthropic Skills activation matching
-- Add per-command standardized-fields template (alpha.6 schema) to 20 commands lacking it
-- Backport tool-neutrality reminder blocks to older alpha.2-era skills
+- Implement ADR-005 — author `.claude/hooks/{pretooluse-block-destructive,pretooluse-secret-scan,stop-banned-weasel-words}.{sh,ps1}`
+- Test hooks against planted-violation fixtures
+- Document hooks in `docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`
+- `bequite-updater` skill extended so `/bq-update` can refresh hooks
+- Live verification by user (real presentation; real delegate cross-session flow)
 - Optional `/bq-deck` alias for `/bq-presentation` if user demand justifies
-- Live verification on a real project (user action): invoke `/bq-presentation` for an actual deck; invoke `/bq-auto deep delegate` for a real cross-session delegate workflow
-- ADR draft for Claude Code hooks (PreToolUse / Stop) for machine-enforcement of banned weasel words + secret scan + destructive op block
-- Sliding-window archival for `AGENT_LOG.md` (entries older than 90 days → `AGENT_LOG-<date>.md` archive)
-- Cross-reference docs: MULTI_MODEL_PLANNING_STRATEGY.md ↔ delegate; MEMORY_FIRST_BEHAVIOR.md ↔ token-saver; RESEARCH_DEPTH_STRATEGY.md ↔ deep
+
+---
+
+## [v3.0.0-alpha.16] — 2026-05-17
+
+### Clean-stable-alpha release — finishes the alpha.14 audit cycle
+
+alpha.14 wrote 7 audit reports. alpha.15 implemented the priority mechanical repairs (memory-first preflight on 16 commands + skill consistency on 19 skills + 2 new red-team angles + stale doc cleanup). alpha.16 closes the remaining items: skill description length audit, the Claude Code hooks ADR, and cross-references between architecture docs. **No new features.**
+
+### Added
+
+- **`docs/decisions/ADR-005-claude-code-hooks-for-machine-enforcement.md`** — proposes opt-in Claude Code hooks for machine-enforced safety: PreToolUse blocker for destructive ops, PreToolUse secret-shaped-string scan, Stop hook for banned-weasel-word detection in completion claims. Implementation deferred to alpha.17+ with full migration plan (alpha.17 prototype → alpha.18 settings integration → alpha.19 opt-in default → v3.0.0 stable cross-platform).
+- **Cross-references** between architecture docs:
+  - `MEMORY_FIRST_BEHAVIOR.md` → AUTO_MODE_STRATEGY (Token Saver) / RESEARCH_DEPTH_STRATEGY / MULTI_MODEL_PLANNING / WORKFLOW_GATES
+  - `RESEARCH_DEPTH_STRATEGY.md` → AUTO_MODE (Deep / Fast) / MEMORY_FIRST / MULTI_MODEL_PLANNING / WORKFLOW_GATES
+  - `MULTI_MODEL_PLANNING_STRATEGY.md` → AUTO_MODE (Delegate) / bequite-delegate-planner skill / RESEARCH_DEPTH / MEMORY_FIRST / WORKFLOW_GATES — repositioned as the architectural strategy doc behind Delegate Mode
+
+### Changed
+
+- **8 skill descriptions trimmed** for Anthropic Skills activation matching (target ~300 chars):
+  - `bequite-make-money` (was ~450 → ~280)
+  - `bequite-delegate-planner` (was ~370 → ~250)
+  - `bequite-ux-ui-designer` (was ~325 → ~290)
+  - `bequite-job-finder` (was ~330 → ~280)
+  - `bequite-researcher` (was ~330 → ~270)
+  - `bequite-security-reviewer` (was ~320 → ~280)
+  - `bequite-devops-cloud` (was ~360 → ~270)
+  - `bequite-workflow-advisor` — content refresh (39→44 commands, 15→21 skills, 3→4 operating modes; was stale from alpha.12)
+- `MULTI_MODEL_PLANNING_STRATEGY.md` header — repositioned from "Phase-1 docs-only" to "Active (alpha.16); Delegate Mode is the production cross-session variant"
+- `BEQUITE_VERSION.md` — bumped to alpha.16; update history extended
+- `AGENT_LOG.md` — alpha.16 entry
+- `LAST_RUN.md` — refreshed with alpha.16 result
+
+### Acceptance (alpha.16)
+
+- Skill description audit complete; all 21 ≤ ~300 chars ✅
+- ADR-005 written + filed in `docs/decisions/` ✅
+- Cross-references between 3 architecture docs added ✅
+- workflow-advisor description content current ✅
+- No new features ✅
+- No Studio reintroduced ✅
+- Lightweight direction preserved ✅
+- alpha.16 tagged + pushed (this commit)
+
+### Article VI honest reporting — deferred to alpha.17
+
+- **Hooks implementation** (ADR-005 is design-only; the scripts ship in alpha.17)
+- **Standardized-fields backport** to the 20 commands flagged in `COMMAND_SKILL_CONSISTENCY_AUDIT.md` — alpha.15 added the high-value sections (memory preflight / gate check / writeback) to 16 of them; remaining alpha.6 fields (Phase / When NOT to use / Quality gate / Failure behavior) are partially present per-file; explicit unified backport is alpha.17+ work that requires per-command unique content
+- **AGENT_LOG sliding-window archival** — the log isn't large enough yet to warrant archival; documented as a future practice; activate when AGENT_LOG > ~5k lines
+- **Live verification** by user — opening `/bq-presentation` on a real deck; running `/bq-auto deep delegate` for a real cross-session feature
+- **Tool-neutrality reminder backport** to alpha.2-era skills — sampling shows all 21 skills already include the tool-neutrality language (either as a dedicated section, in "Common mistakes", or via the alpha.15-added Quality gate that references `.bequite/principles/TOOL_NEUTRALITY.md`). No explicit backport needed; verified during alpha.16 review
 
 ---
 

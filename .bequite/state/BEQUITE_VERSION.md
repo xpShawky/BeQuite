@@ -1,10 +1,10 @@
 # BeQuite installed version
 
-**Version:** v3.0.0-alpha.15
+**Version:** v3.0.0-alpha.16
 **Updated:** 2026-05-17
 **Source:** github
 **Source path / repo:** xpShawky/BeQuite (branch: main)
-**Previous version:** v3.0.0-alpha.14
+**Previous version:** v3.0.0-alpha.15
 **Last check:** 2026-05-17
 **Update count:** 0 (this is the seed file; updates from /bq-update increment)
 
@@ -26,6 +26,13 @@ Reading this file lets `/bq-update` know:
 ## Update history
 
 (Populated by `/bq-update` runs — newest at top.)
+
+### 2026-05-17 — alpha.16 ship — clean stable alpha (skill desc audit + ADR-005 + cross-refs)
+- Skill `description:` YAML length audit — 8 over-length descriptions trimmed (now all ≤ ~300 chars for Anthropic Skills activation matching)
+- `bequite-workflow-advisor` SKILL.md description refreshed (39→44 commands, 15→21 skills, 3→4 modes — previously stale)
+- ADR-005 written: `docs/decisions/ADR-005-claude-code-hooks-for-machine-enforcement.md` — proposes opt-in Claude Code hooks for machine-enforcement of safety rules (banned weasel words, secret scan, destructive op block). Implementation deferred to alpha.17+
+- Cross-references added between architecture docs: MEMORY_FIRST_BEHAVIOR ↔ token-saver / delegate / research; RESEARCH_DEPTH_STRATEGY ↔ deep / fast / delegate; MULTI_MODEL_PLANNING_STRATEGY now points at Delegate Mode as the operationalized cross-session form
+- No new features; no Studio reintroduced; lightweight direction preserved
 
 ### 2026-05-17 — alpha.15 ship — mechanical-repair release (audit findings implemented)
 - Memory-first preflight + gate-check + writeback added to 16 commands (`/bq-assign`, `/bq-audit`, `/bq-changelog`, `/bq-clarify`, `/bq-discover`, `/bq-doctor`, `/bq-handoff`, `/bq-implement`, `/bq-memory`, `/bq-recover`, `/bq-red-team`, `/bq-release`, `/bq-review`, `/bq-scope`, `/bq-test`, `/bq-verify`)

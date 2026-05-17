@@ -1,6 +1,6 @@
 ---
 name: bequite-ux-ui-designer
-description: UX/UI design procedures — 10 design principles, 15 AI-slop anti-patterns, design tokens, hierarchy, density, typography, color, accessibility (WCAG 2.1 AA), responsive baseline, micro-interactions. Pairs with bequite-frontend-quality for implementation-side checks. Loaded by /bq-plan, /bq-feature, /bq-audit for UI projects.
+description: UX/UI design procedures — 10 design principles, 15 AI-slop anti-patterns, design tokens, hierarchy, typography, color, WCAG 2.1 AA, responsive baseline, micro-interactions. Pairs with bequite-frontend-quality. Loaded by /bq-plan, /bq-feature, /bq-audit for UI projects.
 allowed-tools: Read, Glob, Grep, WebFetch
 ---
 

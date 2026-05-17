@@ -1,8 +1,15 @@
 # Multi-Model Planning Strategy
 
-> Architectural strategy doc that fleshes out ADR-012. Operational reference for engineers implementing v0.10.5+ manual-paste mode and v0.11.x+ direct-API mode.
+> Architectural strategy doc that fleshes out ADR-012. Operational reference for `/bq-multi-plan` (manual-paste, ToS-clean) and the **Delegate Mode** workflow (alpha.12+).
 >
-> **Status:** Phase-1 (docs-only). Implementation lands v0.10.5+.
+> **Status:** Active (alpha.16). Multi-plan ships via manual paste; Delegate Mode is the production cross-session variant.
+
+**Related strategies (alpha.16 cross-refs):**
+- `AUTO_MODE_STRATEGY.md` §11 "Operating modes" — **Delegate Mode** is the operationalized form of multi-model planning across sessions (strong model architects in session 1; cheap model implements in session 2; strong model reviews in session 3)
+- `.claude/skills/bequite-delegate-planner/SKILL.md` — the skill that encodes Delegate Mode
+- `RESEARCH_DEPTH_STRATEGY.md` — deep research feeds the task pack the cheap model reads
+- `MEMORY_FIRST_BEHAVIOR.md` — the cross-session handoff works because state lives in `.bequite/`; memory-first is what makes Delegate Mode safe
+- `WORKFLOW_GATES.md` § "Feature-addition workflow (alpha.14)" — multi-plan is recommended at step 4 (Create plan) for high-stakes features
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: bequite-job-finder
-description: Real work opportunity discovery + verification. Knows local + global + hidden platforms; classifies by fit (best fit / easy start / high pay / fast apply / needs portfolio / risky / not recommended); strict safety rules (no scams, no fake reviews, no VPN misrepresentation, no upfront-fee, no identity misuse). Invoked by /bq-job-finder.
+description: Real work opportunity discovery + verification. Local + global + hidden platforms. Classifies by fit (best / easy / high pay / fast apply / risky). Strict safety (no scams / fake reviews / VPN misrepresentation / upfront-fee / identity misuse). Invoked by /bq-job-finder.
 allowed-tools: Read, Glob, Grep, WebFetch, WebSearch, Write
 ---
 

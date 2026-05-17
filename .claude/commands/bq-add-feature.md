@@ -1,8 +1,34 @@
 ---
-description: Add a feature safely. Mini spec → mini plan → implementation → tests, atomically. For features that fit inside one session.
+description: DEPRECATED ALIAS — use /bq-feature instead. /bq-add-feature is preserved for backwards compatibility; routes to /bq-feature's 12-type router.
 ---
 
-# /bq-add-feature — safe feature addition
+# /bq-add-feature — ⚠ DEPRECATED ALIAS for `/bq-feature`
+
+> **Status (alpha.14):** This command is a deprecated alias preserved for backwards compatibility. New work should use `/bq-feature` directly.
+>
+> **Why it's deprecated:** `/bq-feature` (alpha.2+) supersedes this. `/bq-feature` has a 12-type router (frontend / backend / database / auth / automation / scraping / cloud / admin / dashboard / cli / integration / security) that activates the right specialist skills automatically. `/bq-add-feature` predates this and lacks the router.
+>
+> **What happens if you run `/bq-add-feature`:** The agent recognizes the alias and routes to `/bq-feature` with the same arguments. Update your habits / scripts to call `/bq-feature` directly.
+
+## Migration
+
+Old:
+```
+/bq-add-feature "user can export bookings to CSV"
+```
+
+New:
+```
+/bq-feature "user can export bookings to CSV"
+```
+
+The new form auto-detects this as a backend + frontend feature; activates `bequite-backend-architect` + `bequite-frontend-quality` skills accordingly.
+
+## Original spec (preserved below for reference)
+
+> ⚠ The content below is the alpha.1 spec for `/bq-add-feature`. Kept for historical context. **Do not use this as the active workflow** — go to `/bq-feature`.
+
+---
 
 You are adding **one feature**. Tighter than `/bq-plan` + `/bq-implement` (which are the full workflow); this is a focused mini-cycle that fits in one session.
 

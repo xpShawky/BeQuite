@@ -2,8 +2,76 @@
 
 **Status:** active
 **Adopted:** 2026-05-11 (ADR-002)
-**Updated:** 2026-05-12 (alpha.4 added UI variant + release gates → 17 hard human gates in `/bq-auto`)
+**Updated:** 2026-05-12 (alpha.4 added UI variant + release gates → 17 hard human gates in `/bq-auto`); 2026-05-17 (alpha.14 added Feature-addition workflow rule + gate aliases + orthogonal workflows section)
 **Reference:** ADR-002, AUTO_MODE_STRATEGY.md, COMMAND_CATALOG.md
+
+---
+
+## Feature-addition workflow (alpha.14 — global rule)
+
+> **Every new BeQuite feature MUST follow this 15-step workflow.** Even when the user provides a detailed spec inline. The agent must not shortcut to implementation.
+
+| Step | Action | Output |
+|---|---|---|
+| 1 | Add feature request to memory | `OPEN_QUESTIONS.md` or `FEATURE_EXPANSION_ROADMAP.md` |
+| 2 | Run targeted research when feature touches a new domain | `.bequite/research/<DOMAIN>_RESEARCH_REPORT.md` (min 3 dims for fast; 11 for deep) |
+| 3 | Define scope | `SCOPE.md` — IN / OUT / NON-GOALS |
+| 4 | Create plan | `IMPLEMENTATION_PLAN.md` — files to create/modify, decisions, risks |
+| 5 | Break into tasks (when > 5 files) | `TASK_LIST.md` |
+| 6 | Implement command / skill / docs / memory | source files |
+| 7 | Update README | docs |
+| 8 | Update `commands.md` | docs |
+| 9 | Update `/bequite` root menu | `.claude/commands/bequite.md` |
+| 10 | Update `/bq-help` | `.claude/commands/bq-help.md` |
+| 11 | Update `docs/specs/COMMAND_CATALOG.md` | docs |
+| 12 | Update `.bequite/logs/AGENT_LOG.md` | log |
+| 13 | Update `docs/changelogs/CHANGELOG.md` | log |
+| 14 | Run `/bq-verify` post-implementation | `VERIFY_REPORT.md` |
+| 15 | Bump `BEQUITE_VERSION.md` + update `LAST_RUN.md` | state |
+
+**Exemptions:**
+- **Hotfixes** can skip steps 2-5 but must still 6-15
+- **Doc-only changes** can skip 2-5
+- **Adding a skill** that activates only via an existing command can skip 2-5 (but must scope what the skill does)
+
+**Why this rule exists:** alpha.13's Presentation Builder shipped without going through discover→research→scope→plan→tasks. The output was solid, but the discipline was wrong. alpha.14 codifies the rule. See `.bequite/audits/FEATURE_WORKFLOW_AUDIT.md` for the precedent.
+
+---
+
+## Gate name aliases (alpha.14)
+
+Both spellings are valid; commands may use either. The shorter `_DONE` form is more common in `COMMAND_CATALOG.md`; the longer `_COMPLETE` form is more common in this strategy doc.
+
+| Canonical (this doc) | Short alias (COMMAND_CATALOG) |
+|---|---|
+| `DISCOVERY_COMPLETE` | `DISCOVERY_DONE` |
+| `RESEARCH_COMPLETE` | `RESEARCH_DONE` |
+| `IMPLEMENTATION_DONE` | `IMPLEMENT_DONE` |
+| `TASKS_ASSIGNED` | `ASSIGN_DONE` |
+| `TESTS_PASS` | `TEST_DONE` |
+| `AUDIT_COMPLETE` | `AUDIT_DONE` |
+| `REVIEW_APPROVED` | `REVIEW_DONE` |
+| `VERIFY_PASSED` | `VERIFY_PASS` |
+| `RELEASE_PREPPED` | `RELEASE_READY` |
+
+---
+
+## Orthogonal workflows (alpha.14 — don't change mode)
+
+The following commands operate **outside the 6 dev lifecycle modes**. They don't advance phase, don't set mode, don't require phase-gates beyond `BEQUITE_INITIALIZED`:
+
+- `/bq-presentation` — creative + content (PPTX / HTML / variants)
+- `/bq-job-finder` — opportunity discovery
+- `/bq-make-money` — earning discovery
+- `/bq-suggest` — workflow advisor (read-only)
+- `/bq-now` — orientation (read-only)
+- `/bq-explain` — explainer (read-only)
+- `/bq-help` — reference (read-only)
+- `/bq-update` — BeQuite self-maintenance
+
+If you're mid-implementation in `Add Feature` mode and you run `/bq-presentation`, the system stays in `Add Feature` mode. The presentation workflow runs in parallel + writes to its own memory folder (`.bequite/presentations/`).
+
+---
 
 ---
 

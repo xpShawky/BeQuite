@@ -6,21 +6,20 @@ Tracked questions awaiting answers. Set status to **resolved** when answered.
 
 ### Q1. Should studio/ + Docker assets be deleted now or kept paused on disk?
 
-**Status:** unresolved — awaiting user direction
-**Context:** Direction reset moved BeQuite to a lightweight skill pack. Heavy assets (studio/, docker-compose.yml, tests/e2e/) are currently PAUSED (kept on disk). User can decide whether to delete now or keep deferred.
-**Recommended default:** keep deferred for v3.0.0-alpha.1; revisit in v3.1 once skill pack adoption is real.
+**Status:** ✅ RESOLVED (2026-05-17 — alpha.14 audit)
+**Resolution:** Studio direction retired per ADR-004 (alpha.5 cleanup) — assets paused on disk; not active. No further action. Open Q to keep them deferred or delete is a v3.1+ concern.
+**Source:** `docs/decisions/ADR-004-no-heavy-studio-or-cli.md`
 
 ### Q2. Should v3.0.0-alpha.1 be tagged + pushed immediately, or wait for live verification inside a Claude Code session?
 
-**Status:** unresolved — awaiting user direction
-**Context:** All files authored; CLI command files have YAML frontmatter; skills follow Anthropic Skills SKILL.md format. But the actual `/bequite` slash command behavior hasn't been observed in a live Claude Code instance yet.
-**Recommended default:** push to main (no tag yet) → user tests `/bequite` in a fresh Claude Code session → if good, tag.
+**Status:** ✅ RESOLVED (alpha.1 long shipped; the system is now at alpha.13)
+**Resolution:** Pushed to main; live-verified across alpha.1 → alpha.13 over 13 alpha releases. Question is obsolete.
 
 ### Q3. Should the Python CLI v1.0.4 stay as an optional install path, or be retired in favor of slash commands only?
 
-**Status:** unresolved
-**Context:** v1.0.4 CLI works (`bequite doctor` + `bequite dev` + `bequite status` + 19 other commands). But it duplicates functionality with the slash commands. Maintaining both is overhead.
-**Recommended default:** keep both for now. Slash commands are the MVP entry point; CLI is for power users / scripting / CI.
+**Status:** ✅ RESOLVED (2026-05-17 — alpha.14 audit)
+**Resolution:** Python CLI is paused (heavy direction, ADR-004). Slash commands are the canonical MVP entry. The `cli/` directory remains on disk for historical reference. Active path: slash commands only.
+**Source:** `docs/decisions/ADR-001-lightweight-skill-pack-first.md` + ADR-004
 
 ---
 

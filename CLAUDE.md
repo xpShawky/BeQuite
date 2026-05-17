@@ -99,6 +99,19 @@ This repo IS the source of the skill pack. Its `.claude/commands/` + `.claude/sk
 10. **Inspect before assuming.** The `bequite-problem-solver` skill's "reproduce-first" discipline applies to every bug.
 11. **No out-of-order commands.** If a command's required gates aren't met, refuse and suggest the prerequisite command.
 12. **Do not auto-install dependencies.** No new deps, scraping tools, frontend libs, Docker, testing frameworks, deploy tools, monitoring, or auth libs added by default. Only when justified per the 10 decision questions.
+13. **Every new BeQuite feature MUST follow the feature-addition workflow** (alpha.14). Even when the user provides a detailed spec inline. See `docs/architecture/WORKFLOW_GATES.md` § "Feature-addition workflow (alpha.14)" and `docs/runbooks/USING_BEQUITE_COMMANDS.md`. The 15 steps are:
+    1. Add feature request to memory (`OPEN_QUESTIONS.md` or `FEATURE_EXPANSION_ROADMAP.md`)
+    2. Run targeted research (`/bq-research` — minimum 3 dims for fast; 11 for deep) when feature touches a new domain
+    3. Define scope (`/bq-scope` → `SCOPE.md`) — even one-pager
+    4. Create plan (`/bq-plan` → `IMPLEMENTATION_PLAN.md`) — list files to create/modify
+    5. Break into tasks (`/bq-assign` → `TASK_LIST.md`) when change touches > 5 files
+    6. Implement command / skill / docs / memory
+    7. Update README · 8. commands.md · 9. `/bequite` menu · 10. `/bq-help` · 11. `docs/specs/COMMAND_CATALOG.md`
+    12. Update `.bequite/logs/AGENT_LOG.md` · 13. `docs/changelogs/CHANGELOG.md`
+    14. Run `/bq-verify` post-implementation → `VERIFY_REPORT.md`
+    15. Mark `BEQUITE_VERSION.md` + `LAST_RUN.md`
+   Exemptions: hotfixes / doc-only changes can skip 2-5 but must still 6-15. Adding a skill that activates from an existing command can skip 2-5.
+14. **BeQuite eats its own food** (alpha.14). Run periodic self-audits (this very rule was born from one). When discipline drift is detected, write an alignment audit before adding new features.
 
 ### The 10 decision questions (apply before any major tool pick)
 

@@ -6,12 +6,104 @@ Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANG
 
 ---
 
-## [Unreleased — alpha.14]
+## [Unreleased — alpha.15]
 
-- USING_BEQUITE_COMMANDS.md updated with /bq-presentation walkthrough + delegate walkthrough
-- Cross-references: MULTI_MODEL_PLANNING_STRATEGY.md ↔ delegate; MEMORY_FIRST_BEHAVIOR.md ↔ token-saver; RESEARCH_DEPTH_STRATEGY.md ↔ deep
-- Live verification of all 4 modes + /bq-presentation against a real project (user action)
-- Decision: optional `/bq-deck` alias for `/bq-presentation` if user pressure demands
+- Add `## Files to read` memory-first preflight to 18 commands lacking it
+- Add alpha.6 standardized fields section to 20 commands lacking it
+- Add gate-refusal logic to 14 commands lacking explicit refusal
+- Add `## Quality gate` to 18 skills lacking it
+- Add `## When NOT to use` to 16 skills lacking it
+- Add 2 red-team angles: supply-chain (PhantomRaven-style) + prompt-injection (LLM Top 10 #1)
+- USING_BEQUITE_COMMANDS.md walkthrough examples for Presentation Builder + Delegate Mode + each operating mode
+- Move stale heavy-direction docs to `docs/legacy/`
+- Update `LIGHTWEIGHT_SKILL_PACK_ARCHITECTURE.md` counts (44 commands, 21 skills, 4 modes)
+- `MEMORY_INDEX.md` at `.bequite/` root listing every state file with role
+- Skill `description:` YAML length audit (target <300 chars)
+- Optional `/bq-deck` alias for `/bq-presentation` if user demand justifies
+
+---
+
+## [v3.0.0-alpha.14] — 2026-05-17
+
+### Added — discipline-restoration release
+
+**Background:** alpha.13's Presentation Builder shipped without going through the full discover → research → scope → plan → tasks → verify workflow. User flagged this as unacceptable: BeQuite must follow BeQuite. alpha.14 is the corrective release.
+
+**No new features.** This release improves alignment, not surface area.
+
+### Added — 7 audit reports
+
+- `.bequite/audits/FULL_SYSTEM_ALIGNMENT_AUDIT.md` — top-level repo audit + feature workflow trace + repair plan
+- `.bequite/audits/COMMAND_SKILL_CONSISTENCY_AUDIT.md` — per-file consistency check across 18 command fields + 12 skill fields
+- `.bequite/audits/WORKFLOW_GATE_AUDIT.md` — gate enforcement gaps + name canonicalization + mode-specific behavior + orthogonal workflows
+- `.bequite/audits/FEATURE_WORKFLOW_AUDIT.md` — per-feature trace of discover → research → scope → plan → tasks → verify discipline through alpha.1–alpha.13
+- `.bequite/research/BEQUITE_SYSTEM_RESEARCH_REPORT.md` — deep research on coding-agent skill packs, spec-driven development, memory systems, presentation generation, red-team workflows; principles extracted; ideas accepted vs rejected
+- `.bequite/audits/COMMAND_CLUTTER_REVIEW.md` — per-command keep/merge/promote/reject decisions
+- `.bequite/audits/FINAL_SYSTEM_ALIGNMENT_REPORT.md` — what was fixed in alpha.14, what's deferred to alpha.15, alpha.16 outlook
+
+### Added — global feature-addition rule
+
+Codified in:
+- `CLAUDE.md` — core operating rules item 13 (the 15-step workflow) + item 14 (BeQuite eats its own food)
+- `docs/architecture/WORKFLOW_GATES.md` — new "Feature-addition workflow (alpha.14 — global rule)" section
+- `docs/specs/COMMAND_CATALOG.md` — top-of-file rule notice
+
+Every new feature must travel through: memory entry → research → scope → plan → tasks → impl → docs (README + commands.md + `/bequite` + `/bq-help` + catalog) → log + changelog → verify → version. Exemptions for hotfixes + doc-only changes.
+
+### Added — gate name aliasing
+
+Both `_DONE` (COMMAND_CATALOG convention) and `_COMPLETE` (strategy doc convention) are valid spellings. Documented in `WORKFLOW_GATES.md`.
+
+### Added — orthogonal workflow declaration
+
+`/bq-presentation`, `/bq-job-finder`, `/bq-make-money`, `/bq-suggest`, `/bq-now`, `/bq-explain`, `/bq-help`, `/bq-update` operate **outside the 6 dev lifecycle modes**. Running them does not change phase or mode. Documented in `WORKFLOW_GATES.md`.
+
+### Changed
+
+- `bq-add-feature.md` — marked as DEPRECATED ALIAS for `/bq-feature`. Original spec preserved at the bottom for reference.
+- `.bequite/state/OPEN_QUESTIONS.md` — Q1 (Studio deletion), Q2 (alpha.1 release), Q3 (Python CLI retirement) all closed (resolved by ADR-001 + ADR-004 long ago; never marked closed)
+- `.bequite/state/PROJECT_STATE.md` — refreshed: removed stale "Python CLI + paused Studio" stack description; documented paused-on-disk assets per ADR-004
+- `.bequite/state/BEQUITE_VERSION.md` — bumped to alpha.14; previous = alpha.13
+- `docs/specs/COMMAND_CATALOG.md` — version + tally update + global rule
+- `docs/architecture/WORKFLOW_GATES.md` — adds workflow rule + aliases + orthogonal section
+- `CLAUDE.md` — rules 13 + 14 (alpha.14)
+- `.bequite/logs/AGENT_LOG.md` — alpha.14 entry
+- `docs/changelogs/CHANGELOG.md` — this entry
+
+### Audit findings (per-file detail)
+
+- **45 commands inventoried.** No placeholders. 18 lack explicit `## Files to read` (memory-first); 20 lack alpha.6 standardized-fields section. Deferred to alpha.15 — too mechanical for a single audit release.
+- **21 skills inventoried.** All have valid YAML frontmatter + tool neutrality language. 18 lack explicit `## Quality gate` section; 16 lack `## When NOT to use`. Deferred to alpha.15.
+- **No banned weasel words found** in completion claim contexts. The 8 mentions of "token-free" are all explicit NEGATIONS ("NOT token-free", "Token Saver — NOT token-free") — these are correct usage, not errors.
+- **Studio / heavy CLI remnants** still on disk (paused per ADR-001/004) — acceptable; documented in refreshed `PROJECT_STATE.md`. No cleanup needed.
+- **9 stale top-level `docs/*.md`** files + `docs/audits/*` + `docs/RELEASES/*` + `docs/merge/*` from heavy direction — not moved to `docs/legacy/` in alpha.14 (low-risk; defer to alpha.15)
+
+### Deferred to alpha.15 (Article VI honest reporting)
+
+- Add `## Files to read` memory-first preflight to 18 commands lacking it
+- Add alpha.6 standardized fields section to 20 commands
+- Add gate-refusal logic to 14 commands
+- Add `## Quality gate` + `## When NOT to use` to 18 / 16 skills
+- Move stale heavy-direction docs to `docs/legacy/`
+- Update `LIGHTWEIGHT_SKILL_PACK_ARCHITECTURE.md` counts
+- USING_BEQUITE_COMMANDS.md walkthroughs (Presentation + Delegate + modes)
+- Skill `description:` field length audit
+- `MEMORY_INDEX.md`
+
+These are tracked in the alpha.15 unreleased section above. Each is mechanical; none blocks alpha.14 from shipping.
+
+### Acceptance (alpha.14)
+
+- 7 audit reports exist ✅
+- Global feature-addition rule codified in 3 docs (CLAUDE.md / WORKFLOW_GATES.md / COMMAND_CATALOG.md) ✅
+- Gate name aliases documented ✅
+- Orthogonal workflows declared ✅
+- `bq-add-feature` deprecated alias marked ✅
+- `OPEN_QUESTIONS.md` stale entries closed ✅
+- `PROJECT_STATE.md` refreshed ✅
+- `BEQUITE_VERSION.md` + AGENT_LOG + CHANGELOG + LAST_RUN updated ✅
+- Lightweight direction preserved (no Studio / heavy CLI / dashboard added) ✅
+- alpha.14 tagged + pushed ✅ (this commit)
 
 ---
 

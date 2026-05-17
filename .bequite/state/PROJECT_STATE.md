@@ -1,13 +1,17 @@
 # Project state
 
 **Initialized:** 2026-05-11
+**Last refreshed:** 2026-05-17 (alpha.14 audit)
 **Project type:** BeQuite itself (this repo is the source of the skill pack)
-**Stack detected:** Python CLI (`cli/`) + paused Studio (`studio/`) + lightweight skill pack (`.claude/`)
+**Active stack:** Lightweight Claude Code skill pack — markdown commands + skills + memory templates
+**Paused on disk (per ADR-001 + ADR-004):** `cli/` (Python CLI), `studio/` (heavy direction), `docker-compose.yml`, `tests/e2e/`, `template/`, `evidence/`, `skill/`. Not active; retained for historical reference.
 **Repository:** https://github.com/xpShawky/BeQuite
 
 ## Project summary
 
-BeQuite is a lightweight Claude Code skill pack you install into any project to give the coding agent a reliable workflow. v3.0.0 direction: lightweight skill pack first; heavy Studio app paused.
+BeQuite is a lightweight Claude Code skill pack you install into any project to give the coding agent a reliable workflow. v3.0.0 direction (canonical): **lightweight skill pack only**. Heavy direction (Studio + Docker + Python CLI) retired per ADR-001 + ADR-004.
+
+**Current spec:** v3.0.0-alpha.14 — discipline-restoration release after alpha.13's Presentation Builder shipped without following the full workflow. See `.bequite/audits/FULL_SYSTEM_ALIGNMENT_AUDIT.md`.
 
 ## What BeQuite tracks for this project
 

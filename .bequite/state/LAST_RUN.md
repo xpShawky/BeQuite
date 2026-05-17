@@ -1,16 +1,24 @@
 # Last BeQuite command
 
-**Command:** v3.0.0-alpha.13 — Creative & Content Workflows: `/bq-presentation` (PPTX / HTML / both; variants 1–10; strict-vs-creative; morph-like motion)
-**Timestamp:** 2026-05-13 (UTC)
+**Command:** v3.0.0-alpha.14 — Discipline-restoration audit (BeQuite eats its own food)
+**Timestamp:** 2026-05-17 (UTC)
 **Commit:** (set after `git commit` lands)
-**Result:** SUCCESS — premium presentation builder shipped as command + skill + 9 memory templates + installer + docs update.
-  - 13 new files: bq-presentation.md, bequite-presentation-builder/SKILL.md, 9 presentation templates, 2 .gitkeep
-  - ~12 modified files: README.md, commands.md, CLAUDE.md, bequite menu, bq-help, bq-suggest, workflow-advisor SKILL, BEQUITE_VERSION, AGENT_LOG, COMMAND_CATALOG, CHANGELOG, both installer scripts, LAST_RUN
-  - Tool-neutral: no python-pptx / pptxgenjs / reveal.js / Slidev / Playwright installed (candidates only)
-**Next suggested:** alpha.14 prep — USING_BEQUITE_COMMANDS walkthrough with worked presentation example; live verification by user invoking `/bq-presentation` for a real deck.
+**Result:** SUCCESS — 7 audit reports + 7 doc/state repairs + version bump. No new features.
+  - 7 new files (audits + research): FULL_SYSTEM_ALIGNMENT_AUDIT, COMMAND_SKILL_CONSISTENCY_AUDIT, WORKFLOW_GATE_AUDIT, FEATURE_WORKFLOW_AUDIT, BEQUITE_SYSTEM_RESEARCH_REPORT, COMMAND_CLUTTER_REVIEW, FINAL_SYSTEM_ALIGNMENT_REPORT
+  - Modified files: CLAUDE.md (rules 13+14), docs/architecture/WORKFLOW_GATES.md (rule + aliases + orthogonal section), docs/specs/COMMAND_CATALOG.md (rule + version), bq-add-feature.md (deprecated alias marker), OPEN_QUESTIONS.md (Q1-Q3 closed), PROJECT_STATE.md (Studio reference cleaned), BEQUITE_VERSION.md (alpha.14), AGENT_LOG.md (alpha.14 entry), CHANGELOG.md (alpha.14 release + alpha.15 unreleased), LAST_RUN.md (this file)
+  - Tool-neutral: no new dependencies; no Studio / heavy CLI reintroduced
+**Next suggested:** alpha.15 — mechanical-repair release. Implement audit findings deferred from alpha.14:
+  - Add `## Files to read` memory-first preflight to 18 commands
+  - Add alpha.6 standardized fields to 20 commands
+  - Add `## Quality gate` + `## When NOT to use` to 18 / 16 skills
+  - Move stale heavy-direction docs to `docs/legacy/`
+  - Update LIGHTWEIGHT_SKILL_PACK_ARCHITECTURE counts
+  - USING_BEQUITE_COMMANDS walkthroughs (Presentation + Delegate + modes)
+  - `MEMORY_INDEX.md` at `.bequite/` root
 
 ## Prior runs
 
+- v3.0.0-alpha.13 (06e7a1f) — `/bq-presentation` Premium PPTX / HTML builder + 9 memory templates
 - v3.0.0-alpha.12 (42d6d60) — 4 composable operating modes (Deep / Fast / Token Saver / Delegate)
 - v3.0.0-alpha.11 hotfix (0cdb93a) — bash installer missing alpha.10 template copy lines
 - v3.0.0-alpha.11 (b0241f0) — installer carries alpha.10 deep-intelligence + version tracking + backups

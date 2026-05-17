@@ -1,13 +1,25 @@
-# BeQuite Command Catalog (v3.0.0-alpha.13)
+# BeQuite Command Catalog (v3.0.0-alpha.14)
 
-**Status:** authored 2026-05-11; expanded 2026-05-12 across alpha.2–alpha.10; 4 operating modes added 2026-05-12 (alpha.12); Presentation Builder added 2026-05-13 (alpha.13)
-**Total commands:** 44 (1 root menu + 43 `/bq-*`)
+**Status:** authored 2026-05-11; expanded 2026-05-12 across alpha.2–alpha.10; 4 operating modes added 2026-05-12 (alpha.12); Presentation Builder added 2026-05-13 (alpha.13); discipline-restoration audit + global feature-addition rule added 2026-05-17 (alpha.14)
+**Total commands:** 44 active + 1 deprecated alias (`/bq-add-feature` → `/bq-feature`)
 **Total skills:** 21 (7 baseline + 7 specialist + 1 live-edit + 3 opportunity + 1 updater + 1 delegate-planner + 1 presentation-builder)
 **Operating modes (alpha.12):** 4 composable — Deep / Fast / Token Saver (alias `lean`) / Delegate
 **Creative + Content Workflows (alpha.13):** `/bq-presentation`
 **Human-readable reference:** [`commands.md`](../../commands.md) at repo root
 
 Single source of truth for every BeQuite command. Each entry lists: when to use, what it reads, what it writes, required previous gates, quality gate, usual next.
+
+---
+
+## Global feature-addition rule (alpha.14)
+
+**Every new BeQuite feature MUST go through the 15-step feature-addition workflow** defined in [`docs/architecture/WORKFLOW_GATES.md`](../architecture/WORKFLOW_GATES.md) § "Feature-addition workflow (alpha.14 — global rule)".
+
+The short version: add to memory → research (when new domain) → scope → plan → tasks (when >5 files) → implement → update README + commands.md + `/bequite` menu + `/bq-help` + this catalog → update AGENT_LOG + CHANGELOG → run `/bq-verify` → bump version.
+
+Even when the user provides a detailed spec inline, the agent must not shortcut to implementation. The output may be solid; the process is wrong. See `.bequite/audits/FEATURE_WORKFLOW_AUDIT.md` for the alpha.13 precedent.
+
+Exemptions: hotfixes, doc-only changes, and skill additions activated only from existing commands can skip the research/scope/plan/tasks middle. They still must do impl + docs + log + changelog + verify + version.
 
 ---
 

@@ -2,6 +2,72 @@
 
 Append-only chronicle of every BeQuite command run. Newest at top.
 
+## 2026-05-17 — alpha.14 ship: discipline-restoration audit (BeQuite eats its own food)
+
+**Action:** User invoked `/bq-auto deep` for a full consistency, workflow, research, command, skill, docs, and memory repair pass. Trigger: alpha.13's Presentation Builder shipped without going through the full BeQuite workflow.
+
+**No new features added.** This is a discipline-restoration release.
+
+**7 audit reports written:**
+1. `.bequite/audits/FULL_SYSTEM_ALIGNMENT_AUDIT.md` (~600 lines) — top-level repo + repair plan
+2. `.bequite/audits/COMMAND_SKILL_CONSISTENCY_AUDIT.md` — per-file 18-field check across 45 commands + 12-field check across 21 skills
+3. `.bequite/audits/WORKFLOW_GATE_AUDIT.md` — gate enforcement gaps + name aliasing + orthogonal workflows
+4. `.bequite/audits/FEATURE_WORKFLOW_AUDIT.md` — per-feature trace alpha.1 → alpha.13
+5. `.bequite/research/BEQUITE_SYSTEM_RESEARCH_REPORT.md` — deep research on skill packs, spec-driven dev, memory systems, presentation generation, red-team workflows; principles extracted
+6. `.bequite/audits/COMMAND_CLUTTER_REVIEW.md` — keep/merge/promote/reject decisions
+7. `.bequite/audits/FINAL_SYSTEM_ALIGNMENT_REPORT.md` — what was fixed + deferred to alpha.15
+
+**Repairs landed in alpha.14:**
+
+| Repair | File(s) |
+|---|---|
+| Global feature-addition rule (15 steps) | `CLAUDE.md` (rule 13 + 14), `docs/architecture/WORKFLOW_GATES.md` (new section), `docs/specs/COMMAND_CATALOG.md` (top-of-file note) |
+| Gate name aliasing (_DONE / _COMPLETE both valid) | `docs/architecture/WORKFLOW_GATES.md` |
+| Orthogonal workflows declared | `docs/architecture/WORKFLOW_GATES.md` |
+| `bq-add-feature` marked deprecated | `.claude/commands/bq-add-feature.md` |
+| Stale OPEN_QUESTIONS closed (Q1-Q3) | `.bequite/state/OPEN_QUESTIONS.md` |
+| PROJECT_STATE refreshed (no Studio reference) | `.bequite/state/PROJECT_STATE.md` |
+| Version bump + version history | `.bequite/state/BEQUITE_VERSION.md` |
+
+**Audit-only findings (no repair in alpha.14; deferred to alpha.15):**
+
+- 18 commands lack `## Files to read` memory-first preflight
+- 20 commands lack alpha.6 standardized-fields section
+- 14 commands lack gate-refusal logic
+- 18 skills lack `## Quality gate` section
+- 16 skills lack `## When NOT to use` section
+- 9 stale top-level `docs/*.md` files from heavy direction (low-risk; defer)
+- `LIGHTWEIGHT_SKILL_PACK_ARCHITECTURE.md` count refresh
+- USING_BEQUITE_COMMANDS walkthroughs
+
+**Why deferred:** Each fix is mechanical but touches many files. Bundling them with the audit reports would obscure what was learned. Alpha.15 will be the implementation pass for these mechanical repairs, informed by alpha.14's findings.
+
+**Mode tracking:**
+Append to `.bequite/state/MODE_HISTORY.md`:
+- Mode: deep — alpha.14 audit + repair pass
+- Outcome: SUCCESS — 7 audits + 7 docs touched + version bumped; no Studio / heavy CLI added
+- Approx cost: high (deep audit + 7 reports + repairs)
+- Tests: N/A (this is a discipline release; verification was acceptance check)
+
+**Article VI honest reporting — what's NOT done in alpha.14:**
+- Mechanical fixes deferred (clearly listed as alpha.15 work above + in CHANGELOG)
+- Skill-by-skill consistency repair (Quality gate + When NOT to use) deferred
+- Command memory-first preflight backfill deferred
+- Live verification on a real project (user action — invoking `/bq-presentation` or `/bq-feature` for actual work)
+
+**Tool neutrality observance:**
+- No tools installed
+- No new dependencies
+- No Studio / heavy CLI reintroduced
+- Lightweight direction preserved
+
+**Next:**
+- `git add -A && git commit && git push` — alpha.14 to xpShawky/BeQuite main
+- Update LAST_RUN.md with commit hash
+- alpha.15 pending: mechanical repairs per audit findings
+
+---
+
 ## 2026-05-13 — alpha.13 ship: Creative & Content Workflows — /bq-presentation
 
 **Action:** User invoked `/bq-auto presentation` for adding the Presentation Builder capability. Per /bq-auto discipline, continued autonomously — no hard gates tripped.

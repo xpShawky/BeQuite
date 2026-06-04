@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cadence — before (drifted)</title>
+<!--
+  DOGFOOD DEMO: the HERO is on-DNA and polished. Sections 2–4 deliberately DRIFT.
+  Every drift tell is tagged with a CSS comment "DRIFT:" so the gate report can cite it.
+  Open in any browser — zero dependencies.
+-->
+<style>
+  :root{
+    /* Design DNA tokens (see DESIGN_DNA.md) */
+    --clay:#b14a2e; --clay-700:#8f3a22;
+    --paper:#faf6f1; --surface:#f3ece3; --ink:#2b2622; --ink-soft:#6f655d; --line:#e4d9cc;
+    --r-sm:8px; --r-md:12px; --r-lg:16px;
+    --s-2:8px; --s-3:12px; --s-4:16px; --s-6:24px; --s-8:32px; --s-12:48px; --s-16:64px; --s-24:96px;
+    --display:"Fraunces",Georgia,serif; --body:"Public Sans",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box} body{margin:0;font-family:var(--body);color:var(--ink);background:var(--paper);font-size:17px;line-height:1.6}
+  h1,h2,h3{font-family:var(--display);line-height:1.15;margin:0 0 var(--s-4)}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 var(--s-6)}
+  .btn{display:inline-block;background:var(--clay);color:var(--paper);text-decoration:none;
+       padding:14px 24px;border-radius:var(--r-md);font-weight:600}
+  .btn:hover{background:var(--clay-700)}
+
+  /* NAV — on DNA */
+  nav{display:flex;justify-content:space-between;align-items:center;padding:var(--s-4) var(--s-6);border-bottom:1px solid var(--line)}
+  nav .brand{font-family:var(--display);font-weight:600;font-size:20px;color:var(--clay)}
+  nav a{color:var(--ink);text-decoration:none;margin-left:var(--s-6);font-size:15px}
+
+  /* HERO — on DNA, polished, sentence case, clay CTA, tinted paper */
+  .hero{padding:var(--s-24) 0;background:var(--paper)}
+  .hero h1{font-size:3.25rem;max-width:18ch;font-weight:560}
+  .hero p{font-size:1.2rem;color:var(--ink-soft);max-width:55ch;margin:0 0 var(--s-8)}
+
+  /* ===== SECTION 2: FEATURES — DRIFT ===== */
+  .features{padding:var(--s-24) 0;background:var(--surface)}
+  .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-6)}
+  /* DRIFT: nested card (card inside a card) */
+  .feat-card{background:#fff;border-radius:var(--r-md);padding:var(--s-6);border:1px solid var(--line)}
+  .feat-inner{background:var(--surface);border-radius:var(--r-md);padding:var(--s-4)} /* DRIFT: card-in-card */
+  /* DRIFT: ALL-CAPS multi-word titles + wide tracking 0.22em (DNA forbids both) */
+  .feat-title{text-transform:uppercase;letter-spacing:0.22em;font-family:var(--body);font-weight:700;font-size:14px;margin:var(--s-3) 0}
+  .feat-card p{color:var(--ink-soft);font-size:15px}
+  .feat-ico{width:28px;height:28px;background:var(--clay);border-radius:6px} /* identical generic icon block */
+
+  /* ===== SECTION 3: HOW IT WORKS — DRIFT ===== */
+  /* DRIFT: purple→pink AI gradient band (off-DNA; DNA brand is clay) */
+  .how{padding:62px 0;background:linear-gradient(135deg,#a855f7,#ec4899);color:#fff}
+  .how h2{color:#fff}
+  /* DRIFT: all-caps numbered 01/02/03 eyebrow markers used as decoration */
+  .eyebrow{text-transform:uppercase;letter-spacing:0.18em;font-size:12px;font-weight:700;opacity:.85}
+  /* DRIFT: 36px radius blob on a card (DNA caps cards at 12–16px) + arbitrary spacing 13px/27px */
+  .blob{background:rgba(255,255,255,.14);border-radius:36px;padding:13px 27px;margin-top:21px}
+
+  /* ===== SECTION 4: TESTIMONIALS — DRIFT ===== */
+  /* DRIFT: gray text (#9ca3af ~ 2.0:1) on the clay background — fails WCAG AA + DNA "no gray-on-clay" */
+  .testi{padding:var(--s-24) 0;background:var(--clay)}
+  .testi blockquote{color:#9ca3af;font-size:1.4rem;font-family:var(--display);max-width:60ch;margin:0}
+  .testi cite{color:#d9b8ac;display:block;margin-top:var(--s-4);font-size:14px;font-style:normal}
+  /* DRIFT: narrow container + long unbroken token → text overflow risk */
+  .overflow-note{width:220px;color:#c9a99e;font-size:13px;margin-top:var(--s-4)}
+
+  /* FOOTER — on DNA */
+  footer{padding:var(--s-12) 0;background:var(--surface);border-top:1px solid var(--line);color:var(--ink-soft);font-size:14px}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">Cadence</div>
+  <div><a href="#">Features</a><a href="#">Pricing</a><a class="btn" href="#" style="margin-left:24px">Start free plan</a></div>
+</nav>
+
+<!-- HERO — strong, on-DNA -->
+<section class="hero"><div class="wrap">
+  <h1>Your race plan, one calm run at a time.</h1>
+  <p>Cadence turns your goal race into a week-by-week plan that adapts to the runs you actually do. No guilt, no jargon — just the next run.</p>
+  <a class="btn" href="#">Start your free plan</a>
+</div></section>
+
+<!-- SECTION 2: FEATURES — drifted into a generic ALL-CAPS nested-card grid -->
+<section class="features"><div class="wrap">
+  <h2>What you get</h2>
+  <div class="feat-grid">
+    <div class="feat-card"><div class="feat-inner"><div class="feat-ico"></div>
+      <div class="feat-title">ADAPTIVE TRAINING PLANS</div><p>Plans that shift when life happens.</p></div></div>
+    <div class="feat-card"><div class="feat-inner"><div class="feat-ico"></div>
+      <div class="feat-title">REAL TIME PACE COACHING</div><p>Stay in the right zone every run.</p></div></div>
+    <div class="feat-card"><div class="feat-inner"><div class="feat-ico"></div>
+      <div class="feat-title">SMART RECOVERY INSIGHTS</div><p>Know when to push and when to rest.</p></div></div>
+  </div>
+</div></section>
+
+<!-- SECTION 3: HOW IT WORKS — drifted onto a purple→pink gradient with 01/02/03 eyebrows + 36px blob -->
+<section class="how"><div class="wrap">
+  <h2>How it works</h2>
+  <div class="blob"><div class="eyebrow">01 — SET YOUR RACE</div><p>Pick your race and date.</p></div>
+  <div class="blob"><div class="eyebrow">02 — RUN THE PLAN</div><p>We schedule each run for you.</p></div>
+  <div class="blob"><div class="eyebrow">03 — ADAPT AND IMPROVE</div><p>The plan adjusts to your pace.</p></div>
+</div></section>
+
+<!-- SECTION 4: TESTIMONIALS — drifted with gray-on-clay text + overflow risk -->
+<section class="testi"><div class="wrap">
+  <blockquote>"I finally finished a half-marathon without burning out in training."</blockquote>
+  <cite>— Mara, first-time half-marathoner</cite>
+  <div class="overflow-note">supercalifragilisticexpialidocious-training-consistency-streak</div>
+</div></section>
+
+<footer><div class="wrap">© Cadence — run grounded. Privacy · Terms · Contact</div></footer>
+
+</body>
+</html>

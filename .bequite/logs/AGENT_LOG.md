@@ -2,6 +2,15 @@
 
 Append-only chronicle of every BeQuite command run. Newest at top.
 
+## 2026-06-04 — alpha.17 follow-up: dogfood live-UI validation + branch cleanup
+
+**Action:** User asked to (1) delete the merged remote feature branch and (2) actually run the live-UI validation the verify report flagged.
+
+- **#1:** deleted `origin/feat/frontend-design-continuity-alpha17` (SSH port-22 timed out once, succeeded on retry).
+- **#2:** built `examples/continuity-demo/` — a plain HTML/CSS (zero-dep) "Cadence" running-app landing with a locked `DESIGN_DNA.md`. `before-drifted.html` has a polished hero then deliberately drifting middle sections; `after-fixed.html` corrects them. Ran the Design Continuity Gate: **before = FAIL** (3 BLOCKERs — nested cards, purple→pink gradient, gray-on-clay quote @ 2.13:1), **after = PASS**. A fresh independent subagent audited both files (computed contrast ratios) and confirmed before=FAIL/after=PASS — and caught a residual in the first `after` cut (`cite` @ 4.17:1, just under AA-body), which was closed to 5.02:1. Reports: `DESIGN_CONTINUITY_REPORT.md` + `VISUAL_QA_REPORT.md` (tier-3, honestly labeled — no browser MCP this session).
+- Updated `.bequite/audits/VERIFY_REPORT.md` to record the completed live-UI validation.
+- Tool-neutral: zero dependencies; static HTML only; the demo lives under repo-root `examples/` (NOT copied by the installer, so target projects are unaffected).
+
 ## 2026-06-04 — alpha.17 ship: Frontend Design Continuity upgrade
 
 **Action:** User invoked `/deep-research` (deep mode, Ultracode) for the "middle-section design drift" problem — frontends look good at the hero, then degrade in the middle (generic cards, all-caps misuse, wide tracking, text overflow, lost identity, "code-looking" output). Treated as a context-engineering + design-continuity + visual-QA + workflow-gate problem. Ran a fan-out research workflow over 3 reference repos (Impeccable, UI-UX-Pro-Max, Superpowers) + web refs, audited current FE skills, then implemented the lightweight upgrade per the alpha.14 feature-addition workflow.

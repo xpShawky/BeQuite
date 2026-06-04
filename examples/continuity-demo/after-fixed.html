@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cadence — after (fixed)</title>
+<!--
+  DOGFOOD DEMO: every section now matches DESIGN_DNA.md. The drift tells from
+  before-drifted.html are each corrected; "FIX:" comments mark the change.
+  Open in any browser — zero dependencies.
+-->
+<style>
+  :root{
+    --clay:#b14a2e; --clay-700:#8f3a22;
+    --paper:#faf6f1; --surface:#f3ece3; --ink:#2b2622; --ink-soft:#6f655d; --line:#e4d9cc;
+    --r-sm:8px; --r-md:12px; --r-lg:16px;
+    --s-2:8px; --s-3:12px; --s-4:16px; --s-6:24px; --s-8:32px; --s-12:48px; --s-16:64px; --s-24:96px;
+    --display:"Fraunces",Georgia,serif; --body:"Public Sans",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box} body{margin:0;font-family:var(--body);color:var(--ink);background:var(--paper);font-size:17px;line-height:1.6}
+  h1,h2,h3{font-family:var(--display);line-height:1.15;margin:0 0 var(--s-4);font-weight:560}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 var(--s-6)}
+  .btn{display:inline-block;background:var(--clay);color:var(--paper);text-decoration:none;
+       padding:14px 24px;border-radius:var(--r-md);font-weight:600}
+  .btn:hover{background:var(--clay-700)}
+  /* on-DNA eyebrow label: <=4 words, gentle 0.06em, clay */
+  .label{text-transform:uppercase;letter-spacing:0.06em;font-size:13px;font-weight:600;color:var(--clay)}
+
+  nav{display:flex;justify-content:space-between;align-items:center;padding:var(--s-4) var(--s-6);border-bottom:1px solid var(--line)}
+  nav .brand{font-family:var(--display);font-weight:600;font-size:20px;color:var(--clay)}
+  nav a{color:var(--ink);text-decoration:none;margin-left:var(--s-6);font-size:15px}
+
+  .hero{padding:var(--s-24) 0;background:var(--paper)}
+  .hero h1{font-size:3.25rem;max-width:18ch}
+  .hero p{font-size:1.2rem;color:var(--ink-soft);max-width:55ch;margin:0 0 var(--s-8)}
+
+  /* SECTION 2: FEATURES — FIX: single card depth, sentence-case Fraunces titles, no wide tracking, consistent radius */
+  .features{padding:var(--s-24) 0;background:var(--surface)}
+  .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-6)}
+  .feat-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--r-md);padding:var(--s-6)} /* FIX: one depth, no nesting */
+  .feat-ico{width:28px;height:28px;background:var(--clay);border-radius:var(--r-sm);margin-bottom:var(--s-3)}
+  .feat-card h3{font-size:1.15rem;margin:0 0 var(--s-2)} /* FIX: sentence case, normal tracking */
+  .feat-card p{color:var(--ink-soft);font-size:15px;margin:0}
+
+  /* SECTION 3: HOW IT WORKS — FIX: on-DNA surface band, clay numerals, sentence case, --r-md, 4/8 spacing, no gradient */
+  .how{padding:var(--s-24) 0;background:var(--paper)}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-8)}
+  .step{padding:var(--s-6);border-left:2px solid var(--line)} /* hairline, not a blob */
+  .step .num{font-family:var(--display);font-size:1.6rem;color:var(--clay)} /* FIX: clay numeral, not an all-caps 01 eyebrow */
+  .step h3{font-size:1.1rem;margin:var(--s-2) 0}
+  .step p{color:var(--ink-soft);font-size:15px;margin:0}
+
+  /* SECTION 4: TESTIMONIALS — FIX: paper text on clay (high contrast), overflow handled */
+  .testi{padding:var(--s-24) 0;background:var(--clay);color:var(--paper)}
+  .testi blockquote{color:var(--paper);font-size:1.6rem;font-family:var(--display);max-width:60ch;margin:0;line-height:1.25} /* FIX: on-color, not gray */
+  .testi cite{color:var(--paper);display:block;margin-top:var(--s-4);font-size:15px;font-style:normal} /* FIX: solid paired on-color = 5.02:1 (clears AA body); hierarchy via size, not opacity. Was #f6ddd3 @ 4.17:1 — caught by the gate's independent audit */
+  .testi .tag{display:inline-block;margin-top:var(--s-6);max-width:100%;min-width:0;overflow-wrap:anywhere;
+              color:var(--paper);background:var(--clay-700);border-radius:999px;padding:6px 14px;font-size:13px} /* FIX: overflow-wrap + min-width:0 */
+
+  footer{padding:var(--s-12) 0;background:var(--surface);border-top:1px solid var(--line);color:var(--ink-soft);font-size:14px}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">Cadence</div>
+  <div><a href="#">Features</a><a href="#">Pricing</a><a class="btn" href="#" style="margin-left:24px">Start free plan</a></div>
+</nav>
+
+<section class="hero"><div class="wrap">
+  <h1>Your race plan, one calm run at a time.</h1>
+  <p>Cadence turns your goal race into a week-by-week plan that adapts to the runs you actually do. No guilt, no jargon — just the next run.</p>
+  <a class="btn" href="#">Start your free plan</a>
+</div></section>
+
+<!-- SECTION 2: FEATURES — on DNA -->
+<section class="features"><div class="wrap">
+  <div class="label">What you get</div>
+  <h2>Coaching that bends to your week</h2>
+  <div class="feat-grid">
+    <div class="feat-card"><div class="feat-ico"></div><h3>Adaptive training plans</h3><p>Plans that shift when life happens.</p></div>
+    <div class="feat-card"><div class="feat-ico"></div><h3>Real-time pace coaching</h3><p>Stay in the right zone every run.</p></div>
+    <div class="feat-card"><div class="feat-ico"></div><h3>Smart recovery insights</h3><p>Know when to push and when to rest.</p></div>
+  </div>
+</div></section>
+
+<!-- SECTION 3: HOW IT WORKS — on DNA -->
+<section class="how"><div class="wrap">
+  <div class="label">How it works</div>
+  <h2>Three steps to your race</h2>
+  <div class="steps">
+    <div class="step"><div class="num">1</div><h3>Set your race</h3><p>Pick your race and date.</p></div>
+    <div class="step"><div class="num">2</div><h3>Run the plan</h3><p>We schedule each run for you.</p></div>
+    <div class="step"><div class="num">3</div><h3>Adapt and improve</h3><p>The plan adjusts to your pace.</p></div>
+  </div>
+</div></section>
+
+<!-- SECTION 4: TESTIMONIALS — on DNA -->
+<section class="testi"><div class="wrap">
+  <blockquote>"I finally finished a half-marathon without burning out in training."</blockquote>
+  <cite>— Mara, first-time half-marathoner</cite>
+  <span class="tag">52-week consistency streak</span>
+</div></section>
+
+<footer><div class="wrap">© Cadence — run grounded. Privacy · Terms · Contact</div></footer>
+
+</body>
+</html>

@@ -47,11 +47,20 @@
 - **Cross-reference integrity:** the 6 invented sibling paths in two workflow-generated files (`../checklists/...`, `./section-loop-example.md`, `../references/tokens.css`, `section-by-section-loop.md`, `design-dna.md`) were caught and repointed to real files; a follow-up Grep returns zero remaining bad references.
 - **Installer:** `scripts/install-bequite.{ps1,sh}` scaffold `.bequite/design/` + copy the 5 design templates; the master skill auto-propagates via the existing `bequite-*` glob (operationally complete in target projects).
 
-## Honest scope notes
+## Live-UI validation (done post-release)
 
-- **Browser/Visual-QA gate not exercised here:** this release is a documentation/skill change to BeQuite itself — there is no frontend in *this* repo to render. The Visual QA + Design Continuity gates are verified to *exist and be wired*, not run against a live UI. Real-world validation requires running `/bq-auto frontend deep "<real UI>"` on an actual frontend (recommended next step).
-- **alpha.18 deferred:** ADR-005 Claude Code hooks (incl. optional machine-enforcement of the continuity checklist) remain in the Unreleased/alpha.18 section.
+The gate was dogfooded against a real multi-section page — see `examples/continuity-demo/` (plain HTML/CSS, zero deps):
+- `before-drifted.html` — hero polished, middle sections deliberately drift → gate result **FAIL** (3 BLOCKERs: nested cards, purple→pink gradient, gray-on-clay quote @ 2.13:1).
+- `after-fixed.html` — every section pulled back to the DNA → **PASS**.
+- An **independent subagent audit** (not self-assessment) confirmed before=FAIL / after=PASS *and* caught a residual in the first `after` cut (`cite` @ 4.17:1, a hair under AA-body), which was then closed to 5.02:1 — the gate catching the author's own drift.
+- Reports: `examples/continuity-demo/DESIGN_CONTINUITY_REPORT.md` + `VISUAL_QA_REPORT.md` (tier-3 code inspection — labeled honestly; no Playwright MCP this session, so no pixel screenshots).
+
+**Remaining honest boundary:** tier-3 visual QA reasons from markup (certain for these tells) but doesn't capture render-only surprises; pixel screenshots require a browser-enabled host.
+
+## Deferred
+
+- **alpha.18:** ADR-005 Claude Code hooks (incl. optional machine-enforcement of the continuity checklist).
 
 ## Verdict
 
-**PASS** — all 26 acceptance criteria met with concrete file evidence; no Studio / CLI / dashboard / runtime dependency added; lightweight, markdown-only. Live-UI validation is the user's recommended next step.
+**PASS** — all 26 acceptance criteria met with concrete file evidence; no Studio / CLI / dashboard / runtime dependency added; lightweight, markdown-only. Live-UI validation completed via the `examples/continuity-demo/` dogfood (before=FAIL, after=PASS, independently audited).

@@ -6,15 +6,39 @@ Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANG
 
 ---
 
-## [Unreleased — alpha.18]
+## [Unreleased — alpha.19]
 
-- Implement ADR-005 — author `.claude/hooks/{pretooluse-block-destructive,pretooluse-secret-scan,stop-banned-weasel-words}.{sh,ps1}`
-- Test hooks against planted-violation fixtures
-- Document hooks in `docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`
-- `bequite-updater` skill extended so `/bq-update` can refresh hooks
-- Optional machine-enforcement of the Design Continuity Gate (a PreToolUse grep for the slop tells in `design-continuity-checklist.md`)
-- Live verification by user (real frontend continuity run; real presentation; real delegate cross-session flow)
+- Game-changer features (proposed in `docs/specs/GAME_CHANGER_FEATURES.md`, **report only** this cycle): regression ledger (every fixed bug → permanent test), generalized drift detection (API/schema/doc/dependency), confidence + uncertainty surfacing, session-memory re-injection + "superseded-by" contradiction handling, spec→code→test traceability, scoped maintenance-loop contract
+- Live fire-test of the opt-in hooks across macOS/Linux/Windows; promote the most critical hard gates to default-on hooks once validated
+- Optional machine-enforcement of the Design Continuity Gate (a PreToolUse grep for the slop tells)
 - Optional `/bq-deck` alias for `/bq-presentation` if user demand justifies
+
+---
+
+## [v3.0.0-alpha.18] — 2026-06-04
+
+### Harness, Hooks & Context-Engineering — make reliability deterministic, generalize context discipline to every workflow
+
+Grounded in 6 cited research streams (anchored to official Anthropic docs: effective-context-engineering, effective-harnesses, reduce-hallucinations, best-practices, hooks, demystifying-evals — plus USENIX/PhantomRaven supply-chain research). Core meta-finding applied: BeQuite's rules were *advisory* (the model can skip CLAUDE.md prose) and CLAUDE.md was getting *long* (bloat → ignored rules) — so this release (a) moves the safety subset to *deterministic* opt-in hooks, and (b) pushes depth *out* of CLAUDE.md into on-demand skills.
+
+### Added
+
+- **Opt-in Claude Code hooks (ADR-005 implemented)** — `.claude/hooks/{pretooluse-block-destructive,pretooluse-secret-scan,stop-banned-weasel-words}.{sh,ps1}` + `.claude/settings.json.example` (+ Windows variant) + `.claude/hooks/README.md`. Machine-enforce the safety subset (destructive ops · secrets · weasel-word completion claims). **NOT active by default** — shipped as `.example` you review + merge yourself (CVE-2025-59536 / CVE-2026-21852: committed hooks are an RCE vector). Verified protocol (exit 2 blocks; `stop_hook_active` guard; fail-soft). Strategy: `docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`.
+- **`bequite-context-engineer` skill** (skills 22 → 24) — generalizes the frontend "DNA + section-map + compact-summary + continuity-gate" pattern to ALL workflows: the compact/clear/externalize primitives, compaction-survival rule, machine-state-in-JSON, path-scoped rules, session-orientation ritual, sub-agent isolation.
+- **`bequite-anti-hallucination` skill** — evidence-over-claims, citation-or-strike (a finding needs a `file:line` quote or it's struck), in-session package verification (registry + age + downloads + publisher + lockfile vs slopsquatting/PhantomRaven), version-pinned API grounding, fresh-context adversarial verifier (severity-gated), and the `UNVERIFIED:` / "I don't know" forced-fork.
+- **Memory:** `PROJECT_DNA.md` (the codebase's conventions/architecture contract — workflow-agnostic cousin of the Design DNA), `WORKING_NOTES.md` (per-workflow scratchpad that survives `/compact`), `FILE_RESPONSIBILITY_MAP.md` (anti-spaghetti, emitted before tasks).
+- **Docs:** `CONTEXT_ENGINEERING.md` (all-workflow), `HARNESS_AND_PROMPT_QUALITY.md` (authoring standard), `GAME_CHANGER_FEATURES.md` (ranked proposal — report only).
+
+### Changed
+
+- **CLAUDE.md core rule 16** — one compressed "reliability discipline" rule (context · evidence · anti-spaghetti · machine-enforcement) pointing to the skills; deliberately short to avoid the bloat that gets rules ignored.
+- **Commands:** `/bq-review` two-pass (spec-compliance BEFORE code-quality; fresh-context verifier; citation-or-strike); `/bq-verify` evidence (paste command + exit code + output) + Definition-of-Done gate; `/bq-discover` map-before-act + Project DNA + freshness metadata; `/bq-fix` failing-test-first + package verification; `/bq-feature` Project-DNA consistency + package verification; `/bq-plan` + `/bq-assign` File-Responsibility Map (refuse tasks without it; no-placeholder rule); `/bq-auto` confidence + uncertainty logging + 2-failed-correction reset.
+- **`RESEARCH_DEPTH_STRATEGY.md`** — citation-or-strike, package verification, version-pinned API docs.
+- **Installer** scaffolds the new memory templates + ships `.claude/hooks/` + the settings examples (hooks opt-in; the 2 new skills auto-propagate via the `bequite-*` glob). `/bq-doctor` reports hook presence; `bequite-updater` refreshes hook scripts but never edits your live settings.
+
+### Deferred
+- Hook *fire-testing* across all OSes (the security model requires the user to review + enable anyway).
+- The game-changer features — proposed, not built, per user instruction.
 
 ---
 

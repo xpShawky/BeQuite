@@ -246,6 +246,16 @@ Next:  /bq-doctor          environment health check
 
 ---
 
+## Map before act + Project DNA (alpha.18)
+
+Discovery's job is to **reduce** later context, not inflate it ("more context is not better context"; "a stale map is worse than no map"). Beyond the report sections above:
+
+- **Extract conventions, not just structure.** Record how THIS codebase does things — naming, error-handling, layering + **dependency direction**, test style, exemplar files ("when adding X, follow `<file>`") — into `.bequite/state/PROJECT_DNA.md` (the workflow-agnostic cousin of the frontend Design DNA). New code is later judged against it (anti-spaghetti).
+- **Token-budget the "read these first" list:** rank by (1) files touching the change → (2) immediate callers/deps → (3) covering tests → (4) layer constraints → (5) domain context → (6) exemplars. Surface that ranked list in the report so later commands don't re-walk the tree.
+- **Stamp freshness:** every discovery/DNA artifact carries a commit hash + timestamp + a refresh rule. Trust it only while fresh.
+
+Owner skill: `bequite-context-engineer`. See `docs/architecture/CONTEXT_ENGINEERING.md`.
+
 ## Gate check + memory preflight (alpha.15)
 
 Before doing any work:

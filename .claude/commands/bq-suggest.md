@@ -117,6 +117,8 @@ Decision tree (high-level):
 | "UX issue in section X" | `/bq-live-edit "..."` direct |
 | "Frontend is inconsistent / middle sections look weak / design drifted / hero good but body generic" | lock `DESIGN_DNA.md` → `/bq-audit` (full continuity sweep) → `/bq-fix`/`/bq-live-edit` per finding → `/bq-verify` (continuity + visual QA). Skill: `bequite-frontend-design-system`. (alpha.17) |
 | "Build a frontend that stays consistent top-to-bottom" | `/bq-auto frontend "..."` (deep) — runs Design DNA → section-by-section loop → continuity gate → visual QA |
+| "Make the agent more reliable / stop it skipping safety rules / set up guardrails" | review + enable the opt-in hooks (`.claude/settings*.json.example`); lock `PROJECT_DNA.md`; lean on `bequite-context-engineer` + `bequite-anti-hallucination`. Docs: `CLAUDE_CODE_HOOKS_STRATEGY.md`. (alpha.18) |
+| "Agent keeps forgetting / repeating mistakes / losing the plan" | `bequite-context-engineer` (PROJECT_DNA + WORKING_NOTES + compact/clear/externalize); read `docs/architecture/CONTEXT_ENGINEERING.md`. (alpha.18) |
 | "Multi-domain X + Y" | scoped auto: `/bq-auto "X + Y audit and fix"` or sequential `/bq-audit` → focused fixes |
 | "Spec Kit / one-page spec" | `/bq-spec "..."` |
 | "Understand inherited code" | `/bq-explain "..."` |

@@ -198,6 +198,14 @@ See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.
 
 ---
 
+## Evidence + Definition-of-Done (alpha.18)
+
+`/bq-verify` does not PASS on assertions — it PASSes on **evidence**. For every gate, the report pastes the **actual command + exit code + key output** (not prose like "tests pass"). If you can't run a proof for a gate, mark it `UNVERIFIED` honestly — never claim a green you didn't see (Anthropic "show evidence rather than asserting success"; the trust-then-verify gap).
+
+**Definition-of-Done gate** (before verdict = PASS): runnable + typecheck green + relevant tests green + **no stub/TODO/placeholder in changed files** + docs/memory updated + (if a `REGRESSION_LEDGER.md` exists) prior fixed-bug cases still pass. A frontend present → also the Design Continuity + Visual QA reports (below).
+
+**Optional deterministic backstop:** teams can enable the opt-in `Stop`-hook self-verify recipe ("don't end the turn until build + tests pass") — see `docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`. Not installed by default (BeQuite can't know your test command).
+
 ## Design Continuity Gate (alpha.17)
 
 When a frontend exists, `/bq-verify` does not PASS on code-only checks. The matrix includes two frontend quality gates:

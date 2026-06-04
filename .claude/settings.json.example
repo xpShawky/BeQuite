@@ -1,0 +1,26 @@
+{
+  "_comment_bequite": "OPT-IN BeQuite hooks (macOS/Linux/WSL, bash). Review the scripts first, then MERGE this 'hooks' block into your real .claude/settings.json (or settings.local.json). Do NOT blindly overwrite an existing settings file. See docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md. Windows users: use settings.windows.json.example instead.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/pretooluse-block-destructive.sh\"", "timeout": 10 }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          { "type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/pretooluse-secret-scan.sh\"", "timeout": 10 }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/stop-banned-weasel-words.sh\"", "timeout": 10 }
+        ]
+      }
+    ]
+  }
+}

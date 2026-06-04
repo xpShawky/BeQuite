@@ -110,9 +110,9 @@ Copy-Item -Path "$SRC_CMD\*" -Destination ".\.claude\commands\" -Recurse -Force
 $count = (Get-ChildItem .\.claude\commands\*.md).Count
 Write-Host "  $count slash commands installed" -ForegroundColor Green
 
-# --- 4. Copy .claude/skills/bequite-* (22 specialist skills) ---
+# --- 4. Copy .claude/skills/bequite-* (24 specialist skills) ---
 
-Write-Section "Installing .claude/skills/bequite-* (22 specialist skills)"
+Write-Section "Installing .claude/skills/bequite-* (24 specialist skills)"
 $SRC_SKILLS = Join-Path $SOURCE ".claude\skills"
 if (-not (Test-Path $SRC_SKILLS)) {
   Exit-Fatal "Source missing $SRC_SKILLS"
@@ -123,6 +123,20 @@ Get-ChildItem $SRC_SKILLS -Directory -Filter "bequite-*" | ForEach-Object {
   Copy-Item -Path $_.FullName -Destination ".\.claude\skills\$skillName" -Recurse -Force
   Write-Host "  + $skillName"
 }
+
+# --- 4b. Copy .claude/hooks/ + settings examples (alpha.18 — OPT-IN; NOT auto-enabled) ---
+
+$SRC_HOOKS = Join-Path $SOURCE ".claude\hooks"
+if (Test-Path $SRC_HOOKS) {
+  New-Item -ItemType Directory -Path ".\.claude\hooks" -Force | Out-Null
+  Copy-Item -Path "$SRC_HOOKS\*" -Destination ".\.claude\hooks\" -Recurse -Force
+  Write-Host "  + .claude/hooks/ (opt-in — review before enabling)"
+}
+foreach ($ex in @("settings.json.example","settings.windows.json.example")) {
+  $src = Join-Path $SOURCE ".claude\$ex"
+  if (Test-Path $src) { Copy-Item -Path $src -Destination ".\.claude\$ex" -Force; Write-Host "  + .claude/$ex" }
+}
+Write-Host "  hooks are NOT active by default — merge an example into settings.json to enable (see docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md)"
 
 # --- 5. Create .bequite/ scaffold (alpha.5-alpha.8: principles + uiux + jobs + money + new state files) ---
 
@@ -173,6 +187,10 @@ $TEMPLATES = @{
   ".bequite\design\DESIGN_CONTINUITY_REPORT.md" = ".bequite\design\DESIGN_CONTINUITY_REPORT.md"
   ".bequite\state\FRONTEND_CONTEXT_SUMMARY.md"  = ".bequite\state\FRONTEND_CONTEXT_SUMMARY.md"
   ".bequite\audits\VISUAL_QA_REPORT.md"         = ".bequite\audits\VISUAL_QA_REPORT.md"
+  # alpha.18 reliability / context-engineering
+  ".bequite\state\PROJECT_DNA.md"               = ".bequite\state\PROJECT_DNA.md"
+  ".bequite\state\WORKING_NOTES.md"             = ".bequite\state\WORKING_NOTES.md"
+  ".bequite\plans\FILE_RESPONSIBILITY_MAP.md"   = ".bequite\plans\FILE_RESPONSIBILITY_MAP.md"
   # alpha.8 jobs
   ".bequite\jobs\JOB_PROFILE.md"          = ".bequite\jobs\JOB_PROFILE.md"
   ".bequite\jobs\JOB_SEARCH_LOG.md"       = ".bequite\jobs\JOB_SEARCH_LOG.md"

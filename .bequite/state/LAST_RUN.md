@@ -1,5 +1,18 @@
 # Last BeQuite command
 
+**Command:** v3.0.0-alpha.18 — Harness, Hooks & Context-Engineering upgrade
+**Timestamp:** 2026-06-04 (UTC)
+**Commit:** (set after `git commit` lands)
+**Result:** SUCCESS — new feature: machine-enforcement + all-workflow context engineering + anti-hallucination/anti-spaghetti discipline, grounded in 6 cited research streams (official Anthropic docs).
+  - ADR-005 hooks implemented opt-in (3 hooks × sh+ps1 + 2 settings examples + strategy doc; NOT active by default — RCE-vector security model)
+  - 2 new skills (22 → 24): `bequite-context-engineer` + `bequite-anti-hallucination`
+  - New memory: PROJECT_DNA, WORKING_NOTES, FILE_RESPONSIBILITY_MAP; new docs: CONTEXT_ENGINEERING, HARNESS_AND_PROMPT_QUALITY, GAME_CHANGER_FEATURES (report-only)
+  - CLAUDE.md rule 16 (reliability); upgrades to bq-review/verify/discover/fix/feature/plan/assign/auto + RESEARCH_DEPTH
+  - Installer + doctor + updater wired for hooks; menus/help/suggest/catalog updated
+  - Game-changer features delivered as a RANKED REPORT per user instruction (NOT built)
+**Next suggested:** **Pause for live verification by user** — review + enable the opt-in hooks (`.claude/settings*.json.example`), fire-test each, OR run `/bq-auto` on a real task to exercise the new reliability discipline. Deferred to alpha.19: the proposed game-changer features (regression ledger, drift-detector, confidence surfacing).
+
+**Prior run (preserved):**
 **Command:** v3.0.0-alpha.17 — Frontend Design Continuity upgrade (master skill + Design Continuity Gate + design memory)
 **Timestamp:** 2026-06-04 (UTC)
 **Commit:** (set after `git commit` lands)

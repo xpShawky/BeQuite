@@ -138,6 +138,10 @@ lib/
 
 Mark each: NEW / MODIFIED / DELETED.
 
+### 6b. File-Responsibility Map (alpha.18 — anti-spaghetti)
+
+Before the phase/task plan, emit a **File-Responsibility Map** → `.bequite/plans/FILE_RESPONSIBILITY_MAP.md`: each file → one responsibility + allowed import direction (dependency direction) + covering tests, plus an explicit "out of scope — do NOT touch" list. Name files + interfaces (Anthropic: "the most useful specs name the files and interfaces"; superpowers: "map files before tasks; one responsibility per file"). New code must match `.bequite/state/PROJECT_DNA.md` conventions. `/bq-assign` refuses to write tasks without this map. Owner: `bequite-context-engineer`.
+
 ## 7. Phase plan
 
 | Phase | Outcome | Acceptance evidence | Est. time |

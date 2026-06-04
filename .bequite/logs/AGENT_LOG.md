@@ -2,6 +2,30 @@
 
 Append-only chronicle of every BeQuite command run. Newest at top.
 
+## 2026-06-04 — alpha.18 ship: Harness, Hooks & Context-Engineering upgrade
+
+**Action:** User invoked `/deep-research` (deep mode, Ultracode) to (1) implement Claude Code hooks if they raise quality, (2) generalize the frontend memory/context-engineering wins to ALL workflows, (3) raise research/discovery/harness quality, and (4) propose game-changer features (report only). Ran a 6-stream cited research workflow (all anchored to official Anthropic docs + security research), synthesized myself (the synthesis sub-agent hit a session cap), then implemented.
+
+**New feature: machine-enforcement + all-workflow context engineering + anti-hallucination/anti-spaghetti discipline.**
+
+**Files created (~14):**
+- Hooks: `.claude/hooks/{pretooluse-block-destructive,pretooluse-secret-scan,stop-banned-weasel-words}.{sh,ps1}` (6) + README; `.claude/settings.json.example` + `.claude/settings.windows.json.example`
+- Skills: `bequite-context-engineer`, `bequite-anti-hallucination`
+- Docs: `docs/architecture/CONTEXT_ENGINEERING.md`, `docs/architecture/HARNESS_AND_PROMPT_QUALITY.md`, `docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`, `docs/specs/GAME_CHANGER_FEATURES.md` (report-only)
+- Memory: `.bequite/state/PROJECT_DNA.md`, `.bequite/state/WORKING_NOTES.md`, `.bequite/plans/FILE_RESPONSIBILITY_MAP.md`
+
+**Files modified (~14):**
+- CLAUDE.md (core rule 16 — reliability discipline, kept compressed per the "lean CLAUDE.md" finding)
+- Commands: bq-review (two-pass), bq-verify (evidence + DoD), bq-discover (map-before-act + Project DNA), bq-fix (test-first + package-verify), bq-feature (Project-DNA + package-verify), bq-plan + bq-assign (File-Responsibility Map), bq-auto (confidence + 2-failure reset)
+- Docs: RESEARCH_DEPTH_STRATEGY (citation-or-strike + package checks), ADR-005 (status → implemented)
+- Version/logs: BEQUITE_VERSION, LAST_RUN, CHANGELOG, this log; installer + doctor + updater (hooks wiring)
+
+**Key meta-finding applied:** Anthropic's own guidance says a bloated CLAUDE.md gets ignored — so the upgrade pushes depth into on-demand skills and keeps the CLAUDE.md addition to one compressed rule, rather than piling on prose.
+
+**Game-changers = REPORT ONLY** per user instruction — ranked proposal in `docs/specs/GAME_CHANGER_FEATURES.md`; none built.
+
+**Orchestration:** 1 research workflow (6 streams) + 1 leaf-file generation workflow (7 files) + inline coherence-critical edits. Tool-neutral: no Studio / CLI / dashboard / runtime dependency; hooks are opt-in shell/PowerShell.
+
 ## 2026-06-04 — alpha.17 follow-up: dogfood live-UI validation + branch cleanup
 
 **Action:** User asked to (1) delete the merged remote feature branch and (2) actually run the live-UI validation the verify report flagged.

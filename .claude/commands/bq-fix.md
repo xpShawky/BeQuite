@@ -278,6 +278,9 @@ Narrate each step. Highlight the classification + activated skills early so user
 - **Always add a test.** A bug that escaped means the test was missing.
 - **No "should fix" claims.** Verify the original symptom is actually gone.
 - **One bug per /bq-fix.** Multiple bugs = multiple invocations.
+- **Failing test FIRST (alpha.18).** Write the regression test that reproduces the bug, confirm it FAILS, then patch until it passes — the test is the external oracle that stays accurate as context fills. (Move step 8 before step 7.) Never edit/delete tests to make things pass.
+- **Verify any new package in-session (alpha.18).** If a fix tempts a new dependency, confirm it exists on the registry + age + weekly-downloads + publisher + lockfile-presence before importing (slopsquatting / PhantomRaven; ~5–22% of LLM package suggestions are fake). See `bequite-anti-hallucination`.
+- **Evidence, not assertion (alpha.18).** The completion report pastes the reproduction command + its output (now passing), not "should be fixed."
 
 ## Skills activated
 

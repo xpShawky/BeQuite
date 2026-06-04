@@ -157,6 +157,9 @@ Next: /bq-review (review the change) or /bq-verify (full gates)
 - New test exists + passes
 - Acceptance criterion verified by running it
 - CHANGELOG `[Unreleased]` updated
+- New code matches `.bequite/state/PROJECT_DNA.md` conventions + dependency direction (alpha.18 — no off-convention spaghetti; follow the exemplar files it names)
+- Any new package verified in-session — registry + age + downloads + publisher + lockfile — before import (alpha.18; `bequite-anti-hallucination`)
+- For multi-file features: a File-Responsibility Map exists before tasks (`bequite-context-engineer`); failing-test-first for logic; completion report pastes command output (no weasel words)
 
 ## Failure behavior
 

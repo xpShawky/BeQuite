@@ -86,9 +86,9 @@ cp -r "$SOURCE/.claude/commands/"* "./.claude/commands/"
 count=$(ls -1 ./.claude/commands/*.md 2>/dev/null | wc -l)
 echo "  $(green "$count slash commands installed")"
 
-# --- 4. .claude/skills/bequite-* (22 specialist skills) ---
+# --- 4. .claude/skills/bequite-* (24 specialist skills) ---
 
-section "Installing .claude/skills/bequite-* (22 specialist skills)"
+section "Installing .claude/skills/bequite-* (24 specialist skills)"
 mkdir -p "./.claude/skills"
 for skill in "$SOURCE"/.claude/skills/bequite-*/; do
   if [[ -d "$skill" ]]; then
@@ -97,6 +97,17 @@ for skill in "$SOURCE"/.claude/skills/bequite-*/; do
     echo "  + $name"
   fi
 done
+
+# --- 4b. .claude/hooks/ + settings examples (alpha.18 — OPT-IN; NOT auto-enabled) ---
+if [[ -d "$SOURCE/.claude/hooks" ]]; then
+  mkdir -p "./.claude/hooks"
+  cp -r "$SOURCE/.claude/hooks/"* "./.claude/hooks/" 2>/dev/null || true
+  echo "  + .claude/hooks/ (opt-in — review before enabling)"
+fi
+for ex in settings.json.example settings.windows.json.example; do
+  [[ -f "$SOURCE/.claude/$ex" ]] && cp "$SOURCE/.claude/$ex" "./.claude/$ex" && echo "  + .claude/$ex"
+done
+echo "  hooks are NOT active by default — merge an example into settings.json to enable (see docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md)"
 
 # --- 5. .bequite/ scaffold (alpha.5: principles + uiux + new state files) ---
 
@@ -181,6 +192,11 @@ copy_template ".bequite/design/FRONTEND_SKILL_MAP.md"          ".bequite/design/
 copy_template ".bequite/design/DESIGN_CONTINUITY_REPORT.md"    ".bequite/design/DESIGN_CONTINUITY_REPORT.md"
 copy_template ".bequite/state/FRONTEND_CONTEXT_SUMMARY.md"     ".bequite/state/FRONTEND_CONTEXT_SUMMARY.md"
 copy_template ".bequite/audits/VISUAL_QA_REPORT.md"            ".bequite/audits/VISUAL_QA_REPORT.md"
+
+# alpha.18 — reliability / context-engineering
+copy_template ".bequite/state/PROJECT_DNA.md"                  ".bequite/state/PROJECT_DNA.md"
+copy_template ".bequite/state/WORKING_NOTES.md"                ".bequite/state/WORKING_NOTES.md"
+copy_template ".bequite/plans/FILE_RESPONSIBILITY_MAP.md"      ".bequite/plans/FILE_RESPONSIBILITY_MAP.md"
 
 # Copy commands.md at repo root (top-level reference)
 if [[ -f "$SOURCE/commands.md" && ! -f "./commands.md" ]]; then

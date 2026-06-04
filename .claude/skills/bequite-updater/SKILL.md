@@ -116,6 +116,7 @@ User reviews both, merges manually, then deletes the `.bequite-update.md` siblin
 - `.bequite/jobs/*.md` (templates) — only if missing
 - `.bequite/money/*.md` (templates) — only if missing
 - `.bequite/decisions/` — only template additions; never overwrite user ADRs
+- `.claude/hooks/*.{sh,ps1}` + `.claude/settings.json.example` + `.claude/settings.windows.json.example` (alpha.18 — refresh the hook scripts + opt-in examples). **NEVER touch the user's live `.claude/settings.json` / `.claude/settings.local.json`** — `/bq-update` must not silently change what executes on the user's machine; surface a `.bequite-update.md` note if the example changed and the user has hooks enabled.
 
 ## Files NEVER to overwrite
 

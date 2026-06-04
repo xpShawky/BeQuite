@@ -117,6 +117,9 @@ Next: /bq-implement — pick off T-1.1
 - **Every task must have an acceptance criterion.**
 - **Mark dependencies explicitly.** "T-2.2 depends on T-2.1" is part of the task entry.
 - **Only mark parallel: true when N > 5 + truly independent.** Otherwise, serial is safer (AkitaOnRails 2026).
+- **Require the File-Responsibility Map first (alpha.18).** Refuse to write tasks if `.bequite/plans/FILE_RESPONSIBILITY_MAP.md` is missing — it defines each file's single responsibility + allowed import direction.
+- **Each task carries an embedded validation command + expected output and ends at a commit (alpha.18).** Reject any task containing "TBD", "implement later", or "similar to Task N" — every step has the content an engineer with zero context needs.
+- **Logic tasks are failing-test-first (alpha.18).** Write + confirm the failing test, then implement until green. Never edit/delete tests to pass.
 
 ## Standardized command fields (alpha.6)
 

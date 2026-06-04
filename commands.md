@@ -4,7 +4,9 @@
 >
 > For full procedural detail per command, click through to the matching file at `.claude/commands/<name>.md`.
 
-**Version:** v3.0.0-alpha.17 · 44 slash commands · 22 specialist skills · 6 workflow phases · **4 composable operating modes** · 23 workflow gates + 3 conditional frontend design gates · 17 hard human gates · **Frontend Design Continuity** (alpha.17) · **Creative + Content Workflows** (alpha.13)
+**Version:** v3.0.0-alpha.18 · 44 slash commands · 24 specialist skills · 6 workflow phases · **4 composable operating modes** · 23 workflow gates + 3 conditional frontend design gates · 17 hard human gates · **Opt-in Hooks + Context-Engineering** (alpha.18) · **Frontend Design Continuity** (alpha.17) · **Creative + Content Workflows** (alpha.13)
+
+> **alpha.18 — Harness, Hooks & Context-Engineering:** opt-in Claude Code hooks machine-enforce the safety subset (destructive ops · secrets · weasel-word claims; review before enabling). `bequite-context-engineer` generalizes the frontend DNA/continuity pattern to all workflows; `bequite-anti-hallucination` enforces evidence-over-claims + citation-or-strike + package verification. See `docs/architecture/{CLAUDE_CODE_HOOKS_STRATEGY,CONTEXT_ENGINEERING,HARNESS_AND_PROMPT_QUALITY}.md`. Game-changer features: report only (`docs/specs/GAME_CHANGER_FEATURES.md`).
 
 > **Frontend Design Continuity (alpha.17):** master skill `bequite-frontend-design-system` + a **Design Continuity Gate** keep UI quality consistent from hero to footer — killing "middle-section drift." Persist a Design DNA before coding, build section-by-section, gate every section against the DNA, visual-QA the whole page. Runs inside `/bq-feature`, `/bq-fix`, `/bq-auto`, `/bq-uiux-variants`, `/bq-live-edit`, `/bq-audit`, `/bq-review`, `/bq-red-team`, `/bq-verify`. **Quality promise:** every visible section must meet the Design DNA. Spec: `docs/architecture/DESIGN_CONTINUITY_GATE.md`.
 

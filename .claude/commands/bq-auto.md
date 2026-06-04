@@ -407,6 +407,12 @@ When `/bq-auto` works on a frontend (intents `uiux` / `frontend` / `live-edit` /
 
 Spec: `docs/architecture/DESIGN_CONTINUITY_GATE.md` · `docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md`.
 
+## Reliability discipline (alpha.18)
+
+- **Confidence + uncertainty surfacing.** Each material step logs `confidence: high|med|low` + the single biggest unknown to `AGENT_LOG.md`. `low` confidence on any hard-gate category (destructive / prod / auth / schema / secrets) forces the pause — counters agentic overconfidence (agents succeed ~22% while predicting ~77%).
+- **Tighter blocker reset.** After **2 failed corrections on the same issue** (not 3), stop forcing through: reset context (`/clear` analog), re-read `PROJECT_DNA.md` + the plan, and re-attempt with a sharper prompt. A "blocker" = missing decision, ambiguous spec, or 2nd failed attempt. (Gate #15 still hard-pauses at 3.)
+- **Evidence over claims.** No step claims success without the command + exit code + output (or an explicit `UNVERIFIED:`). One task in focus at a time; re-read the plan + task list (not chat memory) before each step. See `bequite-context-engineer` + `bequite-anti-hallucination`.
+
 ## Tool neutrality (global rule)
 
 ⚠ **Every tool, library, framework, design system, or workflow this command might add during execution is a CANDIDATE, not a default.**

@@ -260,6 +260,16 @@ No new command. A new **master skill** + a **Design Continuity Gate** keep UI qu
 - **Quality promise:** every visible section must meet the Design DNA; no UI is complete without a Design Continuity pass + a Visual QA pass.
 - Docs: `docs/architecture/DESIGN_CONTINUITY_GATE.md`, `docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md`. Skill map: `.bequite/design/FRONTEND_SKILL_MAP.md`.
 
+### Alpha.18 — Harness, Hooks & Context-Engineering
+
+No new command. Reliability upgrades (skills 22 → 24):
+
+- **Opt-in Claude Code hooks** (`.claude/hooks/*` + `settings.json.example`) machine-enforce the safety subset — block destructive ops, secret leaks, and weasel-word "done" claims. **NOT active by default**; review + merge to enable. See `docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`.
+- **`bequite-context-engineer`** — generalizes the frontend DNA/continuity pattern to ALL workflows: `PROJECT_DNA.md` (codebase conventions), `WORKING_NOTES.md` (per-task scratchpad), compact/clear/externalize, session-orientation. See `docs/architecture/CONTEXT_ENGINEERING.md`.
+- **`bequite-anti-hallucination`** — evidence-over-claims, citation-or-strike, in-session package verification, `UNVERIFIED` / "I don't know" forced-fork.
+- Command upgrades: `/bq-review` two-pass (spec→quality), `/bq-verify` evidence + Definition-of-Done, `/bq-discover` map-before-act, `/bq-fix`+`/bq-feature` test-first + package-verify, `/bq-plan`+`/bq-assign` File-Responsibility Map, `/bq-auto` confidence + tighter blocker reset. Authoring standard: `docs/architecture/HARNESS_AND_PROMPT_QUALITY.md`.
+- Game-changer features: ranked **report** at `docs/specs/GAME_CHANGER_FEATURES.md` (proposed, not built).
+
 ### Alpha.10 deep intelligence for opportunity commands
 
 `/bq-job-finder` and `/bq-make-money` now search **community signals** (Reddit / IH / HN / Product Hunt / X / forums) + **trending short-window** opportunities + **AI-assisted paths** in addition to standard platforms. New tracks: `worldwide_hidden`, `trending_now`, `community_discovered`, `AI_assisted`, `no_calls`, `fast_first_payout`, `highest_payout`, `beginner_friendly`, `skilled_remote`, `local_country`, `non_english_platforms`. New memory files: `HIDDEN_GEMS.md`, `COMMUNITY_SIGNALS.md`, `AI_ASSISTED_WORK.md` / `AI_ASSISTED_PATHS.md`.

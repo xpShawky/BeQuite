@@ -75,6 +75,9 @@ No claim without a source. No source without a date.
 - **PhantomRaven** (Aug-Oct 2025 npm campaign): never recommend a package without WebFetch-verifying it exists in the registry
 - **Shai-Hulud** (broader 2025): pin to exact versions for security-critical deps; commit lockfile; Dependabot/Renovate with auto-merge OFF
 - **Memory-based pricing claims**: never quote pricing from memory; always WebFetch within 24h
+- **Citation-or-strike (alpha.18)**: every load-bearing claim carries a source URL + quote; if you can't find a supporting source, label it `UNVERIFIED:` or strike it — don't assert from memory. Pair the banned-weasel-word ban with an explicit "I don't know" escape valve (Anthropic's #1 anti-hallucination move).
+- **Package verification (alpha.18)**: before recommending any dependency, verify existence + age + weekly downloads + publisher + repo link + lockfile presence — not just existence (conflation/typo names can be live malware; hallucinated names are ~58% repeatable, so attackers pre-register them). See `bequite-anti-hallucination`.
+- **Version-pinned API grounding (alpha.18)**: for any non-trivial library/API, fetch version-matched docs this session; never quote a method from memory (retrieve only when the API is unfamiliar — a bad retriever hurts familiar APIs).
 
 ## Tool neutrality intersection
 

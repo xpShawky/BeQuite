@@ -203,6 +203,15 @@ See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.
 
 ---
 
+## Two-pass review (alpha.18 — spec-compliance BEFORE code-quality)
+
+Run review in **two ordered passes** (Anthropic + superpowers: spec compliance first, quality second — starting quality review before spec is ✅ is the wrong order):
+
+1. **Pass 1 — Spec compliance** (vs `SCOPE.md` / `IMPLEMENTATION_PLAN.md` / the task): is every required item implemented? Are listed edge cases tested? **Did anything outside the task's scope change?** (drive-by-refactor detector). Does new code match `PROJECT_DNA.md` conventions + dependency direction (god-file / cycle check)? Do NOT start Pass 2 until Pass 1 is ✅.
+2. **Pass 2 — Code quality** (the per-file axes above).
+
+**Evidence rule (alpha.18):** every finding carries a `file:line` quote of the actual code, or it is struck (no quote → retract). For a strong adversarial pass, run Pass 1 in a **fresh-context sub-agent** that sees only the diff + criteria (not the implementer's reasoning) and is told to **flag only gaps that affect correctness or the stated requirements** (a reviewer prompted to find gaps manufactures them). See `bequite-anti-hallucination`.
+
 ## Design Continuity Gate (alpha.17)
 
 When the diff touches UI, add the **design-continuity dimension** (axis 11 above) to per-file review. A UI diff that polishes the hero but leaves (or introduces) a generic middle section is **Approved-with-comments at best**. Read `.bequite/design/DESIGN_DNA.md` so you review against the intended identity. Flag introduced drift with file:line. **Effort:** review depth scales with `${CLAUDE_EFFORT}` (low/medium compact · high full · xhigh/Ultracode per-section). Owner: `bequite-frontend-design-system`. Checklist: `.claude/skills/bequite-frontend-design-system/references/design-continuity-checklist.md`.

@@ -1,3 +1,27 @@
+# Verify Report — v3.0.0-alpha.18 (Harness, Hooks & Context-Engineering)
+
+**Generated:** 2026-06-05 (UTC) · **Method:** inline filesystem verification (Glob/Grep/Read) + spot-checks. **Overall: PASS** (with honest hook-runtime caveat).
+
+| Check | Status | Evidence |
+|---|---|---|
+| Hooks present (3 × {sh,ps1} + README) | ✅ | `.claude/hooks/` Glob = 7 files |
+| Opt-in configs present | ✅ | `.claude/settings.json.example` + `.windows.` |
+| New skills present + registered | ✅ | `bequite-context-engineer` + `bequite-anti-hallucination` in the skill registry; top-loaded, sourced, frontmatter "Use when…" |
+| New docs present | ✅ | CONTEXT_ENGINEERING, HARNESS_AND_PROMPT_QUALITY, CLAUDE_CODE_HOOKS_STRATEGY, GAME_CHANGER_FEATURES (Glob) |
+| New memory templates present | ✅ | PROJECT_DNA, WORKING_NOTES, FILE_RESPONSIBILITY_MAP (Glob) |
+| No invented cross-references in new skills | ✅ | Grep `references/`,`examples/`,`../` = none (lone "section-map" hit is prose) |
+| Command upgrades wired | ✅ | bq-review/verify/discover/fix/feature/plan/assign/auto edited; CLAUDE.md rule 16 |
+| Installer carries hooks + templates | ✅ | both scripts: `4b` hooks-copy step + 3 new copy_template lines + skill count 24 |
+| Doctor + updater wired | ✅ | bq-doctor Step 7b hooks check; updater SAFE-list + never-touch-live-settings |
+| Hooks protocol correctness | ✅ logic | verified vs official docs (exit 2 blocks; `stop_hook_active` guard; fail-soft) |
+| Hooks live fire-test | ⚠ deferred | no hook runtime in session; review-before-enable required by the security model anyway |
+| Lightweight constraint | ✅ | markdown + opt-in shell/PowerShell only; no Studio/CLI/dashboard/runtime dependency |
+| Game-changers built? | ✅ none | report-only per user instruction (`GAME_CHANGER_FEATURES.md`) |
+
+**Verdict: PASS.** Honest boundary: hook scripts are verified against the documented protocol by logic review, not fired through a live runtime (which is also why the security model requires the user to review + enable). All else verified against the filesystem.
+
+---
+
 # Verify Report — v3.0.0-alpha.17 (Frontend Design Continuity)
 
 **Generated:** 2026-06-04 (UTC)

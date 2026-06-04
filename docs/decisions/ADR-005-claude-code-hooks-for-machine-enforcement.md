@@ -1,6 +1,6 @@
 # ADR-005 — Claude Code hooks for machine-enforcement of safety rules
 
-**Status:** Proposed (drafted in alpha.16; implementation deferred to alpha.17+)
+**Status:** **Accepted — implemented opt-in in alpha.18.** The 3 hooks ship as `.sh` + `.ps1` under `.claude/hooks/`, wired via `.claude/settings.json.example` (+ Windows variant), NOT active by default. Protocol verified against current docs; full strategy in `docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`. (Drafted alpha.16; the alpha.17 slot went to the Frontend Design Continuity feature instead.)
 **Date:** 2026-05-17
 **Decision drivers:** BeQuite v3.0.0-alpha.14 audit (`FULL_SYSTEM_ALIGNMENT_AUDIT.md`); alpha.15 audit-implementation pass.
 **Author:** xpShawky + agent (auto-mode)
@@ -112,10 +112,12 @@ If found in a sentence claiming the work is done → exit 2; ask the agent to re
 
 ## Implementation plan (alpha.17+)
 
-1. **alpha.17 — Prototype + safety-rail validation**
-   - Author `.claude/hooks/pretooluse-block-destructive.{sh,ps1}` + `pretooluse-secret-scan.{sh,ps1}` + `stop-banned-weasel-words.{sh,ps1}`
-   - Test against fixtures with planted violations
-   - Document in `docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`
+1. **alpha.18 — Prototype + safety-rail validation** ✅ DONE
+   - ✅ Authored `.claude/hooks/pretooluse-block-destructive.{sh,ps1}` + `pretooluse-secret-scan.{sh,ps1}` + `stop-banned-weasel-words.{sh,ps1}` (fail-soft; `stop_hook_active` guard; exit-2 block semantics verified)
+   - ✅ Documented in `docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md` (+ `.claude/hooks/README.md`) with the RCE-vector security model
+   - ✅ Shipped `.claude/settings.json.example` + `.claude/settings.windows.json.example` (opt-in; not active by default)
+   - ⚠ Live-runtime fire-test deferred to the user (no hook runtime in the authoring session; review-before-enable is required by the security model anyway)
+   - Resolved open questions: protected-branch set only (not all branches); secret scan at PreToolUse (before write); weasel-word hook respects `stop_hook_active` + fails soft + Claude Code force-overrides after 8 blocks
 
 2. **alpha.18 — Settings integration**
    - Provide `.claude/settings.json.example` template

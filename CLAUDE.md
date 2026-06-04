@@ -16,10 +16,11 @@ This repo IS the source of the skill pack. Its `.claude/commands/` + `.claude/sk
 
 ---
 
-## Current spec: v3.0.0-alpha.17
+## Current spec: v3.0.0-alpha.18
 
 - **44 slash commands** (`.claude/commands/bequite.md` + 43 × `.claude/commands/bq-*.md`)
-- **22 skills** (`.claude/skills/bequite-*/SKILL.md`) — adds `bequite-frontend-design-system` (master) in alpha.17; `bequite-presentation-builder` in alpha.13; `bequite-delegate-planner` in alpha.12
+- **24 skills** (`.claude/skills/bequite-*/SKILL.md`) — adds `bequite-context-engineer` + `bequite-anti-hallucination` in alpha.18; `bequite-frontend-design-system` (master) in alpha.17; `bequite-presentation-builder` in alpha.13; `bequite-delegate-planner` in alpha.12
+- **Harness, Hooks & Context-Engineering (alpha.18)** — opt-in Claude Code **hooks** machine-enforce the safety subset (destructive ops · secrets · weasel-word completion claims; `.claude/hooks/*` + `settings.json.example`, **NOT active by default** — review before enabling, RCE-vector). `bequite-context-engineer` generalizes the frontend DNA/continuity pattern to ALL workflows (`PROJECT_DNA.md` + `WORKING_NOTES.md` + compact/clear/externalize + session-orientation). `bequite-anti-hallucination` enforces evidence-over-claims + citation-or-strike + package verification + the `UNVERIFIED` forced-fork. See core rule 16 + `docs/architecture/{CLAUDE_CODE_HOOKS_STRATEGY,CONTEXT_ENGINEERING,HARNESS_AND_PROMPT_QUALITY}.md`. Game-changer features delivered as a report (`docs/specs/GAME_CHANGER_FEATURES.md`), not built.
 - **Frontend Design Continuity (alpha.17)** — master skill `bequite-frontend-design-system` + the **Design Continuity Gate** keep UI quality consistent from hero to footer, killing "middle-section drift" (generic cards, all-caps misuse, wide tracking, text overflow, lost identity in the middle). Design DNA persisted at `.bequite/design/DESIGN_DNA.md` (gate `DESIGN_DNA_LOCKED`); the gate (`DESIGN_CONTINUITY_PASS` + `VISUAL_QA_DONE`) runs in `/bq-feature` `/bq-fix` `/bq-auto` `/bq-uiux-variants` `/bq-live-edit` `/bq-audit` `/bq-review` `/bq-red-team` `/bq-verify`. **Quality promise:** every visible section must meet the Design DNA — hero quality is not enough. Section-by-section build loop + product-type awareness + visual QA. See `docs/architecture/DESIGN_CONTINUITY_GATE.md` + `docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md`.
 - **Creative + Content Workflows (alpha.13)** — `/bq-presentation` produces premium PPTX or HTML decks from topic / files / brand assets / research. Strict (preserves source) vs creative (adds structure). Variants 1–10. Morph-like motion for PPTX, CSS/JS for HTML. Memory at `.bequite/presentations/`.
 - **4 composable operating modes** (alpha.12) — Deep / Fast / Token Saver (alias `lean`) / Delegate. Set per command with `--mode <mode>` or as positional flags. All 17 hard human gates apply regardless of mode. Tracked in `.bequite/state/CURRENT_MODE.md` and `MODE_HISTORY.md`. Full table in `commands.md` § Operating Modes and `docs/architecture/AUTO_MODE_STRATEGY.md` §11.
@@ -64,6 +65,11 @@ This repo IS the source of the skill pack. Its `.claude/commands/` + `.claude/sk
 | Frontend context summary (alpha.17) | `.bequite/state/FRONTEND_CONTEXT_SUMMARY.md` |
 | Visual QA report (alpha.17) | `.bequite/audits/VISUAL_QA_REPORT.md` |
 | Design Continuity Gate docs (alpha.17) | `docs/architecture/DESIGN_CONTINUITY_GATE.md` · `FRONTEND_CONTEXT_ENGINEERING.md` |
+| Hooks (alpha.18, opt-in) | `.claude/hooks/*.{sh,ps1}` + `.claude/settings.json.example` (+ `.windows.`) ; strategy `docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`; decision `docs/decisions/ADR-005-*.md` |
+| Context engineering (alpha.18) | `bequite-context-engineer` skill · `docs/architecture/CONTEXT_ENGINEERING.md` · `.bequite/state/PROJECT_DNA.md` · `WORKING_NOTES.md` · `.bequite/plans/FILE_RESPONSIBILITY_MAP.md` |
+| Anti-hallucination (alpha.18) | `bequite-anti-hallucination` skill |
+| Harness/prompt authoring standard (alpha.18) | `docs/architecture/HARNESS_AND_PROMPT_QUALITY.md` |
+| Game-changer feature report (alpha.18) | `docs/specs/GAME_CHANGER_FEATURES.md` (proposal only) |
 | Public command reference | `commands.md` (repo root) |
 | BeQuite memory | `.bequite/` |
 | Workflow gate ledger | `.bequite/state/WORKFLOW_GATES.md` |
@@ -119,6 +125,12 @@ This repo IS the source of the skill pack. Its `.claude/commands/` + `.claude/sk
    Exemptions: hotfixes / doc-only changes can skip 2-5 but must still 6-15. Adding a skill that activates from an existing command can skip 2-5.
 14. **BeQuite eats its own food** (alpha.14). Run periodic self-audits (this very rule was born from one). When discipline drift is detected, write an alignment audit before adding new features.
 15. **Frontend quality promise** (alpha.17). Hero quality is not enough — **every visible section must meet the Design DNA.** For any frontend work: read/lock `.bequite/design/DESIGN_DNA.md` before coding, build section-by-section (build → check vs DNA → continue), and never claim a UI complete without a Design Continuity pass (`DESIGN_CONTINUITY_REPORT.md`) and a Visual QA pass (`VISUAL_QA_REPORT.md`). The master skill `bequite-frontend-design-system` owns this. See `docs/architecture/DESIGN_CONTINUITY_GATE.md` + `FRONTEND_CONTEXT_ENGINEERING.md`. This is a quality gate; it never bypasses the 17 hard human gates.
+
+16. **Reliability discipline** (alpha.18 — context · evidence · anti-spaghetti · enforcement). Depth lives in skills on purpose — a bloated CLAUDE.md gets ignored (Anthropic). Keep this file lean; push detail to skills.
+    - **Context:** persist state to files, not fading chat. Before a multi-step/multi-session task read `PROJECT_DNA.md` + the compact summary; re-read facts (don't trust ones buried mid-conversation); compact/clear/externalize at task boundaries; one task at a time. Critical must-not-forget facts go in **this file or auto-memory** — only those survive `/compact`. Put the most important instructions at the **top** of every file. See `bequite-context-engineer` + `docs/architecture/CONTEXT_ENGINEERING.md`.
+    - **Evidence over claims:** never assert "done/works" — paste the command + exit code + output, or emit an explicit `UNVERIFIED:` / "I don't know". Every review/audit/red-team finding carries a `file:line` quote or is struck. Verify a package exists (registry + age + downloads + publisher + lockfile) before importing. See `bequite-anti-hallucination`.
+    - **Anti-spaghetti:** `/bq-plan` emits a File-Responsibility Map before tasks; failing-test-first; smallest-safe-change + verify incrementally (no drive-by refactors); `/bq-review` runs spec-compliance **before** code-quality; new code matches `PROJECT_DNA.md`.
+    - **Machine-enforcement:** the safety subset (destructive ops · secrets · weasel-word completion claims) ships as **opt-in** hooks (review before enabling — RCE-vector). See `docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`.
 
 ### The 10 decision questions (apply before any major tool pick)
 
@@ -195,6 +207,10 @@ Phase orchestrators: `/bq-p0` through `/bq-p5` (walk one phase in order). Autono
 
 1 frontend master (new in v3.0.0-alpha.17):
 - `bequite-frontend-design-system` — **master/coordinator**: owns Design DNA, the section-by-section build loop, the Design Continuity Gate, visual QA, and product-type rules. Coordinates `ux-ui-designer` (design), `frontend-quality` (slop detection), `live-edit` (section edits). Kills middle-section drift. (Total skills: 22 — this section's "14" header is historical.)
+
+2 reliability/context (new in v3.0.0-alpha.18):
+- `bequite-context-engineer` — **all-workflow context engineering**: compact/clear/externalize primitives, compaction-survival rule, `PROJECT_DNA.md` + `WORKING_NOTES.md`, session-orientation ritual, sub-agent isolation. Generalizes the frontend DNA/continuity win to backend/db/security/devops/testing.
+- `bequite-anti-hallucination` — evidence-over-claims, citation-or-strike, in-session package verification, version-pinned API grounding, fresh-context adversarial verifier, `UNVERIFIED`/"I don't know" forced-fork.
 
 (Plus the opportunity/creative/maintenance skills: `bequite-researcher`, `bequite-product-strategist`, `bequite-backend-architect`, `bequite-database-architect`, `bequite-security-reviewer`, `bequite-devops-cloud`, `bequite-workflow-advisor`, `bequite-job-finder`, `bequite-make-money`, `bequite-updater`, `bequite-delegate-planner`, `bequite-presentation-builder`.)
 

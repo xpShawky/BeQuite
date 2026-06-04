@@ -74,6 +74,13 @@ Look in `.github/workflows/`, `.gitlab-ci.yml`, etc.
 - Is there a CI workflow that runs the test command on push?
 - Is there a CI workflow that runs install + build?
 
+## Step 7b — Check BeQuite hooks (alpha.18)
+
+Report whether the opt-in BeQuite hooks are present + active:
+- **Present:** `.claude/hooks/*.{sh,ps1}` exist (shipped + reviewable).
+- **Active:** the project's `.claude/settings.json` (or `settings.local.json`) has a `hooks` block referencing them.
+- If present-but-not-active → note "hooks available but not enabled — review + merge `.claude/settings.json.example` (or `.windows.`) to turn on; see `docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`." **Never enable them automatically** (security: review-before-enable).
+
 ## Step 8 — Write the report
 
 Print to chat AND write `.bequite/audits/DOCTOR_REPORT.md`:

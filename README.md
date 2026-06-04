@@ -4,14 +4,14 @@
 
 A lightweight skill pack + memory system. Install once. Works everywhere Claude Code runs.
 
-**Latest:** `v3.0.0-alpha.17` · **Previous:** `v3.0.0-alpha.16` · MIT · by [@xpShawky](https://github.com/xpShawky)
+**Latest:** `v3.0.0-alpha.18` · **Previous:** `v3.0.0-alpha.17` · MIT · by [@xpShawky](https://github.com/xpShawky)
 
 **📖 Full command reference: [`commands.md`](commands.md)** — every command explained, ordered by workflow.
 
 <p>
   <a href="#install"><img alt="Install" src="https://img.shields.io/badge/install-one_command-0ea5e9?style=flat-square"></a>
   <a href="commands.md"><img alt="44 commands" src="https://img.shields.io/badge/slash_commands-44-7c3aed?style=flat-square"></a>
-  <a href="#how-to-use"><img alt="22 skills" src="https://img.shields.io/badge/skills-22-10b981?style=flat-square"></a>
+  <a href="#how-to-use"><img alt="24 skills" src="https://img.shields.io/badge/skills-24-10b981?style=flat-square"></a>
   <a href="#operating-modes"><img alt="4 modes" src="https://img.shields.io/badge/operating_modes-4-ec4899?style=flat-square"></a>
   <a href="#workflow"><img alt="6 phases" src="https://img.shields.io/badge/phases-6-f59e0b?style=flat-square"></a>
   <a href="#what-bequite-is-not"><img alt="No Docker" src="https://img.shields.io/badge/no-Docker-64748b?style=flat-square"></a>
@@ -27,7 +27,8 @@ A lightweight skill pack + memory system. Install once. Works everywhere Claude 
 It gives every project:
 
 - **44 slash commands** — `/bq-init`, `/bq-research`, `/bq-plan`, `/bq-feature`, `/bq-fix`, `/bq-auto`, `/bq-uiux-variants`, `/bq-live-edit`, `/bq-now`, `/bq-spec`, `/bq-explain`, `/bq-suggest`, `/bq-job-finder`, `/bq-make-money`, `/bq-update`, `/bq-presentation` (alpha.13), … (full reference: [`commands.md`](commands.md))
-- **22 specialist skills** — **frontend-design-system** (master, alpha.17), researcher, product-strategist, backend-architect, database-architect, security-reviewer, devops-cloud, frontend-quality, ux-ui-designer, testing-gate, release-gate, live-edit, scraping-automation, problem-solver, multi-model-planning, project-architect, workflow-advisor, job-finder, make-money, updater, delegate-planner (alpha.12), **presentation-builder** (alpha.13)
+- **24 specialist skills** — **context-engineer** + **anti-hallucination** (alpha.18), **frontend-design-system** (master, alpha.17), researcher, product-strategist, backend-architect, database-architect, security-reviewer, devops-cloud, frontend-quality, ux-ui-designer, testing-gate, release-gate, live-edit, scraping-automation, problem-solver, multi-model-planning, project-architect, workflow-advisor, job-finder, make-money, updater, delegate-planner (alpha.12), **presentation-builder** (alpha.13)
+- **Opt-in machine-enforcement (alpha.18)** — Claude Code hooks that block destructive ops, secret leaks, and weasel-word "done" claims. Reviewed + enabled by you (not active by default). Plus all-workflow context engineering + anti-hallucination discipline. See [`docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`](docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md).
 - **4 composable operating modes** — Deep / Fast / Token Saver / Delegate (alpha.12). See [Operating Modes](#operating-modes) below.
 - **6 workflow phases** with **mandatory gates** that block out-of-order commands
 - **Persistent memory** in `.bequite/` — state, plans, audits, logs, mistake memory, **mode history**
@@ -642,6 +643,10 @@ The lightweight skill pack is the core. Any project that benefits from "research
 - **Design Continuity Gate (alpha.17):** [`docs/architecture/DESIGN_CONTINUITY_GATE.md`](docs/architecture/DESIGN_CONTINUITY_GATE.md)
 - **Frontend context engineering (alpha.17):** [`docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md`](docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md)
 - **Frontend skill map (alpha.17):** [`.bequite/design/FRONTEND_SKILL_MAP.md`](.bequite/design/FRONTEND_SKILL_MAP.md)
+- **Claude Code hooks (alpha.18, opt-in):** [`docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`](docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md)
+- **Context engineering, all workflows (alpha.18):** [`docs/architecture/CONTEXT_ENGINEERING.md`](docs/architecture/CONTEXT_ENGINEERING.md)
+- **Harness & prompt quality (alpha.18):** [`docs/architecture/HARNESS_AND_PROMPT_QUALITY.md`](docs/architecture/HARNESS_AND_PROMPT_QUALITY.md)
+- **Game-changer feature proposals (alpha.18, report):** [`docs/specs/GAME_CHANGER_FEATURES.md`](docs/specs/GAME_CHANGER_FEATURES.md)
 - **Multi-model planning:** [`docs/architecture/MULTI_MODEL_PLANNING_STRATEGY.md`](docs/architecture/MULTI_MODEL_PLANNING_STRATEGY.md)
 - **Command catalog:** [`docs/specs/COMMAND_CATALOG.md`](docs/specs/COMMAND_CATALOG.md)
 - **MVP scope:** [`docs/specs/MVP_LIGHTWEIGHT_SCOPE.md`](docs/specs/MVP_LIGHTWEIGHT_SCOPE.md)

@@ -1,10 +1,10 @@
 # BeQuite installed version
 
-**Version:** v3.0.0-alpha.17
+**Version:** v3.0.0-alpha.18
 **Updated:** 2026-06-04
 **Source:** github
 **Source path / repo:** xpShawky/BeQuite (branch: main)
-**Previous version:** v3.0.0-alpha.16
+**Previous version:** v3.0.0-alpha.17
 **Last check:** 2026-06-04
 **Update count:** 0 (this is the seed file; updates from /bq-update increment)
 
@@ -27,7 +27,14 @@ Reading this file lets `/bq-update` know:
 
 (Populated by `/bq-update` runs — newest at top.)
 
-### 2026-06-04 — alpha.17 ship — Frontend Design Continuity upgrade
+### 2026-06-04 — alpha.18 ship — Harness, Hooks & Context-Engineering upgrade
+- ADR-005 implemented (opt-in): 3 hooks × {sh,ps1} (destructive-block, secret-scan, banned-weasel-words) + `.claude/settings.json.example` (+ Windows variant) + `CLAUDE_CODE_HOOKS_STRATEGY.md`. NOT active by default (RCE-vector security model).
+- 2 new skills (skills 22 → 24): `bequite-context-engineer` (all-workflow context engineering — generalizes the frontend DNA/continuity pattern) + `bequite-anti-hallucination` (evidence-over-claims, citation-or-strike, package verification, UNVERIFIED forced-fork).
+- New memory: `PROJECT_DNA.md` (codebase conventions/architecture contract) + `WORKING_NOTES.md` (per-workflow scratchpad) + `FILE_RESPONSIBILITY_MAP.md` (anti-spaghetti, emitted by /bq-plan).
+- New docs: `CONTEXT_ENGINEERING.md` + `HARNESS_AND_PROMPT_QUALITY.md` + `docs/specs/GAME_CHANGER_FEATURES.md` (report-only).
+- CLAUDE.md core rule 16 (reliability discipline, compressed). Command upgrades: bq-review two-pass (spec→quality), bq-verify evidence+DoD, bq-discover map-before-act+Project DNA, bq-fix test-first+package-verify, bq-feature Project-DNA+package-verify, bq-plan/bq-assign File-Responsibility-Map, bq-auto confidence+2-failure-reset, RESEARCH_DEPTH citation-or-strike.
+- Research: 6 cited streams (all anchored to official Anthropic docs) — hooks, context engineering, hallucination, safe implementation, harness, game-changer gaps.
+- Tool-neutral: no Studio / CLI / dashboard / runtime dependency. Hooks are opt-in shell/PowerShell only.
 - New master skill `bequite-frontend-design-system` (SKILL + 9 references + 3 examples) — coordinates ux-ui-designer / frontend-quality / live-edit; kills "middle-section drift"
 - Design Continuity Gate (`DESIGN_CONTINUITY_PASS` + `VISUAL_QA_DONE` + `DESIGN_DNA_LOCKED`, conditional on a frontend) wired into 9 commands
 - Design memory: `.bequite/design/` (DESIGN_DNA, FRONTEND_SKILL_MAP, DESIGN_CONTINUITY_REPORT) + `.bequite/audits/VISUAL_QA_REPORT.md` + `.bequite/state/FRONTEND_CONTEXT_SUMMARY.md`

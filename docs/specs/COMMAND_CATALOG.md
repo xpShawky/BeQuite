@@ -2,7 +2,7 @@
 
 **Status:** authored 2026-05-11; expanded 2026-05-12 across alpha.2–alpha.10; 4 operating modes added 2026-05-12 (alpha.12); Presentation Builder added 2026-05-13 (alpha.13); discipline-restoration audit + global feature-addition rule added 2026-05-17 (alpha.14)
 **Total commands:** 44 active + 1 deprecated alias (`/bq-add-feature` → `/bq-feature`)
-**Total skills:** 22 (7 baseline + 7 specialist + 1 live-edit + 3 opportunity + 1 updater + 1 delegate-planner + 1 presentation-builder + 1 frontend-design-system master, alpha.17)
+**Total skills:** 24 (7 baseline + 7 specialist + 1 live-edit + 3 opportunity + 1 updater + 1 delegate-planner + 1 presentation-builder + 1 frontend-design-system master, alpha.17 + 2 reliability/context: bequite-context-engineer + bequite-anti-hallucination, alpha.18)
 
 > **Frontend Design Continuity (alpha.17):** master skill `bequite-frontend-design-system` + the **Design Continuity Gate** (`DESIGN_CONTINUITY_PASS` + `VISUAL_QA_DONE` + `DESIGN_DNA_LOCKED`, all conditional on a frontend existing) keep UI quality consistent across every section. The gate runs in `/bq-feature`, `/bq-fix`, `/bq-auto`, `/bq-uiux-variants`, `/bq-live-edit`, `/bq-audit`, `/bq-review`, `/bq-red-team`, `/bq-verify`. Spec: `docs/architecture/DESIGN_CONTINUITY_GATE.md`.
 **Operating modes (alpha.12):** 4 composable — Deep / Fast / Token Saver (alias `lean`) / Delegate

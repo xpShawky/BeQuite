@@ -259,8 +259,15 @@ Every variant must pass:
 - [ ] Motion is purposeful (not distracting)
 - [ ] Design fits the project's actual users (not generic "modern dashboard")
 - [ ] Doesn't trigger the 15 AI-slop anti-patterns (purple-blue gradients, three Lucide icons in a row, Inter without reason, nested cards with shadows, etc.)
+- [ ] **Design continuity (alpha.17)** — every section of the reference screen is consistent with the variant's Design DNA (no quality cliff; no off-DNA middle section)
 
 Variants that fail any of these are flagged in the report; the user can still pick them if they want to fix during merge, but it's logged.
+
+---
+
+### Design continuity per variant (alpha.17)
+
+A variant that only nails the hero is not a real direction. Each variant's reference screen is continuity-checked across all its sections against the variant's Design DNA (owner skill: `bequite-frontend-design-system`). After the user picks the winner (hard gate #16) and it merges, run the FULL Design Continuity Gate + Visual QA on the merged UI and lock the chosen DNA (`DESIGN_DNA_LOCKED`, `DESIGN_CONTINUITY_PASS`, `VISUAL_QA_DONE`). Spec: `docs/architecture/DESIGN_CONTINUITY_GATE.md`.
 
 ---
 

@@ -86,9 +86,9 @@ cp -r "$SOURCE/.claude/commands/"* "./.claude/commands/"
 count=$(ls -1 ./.claude/commands/*.md 2>/dev/null | wc -l)
 echo "  $(green "$count slash commands installed")"
 
-# --- 4. .claude/skills/bequite-* (21 specialist skills) ---
+# --- 4. .claude/skills/bequite-* (22 specialist skills) ---
 
-section "Installing .claude/skills/bequite-* (21 specialist skills)"
+section "Installing .claude/skills/bequite-* (22 specialist skills)"
 mkdir -p "./.claude/skills"
 for skill in "$SOURCE"/.claude/skills/bequite-*/; do
   if [[ -d "$skill" ]]; then
@@ -101,7 +101,7 @@ done
 # --- 5. .bequite/ scaffold (alpha.5: principles + uiux + new state files) ---
 
 section "Scaffolding .bequite/ memory (alpha.5-13: principles, uiux, jobs, money, mistake memory, assumptions, delegate, presentations)"
-mkdir -p ./.bequite/{state,logs,prompts/user_prompts,prompts/generated_prompts,prompts/model_outputs,audits,plans,tasks,principles,decisions,uiux/screenshots,uiux/archive,jobs,money,backups,presentations/assets,presentations/outputs}
+mkdir -p ./.bequite/{state,logs,prompts/user_prompts,prompts/generated_prompts,prompts/model_outputs,audits,plans,tasks,principles,decisions,design,uiux/screenshots,uiux/archive,jobs,money,backups,presentations/assets,presentations/outputs}
 echo "  directory scaffold ready"
 
 # Copy alpha.5 templates into target project (preserve existing if present)
@@ -174,6 +174,13 @@ copy_template ".bequite/presentations/SPEAKER_NOTES.md"                 ".bequit
 copy_template ".bequite/presentations/REFERENCES.md"                    ".bequite/presentations/REFERENCES.md"
 copy_template ".bequite/presentations/PRESENTATION_VARIANTS_REPORT.md"  ".bequite/presentations/PRESENTATION_VARIANTS_REPORT.md"
 copy_template ".bequite/presentations/EXPORT_LOG.md"                    ".bequite/presentations/EXPORT_LOG.md"
+
+# alpha.17 — frontend design continuity
+copy_template ".bequite/design/DESIGN_DNA.md"                  ".bequite/design/DESIGN_DNA.md"
+copy_template ".bequite/design/FRONTEND_SKILL_MAP.md"          ".bequite/design/FRONTEND_SKILL_MAP.md"
+copy_template ".bequite/design/DESIGN_CONTINUITY_REPORT.md"    ".bequite/design/DESIGN_CONTINUITY_REPORT.md"
+copy_template ".bequite/state/FRONTEND_CONTEXT_SUMMARY.md"     ".bequite/state/FRONTEND_CONTEXT_SUMMARY.md"
+copy_template ".bequite/audits/VISUAL_QA_REPORT.md"            ".bequite/audits/VISUAL_QA_REPORT.md"
 
 # Copy commands.md at repo root (top-level reference)
 if [[ -f "$SOURCE/commands.md" && ! -f "./commands.md" ]]; then

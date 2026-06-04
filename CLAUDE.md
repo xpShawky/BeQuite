@@ -16,10 +16,11 @@ This repo IS the source of the skill pack. Its `.claude/commands/` + `.claude/sk
 
 ---
 
-## Current spec: v3.0.0-alpha.13
+## Current spec: v3.0.0-alpha.17
 
-- **44 slash commands** (`.claude/commands/bequite.md` + 43 × `.claude/commands/bq-*.md`) — adds `/bq-presentation` in alpha.13
-- **21 skills** (`.claude/skills/bequite-*/SKILL.md`) — adds `bequite-presentation-builder` in alpha.13 (alpha.12 added `bequite-delegate-planner`)
+- **44 slash commands** (`.claude/commands/bequite.md` + 43 × `.claude/commands/bq-*.md`)
+- **22 skills** (`.claude/skills/bequite-*/SKILL.md`) — adds `bequite-frontend-design-system` (master) in alpha.17; `bequite-presentation-builder` in alpha.13; `bequite-delegate-planner` in alpha.12
+- **Frontend Design Continuity (alpha.17)** — master skill `bequite-frontend-design-system` + the **Design Continuity Gate** keep UI quality consistent from hero to footer, killing "middle-section drift" (generic cards, all-caps misuse, wide tracking, text overflow, lost identity in the middle). Design DNA persisted at `.bequite/design/DESIGN_DNA.md` (gate `DESIGN_DNA_LOCKED`); the gate (`DESIGN_CONTINUITY_PASS` + `VISUAL_QA_DONE`) runs in `/bq-feature` `/bq-fix` `/bq-auto` `/bq-uiux-variants` `/bq-live-edit` `/bq-audit` `/bq-review` `/bq-red-team` `/bq-verify`. **Quality promise:** every visible section must meet the Design DNA — hero quality is not enough. Section-by-section build loop + product-type awareness + visual QA. See `docs/architecture/DESIGN_CONTINUITY_GATE.md` + `docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md`.
 - **Creative + Content Workflows (alpha.13)** — `/bq-presentation` produces premium PPTX or HTML decks from topic / files / brand assets / research. Strict (preserves source) vs creative (adds structure). Variants 1–10. Morph-like motion for PPTX, CSS/JS for HTML. Memory at `.bequite/presentations/`.
 - **4 composable operating modes** (alpha.12) — Deep / Fast / Token Saver (alias `lean`) / Delegate. Set per command with `--mode <mode>` or as positional flags. All 17 hard human gates apply regardless of mode. Tracked in `.bequite/state/CURRENT_MODE.md` and `MODE_HISTORY.md`. Full table in `commands.md` § Operating Modes and `docs/architecture/AUTO_MODE_STRATEGY.md` §11.
 - **Memory-first behavior** — every action-taking command reads core memory (state / mode / phase / gates / last-run / mistake-memory / mode-history) before acting; see `docs/architecture/MEMORY_FIRST_BEHAVIOR.md`
@@ -57,7 +58,12 @@ This repo IS the source of the skill pack. Its `.claude/commands/` + `.claude/sk
 | Delegate task pack (alpha.12) | `.bequite/tasks/DELEGATE_TASKS.md`, `DELEGATE_INSTRUCTIONS.md`, `DELEGATE_ACCEPTANCE_CRITERIA.md`, `DELEGATE_TEST_PLAN.md` |
 | Delegate review report (alpha.12) | `.bequite/audits/DELEGATE_REVIEW_REPORT.md` |
 | Presentation memory (alpha.13) | `.bequite/presentations/` (PRESENTATION_BRIEF, CONTENT_OUTLINE, SLIDE_PLAN, DESIGN_BRIEF, MOTION_PLAN, SPEAKER_NOTES, REFERENCES, PRESENTATION_VARIANTS_REPORT, EXPORT_LOG + assets/ + outputs/) |
-| Skills (21) | `.claude/skills/bequite-*/SKILL.md` |
+| Skills (22) | `.claude/skills/bequite-*/SKILL.md` |
+| Master frontend skill (alpha.17) | `.claude/skills/bequite-frontend-design-system/` (SKILL + references/ + examples/) |
+| Design memory (alpha.17) | `.bequite/design/` (DESIGN_DNA, FRONTEND_SKILL_MAP, DESIGN_CONTINUITY_REPORT) |
+| Frontend context summary (alpha.17) | `.bequite/state/FRONTEND_CONTEXT_SUMMARY.md` |
+| Visual QA report (alpha.17) | `.bequite/audits/VISUAL_QA_REPORT.md` |
+| Design Continuity Gate docs (alpha.17) | `docs/architecture/DESIGN_CONTINUITY_GATE.md` · `FRONTEND_CONTEXT_ENGINEERING.md` |
 | Public command reference | `commands.md` (repo root) |
 | BeQuite memory | `.bequite/` |
 | Workflow gate ledger | `.bequite/state/WORKFLOW_GATES.md` |
@@ -112,6 +118,7 @@ This repo IS the source of the skill pack. Its `.claude/commands/` + `.claude/sk
     15. Mark `BEQUITE_VERSION.md` + `LAST_RUN.md`
    Exemptions: hotfixes / doc-only changes can skip 2-5 but must still 6-15. Adding a skill that activates from an existing command can skip 2-5.
 14. **BeQuite eats its own food** (alpha.14). Run periodic self-audits (this very rule was born from one). When discipline drift is detected, write an alignment audit before adding new features.
+15. **Frontend quality promise** (alpha.17). Hero quality is not enough — **every visible section must meet the Design DNA.** For any frontend work: read/lock `.bequite/design/DESIGN_DNA.md` before coding, build section-by-section (build → check vs DNA → continue), and never claim a UI complete without a Design Continuity pass (`DESIGN_CONTINUITY_REPORT.md`) and a Visual QA pass (`VISUAL_QA_REPORT.md`). The master skill `bequite-frontend-design-system` owns this. See `docs/architecture/DESIGN_CONTINUITY_GATE.md` + `FRONTEND_CONTEXT_ENGINEERING.md`. This is a quality gate; it never bypasses the 17 hard human gates.
 
 ### The 10 decision questions (apply before any major tool pick)
 
@@ -185,6 +192,11 @@ Phase orchestrators: `/bq-p0` through `/bq-p5` (walk one phase in order). Autono
 
 1 frontend live-edit (new in v3.0.0-alpha.4):
 - `bequite-live-edit` — section-mapped frontend edits + browser inspection tiers
+
+1 frontend master (new in v3.0.0-alpha.17):
+- `bequite-frontend-design-system` — **master/coordinator**: owns Design DNA, the section-by-section build loop, the Design Continuity Gate, visual QA, and product-type rules. Coordinates `ux-ui-designer` (design), `frontend-quality` (slop detection), `live-edit` (section edits). Kills middle-section drift. (Total skills: 22 — this section's "14" header is historical.)
+
+(Plus the opportunity/creative/maintenance skills: `bequite-researcher`, `bequite-product-strategist`, `bequite-backend-architect`, `bequite-database-architect`, `bequite-security-reviewer`, `bequite-devops-cloud`, `bequite-workflow-advisor`, `bequite-job-finder`, `bequite-make-money`, `bequite-updater`, `bequite-delegate-planner`, `bequite-presentation-builder`.)
 
 ---
 

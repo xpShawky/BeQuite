@@ -2,6 +2,31 @@
 
 Append-only chronicle of every BeQuite command run. Newest at top.
 
+## 2026-06-04 — alpha.17 ship: Frontend Design Continuity upgrade
+
+**Action:** User invoked `/deep-research` (deep mode, Ultracode) for the "middle-section design drift" problem — frontends look good at the hero, then degrade in the middle (generic cards, all-caps misuse, wide tracking, text overflow, lost identity, "code-looking" output). Treated as a context-engineering + design-continuity + visual-QA + workflow-gate problem. Ran a fan-out research workflow over 3 reference repos (Impeccable, UI-UX-Pro-Max, Superpowers) + web refs, audited current FE skills, then implemented the lightweight upgrade per the alpha.14 feature-addition workflow.
+
+**New feature: frontend design continuity.**
+
+**Files created (~25):**
+- `.claude/skills/bequite-frontend-design-system/` — SKILL.md + references/ (design-continuity-checklist, visual-qa-checklist, mobile-app-ui-checklist, cinematic-ui-checklist, product-type-rules, design-dna-template, impeccable-notes, ui-ux-pro-max-notes, superpowers-notes) + examples/ (design-dna-example, section-map-example, visual-qa-report-example)
+- `.bequite/design/` (DESIGN_DNA, FRONTEND_SKILL_MAP, DESIGN_CONTINUITY_REPORT)
+- `.bequite/audits/VISUAL_QA_REPORT.md`, `.bequite/audits/FRONTEND_SKILL_INTEGRATION_AUDIT.md`
+- `.bequite/state/FRONTEND_CONTEXT_SUMMARY.md`, `.bequite/uiux/screenshots/README.md`
+- `docs/architecture/DESIGN_CONTINUITY_GATE.md`, `docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md`
+
+**Files modified (~22):**
+- Commands: bq-feature, bq-fix, bq-auto, bq-uiux-variants, bq-live-edit, bq-audit, bq-review, bq-red-team, bq-verify, bequite, bq-help, bq-suggest
+- Skills: bequite-frontend-quality, bequite-ux-ui-designer, bequite-live-edit (master coordination + effort awareness), bequite-researcher (effort awareness)
+- Gate ledgers: `.bequite/state/WORKFLOW_GATES.md`, `docs/architecture/WORKFLOW_GATES.md` (+3 conditional gates)
+- Memory: `.bequite/uiux/SECTION_MAP.md` (enriched), `.bequite/state/MISTAKE_MEMORY.md` (10 `[fe][design]` seed rules)
+- Docs: README, commands.md, CLAUDE.md (rule 15 + alpha.17 spec), COMMAND_CATALOG, USING_BEQUITE_COMMANDS, MEMORY_FIRST_BEHAVIOR, AUTO_MODE_STRATEGY, UIUX_VARIANTS_STRATEGY, LIVE_EDIT_STRATEGY
+- Version/logs: BEQUITE_VERSION, LAST_RUN, CHANGELOG, this log
+
+**Tool-neutral:** no Studio, no CLI/TUI, no dashboard, no new runtime dependency — markdown only. Skills 21 → 22; commands unchanged at 44.
+
+**Orchestration:** 2 workflows (research fan-out + leaf-file generation) + inline authoring of canonical files + adversarial verification against the 26 acceptance criteria.
+
 ## 2026-05-17 — alpha.16 ship: clean stable alpha (skill desc audit + ADR-005 + cross-refs)
 
 **Action:** User invoked `/bq-auto deep` to implement the alpha.16 deferred items + asked for a "clean version" of BeQuite. Per /bq-auto discipline, continued autonomously — no hard gates tripped.

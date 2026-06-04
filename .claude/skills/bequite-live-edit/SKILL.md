@@ -17,6 +17,10 @@ Encode the discipline for **lightweight, agent-assisted frontend edits** that re
 
 Activated by `/bq-live-edit` and `/bq-auto live-edit`.
 
+> **Master coordination (alpha.17):** This skill is the **section-edit + browser-inspection** specialist (the canonical 3-tier browser strategy + rollback live here). The master skill `bequite-frontend-design-system` runs the section-by-section loop and *calls* this skill to execute each edit; after each edit, re-check the section against the Design DNA (Design Continuity Gate — `references/design-continuity-checklist.md`). Map: `.bequite/design/FRONTEND_SKILL_MAP.md`.
+>
+> **Effort awareness:** `${CLAUDE_EFFORT}` scales verification — low/medium: build + touched section; high: + neighbors + responsive; xhigh/max/Ultracode: + browser visual QA + full continuity re-check. Infer from operating mode if unset.
+
 ---
 
 ## When to use this skill

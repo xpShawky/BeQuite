@@ -34,6 +34,7 @@ For each changed file, comment on:
 8. **DRY** — is this duplicating logic that lives elsewhere?
 9. **Performance** — any obvious O(n²) loops or unnecessary network calls?
 10. **Reversibility** — is this easy to roll back if something goes wrong?
+11. **Design continuity (UI diffs, alpha.17)** — for any UI change, does the changed section still match the Design DNA and the rest of the page? Check for introduced drift: all-caps misuse, wide letter-spacing, gray-on-color, text overflow, generic/nested cards, off-scale radius/spacing, or a section now visibly worse than the hero. See `.claude/skills/bequite-frontend-design-system/references/design-continuity-checklist.md`.
 
 ## Step 4 — Write REVIEW report
 
@@ -199,6 +200,12 @@ The 10 decision questions every new tool must answer:
 **Tool neutrality findings are a real BLOCKER category.** Treat them as such.
 
 See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.
+
+---
+
+## Design Continuity Gate (alpha.17)
+
+When the diff touches UI, add the **design-continuity dimension** (axis 11 above) to per-file review. A UI diff that polishes the hero but leaves (or introduces) a generic middle section is **Approved-with-comments at best**. Read `.bequite/design/DESIGN_DNA.md` so you review against the intended identity. Flag introduced drift with file:line. **Effort:** review depth scales with `${CLAUDE_EFFORT}` (low/medium compact · high full · xhigh/Ultracode per-section). Owner: `bequite-frontend-design-system`. Checklist: `.claude/skills/bequite-frontend-design-system/references/design-continuity-checklist.md`.
 
 ---
 

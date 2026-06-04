@@ -110,9 +110,9 @@ Copy-Item -Path "$SRC_CMD\*" -Destination ".\.claude\commands\" -Recurse -Force
 $count = (Get-ChildItem .\.claude\commands\*.md).Count
 Write-Host "  $count slash commands installed" -ForegroundColor Green
 
-# --- 4. Copy .claude/skills/bequite-* (15 specialist skills) ---
+# --- 4. Copy .claude/skills/bequite-* (22 specialist skills) ---
 
-Write-Section "Installing .claude/skills/bequite-* (21 specialist skills)"
+Write-Section "Installing .claude/skills/bequite-* (22 specialist skills)"
 $SRC_SKILLS = Join-Path $SOURCE ".claude\skills"
 if (-not (Test-Path $SRC_SKILLS)) {
   Exit-Fatal "Source missing $SRC_SKILLS"
@@ -139,6 +139,7 @@ $SCAFFOLD = @(
   ".bequite\tasks",
   ".bequite\principles",
   ".bequite\decisions",
+  ".bequite\design",
   ".bequite\uiux\screenshots",
   ".bequite\uiux\archive",
   ".bequite\jobs",
@@ -166,6 +167,12 @@ $TEMPLATES = @{
   ".bequite\uiux\LIVE_EDIT_LOG.md"        = ".bequite\uiux\LIVE_EDIT_LOG.md"
   ".bequite\uiux\UIUX_VARIANTS_REPORT.md" = ".bequite\uiux\UIUX_VARIANTS_REPORT.md"
   ".bequite\uiux\selected-variant.md"     = ".bequite\uiux\selected-variant.md"
+  # alpha.17 frontend design continuity
+  ".bequite\design\DESIGN_DNA.md"               = ".bequite\design\DESIGN_DNA.md"
+  ".bequite\design\FRONTEND_SKILL_MAP.md"       = ".bequite\design\FRONTEND_SKILL_MAP.md"
+  ".bequite\design\DESIGN_CONTINUITY_REPORT.md" = ".bequite\design\DESIGN_CONTINUITY_REPORT.md"
+  ".bequite\state\FRONTEND_CONTEXT_SUMMARY.md"  = ".bequite\state\FRONTEND_CONTEXT_SUMMARY.md"
+  ".bequite\audits\VISUAL_QA_REPORT.md"         = ".bequite\audits\VISUAL_QA_REPORT.md"
   # alpha.8 jobs
   ".bequite\jobs\JOB_PROFILE.md"          = ".bequite\jobs\JOB_PROFILE.md"
   ".bequite\jobs\JOB_SEARCH_LOG.md"       = ".bequite\jobs\JOB_SEARCH_LOG.md"

@@ -250,6 +250,16 @@ Additional commands not listed above (alpha.2+):
 - `/bq-update` (Maintenance — alpha.10; safe BeQuite self-update with backup + conflict surfacing)
 - `/bq-presentation` (Creative and Content Workflows — alpha.13; premium PPTX / HTML presentations with variants, strict-vs-creative modes, morph-like motion planning)
 
+### Alpha.17 — Frontend Design Continuity
+
+No new command. A new **master skill** + a **Design Continuity Gate** keep UI quality consistent from hero to footer (kills "middle-section drift" — generic cards, all-caps misuse, wide tracking, text overflow, lost identity in the middle).
+
+- **Master skill:** `bequite-frontend-design-system` — coordinates `bequite-ux-ui-designer` (design), `bequite-frontend-quality` (slop detection), `bequite-live-edit` (section edits). Owns the Design DNA, the section-by-section loop, the Design Continuity Gate, visual QA, and product-type rules.
+- **Design DNA** (`.bequite/design/DESIGN_DNA.md`) is the persisted source of truth — read before any UI work, locked before first UI code (gate `DESIGN_DNA_LOCKED`).
+- **The gate** (`DESIGN_CONTINUITY_PASS` + `VISUAL_QA_DONE`) runs inside `/bq-feature`, `/bq-fix`, `/bq-auto`, `/bq-uiux-variants`, `/bq-live-edit`, `/bq-audit`, `/bq-review`, `/bq-red-team`, `/bq-verify`.
+- **Quality promise:** every visible section must meet the Design DNA; no UI is complete without a Design Continuity pass + a Visual QA pass.
+- Docs: `docs/architecture/DESIGN_CONTINUITY_GATE.md`, `docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md`. Skill map: `.bequite/design/FRONTEND_SKILL_MAP.md`.
+
 ### Alpha.10 deep intelligence for opportunity commands
 
 `/bq-job-finder` and `/bq-make-money` now search **community signals** (Reddit / IH / HN / Product Hunt / X / forums) + **trending short-window** opportunities + **AI-assisted paths** in addition to standard platforms. New tracks: `worldwide_hidden`, `trending_now`, `community_discovered`, `AI_assisted`, `no_calls`, `fast_first_payout`, `highest_payout`, `beginner_friendly`, `skilled_remote`, `local_country`, `non_english_platforms`. New memory files: `HIDDEN_GEMS.md`, `COMMUNITY_SIGNALS.md`, `AI_ASSISTED_WORK.md` / `AI_ASSISTED_PATHS.md`.

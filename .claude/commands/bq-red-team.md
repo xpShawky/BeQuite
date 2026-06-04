@@ -65,6 +65,7 @@ For each angle, ask "what would break this?". Be specific.
 - Invisible text (color ≈ background)
 - Touch targets too small (<44px)
 - Confusing copy
+- **Design continuity (alpha.17): which section looks worse than the hero, and why?** Hunt the quality cliff — generic/nested cards in the middle, all-caps misuse, wide letter-spacing, gray-on-color, text overflow, off-DNA spacing/radius, a body that's clearly "code-looking" vs the polished top. Name the weakest section. Kill-shot: "If the hero is the bar, why is section 4 below it?"
 
 ### 7. Token-waste
 - Verbose log statements in hot paths
@@ -302,6 +303,12 @@ The 10 decision questions every named tool in the diff must answer:
 10. What tool gives the best output with the least complexity?
 
 See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.
+
+---
+
+## Design Continuity Gate (alpha.17)
+
+For UI work, the Skeptic's sharpest frontend angle is the **quality cliff**: the hero got the attention, the middle drifted. Adversarially compare every section to the strongest one and to the Design DNA (`.bequite/design/DESIGN_DNA.md`). Treat a middle section that's visibly worse than the hero, an off-DNA section, or generic "AI-looking" UI as a real BLOCKER/HIGH finding — not a nit. Add a `[fe][design]` MISTAKE_MEMORY entry with a detection rule for any confirmed drift. **Effort:** attack depth scales with `${CLAUDE_EFFORT}` (low/medium weakest-section spot-check · high all sections · xhigh/Ultracode adversarial per-section). Owner: `bequite-frontend-design-system`. Checklist: `.claude/skills/bequite-frontend-design-system/references/design-continuity-checklist.md`.
 
 ---
 

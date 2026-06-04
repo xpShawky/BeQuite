@@ -261,6 +261,18 @@ Narrate each step. Pause **only** at step 6 (winner selection — the hard human
 - A variant fails build → mark in the report; user can still pick it (will be fixed during merge)
 - User rejects all variants → run `/bq-research` to surface what's missing in the project's design brief, then re-propose
 
+## Design Continuity Gate (alpha.17)
+
+Each variant is generated under a Design DNA and **continuity-checked before it's presented** — a variant that only nails the hero reference screen is not a real direction.
+
+- Per variant: derive a `DESIGN_DNA.md` direction, then check the reference screen's sections against it (`references/design-continuity-checklist.md`). The comparison table already has a "Not AI-slop" row — treat "Design continuity (all sections consistent)" as a sibling criterion.
+- Pick the product type per `references/product-type-rules.md` so directions fit the product (not all "cinematic SaaS landing").
+- **After the user picks the winner (hard gate #16) and it merges:** run the FULL Design Continuity Gate across the merged UI → `.bequite/design/DESIGN_CONTINUITY_REPORT.md`, plus Visual QA → `.bequite/audits/VISUAL_QA_REPORT.md`. Lock the chosen DNA and set `DESIGN_DNA_LOCKED` + `DESIGN_CONTINUITY_PASS` + `VISUAL_QA_DONE`.
+
+**Effort awareness:** low/medium → check reference screen; high → full per-variant; xhigh/Ultracode → per-variant critique + post-merge browser visual QA.
+
+Owner skill: `bequite-frontend-design-system`. Spec: `docs/architecture/DESIGN_CONTINUITY_GATE.md`.
+
 ## Tool neutrality (global rule)
 
 ⚠ **Every named style direction, component library, motion library, or design system in this command is an EXAMPLE, not a mandatory default.**

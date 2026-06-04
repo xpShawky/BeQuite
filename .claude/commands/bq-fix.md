@@ -306,6 +306,21 @@ See `.bequite/state/MISTAKE_MEMORY.md` template + tag system.
 
 ---
 
+## Design Continuity Gate (alpha.17 — visual / cross-browser fixes)
+
+For type-1 (frontend visual/state) and type-15 (cross-browser/platform) fixes, activate `bequite-frontend-design-system` and **re-run the Design Continuity Gate on the touched page after the fix**. A fix must not create new middle-section drift.
+
+- Read `.bequite/design/DESIGN_DNA.md` before editing — the fixed section must still match the DNA (not just "stop the symptom").
+- After the patch, check the edited section AND its neighbors against the DNA (`references/design-continuity-checklist.md`).
+- If the page renders, do a quick Visual QA on the affected route (highest available browser tier; never auto-install Playwright).
+- Append the drift pattern to `.bequite/state/MISTAKE_MEMORY.md` with `[fe][design]` + a detection rule. Update `DESIGN_CONTINUITY_REPORT.md` if a full page was re-checked.
+
+**Effort awareness:** low/medium → check the touched section + grep heuristics; high → touched page; xhigh/Ultracode → full continuity + visual QA sweep.
+
+Spec: `docs/architecture/DESIGN_CONTINUITY_GATE.md`.
+
+---
+
 ## Tool neutrality (global rule)
 
 ⚠ **A fix should rarely introduce a new tool. If it does, the fix mini-spec must include a decision section before the patch lands.**

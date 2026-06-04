@@ -226,6 +226,17 @@ No claim without a source. No source without a date.
 
 ---
 
+## Effort awareness (alpha.17)
+
+Research depth scales with `${CLAUDE_EFFORT}` (Ultracode / xhigh = deepest):
+- **low / medium** — compact: the 3 highest-value dimensions for the task (typically stack + security + scalability); reuse cached research.
+- **high** — the full 11-dimension pass with verified evidence.
+- **xhigh / max / Ultracode** — deep reasoning: all 11 dims + beyond-obvious sources (GitHub, Reddit, HN, X, Product Hunt, niche / non-English) + **adversarial verification of load-bearing claims** before they're used.
+
+If effort is unset, infer from operating mode (`deep`→high+, `fast`→compact, `token-saver`→compact + cached). Treat Ultracode as the highest-quality research mode, not a separate effort value.
+
+---
+
 ## Tie-break protocol
 
 When two libraries are equivalent on freshness + license + CVEs, prefer:

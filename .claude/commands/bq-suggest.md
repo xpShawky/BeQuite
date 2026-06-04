@@ -115,6 +115,8 @@ Decision tree (high-level):
 | "Add feature" | `/bq-feature "..."` or `/bq-auto feature "..."` |
 | "Redesign UI" | `/bq-uiux-variants N` → user pick → `/bq-live-edit` for refinement |
 | "UX issue in section X" | `/bq-live-edit "..."` direct |
+| "Frontend is inconsistent / middle sections look weak / design drifted / hero good but body generic" | lock `DESIGN_DNA.md` → `/bq-audit` (full continuity sweep) → `/bq-fix`/`/bq-live-edit` per finding → `/bq-verify` (continuity + visual QA). Skill: `bequite-frontend-design-system`. (alpha.17) |
+| "Build a frontend that stays consistent top-to-bottom" | `/bq-auto frontend "..."` (deep) — runs Design DNA → section-by-section loop → continuity gate → visual QA |
 | "Multi-domain X + Y" | scoped auto: `/bq-auto "X + Y audit and fix"` or sequential `/bq-audit` → focused fixes |
 | "Spec Kit / one-page spec" | `/bq-spec "..."` |
 | "Understand inherited code" | `/bq-explain "..."` |

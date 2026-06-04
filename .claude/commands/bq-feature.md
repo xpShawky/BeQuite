@@ -174,6 +174,28 @@ Next: /bq-review (review the change) or /bq-verify (full gates)
 
 ---
 
+## Design Continuity Gate (alpha.17 — UI-typed features)
+
+For features classified Frontend UI / Admin panel / Dashboard (types 1 / 8 / 9), this command activates `bequite-frontend-design-system` and runs the **Design Continuity Gate** so the feature holds the same quality across **every** section — not just the first one built.
+
+**Before implementing UI:**
+- Read `.bequite/design/DESIGN_DNA.md` (gate `DESIGN_DNA_LOCKED`). If missing/placeholder, fill + lock it first — every section is judged against it.
+- Pick the product type → apply `.claude/skills/bequite-frontend-design-system/references/product-type-rules.md` (do NOT default to "cinematic SaaS landing").
+- Add each section to `.bequite/uiux/SECTION_MAP.md` with acceptance criteria.
+
+**While implementing:** build section-by-section — build a section → check it against the DNA → continue. Don't build the whole surface then hope. Re-read `.bequite/state/FRONTEND_CONTEXT_SUMMARY.md` between sections.
+
+**Before "done":**
+- Run the Design Continuity Gate → `.bequite/design/DESIGN_CONTINUITY_REPORT.md` (no BLOCKER/HIGH drift; close the quality cliff between weakest and strongest section).
+- Run Visual QA → `.bequite/audits/VISUAL_QA_REPORT.md` (render it; never claim a visual PASS you didn't see).
+- Set `DESIGN_CONTINUITY_PASS` + `VISUAL_QA_DONE`. Log any `[fe][design]` lesson to `MISTAKE_MEMORY.md`.
+
+**Effort awareness:** low/medium → compact heuristic check; high → full per-section; xhigh/Ultracode → per-section critique + browser visual QA + final polish.
+
+Spec: `docs/architecture/DESIGN_CONTINUITY_GATE.md`. Map: `.bequite/design/FRONTEND_SKILL_MAP.md`.
+
+---
+
 ## Tool neutrality (global rule)
 
 ⚠ **Every tool, library, framework, or design system this command might add as part of a feature is a CANDIDATE, not a default.**

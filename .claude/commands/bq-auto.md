@@ -180,7 +180,7 @@ After each step:
 Before final report:
 - All gates required for this intent are `✅`
 - All tests for changed surface pass
-- If frontend involved + browser automation available → visual check
+- **If frontend involved:** the full scope is implemented (all sections, all in-scope pages, mobile layout, middle + final sections, buttons, forms, empty/loading/error states) — NOT just a nice hero. A passing `DESIGN_CONTINUITY_REPORT.md` + `VISUAL_QA_REPORT.md` exist. See the Frontend auto-mode behavior section below.
 - No banned weasel words in any claim
 
 ### 6. Final output
@@ -384,6 +384,28 @@ Narrate each step + sub-step ("Running /bq-clarify…", "Implementing T-2.3…")
 - Cost ceiling → pause; ask user to authorize continuation
 - 3 consecutive failures → pause
 - Banned weasel word → rewrite or pause
+
+## Frontend auto-mode behavior + Design Continuity Gate (alpha.17)
+
+When `/bq-auto` works on a frontend (intents `uiux` / `frontend` / `live-edit` / `variants`, or any feature/fix that touches UI), it activates `bequite-frontend-design-system`.
+
+**It must NOT stop after a nice hero.** Auto-mode continues, without pausing for "should I do the rest?", through: all sections · all in-scope pages · mobile layout · middle sections · final sections · buttons · forms · empty / loading / error states · visual QA · final polish.
+
+**Workflow:** read/lock `DESIGN_DNA.md` (gate `DESIGN_DNA_LOCKED`) → pick product type (`references/product-type-rules.md`) → build section-by-section (build → check vs DNA → continue, re-reading `FRONTEND_CONTEXT_SUMMARY.md`) → full-page continuity audit → responsive + a11y/contrast audit → final polish.
+
+**It must NOT claim complete until ALL of:**
+- full scope is implemented (every section, not just the hero)
+- `.bequite/design/DESIGN_CONTINUITY_REPORT.md` exists and passes (no BLOCKER/HIGH; quality cliff closed)
+- `.bequite/audits/VISUAL_QA_REPORT.md` exists (browser tier, or honest tier-3 note)
+- tests / browser checks ran
+- `MISTAKE_MEMORY.md` updated if any `[fe][design]` issue found
+- logs (`AGENT_LOG.md`) + `CHANGELOG.md` updated
+
+**Effort awareness:** `${CLAUDE_EFFORT}` scales the gate — low/medium compact; high full; xhigh/Ultracode = senior-design-review (per-section critique + browser visual QA + polish). If effort is unset, infer from mode (`deep`→high+, `fast`→compact, `token-saver`→compact + cached DNA).
+
+**Variant-winner selection (hard gate #16) still pauses.** The continuity/visual-QA gates are quality gates and never bypass the 17 hard human gates.
+
+Spec: `docs/architecture/DESIGN_CONTINUITY_GATE.md` · `docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md`.
 
 ## Tool neutrality (global rule)
 

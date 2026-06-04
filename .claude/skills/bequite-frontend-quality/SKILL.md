@@ -8,6 +8,10 @@ allowed-tools: ["Read", "Glob", "Grep", "WebFetch", "WebSearch", "Edit", "Write"
 
 Frontend quality discipline. Invoked when the project has UI — Next.js, Nuxt, SvelteKit, Vite + React, plain HTML, anything visual.
 
+> **Master coordination (alpha.17):** This skill is the **AI-slop detection** specialist. The master skill `bequite-frontend-design-system` orchestrates frontend work (Design DNA, section-by-section loop, Design Continuity Gate, visual QA, product-type rules) and *calls* this skill to detect slop. The canonical 15 AI-slop tells (below) live here; the master references them — don't duplicate them. Map: `.bequite/design/FRONTEND_SKILL_MAP.md`.
+>
+> **Effort awareness:** `${CLAUDE_EFFORT}` scales the scan — low/medium: grep the slop heuristics + spot-check the weakest middle sections; high: full 15-tell scan on **every** section; xhigh/max/Ultracode: full scan + browser visual QA + per-section comparison to the hero (senior design-review mode). If effort is unset, infer from operating mode (deep→high+, fast→compact, token-saver→compact + cached DNA).
+
 **References:**
 - Impeccable (Paul Bakaus) — https://github.com/pbakaus/impeccable
 - The 15 AI-slop patterns + the 10 design principles below

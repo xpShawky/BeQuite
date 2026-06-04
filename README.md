@@ -4,14 +4,14 @@
 
 A lightweight skill pack + memory system. Install once. Works everywhere Claude Code runs.
 
-**Latest:** `v3.0.0-alpha.13` · **Previous:** `v3.0.0-alpha.12` · MIT · by [@xpShawky](https://github.com/xpShawky)
+**Latest:** `v3.0.0-alpha.17` · **Previous:** `v3.0.0-alpha.16` · MIT · by [@xpShawky](https://github.com/xpShawky)
 
 **📖 Full command reference: [`commands.md`](commands.md)** — every command explained, ordered by workflow.
 
 <p>
   <a href="#install"><img alt="Install" src="https://img.shields.io/badge/install-one_command-0ea5e9?style=flat-square"></a>
   <a href="commands.md"><img alt="44 commands" src="https://img.shields.io/badge/slash_commands-44-7c3aed?style=flat-square"></a>
-  <a href="#how-to-use"><img alt="21 skills" src="https://img.shields.io/badge/skills-21-10b981?style=flat-square"></a>
+  <a href="#how-to-use"><img alt="22 skills" src="https://img.shields.io/badge/skills-22-10b981?style=flat-square"></a>
   <a href="#operating-modes"><img alt="4 modes" src="https://img.shields.io/badge/operating_modes-4-ec4899?style=flat-square"></a>
   <a href="#workflow"><img alt="6 phases" src="https://img.shields.io/badge/phases-6-f59e0b?style=flat-square"></a>
   <a href="#what-bequite-is-not"><img alt="No Docker" src="https://img.shields.io/badge/no-Docker-64748b?style=flat-square"></a>
@@ -27,7 +27,7 @@ A lightweight skill pack + memory system. Install once. Works everywhere Claude 
 It gives every project:
 
 - **44 slash commands** — `/bq-init`, `/bq-research`, `/bq-plan`, `/bq-feature`, `/bq-fix`, `/bq-auto`, `/bq-uiux-variants`, `/bq-live-edit`, `/bq-now`, `/bq-spec`, `/bq-explain`, `/bq-suggest`, `/bq-job-finder`, `/bq-make-money`, `/bq-update`, `/bq-presentation` (alpha.13), … (full reference: [`commands.md`](commands.md))
-- **21 specialist skills** — researcher, product-strategist, backend-architect, database-architect, security-reviewer, devops-cloud, frontend-quality, ux-ui-designer, testing-gate, release-gate, live-edit, scraping-automation, problem-solver, multi-model-planning, project-architect, workflow-advisor, job-finder, make-money, updater, delegate-planner (alpha.12), **presentation-builder** (alpha.13)
+- **22 specialist skills** — **frontend-design-system** (master, alpha.17), researcher, product-strategist, backend-architect, database-architect, security-reviewer, devops-cloud, frontend-quality, ux-ui-designer, testing-gate, release-gate, live-edit, scraping-automation, problem-solver, multi-model-planning, project-architect, workflow-advisor, job-finder, make-money, updater, delegate-planner (alpha.12), **presentation-builder** (alpha.13)
 - **4 composable operating modes** — Deep / Fast / Token Saver / Delegate (alpha.12). See [Operating Modes](#operating-modes) below.
 - **6 workflow phases** with **mandatory gates** that block out-of-order commands
 - **Persistent memory** in `.bequite/` — state, plans, audits, logs, mistake memory, **mode history**
@@ -102,6 +102,21 @@ Full strategy: [`docs/architecture/AUTO_MODE_STRATEGY.md`](docs/architecture/AUT
 
 ---
 
+## Frontend quality promise (alpha.17)
+
+**Hero quality is not enough.** AI frontends look great at the top and drift in the middle — generic cards, all-caps misuse, wide letter-spacing, text overflow, lost identity, "code-looking" sections. BeQuite fixes this structurally:
+
+- **Design DNA** (`.bequite/design/DESIGN_DNA.md`) — the visual identity is persisted *before* any UI code, not held in fading chat memory.
+- **Section-by-section loop** — build a section → check it against the DNA → continue. Never "build the whole page and hope."
+- **Design Continuity Gate** — sweeps *every* section (not a 3-screen sample), comparing each to the hero and the DNA. Runs inside `/bq-feature`, `/bq-fix`, `/bq-auto`, `/bq-uiux-variants`, `/bq-live-edit`, `/bq-audit`, `/bq-review`, `/bq-red-team`, `/bq-verify`.
+- **Visual QA** — render the page (Playwright MCP → project Playwright → code + screenshots; never auto-installed) and actually look at section 5.
+- **Product-type aware** — a finance dashboard and a wellness app get different (correct) rules; not everything is a cinematic SaaS landing.
+- **Master skill** — `bequite-frontend-design-system` coordinates `ux-ui-designer` (design), `frontend-quality` (slop detection), `live-edit` (section edits).
+
+**No UI is "complete" without a Design Continuity pass + a Visual QA pass.** Strategy: [`docs/architecture/DESIGN_CONTINUITY_GATE.md`](docs/architecture/DESIGN_CONTINUITY_GATE.md) · [`docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md`](docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md). No Docker, no dashboard, no new dependency — markdown only.
+
+---
+
 ## Why BeQuite?
 
 AI coding agents have predictable failure modes. BeQuite addresses each:
@@ -113,6 +128,7 @@ AI coding agents have predictable failure modes. BeQuite addresses each:
 | Forgets context between sessions | `.bequite/` memory + `/bq-recover` resumes from last green checkpoint |
 | Claims "done" without testing | `/bq-verify` runs the full gate matrix; banned weasel words rejected |
 | Makes UI bugs (hidden text, dead buttons, AI-slop gradients) | `bequite-frontend-quality` + `bequite-ux-ui-designer` skills enforce 10 principles + reject 15 anti-patterns |
+| **UI looks great at the hero, then drifts** — middle sections go generic / inconsistent | **Design Continuity Gate** + `bequite-frontend-design-system` (alpha.17): persist a Design DNA, build section-by-section, gate every section against it, visual-QA the whole page |
 | Overbuilds — installs deps "just in case" | Tool neutrality rule: every tool needs a decision section |
 | Leaves broken setup steps | Iron Law X: every change ships in operationally complete state |
 | Doesn't think about security / scale / deployment | 11-dimension research + 7 specialist skills cover each domain |
@@ -623,6 +639,9 @@ The lightweight skill pack is the core. Any project that benefits from "research
 - **Auto-mode strategy:** [`docs/architecture/AUTO_MODE_STRATEGY.md`](docs/architecture/AUTO_MODE_STRATEGY.md)
 - **UI/UX variants strategy:** [`docs/architecture/UIUX_VARIANTS_STRATEGY.md`](docs/architecture/UIUX_VARIANTS_STRATEGY.md)
 - **Live edit strategy:** [`docs/architecture/LIVE_EDIT_STRATEGY.md`](docs/architecture/LIVE_EDIT_STRATEGY.md)
+- **Design Continuity Gate (alpha.17):** [`docs/architecture/DESIGN_CONTINUITY_GATE.md`](docs/architecture/DESIGN_CONTINUITY_GATE.md)
+- **Frontend context engineering (alpha.17):** [`docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md`](docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md)
+- **Frontend skill map (alpha.17):** [`.bequite/design/FRONTEND_SKILL_MAP.md`](.bequite/design/FRONTEND_SKILL_MAP.md)
 - **Multi-model planning:** [`docs/architecture/MULTI_MODEL_PLANNING_STRATEGY.md`](docs/architecture/MULTI_MODEL_PLANNING_STRATEGY.md)
 - **Command catalog:** [`docs/specs/COMMAND_CATALOG.md`](docs/specs/COMMAND_CATALOG.md)
 - **MVP scope:** [`docs/specs/MVP_LIGHTWEIGHT_SCOPE.md`](docs/specs/MVP_LIGHTWEIGHT_SCOPE.md)

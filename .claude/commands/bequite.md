@@ -152,6 +152,12 @@ Mode examples:
 Modes adjust depth + cost + speed, NOT safety. All 17 hard human gates apply regardless of mode.
 Active mode: .bequite/state/CURRENT_MODE.md · History: MODE_HISTORY.md
 
+Frontend design continuity (alpha.17 — the quality promise):
+  Hero quality is not enough — every visible section must meet the Design DNA.
+  Master skill: bequite-frontend-design-system (coordinates ux-ui-designer / frontend-quality / live-edit)
+  Design DNA: .bequite/design/DESIGN_DNA.md · Gate spec: docs/architecture/DESIGN_CONTINUITY_GATE.md
+  Runs inside: /bq-feature /bq-fix /bq-auto /bq-uiux-variants /bq-live-edit /bq-audit /bq-review /bq-red-team /bq-verify
+
 Run /bq-help for detailed usage of each command.
 ```
 

@@ -130,6 +130,13 @@ Per phase:
 - `REVIEW_DONE`
 - `RED_TEAM_DONE` (optional)
 
+### Frontend Design Continuity (alpha.17 — conditional, only when a frontend exists)
+- `DESIGN_DNA_LOCKED` — `.bequite/design/DESIGN_DNA.md` filled + locked before first UI code
+- `DESIGN_CONTINUITY_PASS` (alias `DESIGN_CONTINUITY_OK`) — every section consistent with the DNA; `DESIGN_CONTINUITY_REPORT.md` clean of BLOCKER/HIGH
+- `VISUAL_QA_DONE` — `VISUAL_QA_REPORT.md` exists (browser tier or honest tier-3)
+
+These are quality gates owned by `bequite-frontend-design-system`; they apply only to frontend projects, never block non-frontend work, and never bypass the 17 hard human gates. Full spec: [`DESIGN_CONTINUITY_GATE.md`](DESIGN_CONTINUITY_GATE.md); context-engineering rationale: [`FRONTEND_CONTEXT_ENGINEERING.md`](FRONTEND_CONTEXT_ENGINEERING.md).
+
 ### P4 — Release
 - `VERIFY_PASS`
 - `CHANGELOG_READY`

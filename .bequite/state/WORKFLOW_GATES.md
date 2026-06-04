@@ -55,6 +55,16 @@ Format: `GATE_NAME` — `state` — `evidence`
 | `REVIEW_APPROVED` | ❌ pending | Latest `.bequite/audits/REVIEW-*.md` verdict = Approved or Approved-with-comments |
 | `RED_TEAM_RESOLVED` | ⚪ optional | Latest `.bequite/audits/RED_TEAM-*.md` blockers resolved |
 
+### Frontend / Design (alpha.17 — applies ONLY when the project has a frontend)
+
+| Gate | State | Evidence required |
+|---|---|---|
+| `DESIGN_DNA_LOCKED` | ⚪ conditional | `.bequite/design/DESIGN_DNA.md` filled + `Status: locked` before first UI code |
+| `DESIGN_CONTINUITY_PASS` (alias `DESIGN_CONTINUITY_OK`) | ⚪ conditional | `.bequite/design/DESIGN_CONTINUITY_REPORT.md` exists; every section consistent with the DNA; no BLOCKER/HIGH drift open |
+| `VISUAL_QA_DONE` | ⚪ conditional | `.bequite/audits/VISUAL_QA_REPORT.md` exists; browser-tier or honest tier-3 pass; no unresolved BLOCKER |
+
+These are **quality gates that apply when a frontend exists** — they do not block non-frontend projects and never bypass any of the 17 hard human gates. Owner: `bequite-frontend-design-system`. Spec: `docs/architecture/DESIGN_CONTINUITY_GATE.md`.
+
 ### Phase 4 — Ship
 
 | Gate | State | Evidence required |
@@ -112,6 +122,22 @@ Each command has a list of gates that MUST be in state `✅ done` before the com
 | `/bq-p3` | All P2 gates done |
 | `/bq-p4` | All P3 gates done |
 | `/bq-p5` | All P4 gates done |
+
+### Frontend Design Continuity (alpha.17) — conditional, when a frontend exists
+
+These commands additionally run the **Design Continuity Gate** (owner: `bequite-frontend-design-system`). The gate is a quality check, not a hard precondition; it applies only when the project has a frontend.
+
+| Command | Design-continuity behavior |
+|---|---|
+| `/bq-feature` (UI types) | requires `DESIGN_DNA_LOCKED`; runs continuity on every section before "done" |
+| `/bq-fix` (visual / cross-browser) | re-runs continuity on the touched page (no new drift) |
+| `/bq-auto` (`uiux`/`frontend`/`live-edit`/`variants`) | completion requires `DESIGN_CONTINUITY_PASS` + `VISUAL_QA_DONE` |
+| `/bq-uiux-variants` | continuity-checks each variant; full-page pass after merge |
+| `/bq-live-edit` | re-checks edited section + neighbors vs the DNA |
+| `/bq-audit` | full section-by-section sweep (replaces "sample 3 screens") |
+| `/bq-review` | adds the design-continuity dimension to UI diffs |
+| `/bq-red-team` | adds the "which section is worse than the hero" angle |
+| `/bq-verify` | a passing continuity + visual-QA report is part of the matrix |
 
 ---
 

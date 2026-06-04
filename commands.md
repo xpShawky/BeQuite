@@ -4,7 +4,9 @@
 >
 > For full procedural detail per command, click through to the matching file at `.claude/commands/<name>.md`.
 
-**Version:** v3.0.0-alpha.13 · 44 slash commands · 21 specialist skills · 6 workflow phases · **4 composable operating modes** · 23 workflow gates · 17 hard human gates · **Creative + Content Workflows** (alpha.13)
+**Version:** v3.0.0-alpha.17 · 44 slash commands · 22 specialist skills · 6 workflow phases · **4 composable operating modes** · 23 workflow gates + 3 conditional frontend design gates · 17 hard human gates · **Frontend Design Continuity** (alpha.17) · **Creative + Content Workflows** (alpha.13)
+
+> **Frontend Design Continuity (alpha.17):** master skill `bequite-frontend-design-system` + a **Design Continuity Gate** keep UI quality consistent from hero to footer — killing "middle-section drift." Persist a Design DNA before coding, build section-by-section, gate every section against the DNA, visual-QA the whole page. Runs inside `/bq-feature`, `/bq-fix`, `/bq-auto`, `/bq-uiux-variants`, `/bq-live-edit`, `/bq-audit`, `/bq-review`, `/bq-red-team`, `/bq-verify`. **Quality promise:** every visible section must meet the Design DNA. Spec: `docs/architecture/DESIGN_CONTINUITY_GATE.md`.
 
 ---
 

@@ -432,6 +432,38 @@ Full strategy: `docs/architecture/LIVE_EDIT_STRATEGY.md`.
 
 ---
 
+## Walkthrough — Frontend Design Continuity (alpha.17)
+
+**Problem this solves:** AI frontends look great at the hero, then middle sections drift (generic cards, all-caps misuse, wide tracking, text overflow, lost identity). BeQuite fixes this structurally with the master skill `bequite-frontend-design-system` + the Design Continuity Gate.
+
+**Build a consistent frontend (new feature or page):**
+
+```
+/bq-auto frontend deep "Build the marketing site + dashboard for a clinic-booking product"
+```
+
+What happens: (1) **Design DNA** — reads/creates + locks `.bequite/design/DESIGN_DNA.md` (`DESIGN_DNA_LOCKED`); product type chosen from `product-type-rules.md` (a clinic SaaS, not a generic "cinematic landing"). (2) **Section map** — every section written to `.bequite/uiux/SECTION_MAP.md` with acceptance criteria. (3) **Section-by-section loop** — build a section → check it vs the DNA → continue (re-reading `FRONTEND_CONTEXT_SUMMARY.md`); does NOT stop after the hero. (4) **Design Continuity Gate** → `.bequite/design/DESIGN_CONTINUITY_REPORT.md` (no quality cliff). (5) **Visual QA** → `.bequite/audits/VISUAL_QA_REPORT.md`. Not "complete" until both reports pass + logs/changelog updated.
+
+**Fix a drifting frontend (existing):**
+
+```
+/bq-audit       # full section-by-section continuity sweep (not a 3-screen sample)
+/bq-fix "Section 4 cards look generic and off-brand"   # re-checks continuity after
+/bq-verify      # continuity + visual QA are part of the gate matrix
+```
+
+**Iterate one section:**
+
+```
+/bq-live-edit "Make the pricing cards match the hero's polish"
+```
+
+Re-checks the edited section + neighbors against the DNA after the edit.
+
+**Effort:** `${CLAUDE_EFFORT}` scales depth — low/medium compact · high full · xhigh/Ultracode senior design-review with browser visual QA. Spec: `docs/architecture/DESIGN_CONTINUITY_GATE.md` + `docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md`.
+
+---
+
 ## Walkthroughs added in alpha.15
 
 ### Walkthrough — Operating modes (alpha.12)

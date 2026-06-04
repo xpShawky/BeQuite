@@ -486,6 +486,16 @@ Every `/bq-auto` run appends to `.bequite/state/MODE_HISTORY.md` (mode + outcome
 
 ---
 
+### Frontend continuity in auto-mode (alpha.17)
+
+When auto-mode touches a frontend, it **must not stop after a nice hero.** It continues through all sections, all in-scope pages, mobile layout, middle + final sections, buttons, forms, and empty/loading/error states, then visual QA and final polish. Completion REQUIRES a passing `DESIGN_CONTINUITY_REPORT.md` + `VISUAL_QA_REPORT.md` (when a frontend exists), `MISTAKE_MEMORY.md` updated for any `[fe][design]` issue, and logs + changelog updated. Owner skill: `bequite-frontend-design-system`. See `/bq-auto`'s "Frontend auto-mode behavior" section + `DESIGN_CONTINUITY_GATE.md`.
+
+### Effort awareness across modes (alpha.17)
+
+Where `${CLAUDE_EFFORT}` is available it composes with the operating mode: low/medium → compact checks; high → full checks; xhigh/max/Ultracode → deep reasoning, section-by-section audits, and final visual QA. If unset, infer from mode (`deep`→high+, `fast`→compact, `token-saver`→compact + cached). Ultracode is treated as the highest-quality review mode, never as a separate mode flag.
+
+---
+
 ## 12. What this strategy is NOT
 
 - **Not** "fire and forget" — the user is in the loop at hard gates

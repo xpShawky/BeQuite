@@ -281,6 +281,12 @@ Append-only chronicle of every `/bq-live-edit` call. Newest at top.
 
 ---
 
+## 8b. Design continuity after each edit (alpha.17)
+
+A live edit changes one section — it must not let that section drift from the rest of the page. **Before editing:** read `.bequite/design/DESIGN_DNA.md` (or the compact `FRONTEND_CONTEXT_SUMMARY.md`); the edit must still match the DNA, not just satisfy the literal request. **After editing:** re-check the section + its neighbors against `bequite-frontend-design-system/references/design-continuity-checklist.md` (no introduced all-caps misuse, wide tracking, gray-on-color, overflow, off-DNA spacing/radius). Update `FRONTEND_CONTEXT_SUMMARY.md`; log `[fe][design]` lessons. This is the **section-level half** of the Design Continuity Gate (the full-page gate runs at `/bq-feature`, `/bq-auto`, `/bq-verify`). Spec: `docs/architecture/DESIGN_CONTINUITY_GATE.md`.
+
+---
+
 ## 9. Tool neutrality
 
 Per TOOL_NEUTRALITY.md:

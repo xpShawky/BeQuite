@@ -14,6 +14,10 @@ This skill encodes the 10 principles + 15 anti-patterns + token discipline that 
 
 Pairs with `bequite-frontend-quality` (which detects AI-slop in shipped code).
 
+> **Master coordination (alpha.17):** This skill is the **design + token generation** specialist (the canonical 10 design principles + token contract live here). The master skill `bequite-frontend-design-system` orchestrates the whole frontend (Design DNA, section-by-section loop, Design Continuity Gate, visual QA, product-type rules) and *calls* this skill to design each section. Don't restate the master's continuity logic here. For product-type-specific design rules use `bequite-frontend-design-system/references/product-type-rules.md`. Map: `.bequite/design/FRONTEND_SKILL_MAP.md`.
+>
+> **Effort awareness:** `${CLAUDE_EFFORT}` scales depth — low/medium: compact (tokens + the chosen screen); high: full design + states + responsive; xhigh/max/Ultracode: deep design reasoning, section-by-section, product-type-aware. Infer from operating mode if unset.
+
 ---
 
 ## The 10 design principles

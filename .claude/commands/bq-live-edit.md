@@ -237,6 +237,16 @@ See `.bequite/state/MISTAKE_MEMORY.md` template.
 
 ---
 
+## Design Continuity Gate (alpha.17)
+
+`/bq-live-edit` edits one section — but it must not let that section drift away from the rest of the page.
+
+- **Before editing:** read `.bequite/design/DESIGN_DNA.md` (or the compact `.bequite/state/FRONTEND_CONTEXT_SUMMARY.md`) — the edited section must still match the DNA, not just satisfy the literal request.
+- **After editing:** re-check the edited section AND its neighbors against `.claude/skills/bequite-frontend-design-system/references/design-continuity-checklist.md` — confirm the edit didn't introduce all-caps misuse, wide tracking, gray-on-color, overflow, or off-DNA spacing/radius.
+- If structure changed, update `SECTION_MAP.md`. Log any `[fe][design]` lesson to `MISTAKE_MEMORY.md`. Update `FRONTEND_CONTEXT_SUMMARY.md` after the edit.
+
+This is the **section-level half** of the gate; the **full-page** gate runs at `/bq-feature`, `/bq-auto`, and `/bq-verify`. Owner skill: `bequite-frontend-design-system`. Spec: `docs/architecture/DESIGN_CONTINUITY_GATE.md`.
+
 ## Tool neutrality (global rule)
 
 ⚠ **Every tool named in this command (Playwright, Chromatic, Percy, Storybook, axe-core, Tailwind, etc.) is an EXAMPLE, not a default.**

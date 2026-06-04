@@ -6,14 +6,46 @@ Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANG
 
 ---
 
-## [Unreleased — alpha.17]
+## [Unreleased — alpha.18]
 
 - Implement ADR-005 — author `.claude/hooks/{pretooluse-block-destructive,pretooluse-secret-scan,stop-banned-weasel-words}.{sh,ps1}`
 - Test hooks against planted-violation fixtures
 - Document hooks in `docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`
 - `bequite-updater` skill extended so `/bq-update` can refresh hooks
-- Live verification by user (real presentation; real delegate cross-session flow)
+- Optional machine-enforcement of the Design Continuity Gate (a PreToolUse grep for the slop tells in `design-continuity-checklist.md`)
+- Live verification by user (real frontend continuity run; real presentation; real delegate cross-session flow)
 - Optional `/bq-deck` alias for `/bq-presentation` if user demand justifies
+
+---
+
+## [v3.0.0-alpha.17] — 2026-06-04
+
+### Frontend Design Continuity — kill "middle-section drift"
+
+The headline frontend problem: AI-generated UIs look good at the hero, then middle sections degrade (generic cards, all-caps misuse, wide letter-spacing, text overflow, lost visual identity, "code-looking" output). Diagnosed as a context-engineering + design-continuity + visual-QA + workflow-gate problem and fixed **structurally** — lightweight, no Studio / CLI / dashboard / dependency. Researched against Impeccable (pbakaus), UI-UX-Pro-Max (nextlevelbuilder), and Superpowers (obra); principles ported, not copied.
+
+### Added
+
+- **Master skill `bequite-frontend-design-system`** (skills 21 → 22) — coordinates `ux-ui-designer` (design), `frontend-quality` (slop detection), `live-edit` (section edits). Owns the Design DNA, the section-by-section build loop, the Design Continuity Gate, visual QA, and product-type rules. Concise `SKILL.md` + 9 on-demand `references/` (continuity checklist, visual-QA checklist, mobile-app checklist, cinematic/3D checklist, product-type rules, DNA template, + 3 researched-reference notes) + 3 worked `examples/`.
+- **Design Continuity Gate** (`docs/architecture/DESIGN_CONTINUITY_GATE.md`) — sweeps **every** section (not a 3-screen sample), comparing each to the hero and the Design DNA. New conditional gates: `DESIGN_DNA_LOCKED`, `DESIGN_CONTINUITY_PASS`, `VISUAL_QA_DONE` (apply only when a frontend exists; never bypass the 17 hard human gates).
+- **Frontend context engineering** (`docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md`) — persist design (DNA + section map + compact summary) instead of holding it in fading chat memory; the root cause of drift.
+- **Design memory:** `.bequite/design/` (DESIGN_DNA, FRONTEND_SKILL_MAP, DESIGN_CONTINUITY_REPORT), `.bequite/audits/VISUAL_QA_REPORT.md`, `.bequite/state/FRONTEND_CONTEXT_SUMMARY.md`, `.bequite/audits/FRONTEND_SKILL_INTEGRATION_AUDIT.md`.
+- **MISTAKE_MEMORY** seeded with 10 `[fe][design]` prevention rules (hero-vs-middle drift, all-caps, overflow, gray-on-color, dead buttons, mobile, nested cards, noisy motion, inconsistent type, AI gradients).
+- **Product-type awareness** — `references/product-type-rules.md` (SaaS landing / dashboard / admin / mobile / restaurant / marketplace / medical / financial / dev-tool / AI / content / internal tool / automation / e-commerce / booking). Trust domains reject AI purple/pink gradients.
+
+### Changed
+
+- **Design Continuity Gate wired into 9 commands:** `/bq-feature`, `/bq-fix`, `/bq-auto`, `/bq-uiux-variants`, `/bq-live-edit`, `/bq-audit` (replaces "sample 3 screens" with a full section sweep), `/bq-review` (adds a continuity dimension to the review axes), `/bq-red-team` (adds the "worst-section vs hero" attack angle), `/bq-verify` (continuity + visual-QA part of the matrix when a frontend exists).
+- **`/bq-auto` frontend behavior:** must not stop after a nice hero — completes all sections + visual QA before claiming done.
+- **3 existing FE skills** (`frontend-quality`, `ux-ui-designer`, `live-edit`) point at the master (de-dup by designation) + gained effort awareness; `bequite-researcher` + `AUTO_MODE_STRATEGY` gained effort awareness (`${CLAUDE_EFFORT}` / Ultracode → deeper review).
+- **`SECTION_MAP.md`** enriched (route / purpose / visual role / content rules / layout constraints / acceptance criteria).
+- **Menus + advisor:** `/bequite`, `/bq-help`, `/bq-suggest` surface the design-continuity route.
+- **Docs refreshed:** README (frontend quality promise), `commands.md`, `CLAUDE.md` (rule 15 + alpha.17 spec), `COMMAND_CATALOG`, `USING_BEQUITE_COMMANDS` (walkthrough), `MEMORY_FIRST_BEHAVIOR` (design memory), `UIUX_VARIANTS_STRATEGY`, `LIVE_EDIT_STRATEGY`, both `WORKFLOW_GATES` ledgers.
+- **Installer** (`scripts/install-bequite.{ps1,sh}`) scaffolds `.bequite/design/` and copies the design templates (DESIGN_DNA, FRONTEND_SKILL_MAP, DESIGN_CONTINUITY_REPORT, FRONTEND_CONTEXT_SUMMARY, VISUAL_QA_REPORT) into target projects; the master skill auto-propagates via the existing `bequite-*` glob.
+
+### Quality promise
+
+Hero quality is not enough — every visible section must meet the Design DNA. No UI is complete without a Design Continuity pass + a Visual QA pass.
 
 ---
 

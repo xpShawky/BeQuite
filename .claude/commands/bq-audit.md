@@ -35,7 +35,8 @@ For each area present in the repo, audit it. Skip areas that don't apply.
 - Honest empty / loading / error states
 - Contrast passes axe-core
 - Responsive at 360 + 1440
-- See `.claude/skills/bequite-frontend-quality/SKILL.md` for the deeper checklist (15 AI-slop patterns).
+- **Design continuity (alpha.17): sweep EVERY section, not a 3-screen sample.** Compare each middle section to the hero — flag any quality cliff, off-DNA drift, all-caps misuse, wide letter-spacing, gray-on-color, text overflow, generic/nested cards, broken hierarchy, inconsistent radius/icons. This is exactly where middle-section drift hides. Write `.bequite/design/DESIGN_CONTINUITY_REPORT.md`.
+- See `.claude/skills/bequite-frontend-design-system/SKILL.md` (master — runs the continuity sweep) + `bequite-frontend-quality/SKILL.md` (the 15 AI-slop tells).
 
 ### API (if present — REST / GraphQL / RPC)
 - Health endpoint exists + returns sane
@@ -252,6 +253,12 @@ Each Blocker / High / Medium recommendation that adds a tool must trigger a deci
 **Audit recommendations are diagnostic, not prescriptive.** The fix cycle decides the specific tool.
 
 See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.
+
+---
+
+## Design Continuity Gate (alpha.17)
+
+When the repo has a frontend, the audit runs the **Design Continuity Gate** instead of the old "sample 3 screens" pass. Sweep **every** section of every in-scope route, comparing middle sections to the hero (the drift hotspot). Read `.bequite/design/DESIGN_DNA.md` first (judge against the DNA, not a universal template — use the product type's row in `references/product-type-rules.md`). Use the detection heuristics in `.claude/skills/bequite-frontend-design-system/references/design-continuity-checklist.md`. Write findings (severity + quality-cliff result) to `.bequite/design/DESIGN_CONTINUITY_REPORT.md`; seed `[fe][design]` patterns into `MISTAKE_MEMORY.md`. **Effort:** the sweep depth scales with `${CLAUDE_EFFORT}` (low/medium compact · high full · xhigh/Ultracode senior design-review with browser visual QA). Owner: `bequite-frontend-design-system`. Spec: `docs/architecture/DESIGN_CONTINUITY_GATE.md`.
 
 ---
 

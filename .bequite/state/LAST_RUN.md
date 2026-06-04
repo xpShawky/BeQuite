@@ -1,5 +1,19 @@
 # Last BeQuite command
 
+**Command:** v3.0.0-alpha.17 — Frontend Design Continuity upgrade (master skill + Design Continuity Gate + design memory)
+**Timestamp:** 2026-06-04 (UTC)
+**Commit:** (set after `git commit` lands)
+**Result:** SUCCESS — ~50 files created/modified. New feature: frontend design continuity (kills middle-section drift).
+  - New master skill `bequite-frontend-design-system` (SKILL + 9 references + 3 examples) coordinating ux-ui-designer / frontend-quality / live-edit
+  - Design Continuity Gate wired into 9 commands (feature / fix / auto / uiux-variants / live-edit / audit / review / red-team / verify)
+  - `.bequite/design/` created (DESIGN_DNA, FRONTEND_SKILL_MAP, DESIGN_CONTINUITY_REPORT); VISUAL_QA_REPORT + FRONTEND_CONTEXT_SUMMARY + FRONTEND_SKILL_INTEGRATION_AUDIT added
+  - 2 architecture docs (DESIGN_CONTINUITY_GATE, FRONTEND_CONTEXT_ENGINEERING); SECTION_MAP enriched; MISTAKE_MEMORY seeded with 10 `[fe][design]` rules
+  - 3 existing FE skills pointed at master + effort awareness; researcher + auto-mode-strategy effort awareness
+  - Researched Impeccable + UI-UX-Pro-Max + Superpowers (cited reference files); +3 conditional gates
+  - Skills 21 → 22; no Studio / CLI / dashboard / runtime dependency added
+**Next suggested:** **Pause for live verification by user** — run `/bq-auto frontend deep "<real UI>"` on a real frontend and confirm middle-section quality holds top-to-bottom, OR `git commit` the alpha.17 release. Deferred: ADR-005 Claude Code hooks → alpha.18.
+
+**Prior run (preserved):**
 **Command:** v3.0.0-alpha.16 — Clean stable alpha (closes alpha.14 audit cycle)
 **Timestamp:** 2026-05-17 (UTC)
 **Commit:** (set after `git commit` lands)

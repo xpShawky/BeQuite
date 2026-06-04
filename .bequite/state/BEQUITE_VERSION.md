@@ -1,11 +1,11 @@
 # BeQuite installed version
 
-**Version:** v3.0.0-alpha.16
-**Updated:** 2026-05-17
+**Version:** v3.0.0-alpha.17
+**Updated:** 2026-06-04
 **Source:** github
 **Source path / repo:** xpShawky/BeQuite (branch: main)
-**Previous version:** v3.0.0-alpha.15
-**Last check:** 2026-05-17
+**Previous version:** v3.0.0-alpha.16
+**Last check:** 2026-06-04
 **Update count:** 0 (this is the seed file; updates from /bq-update increment)
 
 ---
@@ -26,6 +26,15 @@ Reading this file lets `/bq-update` know:
 ## Update history
 
 (Populated by `/bq-update` runs — newest at top.)
+
+### 2026-06-04 — alpha.17 ship — Frontend Design Continuity upgrade
+- New master skill `bequite-frontend-design-system` (SKILL + 9 references + 3 examples) — coordinates ux-ui-designer / frontend-quality / live-edit; kills "middle-section drift"
+- Design Continuity Gate (`DESIGN_CONTINUITY_PASS` + `VISUAL_QA_DONE` + `DESIGN_DNA_LOCKED`, conditional on a frontend) wired into 9 commands
+- Design memory: `.bequite/design/` (DESIGN_DNA, FRONTEND_SKILL_MAP, DESIGN_CONTINUITY_REPORT) + `.bequite/audits/VISUAL_QA_REPORT.md` + `.bequite/state/FRONTEND_CONTEXT_SUMMARY.md`
+- 2 architecture docs (DESIGN_CONTINUITY_GATE, FRONTEND_CONTEXT_ENGINEERING); SECTION_MAP enriched; MISTAKE_MEMORY seeded with 10 `[fe][design]` prevention rules
+- Effort awareness added to FE skills + researcher + auto-mode strategy
+- Researched references: Impeccable, UI-UX-Pro-Max, Superpowers (verified + cited)
+- Skills 21 → 22; no new command; no Studio / CLI / dashboard / dependency added
 
 ### 2026-05-17 — alpha.16 ship — clean stable alpha (skill desc audit + ADR-005 + cross-refs)
 - Skill `description:` YAML length audit — 8 over-length descriptions trimmed (now all ≤ ~300 chars for Anthropic Skills activation matching)

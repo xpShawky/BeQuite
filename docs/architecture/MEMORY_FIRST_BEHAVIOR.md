@@ -47,6 +47,10 @@ These are always read at the start of any non-trivial command:
 - `.bequite/uiux/SECTION_MAP.md` — `/bq-live-edit`, `/bq-uiux-variants`, frontend `/bq-fix`
 - `.bequite/uiux/LIVE_EDIT_LOG.md` — `/bq-live-edit`
 - `.bequite/uiux/UIUX_VARIANTS_REPORT.md` — `/bq-uiux-variants`
+- `.bequite/design/DESIGN_DNA.md` — **every frontend command, read before any UI work** (alpha.17)
+- `.bequite/state/FRONTEND_CONTEXT_SUMMARY.md` — **every frontend task** — the cheap 1-screen design digest; read this before escalating to the full DNA (alpha.17)
+- `.bequite/design/DESIGN_CONTINUITY_REPORT.md` — `/bq-audit`, `/bq-review`, `/bq-red-team`, `/bq-verify`, `/bq-auto` (frontend)
+- `.bequite/audits/VISUAL_QA_REPORT.md` — `/bq-verify`, `/bq-auto`, `/bq-feature` (frontend)
 - `.bequite/jobs/JOB_PROFILE.md` — `/bq-job-finder` (re-use if recent)
 - `.bequite/money/MONEY_PROFILE.md` — `/bq-make-money` (re-use if recent)
 - `.bequite/state/BEQUITE_VERSION.md` — `/bq-update`
@@ -150,6 +154,16 @@ Write to it only when:
 - Not a trivial one-off
 
 ---
+
+## Frontend design memory strategy (alpha.17)
+
+Design intent is the part of memory that drifts fastest — it's why middle sections degrade. Treat it with extra memory-first discipline (see `FRONTEND_CONTEXT_ENGINEERING.md`):
+
+- **Read before any frontend task:** `FRONTEND_CONTEXT_SUMMARY.md` (the cheap 1-screen digest). Escalate to the full `DESIGN_DNA.md` only when the summary is insufficient (new section type, identity question).
+- **Never build a section from vague memory.** If you can't state the font, primary color, spacing scale, and product type, re-read the DNA.
+- **Persist before coding:** the DNA is written/locked before the first UI line (`DESIGN_DNA_LOCKED`); the section map before building.
+- **Update after each section:** refresh `FRONTEND_CONTEXT_SUMMARY.md` and `SECTION_MAP.md` so the next step doesn't guess.
+- **Token-saver friendly:** the compact summary keeps the design in-context cheaply; don't re-read every report each micro-edit.
 
 ## Recovery behavior
 

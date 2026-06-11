@@ -286,7 +286,8 @@ The agent **MUST** stop and wait for explicit user confirmation at:
 7. **Changing auth / security model** (swapping auth library, changing session strategy)
 8. **Changing project architecture** (monolith → microservices, SQL → NoSQL, etc.)
 9. **Deleting old implementation** (rm of files that still have callers)
-10. **Scope contradiction** (task contradicts locked SCOPE.md)
+10. **Scope contradiction** (task contradicts locked SCOPE.md) — **alpha.19 hardening: also fires on UNCERTAIN scope.** When no SCOPE.md exists AND the intent had to be inferred from assumptions AND the next action is risky (R3-tier file edit, architecture-shaping, destructive), the agent asks ONE question or logs the assumption to ASSUMPTIONS.md — and pauses if the risk is high. Auto mode must not continue from its own assumptions into risky territory.
+    **alpha.19 additions:** any **R3-tier file edit** per `FILE_RISK_CLASSIFICATION.md` (env/secrets · auth/security model · DB migrations · prod deploy / nginx / CI-CD · payments · RLS · cloud credentials · mass deletes/refactors) is a hard human gate even mid-auto. **Presentation creative-direction selection** (`/bq-presentation variants>1`) pauses for the user exactly like gate 16 (UI variant winner).
 11. **User explicit manual-approval request** (passed `--manual-approval` or said "stop and ask me before…")
 12. **Cost ceiling reached** (default $20/session; configurable)
 13. **Wall-clock ceiling reached** (default 6h; configurable)

@@ -1,11 +1,11 @@
 # BeQuite installed version
 
-**Version:** v3.0.0-alpha.18
-**Updated:** 2026-06-04
+**Version:** v3.0.0-alpha.19 — Fable Strengthening Pass
+**Updated:** 2026-06-11
 **Source:** github
 **Source path / repo:** xpShawky/BeQuite (branch: main)
-**Previous version:** v3.0.0-alpha.17
-**Last check:** 2026-06-04
+**Previous version:** v3.0.0-alpha.18
+**Last check:** 2026-06-11
 **Update count:** 0 (this is the seed file; updates from /bq-update increment)
 
 ---
@@ -26,6 +26,19 @@ Reading this file lets `/bq-update` know:
 ## Update history
 
 (Populated by `/bq-update` runs — newest at top.)
+
+### 2026-06-11 — alpha.19 ship — Fable Strengthening Pass (Claude Fable 5, Deep Mode)
+- Audit-first: verified alpha.17/18 coverage; filled only genuine gaps (no duplication)
+- 2 reports: FABLE_5_WORKFLOW_STRENGTHENING_AUDIT + FABLE_5_SYSTEM_RESEARCH_REPORT
+- COMMAND_EXECUTION_CONTRACT (11 steps) + 3 strategy indexes (harness/context/prompt) + PROMPT_PATTERNS (4 prompt classes)
+- File-edit safety: FILE_RISK_CLASSIFICATION (R3/R2/R1) + FILE_RISK_RULES; auto-mode uncertain-scope + R3-edit + presentation-direction gates
+- NEW: /bq-writing-dna + bequite-writing-dna + .bequite/writing/ (5 templates) — third DNA pillar, ethics-bound
+- NEW: /bq-skill-audit + bequite-skill-auditor + seed SKILL_QUALITY_AUDIT (26 skills: 23 PASS, 3 LOW)
+- CONTEXT_SUMMARY (generic) + EVIDENCE_LOG + GAME_CHANGER_FEATURE_DISCOVERY decision tracker + PRESENTATION_BUILDER_STRATEGY
+- Installers: stale alpha.13 version drift caught + fixed; writing/research scaffold; ps1 BOM fix (pre-existing latent parse defect → ParseFile 0 errors)
+- CLI_AUTHENTICATION_STRATEGY → docs/legacy
+- Counts: 46 commands (+2) · 26 skills (+2); all docs/menus/advisor synced
+- No Studio / heavy CLI / dashboard / runtime deps
 
 ### 2026-06-04 — alpha.18 ship — Harness, Hooks & Context-Engineering upgrade
 - ADR-005 implemented (opt-in): 3 hooks × {sh,ps1} (destructive-block, secret-scan, banned-weasel-words) + `.claude/settings.json.example` (+ Windows variant) + `CLAUDE_CODE_HOOKS_STRATEGY.md`. NOT active by default (RCE-vector security model).

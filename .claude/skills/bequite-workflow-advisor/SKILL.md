@@ -1,6 +1,6 @@
 ---
 name: bequite-workflow-advisor
-description: BeQuite workflow recommendation engine. Knows 44 commands + 21 skills + 23 gates + 6 workflow modes + 6 phases + 17 hard human gates + 4 operating modes (deep / fast / token-saver / delegate). Matches user situation to a route. Read-only. Invoked by /bq-suggest.
+description: BeQuite workflow recommendation engine. Knows 46 commands + 26 skills + 23 gates + 6 workflow modes + 6 phases + 17 hard human gates + 4 operating modes (deep / fast / token-saver / delegate). Matches user situation to a route. Read-only. Invoked by /bq-suggest.
 allowed-tools: Read, Glob, Grep
 ---
 
@@ -16,7 +16,12 @@ Invoked by `/bq-suggest`.
 
 ## What this skill knows
 
-### All 44 commands + 1 deprecated alias (organized by phase, alpha.15)
+### All 46 commands + 1 deprecated alias (organized by phase; alpha.19 adds /bq-writing-dna + /bq-skill-audit)
+
+| Routing additions (alpha.19) | Recommend |
+|---|---|
+| "Write in my style / brand voice / sound human / academic rewrite" | `/bq-writing-dna` (strict=true for source-bound work) |
+| "Skills feel stale / skill misfired / clean the pack" | `/bq-skill-audit` (report-only first) |
 
 | Phase | Commands |
 |---|---|

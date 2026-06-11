@@ -2,6 +2,52 @@
 
 Append-only chronicle of every BeQuite command run. Newest at top.
 
+## 2026-06-11 — alpha.19 ship: Fable Strengthening Pass (Claude Fable 5 · Deep Mode)
+
+**Action:** User requested a full workflow-strengthening pass on the strongest available model. Fable 5 confirmed active (user set via /model). Audit-first discipline applied: memory preflight → inventory → audit → research → gap implementation → docs → version → ship.
+
+**Key audit finding:** alpha.17/18 (shipped 2026-06-04) already delivered hooks, context-engineering core, design continuity, and the game-changer report. This pass VERIFIED that coverage and filled only the genuine gaps — duplicating existing docs under new names would itself be a context-engineering failure.
+
+**Reports (2):**
+- `.bequite/audits/FABLE_5_WORKFLOW_STRENGTHENING_AUDIT.md` — weakness findings C1–C5 (context) / P1–P3 (prompt) / H1–H4 (harness) + already-covered verification table + strengthening plan
+- `.bequite/research/FABLE_5_SYSTEM_RESEARCH_REPORT.md` — fresh deep research; no-research-repeat applied over the alpha.14/18 reports; adopted vs rejected ideas
+
+**Harness / context / prompt layer (7 docs + 2 memory):**
+- `docs/architecture/COMMAND_EXECUTION_CONTRACT.md` — the canonical 11 steps (preflight → gate → scope → skills → research-check → plan-check → action → verification → report → writeback → next)
+- `HARNESS_ENGINEERING_STRATEGY.md` + `CONTEXT_ENGINEERING_STRATEGY.md` — thin indexes over alpha.18 deep docs + deltas (context-pack pattern, no-research-repeat rule)
+- `PROMPT_ENGINEERING_STANDARD.md` + `.bequite/prompts/PROMPT_PATTERNS.md` — 4 prompt classes (Complete/Compact/Neutral/Strict) with skeletons
+- `.bequite/state/CONTEXT_SUMMARY.md` (generic compaction-surviving snapshot) + `.bequite/research/EVIDENCE_LOG.md` (durable verification evidence)
+
+**File-edit safety:**
+- `FILE_RISK_CLASSIFICATION.md` (R3-CONFIRM / R2-ANNOUNCE / R1) + `.bequite/state/FILE_RISK_RULES.md` (project-tunable)
+- `AUTO_MODE_STRATEGY.md` gate-10 hardening: uncertain-scope + R3-edit hard gate + presentation creative-direction pause
+
+**New capability 1 — Writing DNA:**
+- `/bq-writing-dna` + `bequite-writing-dna` skill + `.bequite/writing/{WRITING_DNA,STYLE_SAMPLES,WRITING_RULES,FORBIDDEN_PATTERNS,OUTPUT_REVIEW}.md`
+- Corpus → explicit profile → constrained generation → review; strict mode = source fidelity; ethics binding (no fabricated citations / academic dishonesty / detector-evasion)
+
+**New capability 2 — Skill quality loop:**
+- `/bq-skill-audit` + `bequite-skill-auditor` + seed run at `SKILL_QUALITY_AUDIT.md` (26 skills: 23 PASS · 3 LOW backlogged · 1 false alarm evidence-checked: bq-review frontmatter intact on disk at line 2)
+
+**Decision tracking:**
+- `.bequite/plans/GAME_CHANGER_FEATURE_DISCOVERY.md` — 8 built / 12 kept (incl. Professional Expert as composition ALIAS proposal, not a 5th mode) / 4 rejected with reasons
+- `PRESENTATION_BUILDER_STRATEGY.md` — alpha.13 design decisions consolidated; capability re-verified complete
+
+**Docs/counts synced (46 commands · 26 skills):** README badges+sections, commands.md header+alpha.19 banner, CLAUDE.md spec, /bequite menu (new Writing+Skill Quality section), /bq-help, /bq-suggest (writing + skill-maintenance triggers), COMMAND_CATALOG (+2 entries), workflow-advisor (counts + routing rows)
+
+**Installer repairs (evidence-backed):**
+- Version drift CAUGHT: installers were stale at alpha.13 (alpha.17/18 passes missed them) → bumped to alpha.19
+- writing/ + research/ scaffold + 10 alpha.19 copy_template entries (both sh + ps1)
+- sh: `bash -n` exit 0 ✅
+- ps1: sed CR-mangling during edit was caught + repaired via Edit tool; **pre-existing latent defect found**: no-BOM UTF-8 + em-dashes = 3 ParseFile errors in HEAD's version too (verified by parsing HEAD extraction — "PRE-EXISTING") → UTF-8 BOM added → **ParseFile: 0 errors** ✅. The documented `irm | iex` path was never affected (UTF-8 decoded by Invoke-RestMethod), so installs always worked.
+- `CLI_AUTHENTICATION_STRATEGY.md` → `docs/legacy/` (git mv)
+
+**Honest deferrals (Article VI):** game-changer builds await user approval per tracker · live fire-tests (writing-dna profile build, skill-audit apply=true, hooks) = user actions · per-command bodies cite the execution contract incrementally as next touched
+
+**Mode tracking:** deep · SUCCESS · ~35 files · evidence in EVIDENCE_LOG
+
+---
+
 ## 2026-06-04 — alpha.18 ship: Harness, Hooks & Context-Engineering upgrade
 
 **Action:** User invoked `/deep-research` (deep mode, Ultracode) to (1) implement Claude Code hooks if they raise quality, (2) generalize the frontend memory/context-engineering wins to ALL workflows, (3) raise research/discovery/harness quality, and (4) propose game-changer features (report only). Ran a 6-stream cited research workflow (all anchored to official Anthropic docs + security research), synthesized myself (the synthesis sub-agent hit a session cap), then implemented.

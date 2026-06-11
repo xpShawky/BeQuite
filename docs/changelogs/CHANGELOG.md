@@ -6,12 +6,58 @@ Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANG
 
 ---
 
-## [Unreleased — alpha.19]
+## [Unreleased — alpha.20]
 
-- Game-changer features (proposed in `docs/specs/GAME_CHANGER_FEATURES.md`, **report only** this cycle): regression ledger (every fixed bug → permanent test), generalized drift detection (API/schema/doc/dependency), confidence + uncertainty surfacing, session-memory re-injection + "superseded-by" contradiction handling, spec→code→test traceability, scoped maintenance-loop contract
-- Live fire-test of the opt-in hooks across macOS/Linux/Windows; promote the most critical hard gates to default-on hooks once validated
-- Optional machine-enforcement of the Design Continuity Gate (a PreToolUse grep for the slop tells)
-- Optional `/bq-deck` alias for `/bq-presentation` if user demand justifies
+- Build the top-ranked approved game-changers per `.bequite/plans/GAME_CHANGER_FEATURE_DISCOVERY.md`: regression ledger · drift detector · confidence surfacing · ship-readiness scorecard
+- Decide Professional Expert composition-alias naming with the user (proposed in the discovery tracker — NOT a 5th mode)
+- Live fire-test of the opt-in hooks across macOS/Linux/Windows; promote critical gates to default-on once validated
+- Skill-audit backlog: problem-solver worked example · multi-model-planning stale-phase sweep
+- First real `/bq-writing-dna` profile build + first real `/bq-presentation` render (user actions)
+- Optional `/bq-deck` alias if user demand justifies
+
+---
+
+## [v3.0.0-alpha.19] — 2026-06-11 — Fable Strengthening Pass
+
+**Full workflow-strengthening pass run on Claude Fable 5, Deep Mode.** Audit-first: verified alpha.17/18 already delivered hooks, context-engineering, design-continuity, and the game-changer report — this release fills the verified gaps instead of duplicating. No Studio / heavy CLI / dashboard / runtime deps.
+
+### Added — reports
+- `.bequite/audits/FABLE_5_WORKFLOW_STRENGTHENING_AUDIT.md` — current-state verification + weakness findings (context C1–C5, prompt P1–P3, harness H1–H4) + strengthening plan
+- `.bequite/research/FABLE_5_SYSTEM_RESEARCH_REPORT.md` — fresh deep research (no-research-repeat applied over alpha.14/18 reports); principles adopted vs rejected
+
+### Added — harness / context / prompt layer
+- `docs/architecture/COMMAND_EXECUTION_CONTRACT.md` — **the 11-step contract every command follows** (preflight → gate → scope → skills → research-check → plan-check → action → verification → report → writeback → next)
+- `docs/architecture/HARNESS_ENGINEERING_STRATEGY.md` + `CONTEXT_ENGINEERING_STRATEGY.md` — thin strategy indexes over the alpha.18 deep docs (one source of truth preserved) + alpha.19 deltas: **context-pack pattern**, **no-research-repeat rule**, generic **CONTEXT_SUMMARY**, **EVIDENCE_LOG**
+- `docs/architecture/PROMPT_ENGINEERING_STANDARD.md` + `.bequite/prompts/PROMPT_PATTERNS.md` — 4 prompt classes (Complete / Compact / Neutral / Strict) with fill-in skeletons; delegate-pack neutrality rule
+- `.bequite/state/CONTEXT_SUMMARY.md` (compaction-surviving snapshot, all workflows) + `.bequite/research/EVIDENCE_LOG.md` (durable verification evidence)
+
+### Added — file-edit safety
+- `docs/architecture/FILE_RISK_CLASSIFICATION.md` + `.bequite/state/FILE_RISK_RULES.md` — R3-CONFIRM / R2-ANNOUNCE / R1 tiers for env/secrets/auth/migrations/deploy/CI/payments/RLS/mass-deletes; R3 = hard human gate even in auto mode (closes the "risky change via file edit" gap — hooks only saw shell ops)
+- `AUTO_MODE_STRATEGY.md` hardening: **uncertain-scope** gate (auto mode must not continue from its own assumptions into risky territory) + R3-edit gate + presentation creative-direction pause
+
+### Added — Writing DNA (new capability)
+- `/bq-writing-dna` + `bequite-writing-dna` skill + `.bequite/writing/` (WRITING_DNA, STYLE_SAMPLES, WRITING_RULES, FORBIDDEN_PATTERNS, OUTPUT_REVIEW)
+- Corpus → explicit profile → constrained generation → review-against-profile; strict mode = full source fidelity; default forbidden-pattern list kills generic-AI tells
+- **Ethics binding:** no fabricated citations · no academic dishonesty · no AI-detector-evasion framing
+- Third DNA pillar: project / design / **writing**; `/bq-presentation` consumes it for speaker notes
+
+### Added — Skill quality loop (new capability)
+- `/bq-skill-audit` + `bequite-skill-auditor` skill — evidence-cited structural review; report-only default; seed run shipped at `.bequite/audits/SKILL_QUALITY_AUDIT.md` (26 skills: 23 PASS, 3 LOW-improve backlogged, 1 false alarm evidence-checked)
+
+### Added — decision tracking
+- `.bequite/plans/GAME_CHANGER_FEATURE_DISCOVERY.md` — keep/reject/built ledger over the alpha.18 report; 8 built · 12 kept-proposed (incl. Professional Expert as composition alias, NOT a 5th mode) · 4 rejected with reasons
+- `docs/architecture/PRESENTATION_BUILDER_STRATEGY.md` — consolidates the alpha.13 design decisions (capability re-verified complete: PPTX/HTML/both/variants/strict/creative/refs/notes/brand/motion/morph + cinematic/academic/business registers)
+
+### Changed
+- Counts: **46 commands (+2) · 26 skills (+2)** — README badges, commands.md, CLAUDE.md, /bequite menu, /bq-help, /bq-suggest (writing + skill-maintenance triggers), COMMAND_CATALOG, workflow-advisor all synced
+- CLAUDE.md spec → alpha.19 with execution-contract + file-risk + writing-DNA + skill-loop bullets
+- Installers: version bumped (were stale at alpha.13 — drift caught), counts fixed, `.bequite/{writing,research}` scaffolded, 10 alpha.19 templates copied; **ps1 UTF-8 BOM added** (fixed a pre-existing latent parse issue — evidence: ParseFile now returns 0 errors; HEAD version had 3); sh `bash -n` clean
+- `docs/architecture/CLI_AUTHENTICATION_STRATEGY.md` → `docs/legacy/` (heavy-direction residue)
+
+### Honest deferrals (Article VI)
+- Game-changer builds (regression ledger etc.) remain proposals pending user approval
+- Live verification of writing-dna / skill-audit `apply=true` / hooks fire-test = user actions
+- Per-command body refresh to cite the execution contract explicitly (contract is canonical now; command bodies cite it incrementally as they're next touched)
 
 ---
 

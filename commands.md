@@ -4,7 +4,18 @@
 >
 > For full procedural detail per command, click through to the matching file at `.claude/commands/<name>.md`.
 
-**Version:** v3.0.0-alpha.18 · 44 slash commands · 24 specialist skills · 6 workflow phases · **4 composable operating modes** · 23 workflow gates + 3 conditional frontend design gates · 17 hard human gates · **Opt-in Hooks + Context-Engineering** (alpha.18) · **Frontend Design Continuity** (alpha.17) · **Creative + Content Workflows** (alpha.13)
+**Version:** v3.0.0-alpha.19 · 46 slash commands · 26 specialist skills · 6 workflow phases · **4 composable operating modes** · 23 workflow gates + 3 conditional frontend design gates · 17 hard human gates · **Writing DNA + Skill Audit + Execution Contract** (alpha.19) · **Opt-in Hooks + Context-Engineering** (alpha.18) · **Frontend Design Continuity** (alpha.17) · **Creative + Content Workflows** (alpha.13)
+
+> **alpha.19 — Fable Strengthening Pass:** every command now follows the 11-step [`COMMAND_EXECUTION_CONTRACT`](docs/architecture/COMMAND_EXECUTION_CONTRACT.md) (memory preflight → gate check → scope → skills → research check → plan check → action → verification → report → writeback → next command). Risky file edits are tiered per [`FILE_RISK_CLASSIFICATION`](docs/architecture/FILE_RISK_CLASSIFICATION.md). Two new commands:
+>
+> **`/bq-writing-dna`** — build a reusable writing profile (genre / audience / tone / rhythm / vocabulary / citation style / forbidden patterns) from your samples, then generate or rewrite in that voice. Strict mode = full source fidelity, zero invented citations. Memory: `.bequite/writing/`. Ethical assistance only — no detector-evasion, no academic dishonesty.
+> ```
+> /bq-writing-dna Build my profile from these samples: ./drafts
+> /bq-writing-dna genre=academic strict=true Rewrite my discussion section for clarity
+> /bq-writing-dna Write a blog post about <topic> using my DNA
+> ```
+>
+> **`/bq-skill-audit`** — structural quality loop over all 26 skills (bloat / shallowness / duplication / missing sections / stale counts). Evidence-cited findings, report-only by default; `apply=true` to execute approved repairs. Writes `.bequite/audits/SKILL_QUALITY_AUDIT.md`.
 
 > **alpha.18 — Harness, Hooks & Context-Engineering:** opt-in Claude Code hooks machine-enforce the safety subset (destructive ops · secrets · weasel-word claims; review before enabling). `bequite-context-engineer` generalizes the frontend DNA/continuity pattern to all workflows; `bequite-anti-hallucination` enforces evidence-over-claims + citation-or-strike + package verification. See `docs/architecture/{CLAUDE_CODE_HOOKS_STRATEGY,CONTEXT_ENGINEERING,HARNESS_AND_PROMPT_QUALITY}.md`. Game-changer features: report only (`docs/specs/GAME_CHANGER_FEATURES.md`).
 

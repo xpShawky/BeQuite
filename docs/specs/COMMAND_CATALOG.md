@@ -1,8 +1,26 @@
-# BeQuite Command Catalog (v3.0.0-alpha.14)
+# BeQuite Command Catalog (v3.0.0-alpha.19)
 
-**Status:** authored 2026-05-11; expanded 2026-05-12 across alpha.2–alpha.10; 4 operating modes added 2026-05-12 (alpha.12); Presentation Builder added 2026-05-13 (alpha.13); discipline-restoration audit + global feature-addition rule added 2026-05-17 (alpha.14)
-**Total commands:** 44 active + 1 deprecated alias (`/bq-add-feature` → `/bq-feature`)
-**Total skills:** 24 (7 baseline + 7 specialist + 1 live-edit + 3 opportunity + 1 updater + 1 delegate-planner + 1 presentation-builder + 1 frontend-design-system master, alpha.17 + 2 reliability/context: bequite-context-engineer + bequite-anti-hallucination, alpha.18)
+**Status:** authored 2026-05-11; expanded across alpha.2–alpha.18; Writing DNA + Skill Audit + Execution Contract added 2026-06-11 (alpha.19 — Fable Strengthening Pass)
+**Total commands:** 46 active + 1 deprecated alias (`/bq-add-feature` → `/bq-feature`)
+**Total skills:** 26 (7 baseline + 7 specialist + 1 live-edit + 3 opportunity + 1 updater + 1 delegate-planner + 1 presentation-builder + 1 frontend-design-system master (alpha.17) + 2 reliability/context (alpha.18) + **writing-dna + skill-auditor (alpha.19)**)
+**Execution contract (alpha.19):** every command follows the 11 steps in `docs/architecture/COMMAND_EXECUTION_CONTRACT.md`; risky file edits tiered per `docs/architecture/FILE_RISK_CLASSIFICATION.md`
+
+### `/bq-writing-dna` (NEW in alpha.19)
+- **Purpose:** reusable writing profile (genre/audience/tone/rhythm/vocabulary/citations/forbidden patterns) from samples → generate or rewrite in that voice
+- **Phase:** Any (orthogonal — creative/content); **Required gates:** `BEQUITE_INITIALIZED`
+- **Reads:** core pack + `.bequite/writing/{WRITING_DNA,WRITING_RULES,FORBIDDEN_PATTERNS}.md` + user samples
+- **Writes:** `.bequite/writing/{WRITING_DNA,STYLE_SAMPLES,WRITING_RULES,FORBIDDEN_PATTERNS,OUTPUT_REVIEW}.md` + the requested content
+- **Skills:** `bequite-writing-dna` (owner) + `bequite-anti-hallucination` (strict mode)
+- **Ethics:** no fabricated sources/citations · no academic dishonesty · no AI-detector-evasion framing
+- **Next:** write requests reusing the profile; `/bq-presentation` consumes WRITING_DNA for speaker notes
+
+### `/bq-skill-audit` (NEW in alpha.19)
+- **Purpose:** structural quality loop over all skills — bloat/shallow/duplicate/missing-sections/stale-counts findings, evidence-cited
+- **Phase:** Maintenance (orthogonal); **Required gates:** `BEQUITE_INITIALIZED`
+- **Behavior:** report-only by default; `apply=true` executes user-approved repairs
+- **Writes:** `.bequite/audits/SKILL_QUALITY_AUDIT.md`
+- **Skills:** `bequite-skill-auditor` + `bequite-anti-hallucination`
+- **Next:** user reviews report → `apply=true` for approved items
 
 > **Frontend Design Continuity (alpha.17):** master skill `bequite-frontend-design-system` + the **Design Continuity Gate** (`DESIGN_CONTINUITY_PASS` + `VISUAL_QA_DONE` + `DESIGN_DNA_LOCKED`, all conditional on a frontend existing) keep UI quality consistent across every section. The gate runs in `/bq-feature`, `/bq-fix`, `/bq-auto`, `/bq-uiux-variants`, `/bq-live-edit`, `/bq-audit`, `/bq-review`, `/bq-red-team`, `/bq-verify`. Spec: `docs/architecture/DESIGN_CONTINUITY_GATE.md`.
 **Operating modes (alpha.12):** 4 composable — Deep / Fast / Token Saver (alias `lean`) / Delegate

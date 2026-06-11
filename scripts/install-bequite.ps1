@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
   Install BeQuite (lightweight skill pack) into the current project.
 
@@ -32,7 +32,7 @@ param(
 )
 
 $ErrorActionPreference = "Continue"
-$BEQUITE_VERSION = "v3.0.0-alpha.13"
+$BEQUITE_VERSION = "v3.0.0-alpha.19"
 
 function Write-Section($text) {
   Write-Host ""
@@ -100,7 +100,7 @@ if ($FromLocal -ne "") {
 
 # --- 3. Copy .claude/commands/ ---
 
-Write-Section "Installing .claude/commands/ (44 slash commands)"
+Write-Section "Installing .claude/commands/ (46 slash commands)"
 $SRC_CMD = Join-Path $SOURCE ".claude\commands"
 if (-not (Test-Path $SRC_CMD)) {
   Exit-Fatal "Source missing $SRC_CMD — is this a valid BeQuite repo?"
@@ -110,9 +110,9 @@ Copy-Item -Path "$SRC_CMD\*" -Destination ".\.claude\commands\" -Recurse -Force
 $count = (Get-ChildItem .\.claude\commands\*.md).Count
 Write-Host "  $count slash commands installed" -ForegroundColor Green
 
-# --- 4. Copy .claude/skills/bequite-* (24 specialist skills) ---
+# --- 4. Copy .claude/skills/bequite-* (26 specialist skills) ---
 
-Write-Section "Installing .claude/skills/bequite-* (24 specialist skills)"
+Write-Section "Installing .claude/skills/bequite-* (26 specialist skills)"
 $SRC_SKILLS = Join-Path $SOURCE ".claude\skills"
 if (-not (Test-Path $SRC_SKILLS)) {
   Exit-Fatal "Source missing $SRC_SKILLS"
@@ -160,7 +160,9 @@ $SCAFFOLD = @(
   ".bequite\money",
   ".bequite\backups",
   ".bequite\presentations\assets",
-  ".bequite\presentations\outputs"
+  ".bequite\presentations\outputs",
+  ".bequite\writing",
+  ".bequite\research"
 )
 foreach ($dir in $SCAFFOLD) {
   if (-not (Test-Path $dir)) {
@@ -191,6 +193,17 @@ $TEMPLATES = @{
   ".bequite\state\PROJECT_DNA.md"               = ".bequite\state\PROJECT_DNA.md"
   ".bequite\state\WORKING_NOTES.md"             = ".bequite\state\WORKING_NOTES.md"
   ".bequite\plans\FILE_RESPONSIBILITY_MAP.md"   = ".bequite\plans\FILE_RESPONSIBILITY_MAP.md"
+  # alpha.19 — Fable Strengthening Pass
+  ".bequite\writing\WRITING_DNA.md"                = ".bequite\writing\WRITING_DNA.md"
+  ".bequite\writing\STYLE_SAMPLES.md"              = ".bequite\writing\STYLE_SAMPLES.md"
+  ".bequite\writing\WRITING_RULES.md"              = ".bequite\writing\WRITING_RULES.md"
+  ".bequite\writing\FORBIDDEN_PATTERNS.md"         = ".bequite\writing\FORBIDDEN_PATTERNS.md"
+  ".bequite\writing\OUTPUT_REVIEW.md"              = ".bequite\writing\OUTPUT_REVIEW.md"
+  ".bequite\state\CONTEXT_SUMMARY.md"              = ".bequite\state\CONTEXT_SUMMARY.md"
+  ".bequite\state\FILE_RISK_RULES.md"              = ".bequite\state\FILE_RISK_RULES.md"
+  ".bequite\research\EVIDENCE_LOG.md"              = ".bequite\research\EVIDENCE_LOG.md"
+  ".bequite\prompts\PROMPT_PATTERNS.md"            = ".bequite\prompts\PROMPT_PATTERNS.md"
+  ".bequite\plans\GAME_CHANGER_FEATURE_DISCOVERY.md" = ".bequite\plans\GAME_CHANGER_FEATURE_DISCOVERY.md"
   # alpha.8 jobs
   ".bequite\jobs\JOB_PROFILE.md"          = ".bequite\jobs\JOB_PROFILE.md"
   ".bequite\jobs\JOB_SEARCH_LOG.md"       = ".bequite\jobs\JOB_SEARCH_LOG.md"

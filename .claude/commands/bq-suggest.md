@@ -44,6 +44,16 @@ Examples:
 - `/bq-suggest "Turn this Word file into a lecture"`
 - `/bq-suggest "Cinematic keynote deck from a topic"`
 
+### Writing keyword triggers (alpha.19)
+
+If the user mentions any of: **write in my style / my voice / brand voice / sound human / not generic / rewrite this / academic writing / discussion section / methodology / blog post / YouTube script / email copy / product copy / lecture notes / writing profile** — recommend `/bq-writing-dna`.
+
+Guidance to surface: samples → real profile (3+ samples) vs provisional; `strict=true` for academic/source-bound work (zero invented citations); the profile is reusable across pieces. Never frame as AI-detector evasion — if asked for that, explain the ethical line and offer quality/voice/fidelity help instead.
+
+### Skill-maintenance trigger (alpha.19)
+
+"Skills feel stale / a skill misfired / clean up the pack" → `/bq-skill-audit` (report-only first).
+
 ### Presentation keyword triggers (alpha.13)
 
 If the user mentions any of: **slides, presentation, lecture, PowerPoint, PPTX, keynote, course lesson, screen recording, explain this topic visually, make a deck, convert PDF to slides, make lecture from Word file** — recommend `/bq-presentation`.

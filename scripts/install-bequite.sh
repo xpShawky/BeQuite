@@ -9,7 +9,7 @@
 
 set -uo pipefail
 
-BEQUITE_VERSION="v3.0.0-alpha.13"
+BEQUITE_VERSION="v3.0.0-alpha.19"
 REPO_URL="https://github.com/xpShawky/BeQuite.git"
 TARGET="$(pwd)"
 FROM_LOCAL=""
@@ -80,15 +80,15 @@ fi
 
 # --- 3. .claude/commands/ (37 slash commands) ---
 
-section "Installing .claude/commands/ (44 slash commands)"
+section "Installing .claude/commands/ (46 slash commands)"
 mkdir -p "./.claude/commands"
 cp -r "$SOURCE/.claude/commands/"* "./.claude/commands/"
 count=$(ls -1 ./.claude/commands/*.md 2>/dev/null | wc -l)
 echo "  $(green "$count slash commands installed")"
 
-# --- 4. .claude/skills/bequite-* (24 specialist skills) ---
+# --- 4. .claude/skills/bequite-* (26 specialist skills) ---
 
-section "Installing .claude/skills/bequite-* (24 specialist skills)"
+section "Installing .claude/skills/bequite-* (26 specialist skills)"
 mkdir -p "./.claude/skills"
 for skill in "$SOURCE"/.claude/skills/bequite-*/; do
   if [[ -d "$skill" ]]; then
@@ -112,7 +112,7 @@ echo "  hooks are NOT active by default — merge an example into settings.json 
 # --- 5. .bequite/ scaffold (alpha.5: principles + uiux + new state files) ---
 
 section "Scaffolding .bequite/ memory (alpha.5-13: principles, uiux, jobs, money, mistake memory, assumptions, delegate, presentations)"
-mkdir -p ./.bequite/{state,logs,prompts/user_prompts,prompts/generated_prompts,prompts/model_outputs,audits,plans,tasks,principles,decisions,design,uiux/screenshots,uiux/archive,jobs,money,backups,presentations/assets,presentations/outputs}
+mkdir -p ./.bequite/{state,logs,prompts/user_prompts,prompts/generated_prompts,prompts/model_outputs,audits,plans,tasks,principles,decisions,design,uiux/screenshots,uiux/archive,jobs,money,backups,presentations/assets,presentations/outputs,writing,research}
 echo "  directory scaffold ready"
 
 # Copy alpha.5 templates into target project (preserve existing if present)
@@ -197,6 +197,18 @@ copy_template ".bequite/audits/VISUAL_QA_REPORT.md"            ".bequite/audits/
 copy_template ".bequite/state/PROJECT_DNA.md"                  ".bequite/state/PROJECT_DNA.md"
 copy_template ".bequite/state/WORKING_NOTES.md"                ".bequite/state/WORKING_NOTES.md"
 copy_template ".bequite/plans/FILE_RESPONSIBILITY_MAP.md"      ".bequite/plans/FILE_RESPONSIBILITY_MAP.md"
+
+# alpha.19 — Fable Strengthening Pass (writing DNA + context summary + evidence log + file-risk rules + game-changer tracker + prompt patterns)
+copy_template ".bequite/writing/WRITING_DNA.md"                ".bequite/writing/WRITING_DNA.md"
+copy_template ".bequite/writing/STYLE_SAMPLES.md"              ".bequite/writing/STYLE_SAMPLES.md"
+copy_template ".bequite/writing/WRITING_RULES.md"              ".bequite/writing/WRITING_RULES.md"
+copy_template ".bequite/writing/FORBIDDEN_PATTERNS.md"         ".bequite/writing/FORBIDDEN_PATTERNS.md"
+copy_template ".bequite/writing/OUTPUT_REVIEW.md"              ".bequite/writing/OUTPUT_REVIEW.md"
+copy_template ".bequite/state/CONTEXT_SUMMARY.md"              ".bequite/state/CONTEXT_SUMMARY.md"
+copy_template ".bequite/state/FILE_RISK_RULES.md"              ".bequite/state/FILE_RISK_RULES.md"
+copy_template ".bequite/research/EVIDENCE_LOG.md"              ".bequite/research/EVIDENCE_LOG.md"
+copy_template ".bequite/prompts/PROMPT_PATTERNS.md"            ".bequite/prompts/PROMPT_PATTERNS.md"
+copy_template ".bequite/plans/GAME_CHANGER_FEATURE_DISCOVERY.md" ".bequite/plans/GAME_CHANGER_FEATURE_DISCOVERY.md"
 
 # Copy commands.md at repo root (top-level reference)
 if [[ -f "$SOURCE/commands.md" && ! -f "./commands.md" ]]; then

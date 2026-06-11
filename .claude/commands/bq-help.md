@@ -249,6 +249,8 @@ Additional commands not listed above (alpha.2+):
 - `/bq-suggest`, `/bq-job-finder`, `/bq-make-money` (Opportunity and Workflows — alpha.8)
 - `/bq-update` (Maintenance — alpha.10; safe BeQuite self-update with backup + conflict surfacing)
 - `/bq-presentation` (Creative and Content Workflows — alpha.13; premium PPTX / HTML presentations with variants, strict-vs-creative modes, morph-like motion planning)
+- `/bq-writing-dna` (alpha.19; reusable writing profile from samples → generate/rewrite in YOUR voice; strict mode = full source fidelity, zero invented citations; memory at `.bequite/writing/`; ethical assistance only)
+- `/bq-skill-audit` (alpha.19; skill-pack quality loop — bloat/shallow/duplicate/stale findings with evidence; report-only by default; writes SKILL_QUALITY_AUDIT.md)
 
 ### Alpha.17 — Frontend Design Continuity
 

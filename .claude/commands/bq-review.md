@@ -251,3 +251,24 @@ After successful completion:
 - `.bequite/state/MODE_HISTORY.md` — append mode + outcome (when invoked via `/bq-auto`-style mode)
 
 **Failure behavior:** don't claim `✅ done` if any of the above wasn't completed. Report PARTIAL with the specific gap.
+
+---
+
+## Automatic skill routing (alpha.20)
+
+This command runs the Skill Router BEFORE acting (execution-contract steps 2–4):
+
+1. Load `.bequite/skills/SKILL_REGISTRY.md` (the token-cheap routing index — NOT the skill files)
+2. Classify the task into domains per `.bequite/skills/SKILL_ROUTER.md` (user text → command → files present → mode/phase → memory → risk tier → output type)
+3. Auto-select skills: domain primaries + cross-cutting auto-attach (anti-hallucination on claims · testing-gate on code · context-engineer on >5 files or >1 session · security-reviewer on R3 paths · frontend-design-system on >1 UI section) + mode sizing (fast = smallest safe set · deep = broader · token-saver = lazy-load · delegate = skills named in task pack)
+4. Emit the selection block in the output, then load ONLY the selected SKILL.md files:
+
+```
+Skill Selection:
+- Selected: bequite-<skill> — <one-line reason tied to this task>
+- Not selected: bequite-<skill> — <why considered and skipped>
+```
+
+**The user never has to name skills** — describe the goal; the router picks the disciplines. An explicit user skill choice overrides routing (log the override). At writeback, append the selection + outcome to `.bequite/skills/SKILL_USAGE_LOG.md`.
+
+Strategy: `docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.

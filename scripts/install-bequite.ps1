@@ -32,7 +32,7 @@ param(
 )
 
 $ErrorActionPreference = "Continue"
-$BEQUITE_VERSION = "v3.0.0-alpha.19"
+$BEQUITE_VERSION = "v3.0.0-alpha.20"
 
 function Write-Section($text) {
   Write-Host ""
@@ -162,7 +162,8 @@ $SCAFFOLD = @(
   ".bequite\presentations\assets",
   ".bequite\presentations\outputs",
   ".bequite\writing",
-  ".bequite\research"
+  ".bequite\research",
+  ".bequite\skills"
 )
 foreach ($dir in $SCAFFOLD) {
   if (-not (Test-Path $dir)) {
@@ -204,6 +205,10 @@ $TEMPLATES = @{
   ".bequite\research\EVIDENCE_LOG.md"              = ".bequite\research\EVIDENCE_LOG.md"
   ".bequite\prompts\PROMPT_PATTERNS.md"            = ".bequite\prompts\PROMPT_PATTERNS.md"
   ".bequite\plans\GAME_CHANGER_FEATURE_DISCOVERY.md" = ".bequite\plans\GAME_CHANGER_FEATURE_DISCOVERY.md"
+  # alpha.20 — automatic skill routing
+  ".bequite\skills\SKILL_REGISTRY.md"                = ".bequite\skills\SKILL_REGISTRY.md"
+  ".bequite\skills\SKILL_ROUTER.md"                  = ".bequite\skills\SKILL_ROUTER.md"
+  ".bequite\skills\SKILL_USAGE_LOG.md"               = ".bequite\skills\SKILL_USAGE_LOG.md"
   # alpha.8 jobs
   ".bequite\jobs\JOB_PROFILE.md"          = ".bequite\jobs\JOB_PROFILE.md"
   ".bequite\jobs\JOB_SEARCH_LOG.md"       = ".bequite\jobs\JOB_SEARCH_LOG.md"

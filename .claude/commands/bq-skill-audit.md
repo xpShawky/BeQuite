@@ -27,7 +27,17 @@ Core pack + `MEMORY_INDEX.md` + previous `SKILL_QUALITY_AUDIT.md` (compare again
 
 ### 3–6. Scope: all `.claude/skills/bequite-*/SKILL.md` (or `only=<skill>` argument)
 
-### 7. The audit checks (per skill)
+### 7a. Registry refresh (alpha.20 — now the FIRST audit action)
+
+Before per-skill checks, refresh `.bequite/skills/SKILL_REGISTRY.md`:
+- Glob `.claude/skills/bequite-*/` and probe `~/.claude/skills/` (document if inaccessible/empty)
+- Add rows for new skills · remove rows for deleted skills · update Cost/Risk/Q columns
+- **Drift check:** registry rows vs live dirs must match 1:1; any mismatch is a HIGH finding
+- **Orphan check:** every skill referenced by ≥1 command (cross-check `SKILL_USAGE_LOG.md` — a skill never selected in 90 days is an archive candidate)
+- **Routing-defect scan:** SKILL_USAGE_LOG entries marked over-/under-triggered → router map fix proposals
+- Update the "Last refreshed" header + review-metadata table
+
+### 7b. The audit checks (per skill)
 
 | Check | Threshold / rule |
 |---|---|

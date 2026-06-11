@@ -3,7 +3,8 @@
 **Status:** authored 2026-05-11; expanded across alpha.2–alpha.18; Writing DNA + Skill Audit + Execution Contract added 2026-06-11 (alpha.19 — Fable Strengthening Pass)
 **Total commands:** 46 active + 1 deprecated alias (`/bq-add-feature` → `/bq-feature`)
 **Total skills:** 26 (7 baseline + 7 specialist + 1 live-edit + 3 opportunity + 1 updater + 1 delegate-planner + 1 presentation-builder + 1 frontend-design-system master (alpha.17) + 2 reliability/context (alpha.18) + **writing-dna + skill-auditor (alpha.19)**)
-**Execution contract (alpha.19):** every command follows the 11 steps in `docs/architecture/COMMAND_EXECUTION_CONTRACT.md`; risky file edits tiered per `docs/architecture/FILE_RISK_CLASSIFICATION.md`
+**Execution contract (alpha.20):** every command follows the **12 steps** in `docs/architecture/COMMAND_EXECUTION_CONTRACT.md` — including automatic skill routing (registry check → task classification → auto-selection, steps 2–4 per `AUTO_SKILL_ROUTING_STRATEGY.md`); risky file edits tiered per `docs/architecture/FILE_RISK_CLASSIFICATION.md`
+**Skill routing memory (alpha.20):** `.bequite/skills/{SKILL_REGISTRY,SKILL_ROUTER,SKILL_USAGE_LOG}.md` — users describe goals; BeQuite selects skills and explains why
 
 ### `/bq-writing-dna` (NEW in alpha.19)
 - **Purpose:** reusable writing profile (genre/audience/tone/rhythm/vocabulary/citations/forbidden patterns) from samples → generate or rewrite in that voice

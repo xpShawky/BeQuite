@@ -250,7 +250,11 @@ Additional commands not listed above (alpha.2+):
 - `/bq-update` (Maintenance — alpha.10; safe BeQuite self-update with backup + conflict surfacing)
 - `/bq-presentation` (Creative and Content Workflows — alpha.13; premium PPTX / HTML presentations with variants, strict-vs-creative modes, morph-like motion planning)
 - `/bq-writing-dna` (alpha.19; reusable writing profile from samples → generate/rewrite in YOUR voice; strict mode = full source fidelity, zero invented citations; memory at `.bequite/writing/`; ethical assistance only)
-- `/bq-skill-audit` (alpha.19; skill-pack quality loop — bloat/shallow/duplicate/stale findings with evidence; report-only by default; writes SKILL_QUALITY_AUDIT.md)
+- `/bq-skill-audit` (alpha.19; skill-pack quality loop — bloat/shallow/duplicate/stale findings with evidence; report-only by default; writes SKILL_QUALITY_AUDIT.md; since alpha.20 also refreshes `.bequite/skills/SKILL_REGISTRY.md`)
+
+### Automatic skill routing (alpha.20)
+
+You never need to name skills manually. Every action command classifies your task (per `.bequite/skills/SKILL_ROUTER.md`), auto-selects the right skills from the registry, and shows a `Skill Selection:` block with reasons. Mode sizing prevents over-triggering (fast = minimal set · deep = broader · token-saver = lazy-load · delegate = skills named in the task pack). Strategy: `docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.
 
 ### Alpha.17 — Frontend Design Continuity
 

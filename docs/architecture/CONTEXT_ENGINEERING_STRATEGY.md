@@ -32,7 +32,7 @@ A **context pack** is the named minimal file set a task type loads at entry — 
 
 | Pack | Files loaded at entry |
 |---|---|
-| Core (every command) | PROJECT_STATE · CURRENT_MODE · CURRENT_PHASE · WORKFLOW_GATES · LAST_RUN · MISTAKE_MEMORY(top) |
+| Core (every command) | PROJECT_STATE · CURRENT_MODE · CURRENT_PHASE · WORKFLOW_GATES · LAST_RUN · MISTAKE_MEMORY(top) · **skills/SKILL_REGISTRY (alpha.20 — routing index, not skill files)** |
 | Frontend | + DESIGN_DNA · SECTION_MAP · FRONTEND_CONTEXT_SUMMARY · FRONTEND_SKILL_MAP |
 | Presentation | + presentations/PRESENTATION_BRIEF (+ siblings on demand) |
 | **Writing** (alpha.19) | + writing/WRITING_DNA · WRITING_RULES · FORBIDDEN_PATTERNS |

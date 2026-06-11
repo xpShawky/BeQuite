@@ -1,10 +1,10 @@
 # BeQuite installed version
 
-**Version:** v3.0.0-alpha.19 — Fable Strengthening Pass
+**Version:** v3.0.0-alpha.20 — Automatic Skill Routing
 **Updated:** 2026-06-11
 **Source:** github
 **Source path / repo:** xpShawky/BeQuite (branch: main)
-**Previous version:** v3.0.0-alpha.18
+**Previous version:** v3.0.0-alpha.19
 **Last check:** 2026-06-11
 **Update count:** 0 (this is the seed file; updates from /bq-update increment)
 
@@ -26,6 +26,17 @@ Reading this file lets `/bq-update` know:
 ## Update history
 
 (Populated by `/bq-update` runs — newest at top.)
+
+### 2026-06-11 — alpha.20 ship — Automatic Skill Routing (Claude Fable 5)
+- You describe the goal; BeQuite selects skills — no manual skill naming
+- `.bequite/skills/{SKILL_REGISTRY,SKILL_ROUTER,SKILL_USAGE_LOG}.md` + `AUTO_SKILL_ROUTING_STRATEGY.md`
+- Execution contract 11 → 12 steps (registry check + task classification + auto-selection as steps 2–4)
+- 8 action commands wired (auto/feature/fix/plan/implement/review/verify/suggest) — each emits a `Skill Selection:` block with reasons
+- /bq-skill-audit now refreshes the registry first (drift + orphan + routing-defect checks)
+- Mode sizing prevents over-trigger: fast=minimal · deep=broader · token-saver=lazy-load · delegate=skills named in task pack
+- Global `~/.claude/skills/` probed → empty on this machine; limitation documented in registry header
+- Installers: skills/ scaffold + 3 templates; version bumped
+- Commands stay 46 · skills stay 26 (routing is memory + contract, not a new command)
 
 ### 2026-06-11 — alpha.19 ship — Fable Strengthening Pass (Claude Fable 5, Deep Mode)
 - Audit-first: verified alpha.17/18 coverage; filled only genuine gaps (no duplication)

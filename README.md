@@ -4,7 +4,7 @@
 
 A lightweight skill pack + memory system. Install once. Works everywhere Claude Code runs.
 
-**Latest:** `v3.0.0-alpha.19` · **Previous:** `v3.0.0-alpha.18` · MIT · by [@xpShawky](https://github.com/xpShawky)
+**Latest:** `v3.0.0-alpha.20` · **Previous:** `v3.0.0-alpha.19` · MIT · by [@xpShawky](https://github.com/xpShawky)
 
 **📖 Full command reference: [`commands.md`](commands.md)** — every command explained, ordered by workflow.
 
@@ -31,7 +31,8 @@ It gives every project:
 - **Opt-in machine-enforcement (alpha.18)** — Claude Code hooks that block destructive ops, secret leaks, and weasel-word "done" claims. Reviewed + enabled by you (not active by default). Plus all-workflow context engineering + anti-hallucination discipline. See [`docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`](docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md).
 - **Writing DNA (alpha.19)** — `/bq-writing-dna` builds a reusable writing profile from your samples (genre, audience, tone, rhythm, vocabulary, citation style, forbidden patterns), then generates or rewrites content in that voice. Human-quality, source-faithful, ethical: never fabricates citations, never promises AI-detector evasion. Memory at `.bequite/writing/`. The third DNA pillar: project / design / **writing**.
 - **Execution contract + file-edit safety (alpha.19)** — every command follows the 11-step [`COMMAND_EXECUTION_CONTRACT`](docs/architecture/COMMAND_EXECUTION_CONTRACT.md) (memory preflight → gate check → … → verification → writeback → next command); risky file edits (env/auth/migrations/CI/payment) classified into confirm/announce tiers per [`FILE_RISK_CLASSIFICATION`](docs/architecture/FILE_RISK_CLASSIFICATION.md).
-- **Skill quality loop (alpha.19)** — `/bq-skill-audit` keeps the 26-skill pack healthy: bloat/shallowness/duplication/staleness findings with evidence, report-only by default.
+- **Skill quality loop (alpha.19)** — `/bq-skill-audit` keeps the 26-skill pack healthy: bloat/shallowness/duplication/staleness findings with evidence, report-only by default. Since alpha.20 it also refreshes the skill registry.
+- **Automatic skill selection (alpha.20)** — **you describe the goal; BeQuite chooses the right expert procedures.** You never need to name skills manually. Ask for a cinematic website → the router auto-selects frontend design system, UI/UX, design continuity, visual QA, accessibility. Ask for human-quality writing → Writing DNA, source fidelity, tone analysis. Ask for an auth review → security review, evidence discipline, file-risk awareness. Every command shows a `Skill Selection:` block explaining what was picked and why (and what was deliberately skipped). Registry + router live at [`.bequite/skills/`](.bequite/skills/); strategy: [`AUTO_SKILL_ROUTING_STRATEGY.md`](docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md).
 - **4 composable operating modes** — Deep / Fast / Token Saver / Delegate (alpha.12). See [Operating Modes](#operating-modes) below.
 - **6 workflow phases** with **mandatory gates** that block out-of-order commands
 - **Persistent memory** in `.bequite/` — state, plans, audits, logs, mistake memory, **mode history**

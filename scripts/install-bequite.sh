@@ -9,7 +9,7 @@
 
 set -uo pipefail
 
-BEQUITE_VERSION="v3.0.0-alpha.19"
+BEQUITE_VERSION="v3.0.0-alpha.20"
 REPO_URL="https://github.com/xpShawky/BeQuite.git"
 TARGET="$(pwd)"
 FROM_LOCAL=""
@@ -112,7 +112,7 @@ echo "  hooks are NOT active by default — merge an example into settings.json 
 # --- 5. .bequite/ scaffold (alpha.5: principles + uiux + new state files) ---
 
 section "Scaffolding .bequite/ memory (alpha.5-13: principles, uiux, jobs, money, mistake memory, assumptions, delegate, presentations)"
-mkdir -p ./.bequite/{state,logs,prompts/user_prompts,prompts/generated_prompts,prompts/model_outputs,audits,plans,tasks,principles,decisions,design,uiux/screenshots,uiux/archive,jobs,money,backups,presentations/assets,presentations/outputs,writing,research}
+mkdir -p ./.bequite/{state,logs,prompts/user_prompts,prompts/generated_prompts,prompts/model_outputs,audits,plans,tasks,principles,decisions,design,uiux/screenshots,uiux/archive,jobs,money,backups,presentations/assets,presentations/outputs,writing,research,skills}
 echo "  directory scaffold ready"
 
 # Copy alpha.5 templates into target project (preserve existing if present)
@@ -209,6 +209,11 @@ copy_template ".bequite/state/FILE_RISK_RULES.md"              ".bequite/state/F
 copy_template ".bequite/research/EVIDENCE_LOG.md"              ".bequite/research/EVIDENCE_LOG.md"
 copy_template ".bequite/prompts/PROMPT_PATTERNS.md"            ".bequite/prompts/PROMPT_PATTERNS.md"
 copy_template ".bequite/plans/GAME_CHANGER_FEATURE_DISCOVERY.md" ".bequite/plans/GAME_CHANGER_FEATURE_DISCOVERY.md"
+
+# alpha.20 — automatic skill routing
+copy_template ".bequite/skills/SKILL_REGISTRY.md"              ".bequite/skills/SKILL_REGISTRY.md"
+copy_template ".bequite/skills/SKILL_ROUTER.md"                ".bequite/skills/SKILL_ROUTER.md"
+copy_template ".bequite/skills/SKILL_USAGE_LOG.md"             ".bequite/skills/SKILL_USAGE_LOG.md"
 
 # Copy commands.md at repo root (top-level reference)
 if [[ -f "$SOURCE/commands.md" && ! -f "./commands.md" ]]; then

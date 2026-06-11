@@ -118,6 +118,10 @@ Command map (34 commands, ordered by workflow phase):
     /bq-job-finder      find real work opportunities (jobs, freelance, AI gigs + community + hidden gems)
     /bq-make-money      find legitimate earning opportunities (10 tracks + Hidden Gems + AI-assisted paths)
 
+Automatic skill routing (alpha.20): you describe the goal — BeQuite selects the
+right expert skills itself (registry at .bequite/skills/; every command explains
+its Skill Selection). You never need to name skills manually.
+
   Writing + Skill Quality (alpha.19)
     /bq-writing-dna     reusable writing profile from your samples → human-quality writing in YOUR voice (ethical: no fabricated citations, no detector-evasion)
     /bq-skill-audit     structural quality loop over all skills (report-only by default)

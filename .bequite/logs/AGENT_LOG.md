@@ -2,6 +2,18 @@
 
 Append-only chronicle of every BeQuite command run. Newest at top.
 
+## 2026-06-11 — alpha.20 ship: Automatic Skill Routing (Claude Fable 5)
+
+**Action:** User prompt 1 of 2 — add automatic skill discovery + routing so the user never names skills manually. Executed per the (now-upgraded) contract.
+
+**Built:** SKILL_REGISTRY (26 skills indexed; ~/.claude/skills probed → empty, documented) · SKILL_ROUTER (24-domain map + algorithm + 7 worked routings) · SKILL_USAGE_LOG (seeded) · AUTO_SKILL_ROUTING_STRATEGY · contract 11→12 steps · 8 commands wired with Skill Selection blocks · /bq-skill-audit registry-refresh step · docs/menus/catalog synced · installers (+skills/ scaffold + 3 templates, version bump, bash -n clean).
+
+**Key decisions:** registry holds ROUTING METADATA only — SKILL.md stays the single source of truth for procedures (no duplicated prose). "Professional Expert / Security Lab / Prompt Injection Lab" route as compositions to security-reviewer + anti-hallucination + deep, not new skills. Over-triggering defined as a routing defect → MISTAKE_MEMORY.
+
+**Mode tracking:** deep · SUCCESS · ~20 files · routing-quality: good (seed entry in SKILL_USAGE_LOG).
+
+---
+
 ## 2026-06-11 — alpha.19 ship: Fable Strengthening Pass (Claude Fable 5 · Deep Mode)
 
 **Action:** User requested a full workflow-strengthening pass on the strongest available model. Fable 5 confirmed active (user set via /model). Audit-first discipline applied: memory preflight → inventory → audit → research → gap implementation → docs → version → ship.

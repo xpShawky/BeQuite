@@ -6,7 +6,38 @@ Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANG
 
 ---
 
-## [Unreleased — alpha.20]
+## [Unreleased — alpha.21]
+
+- Confidence Forecast integration (per second Fable follow-up prompt)
+- Frontier Model Operating Playbook + frontier-reasoning-coach skill
+- Game Changer Discovery V2 (genuinely new candidates)
+- Feature Type Taxonomy
+
+---
+
+## [v3.0.0-alpha.20] — 2026-06-11 — Automatic Skill Routing
+
+**You describe the goal; BeQuite chooses the expert procedures.** No manual skill naming, ever.
+
+### Added
+- `.bequite/skills/SKILL_REGISTRY.md` — token-cheap routing index over all 26 skills (domains, trigger keywords/intents, usual commands, compatible/conflicting, cost L/M/H, risk L/M/H, quality status, last-reviewed). Single-source-of-truth honored: detailed when-to-use/inputs/outputs stay canonical in each SKILL.md; registry holds routing metadata + pointers. Global `~/.claude/skills/` probed (empty on this machine — limitation recorded).
+- `.bequite/skills/SKILL_ROUTER.md` — 24-domain → skill map + selection algorithm + 7 worked routings (cinematic site, restaurant app, human-quality writing, academic lit-review, YouTube lecture deck, auth security review, prompt-injection review) + the `Skill Selection:` output block template.
+- `.bequite/skills/SKILL_USAGE_LOG.md` — selections + outcomes + routing-quality; feeds workflow-advisor learning and skill-audit orphan/over-trigger detection. Seeded with this run.
+- `docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md` — 7-step routing pipeline, mode sizing (fast=smallest-safe · deep=broader · token-saver=lazy-load · delegate=skills named in task pack), cross-cutting auto-attach rules (anti-hallucination on claims · testing-gate on code · context-engineer >5 files · security-reviewer on R3 paths · frontend-design-system on >1 UI section), arbitration (master beats member), small-task 2-skill cap (over-trigger = logged routing defect).
+
+### Changed
+- **COMMAND_EXECUTION_CONTRACT: 11 → 12 steps** — skill registry check (2), task classification (3), automatic skill selection (4) inserted; writeback now includes SKILL_USAGE_LOG; enforcement-layer table + compressions updated.
+- 8 action commands wired with the routing block: `/bq-auto` `/bq-feature` `/bq-fix` `/bq-plan` `/bq-implement` `/bq-review` `/bq-verify` `/bq-suggest`.
+- `/bq-skill-audit` — registry refresh is now step 1 (live-dir drift check, orphan check via usage log, routing-defect scan).
+- HARNESS_ENGINEERING_STRATEGY harness diagram + CONTEXT_ENGINEERING_STRATEGY core pack updated.
+- README ("Automatic skill selection" principle), commands.md (alpha.20 banner), /bequite menu, /bq-help, COMMAND_CATALOG.
+- Installers: `.bequite/skills/` scaffold + 3 templates; version → alpha.20. `bash -n` clean.
+
+### Honest notes
+- Routing is convention-enforced via the contract (like the rest of the harness) — Claude Code's own description-matching still operates underneath; the router makes selection deliberate, explained, and logged.
+- Counts unchanged: 46 commands · 26 skills (routing is memory + contract, not a command).
+
+---
 
 - Build the top-ranked approved game-changers per `.bequite/plans/GAME_CHANGER_FEATURE_DISCOVERY.md`: regression ledger · drift detector · confidence surfacing · ship-readiness scorecard
 - Decide Professional Expert composition-alias naming with the user (proposed in the discovery tracker — NOT a 5th mode)

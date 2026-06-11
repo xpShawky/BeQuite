@@ -15,8 +15,10 @@ User intent
   └─ Command entry (.claude/commands/*.md — markdown dispatch)
       └─ COMMAND_EXECUTION_CONTRACT.md (the 11 steps — canonical)
           ├─ Memory preflight ........ MEMORY_FIRST_BEHAVIOR.md + CONTEXT_ENGINEERING.md
+          ├─ Skill registry check .... .bequite/skills/SKILL_REGISTRY.md (alpha.20)
+          ├─ Task classification ..... .bequite/skills/SKILL_ROUTER.md domain map (alpha.20)
+          ├─ Auto skill selection .... AUTO_SKILL_ROUTING_STRATEGY.md (mode sizing + auto-attach)
           ├─ Gate check .............. WORKFLOW_GATES.md (23 gates + aliases)
-          ├─ Skill selection ......... LIGHTWEIGHT_SKILL_PACK_ARCHITECTURE.md (incl. master-skill tier)
           ├─ Research scope .......... RESEARCH_DEPTH_STRATEGY.md (+ no-research-repeat rule)
           ├─ Plan / task split ....... FEATURE_AND_FIX_WORKFLOWS.md + FILE_RESPONSIBILITY_MAP
           ├─ Implementation .......... PROJECT_DNA conformance + smallest-safe-change (CLAUDE.md rule 16)

@@ -5,6 +5,8 @@
 **Total skills:** 26 (7 baseline + 7 specialist + 1 live-edit + 3 opportunity + 1 updater + 1 delegate-planner + 1 presentation-builder + 1 frontend-design-system master (alpha.17) + 2 reliability/context (alpha.18) + **writing-dna + skill-auditor (alpha.19)**)
 **Execution contract (alpha.20):** every command follows the **12 steps** in `docs/architecture/COMMAND_EXECUTION_CONTRACT.md` — including automatic skill routing (registry check → task classification → auto-selection, steps 2–4 per `AUTO_SKILL_ROUTING_STRATEGY.md`); risky file edits tiered per `docs/architecture/FILE_RISK_CLASSIFICATION.md`
 **Skill routing memory (alpha.20):** `.bequite/skills/{SKILL_REGISTRY,SKILL_ROUTER,SKILL_USAGE_LOG}.md` — users describe goals; BeQuite selects skills and explains why
+**Confidence Forecast (alpha.21):** banded calibrated % on every plan/task/feature (no new command — integrated into plan/assign/auto/feature/fix/implement/review/verify/release); rules `.bequite/state/CONFIDENCE_RULES.md`; trajectory `.bequite/tasks/TASK_CONFIDENCE.md`; calibration `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`
+**Frontier discipline (alpha.21):** skills 26 → **27** (`bequite-frontier-reasoning-coach`); playbook `docs/architecture/FRONTIER_MODEL_OPERATING_PLAYBOOK.md`; 10-rule card `.bequite/state/FRONTIER_REASONING_SUMMARY.md` (embedded in delegate packs); **`expert`** documented as composition alias (deep + strict evidence + safety scope + domain checklist), not a 5th mode — see `FEATURE_TYPE_TAXONOMY.md`
 
 ### `/bq-writing-dna` (NEW in alpha.19)
 - **Purpose:** reusable writing profile (genre/audience/tone/rhythm/vocabulary/citations/forbidden patterns) from samples → generate or rewrite in that voice

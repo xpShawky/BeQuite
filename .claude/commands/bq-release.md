@@ -175,3 +175,18 @@ After successful completion:
 - `.bequite/state/MODE_HISTORY.md` — append mode + outcome (when invoked via `/bq-auto`-style mode)
 
 **Failure behavior:** don't claim `✅ done` if any of the above wasn't completed. Report PARTIAL with the specific gap.
+
+---
+
+## Confidence Forecast (alpha.21)
+
+For each phase / task / feature this command handles, report calibrated confidence per `docs/architecture/CONFIDENCE_CALIBRATION_STRATEGY.md`:
+
+```
+Confidence: NN% (band) — <one-line why>
+Evidence level: verified | inferred | assumed | unknown
+Lowers it: <factors>      Raises it: <checks that would>
+Unknowns/blockers: <list or none>      Next: <recommended action>
+```
+
+Bands: 90–100 routine · 75–89 likely · 50–74 needs exploration · 25–49 spike first · 0–24 blocked/insufficient info. **Confidence is not a feeling — it is a report** (evidence, tests, scope clarity, familiarity, dependency risk, verification). It must MOVE as evidence arrives (before-inspection → after-reading → after-implementation → after-verification; recorded per task in `.bequite/tasks/TASK_CONFIDENCE.md`). Never 100% — and ≥95% only with all tests passing + zero unresolved assumptions + EVIDENCE_LOG entry. Apply project modifiers from `.bequite/state/CONFIDENCE_RULES.md`; at verify/release, log forecast-vs-actual to `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`.

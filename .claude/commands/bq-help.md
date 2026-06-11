@@ -252,6 +252,14 @@ Additional commands not listed above (alpha.2+):
 - `/bq-writing-dna` (alpha.19; reusable writing profile from samples → generate/rewrite in YOUR voice; strict mode = full source fidelity, zero invented citations; memory at `.bequite/writing/`; ethical assistance only)
 - `/bq-skill-audit` (alpha.19; skill-pack quality loop — bloat/shallow/duplicate/stale findings with evidence; report-only by default; writes SKILL_QUALITY_AUDIT.md; since alpha.20 also refreshes `.bequite/skills/SKILL_REGISTRY.md`)
 
+### Confidence Forecast (alpha.21)
+
+Plans, tasks, and features carry a calibrated success forecast: banded % (90–100 routine · 75–89 likely · 50–74 explore · 25–49 spike · 0–24 blocked) + evidence level (verified/inferred/assumed/unknown) + what raises/lowers it. The number must MOVE as evidence arrives; never 100%. Integrated into plan/assign/auto/feature/fix/implement/review/verify/release. Strategy: `docs/architecture/CONFIDENCE_CALIBRATION_STRATEGY.md`.
+
+### Frontier Operating Playbook (alpha.21)
+
+Cheaper/weaker models follow frontier discipline via `docs/architecture/FRONTIER_MODEL_OPERATING_PLAYBOOK.md` + the `bequite-frontier-reasoning-coach` skill + the 10-rule card (`.bequite/state/FRONTIER_REASONING_SUMMARY.md` — embedded in every delegate task pack).
+
 ### Automatic skill routing (alpha.20)
 
 You never need to name skills manually. Every action command classifies your task (per `.bequite/skills/SKILL_ROUTER.md`), auto-selects the right skills from the registry, and shows a `Skill Selection:` block with reasons. Mode sizing prevents over-triggering (fast = minimal set · deep = broader · token-saver = lazy-load · delegate = skills named in the task pack). Strategy: `docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.

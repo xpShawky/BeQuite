@@ -122,6 +122,11 @@ Automatic skill routing (alpha.20): you describe the goal — BeQuite selects th
 right expert skills itself (registry at .bequite/skills/; every command explains
 its Skill Selection). You never need to name skills manually.
 
+Confidence Forecast (alpha.21): plans and tasks carry calibrated success
+percentages with evidence levels — confidence is a report, not a feeling.
+Frontier discipline (alpha.21): the 10-rule card (.bequite/state/
+FRONTIER_REASONING_SUMMARY.md) governs any model working here.
+
   Writing + Skill Quality (alpha.19)
     /bq-writing-dna     reusable writing profile from your samples → human-quality writing in YOUR voice (ethical: no fabricated citations, no detector-evasion)
     /bq-skill-audit     structural quality loop over all skills (report-only by default)

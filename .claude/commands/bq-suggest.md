@@ -50,6 +50,10 @@ If the user mentions any of: **write in my style / my voice / brand voice / soun
 
 Guidance to surface: samples → real profile (3+ samples) vs provisional; `strict=true` for academic/source-bound work (zero invented citations); the profile is reusable across pieces. Never frame as AI-detector evasion — if asked for that, explain the ethical line and offer quality/voice/fidelity help instead.
 
+### Confidence + rigor triggers (alpha.21)
+
+"How likely is this to work / what are the risks / how confident are you" → point at the Confidence Forecast in `/bq-plan`/`/bq-assign` output. "Maximum rigor / professional-grade / regulated review" → recommend the `expert` composition (`/bq-auto expert "..."` = deep + strict evidence + safety scope + domain checklist — an alias, not a 5th mode). "Make a cheaper model do this safely" → delegate mode; the task pack embeds the frontier 10-rule card automatically.
+
 ### Skill-maintenance trigger (alpha.19)
 
 "Skills feel stale / a skill misfired / clean up the pack" → `/bq-skill-audit` (report-only first).

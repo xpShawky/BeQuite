@@ -32,7 +32,7 @@ param(
 )
 
 $ErrorActionPreference = "Continue"
-$BEQUITE_VERSION = "v3.0.0-alpha.20"
+$BEQUITE_VERSION = "v3.0.0-alpha.21"
 
 function Write-Section($text) {
   Write-Host ""
@@ -112,7 +112,7 @@ Write-Host "  $count slash commands installed" -ForegroundColor Green
 
 # --- 4. Copy .claude/skills/bequite-* (26 specialist skills) ---
 
-Write-Section "Installing .claude/skills/bequite-* (26 specialist skills)"
+Write-Section "Installing .claude/skills/bequite-* (27 specialist skills)"
 $SRC_SKILLS = Join-Path $SOURCE ".claude\skills"
 if (-not (Test-Path $SRC_SKILLS)) {
   Exit-Fatal "Source missing $SRC_SKILLS"
@@ -209,6 +209,10 @@ $TEMPLATES = @{
   ".bequite\skills\SKILL_REGISTRY.md"                = ".bequite\skills\SKILL_REGISTRY.md"
   ".bequite\skills\SKILL_ROUTER.md"                  = ".bequite\skills\SKILL_ROUTER.md"
   ".bequite\skills\SKILL_USAGE_LOG.md"               = ".bequite\skills\SKILL_USAGE_LOG.md"
+  # alpha.21 — confidence + frontier discipline
+  ".bequite\state\CONFIDENCE_RULES.md"               = ".bequite\state\CONFIDENCE_RULES.md"
+  ".bequite\tasks\TASK_CONFIDENCE.md"                = ".bequite\tasks\TASK_CONFIDENCE.md"
+  ".bequite\state\FRONTIER_REASONING_SUMMARY.md"     = ".bequite\state\FRONTIER_REASONING_SUMMARY.md"
   # alpha.8 jobs
   ".bequite\jobs\JOB_PROFILE.md"          = ".bequite\jobs\JOB_PROFILE.md"
   ".bequite\jobs\JOB_SEARCH_LOG.md"       = ".bequite\jobs\JOB_SEARCH_LOG.md"

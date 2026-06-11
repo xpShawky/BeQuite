@@ -9,7 +9,7 @@
 
 set -uo pipefail
 
-BEQUITE_VERSION="v3.0.0-alpha.20"
+BEQUITE_VERSION="v3.0.0-alpha.21"
 REPO_URL="https://github.com/xpShawky/BeQuite.git"
 TARGET="$(pwd)"
 FROM_LOCAL=""
@@ -86,9 +86,9 @@ cp -r "$SOURCE/.claude/commands/"* "./.claude/commands/"
 count=$(ls -1 ./.claude/commands/*.md 2>/dev/null | wc -l)
 echo "  $(green "$count slash commands installed")"
 
-# --- 4. .claude/skills/bequite-* (26 specialist skills) ---
+# --- 4. .claude/skills/bequite-* (27 specialist skills) ---
 
-section "Installing .claude/skills/bequite-* (26 specialist skills)"
+section "Installing .claude/skills/bequite-* (27 specialist skills)"
 mkdir -p "./.claude/skills"
 for skill in "$SOURCE"/.claude/skills/bequite-*/; do
   if [[ -d "$skill" ]]; then
@@ -214,6 +214,11 @@ copy_template ".bequite/plans/GAME_CHANGER_FEATURE_DISCOVERY.md" ".bequite/plans
 copy_template ".bequite/skills/SKILL_REGISTRY.md"              ".bequite/skills/SKILL_REGISTRY.md"
 copy_template ".bequite/skills/SKILL_ROUTER.md"                ".bequite/skills/SKILL_ROUTER.md"
 copy_template ".bequite/skills/SKILL_USAGE_LOG.md"             ".bequite/skills/SKILL_USAGE_LOG.md"
+
+# alpha.21 — confidence + frontier discipline
+copy_template ".bequite/state/CONFIDENCE_RULES.md"             ".bequite/state/CONFIDENCE_RULES.md"
+copy_template ".bequite/tasks/TASK_CONFIDENCE.md"              ".bequite/tasks/TASK_CONFIDENCE.md"
+copy_template ".bequite/state/FRONTIER_REASONING_SUMMARY.md"   ".bequite/state/FRONTIER_REASONING_SUMMARY.md"
 
 # Copy commands.md at repo root (top-level reference)
 if [[ -f "$SOURCE/commands.md" && ! -f "./commands.md" ]]; then

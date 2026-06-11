@@ -1,10 +1,10 @@
-# Skill Registry (alpha.20)
+# Skill Registry (alpha.21)
 
 > **The compact routing index over all BeQuite skills.** Loaded FIRST by the Skill Router (token-cheap); full SKILL.md files load only after selection. **Single-source-of-truth rule:** detailed "when to use / when not / inputs / outputs / procedure" live in each SKILL.md — this registry holds ROUTING METADATA + terse pointers, never duplicated prose.
 >
-> **Refreshed by:** `/bq-skill-audit` (registry refresh is now step 1 of every audit run). **Last refreshed:** 2026-06-11 (alpha.20 seed — 26 skills indexed).
+> **Refreshed by:** `/bq-skill-audit` (registry refresh is now step 1 of every audit run). **Last refreshed:** 2026-06-11 (alpha.21 — **27 skills** indexed; frontier-reasoning-coach added).
 >
-> **Discovery scope:** project `.claude/skills/bequite-*/` ✅ (26 found) · global `~/.claude/skills/` checked 2026-06-11 → **empty/not present on this machine**; only project skills indexed. Re-probe at each refresh.
+> **Discovery scope:** project `.claude/skills/bequite-*/` ✅ (27 found) · global `~/.claude/skills/` checked 2026-06-11 → **empty/not present on this machine**; only project skills indexed. Re-probe at each refresh.
 
 Legend — **Cost** (token weight when fully loaded): L < 150 lines · M 150–300 · H > 300 or has references/. **Risk** (what damage misuse can do): L docs/advice · M writes project files · H touches security/prod/money domains. **Q** (quality status from last `/bq-skill-audit`): ✓ PASS · ~ improve-backlogged.
 
@@ -20,6 +20,7 @@ Legend — **Cost** (token weight when fully loaded): L < 150 lines · M 150–3
 | `devops-cloud` | devops, deploy, infra | deploy, CI/CD, VPS, nginx, rollback, env vars, monitoring | plan, feature, verify, release | release-gate, security-reviewer | — | M | **H** (prod) | ✓ |
 | `frontend-design-system` | frontend, UI/UX, visual identity | website, landing page, UI, redesign, cinematic, sections, design system | feature, fix, auto, uiux-variants, live-edit, audit, verify | ux-ui-designer, frontend-quality, live-edit (coordinates them) | — | **H** (master + references/) | M | ✓ |
 | `frontend-quality` | UI slop detection | AI-looking, dead buttons, hidden text, contrast, mock data | audit, review, verify (UI present) | frontend-design-system (member) | — | L | L | ✓ |
+| `frontier-reasoning-coach` | operating discipline (cross-cutting) | deep mode, delegate packs, drift symptoms, "be rigorous" | auto/plan deep, assign/review delegate, red-team, verify, skill-audit | all (governs HOW, not WHAT) | — | M | L | ✓ |
 | `job-finder` | jobs, career | job, freelance, gig, remote work, apply | job-finder | make-money | — | M | L | ✓ |
 | `live-edit` | frontend section edits | "make X less crowded", section, spacing, live edit | live-edit, auto live-edit | frontend-design-system (member) | — | M | M | ✓ |
 | `make-money` | earning, business | make money, income, earning, side hustle, hidden gems | make-money | job-finder, product-strategist | — | M | L | ✓ |
@@ -41,7 +42,7 @@ Legend — **Cost** (token weight when fully loaded): L < 150 lines · M 150–3
 
 ## Per-skill detail pointers
 
-For every skill: **when to use / when NOT to use / required inputs / expected outputs / memory reads / memory writes** are canonical in `.claude/skills/bequite-<name>/SKILL.md` (§When-to-use, §When-NOT, §Quality-gate sections — present in all 26 per the alpha.15 repair, verified alpha.19 seed audit). The router loads the routing table above for selection; it opens SKILL.md only for SELECTED skills.
+For every skill: **when to use / when NOT to use / required inputs / expected outputs / memory reads / memory writes** are canonical in `.claude/skills/bequite-<name>/SKILL.md` (§When-to-use, §When-NOT, §Quality-gate sections — present in all 27 per the alpha.15 repair, verified alpha.19 seed audit). The router loads the routing table above for selection; it opens SKILL.md only for SELECTED skills.
 
 Memory-write hotspots worth knowing at routing time (so writeback step plans correctly):
 - frontend-design-system → `design/DESIGN_DNA`, `DESIGN_CONTINUITY_REPORT`, `uiux/SECTION_MAP`, `state/FRONTEND_CONTEXT_SUMMARY`, `audits/VISUAL_QA_REPORT`
@@ -55,9 +56,9 @@ Memory-write hotspots worth knowing at routing time (so writeback step plans cor
 
 | Field | Value |
 |---|---|
-| Skills indexed | 26 |
-| Last full review | 2026-06-11 (alpha.19 seed audit + alpha.20 registry build) |
-| Quality summary | 24 ✓ PASS · 2 ~ (problem-solver thin example, multi-model-planning stale phasing — backlogged) |
+| Skills indexed | 27 |
+| Last full review | 2026-06-11 (alpha.19 seed audit + alpha.21 registry refresh) |
+| Quality summary | 25 ✓ PASS · 2 ~ (problem-solver thin example, multi-model-planning stale phasing — backlogged) |
 | Next refresh due | next `/bq-skill-audit` run, or when a skill is added/removed |
 
 **Maintainer rule:** adding or removing a skill without updating this registry in the same commit is a drift violation (caught by `/bq-skill-audit`).

@@ -6,12 +6,52 @@ Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANG
 
 ---
 
-## [Unreleased — alpha.21]
+## [Unreleased — alpha.22]
 
-- Confidence Forecast integration (per second Fable follow-up prompt)
-- Frontier Model Operating Playbook + frontier-reasoning-coach skill
-- Game Changer Discovery V2 (genuinely new candidates)
-- Feature Type Taxonomy
+- Build approved Discovery-V2 candidates (recommended first arc: /bq-proposal · /bq-announce · /bq-client-audit · /bq-proof — the freelancer monetization arc) via the 15-step workflow
+- First real confidence-calibrated task run → first CONFIDENCE_CALIBRATION_REPORT entries
+- Live fire-tests (hooks · writing-dna profile · delegate cross-session with the 10-rule card) — user actions
+- /bq-recording frame-extraction research (the one 50–74 band candidate)
+
+---
+
+## [v3.0.0-alpha.21] — 2026-06-11 — Confidence, Frontier Discipline & Discovery V2
+
+Sharper follow-up to alpha.19/20. Three goals, all delivered. Model: **Claude Fable 5 throughout — no switch, no reroute** (per-prompt requirement honored and reported).
+
+### Added — honest follow-up audit
+- `.bequite/audits/FABLE_5_FOLLOWUP_AUDIT.md` — what alpha.19 ADDED vs only VERIFIED vs REUSED vs did NOT add; which game-changer ideas were old (most) vs new (Professional Expert alias only); internal-vs-user-facing labels for the whole surface; ruling that the V1 tracker was a ledger, not a discovery sprint.
+
+### Added — Confidence Forecast (Part 1) · type: internal reliability with user-visible reports
+- `docs/architecture/CONFIDENCE_CALIBRATION_STRATEGY.md` — bands (90–100 routine · 75–89 likely · 50–74 explore · 25–49 spike · 0–24 blocked), evidence levels (verified/inferred/assumed/unknown), the report shape, **confidence-must-move-over-time** rule (60→80→75→92→96 example, drops allowed and honest), the never-100% rule, calibration inputs, anti-patterns (flat-85% theater), forecast-vs-actual loop.
+- `.bequite/state/CONFIDENCE_RULES.md` (tunable modifiers) · `.bequite/tasks/TASK_CONFIDENCE.md` (per-task trajectory template with files-to-inspect/change, unknowns, risks, tests, rollback) · `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md` (forecast-vs-actual tracking).
+- **Integrated into 9 commands** (plan/assign/auto/feature/fix/implement/review/verify/release). **No `/bq-confidence` command** — integration beats clutter, per the user's own preference ordering.
+- Principle codified: *Confidence is not a feeling. It is a report based on evidence, tests, scope clarity, familiarity, dependency risk, and verification.*
+
+### Added — Frontier Model Operating Playbook (Part 2) · type: docs + skill
+- `docs/architecture/FRONTIER_MODEL_OPERATING_PLAYBOOK.md` — 16 sections of EXTERNAL operating discipline (no private chain-of-thought): complex-task approach, decomposition, context protection, anti-shallow-implementation, facts-vs-assumptions, uncertainty, evidence/decision records, no-second-source-of-truth, anti-overbuild + intent preservation, auto-mode full-scope without drift, high-risk files, UI continuity, release thinking, high-value questions, writing tasks for cheaper models, reviewing cheaper-model output, stopping drift.
+- `.claude/skills/bequite-frontier-reasoning-coach/SKILL.md` — skill #27; enforces the playbook in `/bq-auto deep`, `/bq-plan deep`, `/bq-assign delegate`, `/bq-review`, `/bq-red-team`, `/bq-skill-audit`, `/bq-verify` + confidence forecasts.
+- `.bequite/state/FRONTIER_REASONING_SUMMARY.md` — the 10-rule card; **embedded in every delegate task pack** so cheaper models inherit the discipline.
+
+### Added — Game Changer Discovery V2 (Part 3) · type: roadmap
+- `.bequite/plans/GAME_CHANGER_FEATURE_DISCOVERY_V2.md` — Section A quarantines 30+ already-known items so they can't be re-counted; Section B delivers **16 genuinely new type-1 candidates**, each with wow/pain/outputs/shape/lightweight-fit/deps/risks/monetization/demo-potential/difficulty/confidence%/stage/verdict. All 16 KEEP (proposals only — the 15-step workflow gates any build). Standouts: screenshot→design-system (72%), proposal generator (84%), client audit pack (81%), announce kit (86%), proof builder (82%) — the latter four form a coherent freelancer-monetization arc.
+
+### Added — Feature Type Taxonomy (Part 4)
+- `docs/architecture/FEATURE_TYPE_TAXONOMY.md` — 8 types + the mandatory shape-decision tree + honest-labeling rules ("game changer = type 1 only"; changelogs must name the type).
+
+### Decided — Professional Expert (Part 5)
+- **Ruling: composition alias is correct** — `expert` = deep + strict evidence (anti-hallucination + EVIDENCE_LOG mandatory) + safety scope (R3) + professional domain checklist. NOT a 5th mode (would bloat the conflict matrix ~25% for zero new capability). Documented in taxonomy + catalog + /bq-suggest. V1 tracker rows graduated: confidence-surfacing → BUILT · Professional Expert → DOCUMENTED.
+
+### Changed
+- Skills 26 → **27**; SKILL_REGISTRY refreshed (frontier-reasoning-coach row + counts); workflow-advisor counts synced.
+- README: 3 new sections (Confidence Forecast · Frontier Model Operating Playbook · Game Changer Discovery V2) + badges.
+- commands.md alpha.21 banner · /bequite menu · /bq-help (2 new sections) · /bq-suggest (confidence/rigor/expert triggers) · COMMAND_CATALOG.
+- Installers → alpha.21; +3 templates (CONFIDENCE_RULES, TASK_CONFIDENCE, FRONTIER_REASONING_SUMMARY); 27-skill banner; `bash -n` clean.
+
+### Honest notes (Article VI)
+- Calibration report is seeded but EMPTY — the loop becomes meaningful only after real forecasted tasks reach verification.
+- Discovery V2 candidate confidence figures are pre-inspection estimates (50–74 band = "needs exploration"), not commitments.
+- Playbook effectiveness on actual cheaper models is UNVERIFIED until a live delegate run.
 
 ---
 

@@ -1,5 +1,14 @@
 # Last BeQuite command
 
+**Command:** v3.0.0-alpha.21 — Confidence, Frontier Discipline & Discovery V2 (follows alpha.20 Automatic Skill Routing, same day)
+**Timestamp:** 2026-06-11 (UTC)
+**Model:** Claude Fable 5 throughout — no switch, no reroute
+**Result:** SUCCESS — both follow-up prompts delivered as two releases:
+  - alpha.20 (commit 7f6a111): skill registry/router/usage-log + 12-step contract + 8 commands emit Skill Selection blocks + /bq-skill-audit registry refresh
+  - alpha.21 (this commit): FABLE_5_FOLLOWUP_AUDIT · Confidence Forecast (9 commands; no new command) · Frontier Playbook + coach skill (#27) + 10-rule card · Discovery V2 (16 genuinely new candidates) · FEATURE_TYPE_TAXONOMY · `expert` = composition alias ruling
+**Next suggested:** approve a Discovery-V2 candidate (recommended arc: /bq-proposal → /bq-announce → /bq-client-audit → /bq-proof), OR run a real forecasted task to start the calibration loop, OR live-test delegate mode with the embedded 10-rule card.
+
+**Prior run (preserved):**
 **Command:** v3.0.0-alpha.19 — Fable Strengthening Pass (Claude Fable 5 · Deep Mode · full workflow-strengthening)
 **Timestamp:** 2026-06-11 (UTC)
 **Commit:** (set after `git commit` lands)

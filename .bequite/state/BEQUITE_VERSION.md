@@ -1,10 +1,10 @@
 # BeQuite installed version
 
-**Version:** v3.0.0-alpha.20 — Automatic Skill Routing
+**Version:** v3.0.0-alpha.21 — Confidence, Frontier Discipline & Discovery V2
 **Updated:** 2026-06-11
 **Source:** github
 **Source path / repo:** xpShawky/BeQuite (branch: main)
-**Previous version:** v3.0.0-alpha.19
+**Previous version:** v3.0.0-alpha.20
 **Last check:** 2026-06-11
 **Update count:** 0 (this is the seed file; updates from /bq-update increment)
 
@@ -26,6 +26,16 @@ Reading this file lets `/bq-update` know:
 ## Update history
 
 (Populated by `/bq-update` runs — newest at top.)
+
+### 2026-06-11 — alpha.21 ship — Confidence, Frontier Discipline & Discovery V2 (Claude Fable 5)
+- FABLE_5_FOLLOWUP_AUDIT: honest classification of alpha.19 (added vs verified vs reused; old vs new game-changers; internal vs user-facing)
+- **Confidence Forecast**: banded calibrated % + evidence levels on every plan/task/feature; integrated into 9 commands (no new command); CONFIDENCE_CALIBRATION_STRATEGY + CONFIDENCE_RULES + TASK_CONFIDENCE + CALIBRATION_REPORT; "confidence is a report, not a feeling"; never 100%
+- **Frontier Model Operating Playbook** (16 sections, external discipline only — no chain-of-thought) + `bequite-frontier-reasoning-coach` skill (26 → **27**) + FRONTIER_REASONING_SUMMARY 10-rule card (embedded in every delegate pack)
+- **GAME_CHANGER_FEATURE_DISCOVERY_V2**: genuine sprint — 16 NEW candidates (screenshot→design-system, recording→assets, docs→support-brain, competitor rebuild, API→integration, issues→roadmap, project→course, pain radar, localization pack, proof builder, proposal generator, handoff vault, client audit pack, spec→tests, announce kit, interview→spec); all KEEP, proposals only
+- **FEATURE_TYPE_TAXONOMY**: 8 types + shape-decision tree; honest-labeling rules; `expert` ruled a composition ALIAS (deep + strict evidence + safety scope + domain checklist), NOT a 5th mode
+- V1 tracker graduations: confidence surfacing → BUILT; Professional Expert → DOCUMENTED
+- Registry refreshed (27 skills); installers +3 templates; README 3 new sections; docs/menus/advisor synced
+- Model: Claude Fable 5 throughout — no switch, no reroute
 
 ### 2026-06-11 — alpha.20 ship — Automatic Skill Routing (Claude Fable 5)
 - You describe the goal; BeQuite selects skills — no manual skill naming

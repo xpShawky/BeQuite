@@ -2,6 +2,26 @@
 
 Append-only chronicle of every BeQuite command run. Newest at top.
 
+## 2026-06-11 — alpha.21 ship: Confidence, Frontier Discipline & Discovery V2 (Claude Fable 5)
+
+**Action:** User prompt 2 of 2 — three specific goals: (1) confidence/success-probability reporting, (2) distill Fable-5 operating discipline so other models can imitate it, (3) a genuinely NEW game-changer discovery sprint. Model: Fable 5 throughout; no switch/reroute occurred (explicitly verified + reported per prompt requirement).
+
+**Built:**
+- FABLE_5_FOLLOWUP_AUDIT (honest: alpha.19 = mostly internal strengthening + Writing DNA/Skill Audit; V1 tracker was a re-rank, not discovery)
+- Confidence Forecast: strategy + rules + task template + calibration report; wired into 9 commands; NO /bq-confidence command (integration > clutter)
+- Frontier Playbook (16 sections, external discipline only) + frontier-reasoning-coach skill (#27) + 10-rule card (embedded in delegate packs)
+- Discovery V2: 16 genuinely new type-1 candidates (all KEEP, proposals only); 30+ known items quarantined in Section A
+- FEATURE_TYPE_TAXONOMY (8 types + shape tree); `expert` ruled composition alias, not 5th mode
+- V1 tracker graduations (confidence → BUILT; Prof Expert → DOCUMENTED); registry → 27; README 3 sections; installers +3 templates
+
+**Skill Selection (alpha.20 routing, dogfooded):** skill-auditor (registry refresh) · context-engineer (multi-file) · anti-hallucination (audit claims) · frontier-reasoning-coach (self-application — the pass followed its own playbook). Not selected: frontend-design-system (no UI), security-reviewer (no R3 beyond installer R2).
+
+**Confidence Forecast (dogfooded on this very release):** 93% — routine-band doc/memory work, all files read before edit, bash -n + grep verification run; not higher because live cheaper-model playbook effectiveness is UNVERIFIED.
+
+**Article VI:** calibration loop empty until real forecasted tasks verify · V2 confidence figures are pre-inspection estimates · playbook effect on cheap models unverified until a live delegate run.
+
+---
+
 ## 2026-06-11 — alpha.20 ship: Automatic Skill Routing (Claude Fable 5)
 
 **Action:** User prompt 1 of 2 — add automatic skill discovery + routing so the user never names skills manually. Executed per the (now-upgraded) contract.

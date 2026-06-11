@@ -4,14 +4,14 @@
 
 A lightweight skill pack + memory system. Install once. Works everywhere Claude Code runs.
 
-**Latest:** `v3.0.0-alpha.20` · **Previous:** `v3.0.0-alpha.19` · MIT · by [@xpShawky](https://github.com/xpShawky)
+**Latest:** `v3.0.0-alpha.21` · **Previous:** `v3.0.0-alpha.20` · MIT · by [@xpShawky](https://github.com/xpShawky)
 
 **📖 Full command reference: [`commands.md`](commands.md)** — every command explained, ordered by workflow.
 
 <p>
   <a href="#install"><img alt="Install" src="https://img.shields.io/badge/install-one_command-0ea5e9?style=flat-square"></a>
   <a href="commands.md"><img alt="46 commands" src="https://img.shields.io/badge/slash_commands-46-7c3aed?style=flat-square"></a>
-  <a href="#how-to-use"><img alt="26 skills" src="https://img.shields.io/badge/skills-26-10b981?style=flat-square"></a>
+  <a href="#how-to-use"><img alt="27 skills" src="https://img.shields.io/badge/skills-27-10b981?style=flat-square"></a>
   <a href="#operating-modes"><img alt="4 modes" src="https://img.shields.io/badge/operating_modes-4-ec4899?style=flat-square"></a>
   <a href="#workflow"><img alt="6 phases" src="https://img.shields.io/badge/phases-6-f59e0b?style=flat-square"></a>
   <a href="#what-bequite-is-not"><img alt="No Docker" src="https://img.shields.io/badge/no-Docker-64748b?style=flat-square"></a>
@@ -33,6 +33,9 @@ It gives every project:
 - **Execution contract + file-edit safety (alpha.19)** — every command follows the 11-step [`COMMAND_EXECUTION_CONTRACT`](docs/architecture/COMMAND_EXECUTION_CONTRACT.md) (memory preflight → gate check → … → verification → writeback → next command); risky file edits (env/auth/migrations/CI/payment) classified into confirm/announce tiers per [`FILE_RISK_CLASSIFICATION`](docs/architecture/FILE_RISK_CLASSIFICATION.md).
 - **Skill quality loop (alpha.19)** — `/bq-skill-audit` keeps the 26-skill pack healthy: bloat/shallowness/duplication/staleness findings with evidence, report-only by default. Since alpha.20 it also refreshes the skill registry.
 - **Automatic skill selection (alpha.20)** — **you describe the goal; BeQuite chooses the right expert procedures.** You never need to name skills manually. Ask for a cinematic website → the router auto-selects frontend design system, UI/UX, design continuity, visual QA, accessibility. Ask for human-quality writing → Writing DNA, source fidelity, tone analysis. Ask for an auth review → security review, evidence discipline, file-risk awareness. Every command shows a `Skill Selection:` block explaining what was picked and why (and what was deliberately skipped). Registry + router live at [`.bequite/skills/`](.bequite/skills/); strategy: [`AUTO_SKILL_ROUTING_STRATEGY.md`](docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md).
+- **Confidence Forecast (alpha.21)** — BeQuite does not only say what it will do. **It estimates how likely it is to succeed, why, what is uncertain, and what must be verified.** Every plan/task/feature gets a banded percentage (90–100 routine · 75–89 likely · 50–74 needs exploration · 25–49 spike first · 0–24 blocked) with evidence level (verified/inferred/assumed/unknown) — and the number must MOVE as evidence arrives. Never 100%. Confidence is not a feeling; it is a report. See [`CONFIDENCE_CALIBRATION_STRATEGY.md`](docs/architecture/CONFIDENCE_CALIBRATION_STRATEGY.md).
+- **Frontier Model Operating Playbook (alpha.21)** — BeQuite can make **cheaper or weaker models follow stronger-model discipline** through checklists, memory, evidence, task confidence, and verification: recover-before-act, audit-before-add, facts-vs-assumptions labeling, no second source of truth, full-scope auto-mode completion. The 10-rule card travels inside every delegate task pack. See [`FRONTIER_MODEL_OPERATING_PLAYBOOK.md`](docs/architecture/FRONTIER_MODEL_OPERATING_PLAYBOOK.md) + the `bequite-frontier-reasoning-coach` skill.
+- **Game Changer Discovery V2 (alpha.21)** — BeQuite **separates true new capabilities from internal workflow improvements** ([`FEATURE_TYPE_TAXONOMY.md`](docs/architecture/FEATURE_TYPE_TAXONOMY.md)): a game changer means the user can DO a new valuable thing — not just better logs. The V2 sprint found **16 genuinely new candidates** (screenshot→design-system, recording→docs+clips, competitor rebuild blueprints, API→integration, proposal generator, client audit packs, project→course, localization packs…) at [`.bequite/plans/GAME_CHANGER_FEATURE_DISCOVERY_V2.md`](.bequite/plans/GAME_CHANGER_FEATURE_DISCOVERY_V2.md). Proposals only — nothing builds without approval + the 15-step workflow.
 - **4 composable operating modes** — Deep / Fast / Token Saver / Delegate (alpha.12). See [Operating Modes](#operating-modes) below.
 - **6 workflow phases** with **mandatory gates** that block out-of-order commands
 - **Persistent memory** in `.bequite/` — state, plans, audits, logs, mistake memory, **mode history**

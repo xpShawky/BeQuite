@@ -1,6 +1,6 @@
 # BeQuite installed version
 
-**Version:** v3.0.0-alpha.22 — Navigation & Capability Consolidation
+**Version:** v3.0.0-alpha.22 — Navigation & Capability Consolidation (+ stabilization update 2026-06-12: audits, Course OCR intake, cross-agent docs, README polish — doc-only, no bump)
 **Updated:** 2026-06-12
 **Source:** github
 **Source path / repo:** xpShawky/BeQuite (branch: main)

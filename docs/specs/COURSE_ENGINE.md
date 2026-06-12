@@ -25,3 +25,22 @@ researcher (always) · writing-dna (scripts/narration) · presentation-builder (
 ## Quality rules
 
 Curriculum before slides, always. Every lesson states: outcome, practical task, proof of learning. Completion psychology designed in (quick wins early, momentum loops, gamification where it serves learning — not points-for-points). Paid courses get offer + objections + funnel sections; free courses get lead-magnet positioning. Strict mode = full source fidelity (no invented facts, citations preserved); ethics rules of Writing DNA apply (no fabricated citations, no academic dishonesty).
+
+## Course Source Intake (scanned/OCR PDF handling — alpha.22 stabilization)
+
+Source PDFs may be: text PDFs · scanned/image-based · mixed Arabic/English · OCR-messy · badly ordered · RTL · slides-exported-as-PDF · screenshots-inside-PDF. Intake rules (run before any curriculum work when source files exist):
+
+1. **Probe extractability** — attempt text extraction first; classify each page: `text` / `image-only` / `mixed`.
+2. Text-extractable → use direct extraction (no OCR).
+3. Scanned/image-based → mark **OCR REQUIRED**; do not silently skip pages.
+4. OCR runs **only with tools already present and safe** in the environment (tool-neutral; nothing installed by default).
+5. No OCR available → ask the user for extracted text, or offer an explicit OCR pass — never guess page contents.
+6. **Preserve page order** even when text streams are jumbled.
+7. Reconstruct headings/sections from layout + typography cues.
+8. Clean OCR noise (broken words, repeated headers/footers, page numbers in text flow).
+9. Detect Arabic/RTL direction problems (reversed runs, broken bidi) — localization-rtl skill attaches automatically.
+10. Build a **source map**: page · section · extracted-text summary · extraction confidence.
+11. **Never invent missing content.** Gaps are recorded as gaps.
+12. Low-confidence OCR sections are marked **NEEDS REVIEW** and excluded from strict-fidelity output until the user confirms.
+
+**Output:** `.bequite/courses/SOURCE_INTAKE_REPORT.md` (the source map + per-page classification + NEEDS REVIEW list). Course outputs are now **15 files** (14 + this report, written whenever source files are ingested). Reminder: any course-building PDF is ONE reference — the engine still researches global best practices when appropriate.

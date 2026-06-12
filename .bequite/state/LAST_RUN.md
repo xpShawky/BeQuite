@@ -1,5 +1,12 @@
 # Last BeQuite command
 
+**Command:** alpha.22 stabilization pass (audits + OCR intake + cross-agent docs + README polish; doc-only, no version bump)
+**Timestamp:** 2026-06-12 (UTC)
+**Model:** Claude Fable 5 throughout — no switch, no reroute
+**Result:** SUCCESS — 4 audits (stabilization · scraping · cross-agent · classification) + Course OCR Source Intake + 3 cross-agent docs + README rewrite + roadmap ledger (REMAINING_ROADMAP_TASKS). 7 doc-drift findings fixed. Scraping capability verified present (Scrapling name live-verified). 0 new commands · 0 new skills · no live trials claimed · /bq-offer still queued (C11).
+**Next suggested:** B-bucket maintenance (/bq-skill-audit baseline + /bq-verify drift), then user decides: live-trial C5/C3 or approve /bq-offer for alpha.23.
+
+**Prior run (preserved):**
 **Command:** v3.0.0-alpha.22 — Navigation & Capability Consolidation
 **Timestamp:** 2026-06-12 (UTC)
 **Model:** Claude Fable 5 throughout — no switch, no reroute

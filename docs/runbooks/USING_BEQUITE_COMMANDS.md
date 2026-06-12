@@ -616,3 +616,9 @@ When working on BeQuite itself (or any project where BeQuite acts as the meta-sy
 Even when the user provides a detailed spec inline, the agent must not shortcut to implementation. Exemptions: hotfixes + doc-only changes + skill additions activated only from existing commands can skip steps 2-5.
 
 See `.bequite/audits/FEATURE_WORKFLOW_AUDIT.md` for the alpha.13 precedent that motivated this rule.
+
+---
+
+## Current-state note (2026-06-12 stabilization)
+
+The catalog now spans 52 active commands + 1 deprecated alias with stable display IDs (`.bequite/commands/COMMAND_ID_MAP.md`) and 29 skills. The walkthroughs above predate the alpha.22 capability commands (`/bq-reference` `/bq-knowledge` `/bq-course` `/bq-pain-radar` `/bq-integrate` `/bq-proposal`) — their usage lives in each command file and `docs/specs/`; walkthroughs will be added here after their first live runs. Using BeQuite with Codex, Cursor, or other agents: `USING_BEQUITE_OUTSIDE_CLAUDE_CODE.md`.

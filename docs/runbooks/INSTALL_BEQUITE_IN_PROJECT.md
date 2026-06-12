@@ -33,7 +33,8 @@ Open Claude Code in `<your-project>`. Type `/bequite`. Follow the menu.
    - *(Counts as of v3.0.0-alpha.22 — the canonical counts live in `COMMAND_ID_MAP.md` + `SKILL_REGISTRY.md`; if this paragraph drifts again, `/bq-verify drift` will flag it.)*
 4. Scaffolds `.bequite/` memory (state, logs, prompts, audits, plans, tasks, research, skills, commands, writing, presentations, design, uiux, jobs, money, reference, knowledge, courses, pain-radar, integrations, proposals — see the installer source for the authoritative list) with sensible defaults; never overwrites an existing `.bequite/`.
 5. Appends a short "BeQuite" section to your `CLAUDE.md` (or creates one if missing).
-6. Prints next steps.
+6. Works outside Claude Code too — the commands are readable markdown playbooks; see `docs/runbooks/USING_BEQUITE_OUTSIDE_CLAUDE_CODE.md` for Codex/Cursor/other-agent usage.
+7. Prints next steps.
 
 **What it does NOT do:**
 
@@ -120,7 +121,7 @@ Run them in order. Each writes its output to `.bequite/`. You'll have a project 
 
 ```
 /bequite              menu
-/bq-add-feature "csv export on bookings page"
+/bq-feature "csv export on bookings page"
                       writes mini-spec, asks for approval, implements, tests
 /bq-review            review your own changes
 /bq-verify            full gate matrix

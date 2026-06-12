@@ -30,6 +30,7 @@ FAIL reroutes: verify FAIL → W2.4 fix (with `regressions` note) · review find
 | job post / client / RFP / bid | C8 proposal |
 | find work | C9 job-finder · earn money | C10 make-money |
 | Arabic / MENA / RTL / Egypt | localization-rtl **skill** (auto-attach; no command) |
+| scrape / crawl / monitor a site / price-stock watch / automate a workflow | **scraping-automation skill** via W2.3 feature or O7 `/bq-auto scraping|automation` (API-first, Article VIII; future `/bq-automation` is parked V2) |
 
 ## 3. Journey routes (multi-command sets for /bq-suggest)
 

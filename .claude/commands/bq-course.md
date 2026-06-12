@@ -38,3 +38,7 @@ researcher (always) · writing-dna (scripts) · presentation-builder (slides) ·
 ## Next Command Recommendations (typical)
 
 Required next after curriculum: **C1 `/bq-presentation`** when slides are needed — can auto-run: yes. Set: C4 knowledge build (docs exist) · C2 writing-dna (narration voice) · W4.2 `release announce` for launch content (publishing = hard human gate). Do not run yet: slides before CURRICULUM_MAP approval — slides-first course building is the failure mode this engine exists to prevent.
+
+## Source intake — scanned/OCR PDFs (alpha.22 stabilization)
+
+When source files are provided, run the 12-rule Course Source Intake (spec §Course Source Intake): probe extractability per page → direct extraction where possible → mark OCR REQUIRED for scanned/image pages → OCR only with tools already present (never install by default) → otherwise ask the user for text or an explicit OCR pass → preserve page order → reconstruct headings → clean OCR noise → flag Arabic/RTL bidi issues (localization-rtl auto-attaches) → write the source map to `SOURCE_INTAKE_REPORT.md` (page · section · summary · confidence) → never invent missing content → mark low-confidence sections **NEEDS REVIEW** (excluded from strict-fidelity output until confirmed). This runs BEFORE curriculum work; `SOURCE_FIDELITY.md` then traces what came from which page.

@@ -73,4 +73,8 @@
 | 5 | Parked V2 items (recording · workflow export · automation/bot builder · data-to-product · AI service business builder · agent pack · release template) — revisit per tracker conditions | future releases |
 | 6 | Calibration loop: first real Confidence Forecast entries in TASK_CONFIDENCE from live runs | accumulates with use |
 
+## Stabilization pass (2026-06-12) — status update
+
+Remaining-items table superseded by the richer ledger `.bequite/tasks/REMAINING_ROADMAP_TASKS.md` (A–E buckets). Stabilization outcomes: repo-reality audit PASS (7 doc findings fixed) · scraping context VERIFIED PRESENT · cross-agent docs CREATED · Course OCR intake ADDED · README REWRITTEN · classification audit PASS. Still open: live trials (none run), skill-audit baseline, /bq-offer (queued, awaiting user go), course PDF (still not provided).
+
 **Maintainer rule:** when a remaining item completes, update this file + LAST_RUN in the same commit.

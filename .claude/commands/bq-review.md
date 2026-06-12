@@ -1,5 +1,5 @@
 ---
-description: Review CURRENT changes (uncommitted diff or recent commits). Per-file commentary. Verdict: Approved / Approved-with-comments / Blocked.
+description: Review CURRENT changes (uncommitted diff or recent commits) — spec-compliance first, then code quality. Per-file commentary with file:line evidence. Arguments — delegate (review a cheaper model's implementation), persona (simulated-user friction review). Includes a Guard Pass on AI-generated diffs. Verdict: Approved / Approved-with-comments / Blocked.
 ---
 
 # /bq-review — review changes

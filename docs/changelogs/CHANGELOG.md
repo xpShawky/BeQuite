@@ -6,6 +6,14 @@ Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANG
 
 ## [3.0.0-alpha.22] - 2026-06-12 — Navigation & Capability Consolidation
 
+### Stabilization update (2026-06-12, doc-only — same release)
+- **4 repo-reality audits:** ALPHA_22_POST_RELEASE_STABILIZATION (7 doc findings fixed; Skill Expansion Reality Check: 0 new skills warranted, course-architect deferred to post-live-use) · SCRAPING_AUTOMATION_CONTEXT (capability VERIFIED PRESENT + first-class; Scrapling name live-verified; router signal row added) · CROSS_AGENT_COMPATIBILITY · COMMAND_CLASSIFICATION (0 misclassifications)
+- **Course Engine OCR:** 12-rule scanned/OCR PDF Source Intake in spec + command + catalog; new output `SOURCE_INTAKE_REPORT.md` (15 course outputs); never invents missing content; NEEDS REVIEW marking
+- **Cross-agent compatibility:** CROSS_AGENT_COMPATIBILITY_STRATEGY.md + USING_BEQUITE_OUTSIDE_CLAUDE_CODE.md + AGENT_COMPATIBILITY_MATRIX.md (docs only — no adapters/CLI/APIs built)
+- **README rewritten** as public product documentation (696 → ~190 lines; 13 scenario rows; stale 39/42/18-era counts removed); commands.md callout; runbooks updated (incl. deprecated-alias fix in workflow C); CLAUDE.md rows added
+- **Roadmap ledger:** `.bequite/tasks/REMAINING_ROADMAP_TASKS.md` (A keep-until-live-trial · B maintenance · C alpha.23 /bq-offer · D 13 V1 arguments · E 13 parked V2)
+- **Honesty:** no live trials run; /bq-offer NOT built; no version bump (stabilization of alpha.22)
+
 ### Addendum (2026-06-12, doc-only — same release)
 - **Alpha.22 task checklist:** the full mega-prompt converted to a done/remaining task ledger at `.bequite/tasks/ALPHA_22_TASK_CHECKLIST.md` (A→Z verification: all acceptance criteria met; 6 open items listed)
 - **Forgotten ChatGPT Candidate Review** (7 ideas) in `APPROVED_CAPABILITY_SHAPE_DECISIONS.md`: demo-data → `/bq-feature demo-data` argument (absorbs V3 #18; demo+fixtures profiles) · persona-sim → `/bq-review persona` argument · client-intake → `/bq-scope intake` argument · price → `/bq-proposal price` argument (+product-strategist) · demo-script → merged into `/bq-release demo-video` (demo-script profile) · template → `/bq-release template` V2 park · **`/bq-offer` confirmed as the alpha.23 build candidate (C11 queued)**. 0 new commands now — anti-bloat holds.

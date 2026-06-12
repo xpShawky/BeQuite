@@ -383,3 +383,8 @@ Before claiming this skill's work complete:
 - [ ] Memory state files (LAST_RUN, WORKFLOW_GATES, CURRENT_PHASE) updated when gate state changed
 
 If any item fails, do not claim done — report PARTIAL with the specific gap.
+
+
+## Tool catalog note (verified 2026-06-12)
+
+Slidev (github.com/slidevjs/slidev) live-verified actively maintained: v52.16.0 (2026-06-03), 47k+ stars; markdown-driven dev slides with PDF/PNG/PPTX export - a strong HTML-deck candidate alongside Marp / Reveal.js / pptxgenjs (re-verify those at build time per tool-neutrality). Candidates, never defaults.

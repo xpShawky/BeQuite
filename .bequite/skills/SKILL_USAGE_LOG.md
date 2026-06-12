@@ -37,3 +37,8 @@ Pruning: archive entries older than ~90 days to `SKILL_USAGE_LOG-<date>.md`.
 **Selected:** skill-auditor (3-skill baseline) · anti-hallucination (evidence-cited audits) · guard-pass (docs-guard style drift sweep) · localization-rtl (FIRST REAL EXERCISE — Arabic course PDF intake, RTL extraction artifacts identified) · orchestrator (remaining-work queryability wiring)
 **Outcome:** SUCCESS — 3/3 skills PASS (structural); 2 drift findings fixed; PDF integrated as verified Reference A
 **Routing quality:** good — localization-rtl auto-attach on Arabic-source work behaved as designed
+
+## 2026-06-12 - alpha.23: /bq-offer build + tightening pass (deep)
+**Selected:** product-strategist + make-money + writing-dna (offer design) · anti-hallucination (honest-selling rules + audit labels) · skill-auditor (matrices) · orchestrator (C11 wiring + conflict scan) · researcher (LIVE: agents.md standard, Slidev currency)
+**Outcome:** SUCCESS - C11 built + wired; 4 audits + evidence log + tightening plan; AGENTS.md-standard finding patched into cross-agent docs
+**Routing quality:** good

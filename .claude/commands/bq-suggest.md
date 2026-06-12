@@ -313,7 +313,7 @@ Output uses the multi-command format: Required next · Recommended command set (
 
 **"I want to create a course"** → 1. C5 `/bq-course` (validation + curriculum first) · 2. C4 `/bq-knowledge build` if source docs exist · 3. C1 `/bq-presentation` when slides needed · 4. C2 `/bq-writing-dna` for scripts/narration · 5. localization-rtl skill if Arabic/MENA. Skills: researcher, writing-dna, presentation-builder (+anti-hallucination if academic).
 
-**"I want to make money from a niche"** → 1. C6 `/bq-pain-radar` (verified pain first) · 2. C10 `/bq-make-money` (match to earning tracks) · 3. C8 `/bq-proposal` (pitch it) · 4. C5 `/bq-course` only if an education product is viable · 5. W4.2 `/bq-release proof` once something ships. Explain the order: evidence → opportunity → pitch → product → proof.
+**"I want to make money from a niche"** → 1. C6 `/bq-pain-radar` (verified pain first) · 2. C10 `/bq-make-money` (match to earning tracks) · 3. **C11 `/bq-offer`** (package the standing product) · 4. C8 `/bq-proposal` (pitch it per-client) · 5. C5 `/bq-course` only if an education product is viable · 6. W4.2 `/bq-release proof` once something ships. Explain the order: evidence → opportunity → offer → pitch → proof.
 
 **"I want this app to integrate with an API"** → 1. C7 `/bq-integrate` (blueprint) · 2. W1.4 `/bq-plan` · 3. W2.3 `/bq-feature` · 4. W3.1 `/bq-test from-spec` · 5. W4.1 `/bq-verify`. Skills: backend-architect, security-reviewer, testing-gate.
 

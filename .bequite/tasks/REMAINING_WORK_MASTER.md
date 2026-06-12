@@ -1,8 +1,8 @@
 # REMAINING WORK MASTER — the canonical "what remains now?" ledger
 
-**This file is the single source of truth for remaining work.** When the user asks *what remains / what's left / what's next / what's parked / what's alpha.23 / what's V2 / what's built-but-untested* — BeQuite reads THIS file and answers from it, never from memory alone. Wired into: `/bequite` · `/bq-now` · `/bq-suggest` · `/bq-recover` · `/bq-memory` · `/bq-skill-audit` · ORCHESTRATION_MAP §14. Predecessors (`REMAINING_ROADMAP_TASKS.md`, `ALPHA_22_TASK_CHECKLIST.md`) remain as history; THIS file is canonical. **Updated:** 2026-06-12 (post-alpha.22 maintenance pass).
+**This file is the single source of truth for remaining work.** When the user asks *what remains / what's left / what's next / what's parked / what's alpha.23 / what's V2 / what's built-but-untested* — BeQuite reads THIS file and answers from it, never from memory alone. Wired into: `/bequite` · `/bq-now` · `/bq-suggest` · `/bq-recover` · `/bq-memory` · `/bq-skill-audit` · ORCHESTRATION_MAP §14. Predecessors (`REMAINING_ROADMAP_TASKS.md`, `ALPHA_22_TASK_CHECKLIST.md`) remain as history; THIS file is canonical. **Updated:** 2026-06-12 (alpha.23 - /bq-offer built; tightening audits complete).
 
-## A. Built but NOT live-tested (alpha.22 capability commands)
+## A. Built but NOT live-tested (alpha.22 capability commands + alpha.23 offer)
 
 All six exist as full command files + specs + scaffolded memory dirs; **none has run against real input** — that is the single biggest open item.
 
@@ -14,11 +14,13 @@ All six exist as full command files + specs + scaffolded memory dirs; **none has
 | C6 /bq-pain-radar | command + spec + ethics rules | source sweep quality | one niche keyword | 8 files in `.bequite/pain-radar/` | medium (live-web variance) | 80% |
 | C7 /bq-integrate | command + spec + UNVERIFIED discipline | blueprint accuracy on real API docs | any public API docs URL | 8 files in `.bequite/integrations/` | low | 86% |
 | C8 /bq-proposal | command + spec + no-overpromise rules | voice + honesty on a real job post | one real job post | 7 files in `.bequite/proposals/` | low | 85% |
+| **C11 /bq-offer (alpha.23)** | command + spec (OFFER_ENGINE) + scaffolded `.bequite/offers/` + full router/map/docs wiring | entire engine | one real offer idea ("AI automation for restaurants") | 12 files in `.bequite/offers/` | low | 85% |
 
 ## B. Maintenance
 
 | Item | Status | Owner | Blocking? | Next action |
 |---|---|---|---|---|
+| Tightening audits (best-practice · duplication/conflict · generic-risk · quality matrices · evidence log · plan) | ✅ DONE 2026-06-12 (alpha.23) - safe patches applied; P1 items in BEQUITE_TIGHTENING_PLAN.md | M2/W3.2 | no | P1 items next maintenance pass |
 | Skill-audit baseline (orchestrator/guard-pass/localization-rtl) | ✅ DONE 2026-06-12 — 3/3 PASS structural (`SKILL_AUDIT_ALPHA_22_BASELINE.md`) | M2 | no | live-invocation validation rides on the §A trials |
 | Drift verification | ✅ DONE 2026-06-12 — 2 findings fixed (`DRIFT_VERIFICATION_POST_ORCHESTRATION.md`) | W4.1 drift | no | re-run inside every release verify |
 | Stale count sweep | ✅ clean as of 2026-06-12 (52 active+1 alias / 30 skills everywhere) | W4.1 drift | no | standing |
@@ -28,9 +30,9 @@ All six exist as full command files + specs + scaffolded memory dirs; **none has
 | First Confidence-Forecast calibration entries | open — accumulates with live use | any live run | no | starts with §A trials |
 | Course PDF integration | ✅ DONE 2026-06-12 — verified Reference A | C5 | no | — |
 
-## C. Alpha.23 candidate — `/bq-offer` (C11)
+## C. Alpha.23 - `/bq-offer` (C11): **BUILT 2026-06-12, moved to section A.** Next-release candidate: none committed - alpha.24 will be chosen from D/E after live trials inform priorities.
 
-**Status: QUEUED, NOT BUILT** (ID reserved in COMMAND_ID_MAP footer). **Why strongest:** the monetization connector — turns pain-radar findings + proposal capability + make-money tracks into a standing sellable offer; ranked #1 in Discovery V3 (85%) and reinforced by the forgotten-candidate review; user hinted at it twice. **Dependencies:** C6 pain-radar · C8 proposal · C10 make-money · W4.2 release proof · product-strategist (pricing) · writing-dna (voice). **Must happen first:** explicit user go → 15-step feature workflow → taxonomy shape check; preferably ≥1 live trial of C6/C8. **Future acceptance criteria:** command + spec (OFFER_ENGINE.md) + `.bequite/offers/` memory (OFFER · TARGET_CLIENT · DELIVERABLES · PRICING_TIERS · OUTREACH · DEMO_IDEA · GUARANTEE · ONBOARDING_QUESTIONS · PROOF_CHECKLIST · PROPOSAL_ANGLE) + router/ID-map/registry/docs sync + no-overpromise rules inherited from C8 + Guard Pass on outputs. **Expected outputs:** a complete productized offer pack from one sentence ("AI automation for restaurants").
+Historical record (pre-build status): **Status was: QUEUED, NOT BUILT** (ID reserved in COMMAND_ID_MAP footer). **Why strongest:** the monetization connector — turns pain-radar findings + proposal capability + make-money tracks into a standing sellable offer; ranked #1 in Discovery V3 (85%) and reinforced by the forgotten-candidate review; user hinted at it twice. **Dependencies:** C6 pain-radar · C8 proposal · C10 make-money · W4.2 release proof · product-strategist (pricing) · writing-dna (voice). **Must happen first:** explicit user go → 15-step feature workflow → taxonomy shape check; preferably ≥1 live trial of C6/C8. **Future acceptance criteria:** command + spec (OFFER_ENGINE.md) + `.bequite/offers/` memory (OFFER · TARGET_CLIENT · DELIVERABLES · PRICING_TIERS · OUTREACH · DEMO_IDEA · GUARANTEE · ONBOARDING_QUESTIONS · PROOF_CHECKLIST · PROPOSAL_ANGLE) + router/ID-map/registry/docs sync + no-overpromise rules inherited from C8 + Guard Pass on outputs. **Expected outputs:** a complete productized offer pack from one sentence ("AI automation for restaurants").
 
 ## D. V1 argument candidates (approved shapes; build on first real demand — each is a doc-level addition to its owner)
 
@@ -85,6 +87,7 @@ Email Sequence Engine as standalone (folded into writing-dna repurpose) · `/bq-
 | Localization-RTL skill | `5ab5c45` | **first real exercise DONE** (Arabic PDF intake 2026-06-12) | LOCALIZATION_RTL.md |
 | Command Router + catalog IDs + Skill Router extensions | `5ab5c45` / `7f6a111` | yes — observed across future runs via NEXT_COMMAND_LOG | WORKFLOW_COMMAND_ROUTER.md |
 | Course PDF integration (Reference A verified) | this pass | n/a (it WAS the validation) | COURSE_PDF_REFERENCE_NOTES.md |
+| **C11 /bq-offer built + 4 tightening audits + evidence log + plan** | alpha.23 | yes - offer live trial pending | OFFER_ENGINE.md · audit files · BEQUITE_TIGHTENING_PLAN.md |
 | Skill-audit baseline + drift verification | this pass | n/a | the two audit files |
 
 **Maintainer rule:** every pass that changes remaining work updates THIS file + LAST_RUN in the same commit. `/bq-verify drift` flags a stale MASTER (older than the last feature commit) as a finding.

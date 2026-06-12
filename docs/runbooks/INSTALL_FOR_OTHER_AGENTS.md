@@ -34,9 +34,9 @@ cd <your-project>
 
 Agents that can read arbitrary paths can also use the global clone's playbooks directly (read-only) while keeping per-project `.bequite/` memory — but per-project install is simpler and is the default recommendation. Update the global clone with `git -C ~/.bequite-src pull` then re-run the per-project install with `--force` (memory is preserved).
 
-## 2. The universal bridge file
+## 2. The universal bridge file - AGENTS.md (now an industry standard)
 
-Create this once per project as `AGENTS.md` at the repo root (most non-Claude agents read AGENTS.md-style files; for agents that don't, paste the same block as the first message of each session):
+**Verified 2026-06-12 (https://agents.md):** AGENTS.md is a Linux Foundation (Agentic AI Foundation) standard used by 60,000+ projects and supported natively by OpenAI Codex, Cursor, Gemini CLI, GitHub Copilot, Zed, Warp, Windsurf, Aider, goose, Devin, JetBrains Junie, Google Jules, and VS Code - one bridge file covers nearly every non-Claude agent in the table below. Create it once per project at the repo root; for the few agents that read nothing automatically, paste the same block as the first session message:
 
 ```markdown
 # BeQuite bridge — instructions for any AI coding agent

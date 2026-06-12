@@ -190,3 +190,8 @@ This file grows. To prevent bloat:
 - Every 3 months: review entries; archive resolved/permanent-fixed patterns to `.bequite/state/MISTAKE_MEMORY-archive-<date>.md`
 - Keep the live file under 200 entries
 - The agent prefers recent + tag-matching entries; archived entries are still readable on demand
+
+## [process][release] Commit fired despite failed finalization script (alpha.23, 2026-06-12)
+- **What happened:** a `;` instead of `&&` in the shell chain let `git commit+push` run after the python finalization script crashed (encoding anchor), shipping an incomplete release commit with temp scripts included.
+- **Prevention rule:** never chain git after a script with a semicolon - use `&&` end-to-end so any failure stops the release; keep anchors ASCII-safe (curly quotes break cross-encoding matching); verify `git status` is clean of temp files before any release commit.
+- **How to detect next time:** release commit diff contains `scripts/_tmp_*` or logs/version files unchanged.

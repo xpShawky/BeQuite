@@ -12,4 +12,6 @@ How BeQuite works across coding agents. **Capability columns reflect general too
 | **Local CLI agents / scripts (any model)** | ❌ | ✅ (plain files) | ✅ (pipe/paste) | ❌ | wrapper assembles playbook + state snapshot into the prompt; append results to AGENT_LOG | manual writeback discipline | thin `bq` prompt-assembly script (strategy §4, NOT built) |
 | **Plain chat LLM, no file access** | ❌ | ⚠ manual copy | ⚠ paste-in | ❌ | paste playbook + state files; copy results back by hand | slow; human is the file system | — |
 
+**AGENTS.md note (verified 2026-06-12):** AGENTS.md is now a Linux Foundation standard with native support across most rows (Codex, Cursor, Gemini CLI, Copilot, Zed, Warp, Windsurf, Aider, Devin, Junie) - the single bridge file in INSTALL_FOR_OTHER_AGENTS.md section 2 is the default setup for any non-Claude agent; per-tool rules files are optional refinements.
+
 **Reading the matrix:** every row works *today* with documentation alone — the rightmost column is roadmap, not requirement. The portable core (memory contract, gates, playbooks, IDs, evidence rules) is identical in all rows; what varies is invocation sugar and machine-enforcement.

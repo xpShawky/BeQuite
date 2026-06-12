@@ -11,7 +11,7 @@ BeQuite is built Claude-Code-first, but most of it is **plain markdown + a file-
 | **`.bequite/` memory** | NO — plain files | fully portable; any agent that reads/writes files can honor the memory contract |
 | **Workflow gates / phases / contract / routers** | NO — markdown rules + state files | portable wherever the agent follows instructions in context |
 | **Hooks** (`.claude/hooks/`, opt-in) | YES — Claude Code hook runtime | not portable; other agents rely on the convention layer only |
-| **CLAUDE.md** | partially — Claude Code reads it automatically | Cursor reads `.cursorrules`/AGENTS.md-class files; Codex-class agents read AGENTS.md; content is reusable, the auto-load path differs |
+| **CLAUDE.md** | partially — Claude Code reads it automatically | Cursor reads `.cursorrules`/AGENTS.md-class files; Codex-class agents read AGENTS.md (verified 2026-06-12 as a Linux Foundation standard also supported by Cursor, Gemini CLI, Copilot, Zed, Warp, Windsurf, Aider, Devin, Junie); content is reusable, the auto-load path differs |
 | **Catalog IDs / docs / specs / audits** | NO | pure markdown |
 
 **Core insight: a BeQuite command file IS a prompt.** `/bq-fix` in Claude Code = "paste bq-fix.md + your bug description" anywhere else. The slash is sugar; the playbook is the product.

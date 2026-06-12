@@ -4,6 +4,19 @@ Format: [Keep a Changelog v1.1](https://keepachangelog.com/en/1.1.0/) · Version
 
 Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANGELOG-legacy.md`](../legacy/CHANGELOG-legacy.md) after Phase B cleanup.
 
+## [3.0.0-alpha.23] - 2026-06-12 - Offer Engine + Tightening Pass
+
+### Added
+- **C11 `/bq-offer` (52 -> 53 commands):** skill/service/niche/pain -> sellable productized offer; 12 artifacts in `.bequite/offers/`. Honest-selling rules: no invented demand, no fake income claims, **promise != guarantee**, no legal advice, UNVERIFIED-assumption marking, output language follows the user request. Completes the monetization chain C6 -> C10 -> **C11** -> C8 -> W4.2 proof. Spec `docs/specs/OFFER_ENGINE.md`. **Built, NOT live-tested.**
+- **Tightening audits:** COMMAND_SKILL_BEST_PRACTICE_AUDIT (15 questions + 8 domain verdicts) · DUPLICATION_AND_CONFLICT_AUDIT (11 checks; 3 fixed, 1 deferred) · GENERIC_OUTPUT_RISK_AUDIT · COMMAND_SKILL_OUTPUT_QUALITY_MATRIX (53 commands + 30 skills) · BEST_PRACTICE_EVIDENCE_LOG (LIVE/PRIOR-LIVE/ECO labels) · BEQUITE_TIGHTENING_PLAN (P1: problem-solver example, multi-model phasing, skill/ dir pointer)
+
+### Changed
+- **AGENTS.md verified as a Linux Foundation standard** (60k+ projects; Codex/Cursor/Gemini CLI/Copilot/Zed/Warp/Windsurf native support) - cross-agent docs rewritten around the single standard bridge file
+- Monetization journey updated in router + suggest (+C11); proposal sibling notes; Slidev live-verified (v52.16.0) as presentation candidate; installers -> alpha.23 (+offers scaffold; bash -n OK, ps1 0 errors)
+
+### Honest status
+- No live trials run on any of the 7 capability commands; no parked V2 item built; matrices: 0 weak commands, 2 thin/stale skills (P1-queued)
+
 ## [3.0.0-alpha.22] - 2026-06-12 — Navigation & Capability Consolidation
 
 ### Maintenance pass (2026-06-12 — post-orchestration stabilization, same release)

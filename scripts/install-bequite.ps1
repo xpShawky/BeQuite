@@ -32,7 +32,7 @@ param(
 )
 
 $ErrorActionPreference = "Continue"
-$BEQUITE_VERSION = "v3.0.0-alpha.22"
+$BEQUITE_VERSION = "v3.0.0-alpha.23"
 
 function Write-Section($text) {
   Write-Host ""
@@ -170,7 +170,8 @@ $SCAFFOLD = @(
   ".bequite\courses",
   ".bequite\pain-radar",
   ".bequite\integrations",
-  ".bequite\proposals"
+  ".bequite\proposals",
+  ".bequite\offers"
 )
 foreach ($dir in $SCAFFOLD) {
   if (-not (Test-Path $dir)) {

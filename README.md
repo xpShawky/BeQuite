@@ -4,9 +4,9 @@
 
 **A disciplined AI-engineering workflow for coding agents — slash commands, expert skills, persistent memory, and quality gates, all in plain markdown.**
 
-**Latest:** `v3.0.0-alpha.22` · MIT · by [@xpShawky](https://github.com/xpShawky)
+**Latest:** `v3.0.0-alpha.23` · MIT · by [@xpShawky](https://github.com/xpShawky)
 
-<a href="commands.md"><img alt="52 commands" src="https://img.shields.io/badge/slash_commands-52-7c3aed?style=flat-square"></a>
+<a href="commands.md"><img alt="53 commands" src="https://img.shields.io/badge/slash_commands-53-7c3aed?style=flat-square"></a>
 <a href="#skills"><img alt="30 skills" src="https://img.shields.io/badge/skills-30-10b981?style=flat-square"></a>
 <img alt="zero runtime deps" src="https://img.shields.io/badge/runtime_deps-0-0ea5e9?style=flat-square">
 <img alt="markdown only" src="https://img.shields.io/badge/install-markdown_only-f59e0b?style=flat-square">
@@ -53,7 +53,7 @@ Then, in Claude Code:
 /bq-auto new "Build a booking dashboard for clinics"   → autonomous, gate-aware
 ```
 
-The installer copies `.claude/commands/` (52 active slash commands + 1 deprecated alias), `.claude/skills/` (30 skills), and scaffolds `.bequite/` memory. It never overwrites existing memory without `--force`. Canonical counts live in [`COMMAND_ID_MAP.md`](.bequite/commands/COMMAND_ID_MAP.md) and [`SKILL_REGISTRY.md`](.bequite/skills/SKILL_REGISTRY.md).
+The installer copies `.claude/commands/` (53 active slash commands + 1 deprecated alias), `.claude/skills/` (30 skills), and scaffolds `.bequite/` memory. It never overwrites existing memory without `--force`. Canonical counts live in [`COMMAND_ID_MAP.md`](.bequite/commands/COMMAND_ID_MAP.md) and [`SKILL_REGISTRY.md`](.bequite/skills/SKILL_REGISTRY.md).
 
 ## The BeQuite workflow
 
@@ -81,7 +81,7 @@ Every command has a stable catalog ID — workflow (`W0.1`–`W5.3`), navigation
 | **W5 Memory** | `/bq-memory` · `/bq-recover` · `/bq-handoff` |
 | **N Navigation** | `/bq-now` · `/bq-help` · `/bq-explain` · `/bq-suggest` |
 | **O Orchestrators** | `/bq-p0`…`/bq-p5` · `/bq-auto` |
-| **C Capabilities** | `/bq-presentation` · `/bq-writing-dna` · `/bq-reference` · `/bq-knowledge` · `/bq-course` · `/bq-pain-radar` · `/bq-integrate` · `/bq-proposal` · `/bq-job-finder` · `/bq-make-money` |
+| **C Capabilities** | `/bq-presentation` · `/bq-writing-dna` · `/bq-reference` · `/bq-knowledge` · `/bq-course` · `/bq-pain-radar` · `/bq-integrate` · `/bq-proposal` · `/bq-offer` · `/bq-job-finder` · `/bq-make-money` |
 | **M Maintenance** | `/bq-update` · `/bq-skill-audit` |
 
 Many commands take argument workflows instead of spawning new commands: `/bq-verify regressions|drift`, `/bq-release readiness|announce|proof|demo-video`, `/bq-plan from-issues|migration`, `/bq-scope from-interview`, `/bq-test from-spec`, `/bq-handoff client`, `/bq-audit client|a11y`, and more — BeQuite deliberately grows arguments, not command count.
@@ -98,6 +98,7 @@ Beyond software workflows, BeQuite ships engines for the work *around* building:
 - **`/bq-pain-radar`** — mine *public* complaints in a niche → ranked MVP / service / course / automation opportunities with source confidence. Strict ethics: official APIs, user exports, or public sources only.
 - **`/bq-integrate`** — API docs → integration blueprint (auth flow, endpoint map, error matrix, retry/idempotency, rate limits, test plan). Never invents endpoints; unknowns are marked `UNVERIFIED`.
 - **`/bq-proposal`** — a job post or RFP → an honest, tailored proposal in your voice with milestones, pricing options, and explicit scope boundaries. Never claims experience you don't have on record.
+- **`/bq-offer`** — a skill, niche, or pain point → a sellable productized offer: specific target client, deliverables with explicit exclusions, pricing tiers, a guarantee you can actually honor, outreach, demo idea, and proof checklist. Completes the monetization chain (pain-radar → make-money → offer → proposal → proof). No invented demand, no income hype.
 - **`/bq-job-finder`** / **`/bq-make-money`** — verified work opportunities and legitimate earning tracks, safety-first.
 
 ## How it works together
@@ -146,7 +147,7 @@ BeQuite is Claude-Code-first, but ~85% of it is agent-agnostic by construction: 
 
 - **Update:** `/bq-update` — refreshes commands/skills/docs from GitHub, backs up first, never touches your project memory.
 - **Docs:** [`commands.md`](commands.md) (full reference) · [`docs/specs/COMMAND_CATALOG.md`](docs/specs/COMMAND_CATALOG.md) · [`docs/runbooks/`](docs/runbooks/) (install, usage, outside-Claude-Code) · [`docs/architecture/`](docs/architecture/) (the strategy layer) · [`docs/changelogs/CHANGELOG.md`](docs/changelogs/CHANGELOG.md).
-- **Roadmap:** next command candidate is `/bq-offer` (sellable-offer builder); parked candidates (automation builder, data-to-product, agent-pack generator, and more) live in the canonical ledger `.bequite/tasks/REMAINING_WORK_MASTER.md` with explicit promotion conditions.
+- **Roadmap:** newest command is `/bq-offer` (alpha.23, not yet live-tested); parked candidates (automation builder, data-to-product, agent-pack generator, and more) live in the canonical ledger `.bequite/tasks/REMAINING_WORK_MASTER.md` with explicit promotion conditions.
 
 ## Contributing & license
 

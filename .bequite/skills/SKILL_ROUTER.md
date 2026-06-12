@@ -17,6 +17,7 @@
 | niche pain / market mining | **researcher** + **make-money** (via C6 /bq-pain-radar) | scraping-automation (public, polite) · anti-hallucination |
 | API integration | **backend-architect** (via C7 /bq-integrate) | security-reviewer · testing-gate · anti-hallucination |
 | proposal / RFP / client pitch | **writing-dna** + **product-strategist** (via C8 /bq-proposal) | job-finder/make-money safety intake · anti-hallucination |
+| productized offer / "package my skill into a product" | **product-strategist** + **make-money** (via C11 /bq-offer) | writing-dna (outreach voice) · anti-hallucination (no invented demand) · researcher (market claims) · localization-rtl (Arabic/MENA) |
 | post-work quality gate / AI-diff review | **guard-pass** (auto-attach after implement/test, before verify/release) | anti-hallucination · testing-gate |
 | security / auth review | **security-reviewer** | anti-hallucination · testing-gate · FILE_RISK rules · devops-cloud (if infra) |
 | prompt injection / agent safety | **security-reviewer** (LLM Top-10 + red-team angle 10) | anti-hallucination · context-engineer (memory-poisoning review) |

@@ -34,7 +34,7 @@ FAIL reroutes: verify FAIL → W2.4 fix (with `regressions` note) · review find
 
 ## 3. Journey routes (multi-command sets for /bq-suggest)
 
-**"Monetize a niche"** → 1. C6 `/bq-pain-radar` (find verified pain first) → 2. C10 `/bq-make-money` (match pain to earning tracks) → 3. C8 `/bq-proposal` (pitch the chosen opportunity) → 4. C5 `/bq-course` *only if* an education product is viable → 5. W4.2 `/bq-release proof` once something ships. Order matters: evidence → opportunity → pitch → product → proof.
+**"Monetize a niche"** → 1. C6 `/bq-pain-radar` (verified pain first) → 2. C10 `/bq-make-money` (match to earning tracks) → 3. **C11 `/bq-offer`** (package the standing product) → 4. C8 `/bq-proposal` (pitch it per-client) → 5. C5 `/bq-course` *only if* an education product is viable → 6. W4.2 `/bq-release proof` once something ships. Order matters: evidence → opportunity → offer → pitch → proof.
 
 **"Create a course"** → 1. C5 `/bq-course` (validation + curriculum first, never slides first) → 2. C4 `/bq-knowledge build` if source docs exist → 3. C1 `/bq-presentation` when slides are needed → 4. C2 `/bq-writing-dna` for scripts/narration voice → 5. localization-rtl skill (or proposed `/bq-localize`) if Arabic/MENA.
 
@@ -76,7 +76,7 @@ Auto mode instead reports: `Internal workflow executed: <ID list>` then the same
 | "how much should I charge?" | `/bq-proposal price` (+ product-strategist pricing) |
 | "record a walkthrough" / live demo | `/bq-release demo-video` (demo-script profile) |
 | "package this project for resale" | `/bq-release template` (V2 — not yet built; say so) |
-| "build me a sellable offer" | future C11 `/bq-offer` (alpha.23 queue — until built, route to C6 pain-radar + C8 proposal) |
+| "build me a sellable offer" / productize my skill | **C11 `/bq-offer`** (built alpha.23 — needs an idea/niche; without one, C6 pain-radar or C10 make-money first) |
 
 ## 7. Conflict + missing-capability rule (alpha.22 orchestration update)
 

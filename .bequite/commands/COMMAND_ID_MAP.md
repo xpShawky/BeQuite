@@ -1,7 +1,7 @@
 # BeQuite Command ID Map (canonical) — alpha.22
 
 Display-only catalog IDs (Option A — files never renamed). Strategy: `docs/architecture/COMMAND_NUMBERING_AND_ORDERING_STRATEGY.md`.
-**52 active commands + 1 deprecated alias.** Shapes: WF = workflow · CAP = capability · NAV = navigation · ORC = orchestrator · MNT = maintenance · ARG noted where argument workflows exist.
+**53 active commands + 1 deprecated alias.** Shapes: WF = workflow · CAP = capability · NAV = navigation · ORC = orchestrator · MNT = maintenance · ARG noted where argument workflows exist.
 
 | ID | Command | Category | Phase | Purpose | Usually follows | Usually next | Auto-run? | Hidden? | Shape |
 |---|---|---|---|---|---|---|---|---|---|
@@ -50,8 +50,9 @@ Display-only catalog IDs (Option A — files never renamed). Strategy: `docs/arc
 | C8 | `/bq-proposal` | capability | any | job post → honest tailored proposal | C9 / C6 | (user sends) | yes | no | CAP (alpha.22) |
 | C9 | `/bq-job-finder` | capability | any | real work opportunities | (profile) | C8 proposal | yes | no | CAP |
 | C10 | `/bq-make-money` | capability | any | legitimate earning tracks | (profile) | C6 / C8 | yes | no | CAP |
+| C11 | `/bq-offer` | capability | any | idea/niche/pain → sellable productized offer (12-file pack; no overpromise, no fake income claims) | C6 / C10 / C8 / C5 / user idea | C8 proposal / W4.2 proof / C1 / C2 / W1.3 intake / W2.3 landing | yes | no | CAP (alpha.23) · ARG `refine`, `lang=` |
 | M1 | `/bq-update` | maintenance | any | self-update from source | (new release) | W0.4 doctor | yes (backup-gated) | no | MNT |
 | M2 | `/bq-skill-audit` | maintenance | any | skill-pack quality audit | (drift sign) | fixes on approval | yes (report-only) | no | MNT |
 | X1 | `/bq-add-feature` | deprecated | — | alias → W2.3 `/bq-feature` | — | — | — | listed as deprecated | alias |
 
-**Queued for alpha.23 (approved, not built):** C11 `/bq-offer` — sellable-offer builder (forgotten-candidate review + V3 #1). **Proposed only (not built):** `/bq-localize` — localization/RTL is skill-first (`bequite-localization-rtl`, auto-attached); command added only if demand proves it.
+**Proposed only (not built):** `/bq-localize` — localization/RTL is skill-first (`bequite-localization-rtl`, auto-attached); command added only if demand proves it.

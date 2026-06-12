@@ -34,6 +34,8 @@ Full spec: `docs/specs/PROPOSAL_BUILDER.md`. Follows the 12-step execution contr
 
 ## Skill routing (auto)
 
+Sibling: **C11 `/bq-offer`** (alpha.23) builds the standing offer this command pitches per-client; if `.bequite/offers/PROPOSAL_ANGLE.md` exists, read it first.
+
 writing-dna · product-strategist · job-finder/make-money intake + safety discipline · anti-hallucination.
 
 ## Next Command Recommendations (typical)

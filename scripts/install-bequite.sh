@@ -9,7 +9,7 @@
 
 set -uo pipefail
 
-BEQUITE_VERSION="v3.0.0-alpha.22"
+BEQUITE_VERSION="v3.0.0-alpha.23"
 REPO_URL="https://github.com/xpShawky/BeQuite.git"
 TARGET="$(pwd)"
 FROM_LOCAL=""
@@ -112,7 +112,7 @@ echo "  hooks are NOT active by default — merge an example into settings.json 
 # --- 5. .bequite/ scaffold (alpha.5: principles + uiux + new state files) ---
 
 section "Scaffolding .bequite/ memory (alpha.5-13: principles, uiux, jobs, money, mistake memory, assumptions, delegate, presentations)"
-mkdir -p ./.bequite/{state,logs,prompts/user_prompts,prompts/generated_prompts,prompts/model_outputs,audits,plans,tasks,principles,decisions,design,uiux/screenshots,uiux/archive,jobs,money,backups,presentations/assets,presentations/outputs,writing,research,skills,commands,reference,knowledge,courses,pain-radar,integrations,proposals}
+mkdir -p ./.bequite/{state,logs,prompts/user_prompts,prompts/generated_prompts,prompts/model_outputs,audits,plans,tasks,principles,decisions,design,uiux/screenshots,uiux/archive,jobs,money,backups,presentations/assets,presentations/outputs,writing,research,skills,commands,reference,knowledge,courses,pain-radar,integrations,proposals,offers}
 echo "  directory scaffold ready"
 
 # Copy alpha.5 templates into target project (preserve existing if present)

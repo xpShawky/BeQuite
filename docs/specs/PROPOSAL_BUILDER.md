@@ -16,4 +16,4 @@ PROPOSAL · CLIENT_NEEDS · MILESTONES · PRICING_OPTIONS · RISK_NOTES · QUEST
 
 ## Routing
 
-Skills: writing-dna + product-strategist + job-finder/make-money intake discipline + anti-hallucination. Usually follows C9 job-finder or C6 pain-radar; **sending the proposal is always user-performed** (external publishing = human action, never automated). Future sibling: `/bq-offer` (productized offers) — proposed in Discovery V3, not built.
+Skills: writing-dna + product-strategist + job-finder/make-money intake discipline + anti-hallucination. Usually follows C9 job-finder or C6 pain-radar; **sending the proposal is always user-performed** (external publishing = human action, never automated). Sibling: C11 `/bq-offer` (built alpha.23) — the standing productized package this command pitches per-client; an offer pack’s PROPOSAL_ANGLE.md feeds this builder directly.

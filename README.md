@@ -146,7 +146,7 @@ BeQuite is Claude-Code-first, but ~85% of it is agent-agnostic by construction: 
 
 - **Update:** `/bq-update` — refreshes commands/skills/docs from GitHub, backs up first, never touches your project memory.
 - **Docs:** [`commands.md`](commands.md) (full reference) · [`docs/specs/COMMAND_CATALOG.md`](docs/specs/COMMAND_CATALOG.md) · [`docs/runbooks/`](docs/runbooks/) (install, usage, outside-Claude-Code) · [`docs/architecture/`](docs/architecture/) (the strategy layer) · [`docs/changelogs/CHANGELOG.md`](docs/changelogs/CHANGELOG.md).
-- **Roadmap:** next command candidate is `/bq-offer` (sellable-offer builder); parked candidates (automation builder, data-to-product, agent-pack generator, and more) live in `.bequite/tasks/REMAINING_ROADMAP_TASKS.md` with explicit promotion conditions.
+- **Roadmap:** next command candidate is `/bq-offer` (sellable-offer builder); parked candidates (automation builder, data-to-product, agent-pack generator, and more) live in the canonical ledger `.bequite/tasks/REMAINING_WORK_MASTER.md` with explicit promotion conditions.
 
 ## Contributing & license
 

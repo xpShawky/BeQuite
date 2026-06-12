@@ -288,3 +288,7 @@ The first item in the "Recommended next 3" you printed.
 ## Orchestrator reference (alpha.22 orchestration update)
 
 This command consults the global orchestration brain: `bequite-orchestrator` skill + `.bequite/state/ORCHESTRATION_MAP.md` — the source of truth when commands/skills conflict, workflows seem duplicated, the next step is unclear, or a task matches no existing capability (Missing Capability protocol).
+
+## Remaining-work queries (canonical source rule)
+
+When the user asks any form of: *what remains? / what is left? / what should we do next? / what version is next? / what is parked? / what is alpha.23? / what is V2? / what is built but untested?* — READ `.bequite/tasks/REMAINING_WORK_MASTER.md` (sections A–G) and answer from it. Do not answer from memory alone; if the file is missing, say so and offer to rebuild it from the trackers.

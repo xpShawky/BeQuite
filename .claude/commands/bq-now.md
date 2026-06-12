@@ -123,3 +123,7 @@ The command in the `next: ` field of the output.
 ## Tool neutrality (global rule)
 
 This command makes no tool picks. Read-only. Nothing to install. See `.bequite/principles/TOOL_NEUTRALITY.md` for the global rule.
+
+## Remaining-work queries (canonical source rule)
+
+When the user asks any form of: *what remains? / what is left? / what should we do next? / what version is next? / what is parked? / what is alpha.23? / what is V2? / what is built but untested?* — READ `.bequite/tasks/REMAINING_WORK_MASTER.md` (sections A–G) and answer from it. Do not answer from memory alone; if the file is missing, say so and offer to rebuild it from the trackers.

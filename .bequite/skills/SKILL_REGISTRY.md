@@ -62,7 +62,7 @@ Memory-write hotspots worth knowing at routing time (so writeback step plans cor
 |---|---|
 | Skills indexed | 27 |
 | Last full review | 2026-06-11 (alpha.19 seed audit + alpha.21 registry refresh) |
-| Quality summary | 27 ✓ PASS (3 new alpha.22 skills pending first audit, provisionally ✓) · 2 ~ (problem-solver thin example, multi-model-planning stale phasing — backlogged) |
+| Quality summary | 28 ✓ PASS (3 new alpha.22 skills baselined PASS 2026-06-12 — SKILL_AUDIT_ALPHA_22_BASELINE.md; live-invocation validation pending) · 2 ~ (problem-solver thin example, multi-model-planning stale phasing — backlogged) |
 | Next refresh due | next `/bq-skill-audit` run, or when a skill is added/removed |
 
 **Maintainer rule:** adding or removing a skill without updating this registry in the same commit is a drift violation (caught by `/bq-skill-audit`).

@@ -6,6 +6,13 @@ Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANG
 
 ## [3.0.0-alpha.22] - 2026-06-12 — Navigation & Capability Consolidation
 
+### Maintenance pass (2026-06-12 — post-orchestration stabilization, same release)
+- **Skill-audit baseline:** orchestrator / guard-pass / localization-rtl — 3/3 PASS structural (`SKILL_AUDIT_ALPHA_22_BASELINE.md`); registry quality column updated; live-invocation validation rides on first real runs
+- **Drift verification:** `DRIFT_VERIFICATION_POST_ORCHESTRATION.md` — 2 findings (USING runbook "29 skills"; catalog "27→29" missing orchestration note) → fixed; everything else consistent (53 files / 30 skills / C11 queued / no residue / no false live-test claims)
+- **Course PDF integrated as VERIFIED Reference A:** the Arabic "Your First Million" executive task list read directly (5 pages, text-extractable, no OCR; RTL extraction artifacts identified — localization-rtl skill's first real exercise). English concept extraction at `.bequite/courses/COURSE_PDF_REFERENCE_NOTES.md` (11 stages); COURSE_ENGINE reference policy rewritten (one reference, not the only authority); **language rule:** docs in English, course OUTPUT language follows the user's request
+- **REMAINING_WORK_MASTER.md** — canonical "what remains now?" ledger (A built-untested · B maintenance · C alpha.23 /bq-offer · D 13 V1 arguments · E 13 parked · F rejected · G recently completed); queryability wired into bequite/now/suggest/recover/memory/skill-audit + ORCHESTRATION_MAP §14 + orchestration model §5; REMAINING_ROADMAP_TASKS marked superseded
+- No version bump · /bq-offer NOT built · no live trials claimed · README sanity re-checked clean
+
 ### Orchestration update (2026-06-12 — same release)
 - **Global Orchestrator (skill #30):** `bequite-orchestrator` + `.bequite/state/ORCHESTRATION_MAP.md` (source of truth on conflict/confusion/duplication/missing-capability) + `BEQUITE_ORCHESTRATION_MODEL.md` (pipeline + layer table); consulted by bequite/suggest/discover/plan/auto/implement/review/verify/skill-audit; both routers defer to it on conflict
 - **Auto Mode = orchestration layer:** 15-step anti-skip sequence with Not-applicable/Blocked markings (`AUTO_MODE_ORCHESTRATION_STRATEGY.md` + `AUTO_MODE_RULES.md`); stop/ask/continue/compact rules; 17 hard gates unchanged

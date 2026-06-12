@@ -32,3 +32,8 @@ Pruning: archive entries older than ~90 days to `SKILL_USAGE_LOG-<date>.md`.
 **Not selected (notable):** frontend-design-system (no UI built) · presentation-builder (no deck)
 **Outcome:** SUCCESS — 6 capability commands + 2 skills + command-router layer shipped; registry extended to 29
 **Routing quality:** good — new domains added to router for C3-C8 + localization + guard-pass
+
+## 2026-06-12 — post-alpha.22 maintenance pass (skill-audit baseline + drift + course PDF)
+**Selected:** skill-auditor (3-skill baseline) · anti-hallucination (evidence-cited audits) · guard-pass (docs-guard style drift sweep) · localization-rtl (FIRST REAL EXERCISE — Arabic course PDF intake, RTL extraction artifacts identified) · orchestrator (remaining-work queryability wiring)
+**Outcome:** SUCCESS — 3/3 skills PASS (structural); 2 drift findings fixed; PDF integrated as verified Reference A
+**Routing quality:** good — localization-rtl auto-attach on Arabic-source work behaved as designed

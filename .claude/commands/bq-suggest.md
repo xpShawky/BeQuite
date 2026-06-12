@@ -334,3 +334,7 @@ Missing Capability Detected:
 ```
 
 …and log it to OPEN_QUESTIONS / FEATURE_EXPANSION_ROADMAP (feature-workflow step 1).
+
+## Remaining-work queries (canonical source rule)
+
+When the user asks any form of: *what remains? / what is left? / what should we do next? / what version is next? / what is parked? / what is alpha.23? / what is V2? / what is built but untested?* — READ `.bequite/tasks/REMAINING_WORK_MASTER.md` (sections A–G) and answer from it. Do not answer from memory alone; if the file is missing, say so and offer to rebuild it from the trackers.

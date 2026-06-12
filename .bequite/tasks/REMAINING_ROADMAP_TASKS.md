@@ -1,5 +1,7 @@
 # Remaining Roadmap Tasks (post-alpha.22 stabilization, 2026-06-12)
 
+> **SUPERSEDED (2026-06-12):** the canonical remaining-work source is now `.bequite/tasks/REMAINING_WORK_MASTER.md` (sections A-G, queryable via bequite/now/suggest/recover/memory/skill-audit). This file is preserved as history; do not update it.
+
 The single ledger separating done / pending / parked / alpha.23 / future. Statuses: each item lists current status · reason · dependencies · what must be true before building · confidence · next action. Companion: `ALPHA_22_TASK_CHECKLIST.md` (the shipped-pass ledger). **No live trial has been run on any alpha.22 capability — nothing below claims runtime validation.**
 
 ## A. Keep as-is until live trial (built, untested against real input)

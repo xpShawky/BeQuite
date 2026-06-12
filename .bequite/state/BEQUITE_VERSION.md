@@ -1,6 +1,6 @@
 # BeQuite installed version
 
-**Version:** v3.0.0-alpha.22 — Navigation & Capability Consolidation (+ stabilization update 2026-06-12: audits, Course OCR intake, cross-agent docs, README polish; orchestration update 2026-06-12: orchestrator skill #30, anti-skip auto sequence, system-design risk checks, low-cost model tiers, per-agent setup — same release, no bump)
+**Version:** v3.0.0-alpha.22 — Navigation & Capability Consolidation (+ stabilization update 2026-06-12: audits, Course OCR intake, cross-agent docs, README polish; orchestration update 2026-06-12: orchestrator skill #30, anti-skip auto sequence, system-design risk checks, low-cost model tiers, per-agent setup; maintenance pass 2026-06-12: skill-audit baseline 3/3 PASS, drift clean, course PDF = verified Reference A, REMAINING_WORK_MASTER canonical — same release, no bump)
 **Updated:** 2026-06-12
 **Source:** github
 **Source path / repo:** xpShawky/BeQuite (branch: main)

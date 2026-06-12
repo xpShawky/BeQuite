@@ -55,3 +55,7 @@ Missing Capability Detected:
 ## 4. Who must consult the orchestrator
 
 `/bequite` · `/bq-suggest` · `/bq-discover` · `/bq-plan` · `/bq-auto` · `/bq-implement` · `/bq-review` · `/bq-verify` · `/bq-skill-audit` — before choosing commands or skills, these check the Orchestration Map (cheap: it's a compact index, not the full corpus). All other commands inherit orchestration through contract step 12 + the routers. This is markdown-based — a skill plus a source-of-truth map, **not** a runtime.
+
+## 5. Remaining-work queryability (maintenance pass, 2026-06-12)
+
+The orchestration model includes a canonical remaining-work ledger: `.bequite/tasks/REMAINING_WORK_MASTER.md`. Any remaining/next/parked/untested question routes there (ORCHESTRATION_MAP §14) — answering such questions from chat memory alone is a drift violation. The ledger is updated in the same commit as any change to remaining work, and `/bq-verify drift` flags it when stale.

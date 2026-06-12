@@ -43,3 +43,7 @@ No fitting command/skill ⇒ emit `Missing Capability Detected:` block (needed �
 Contract step 12 (`COMMAND_EXECUTION_CONTRACT.md`); IDs are the shared vocabulary; capability suggestions only on task signals; gates never bypassed, blocked items appear under do-not-run-yet with the gate named.
 
 **Maintainer rule:** command/skill/rule changes update this map in the same commit (drift-checked by `/bq-verify drift` + skill-audit).
+
+## 14. Remaining-work source of truth
+
+All "what remains / what's next / what's parked / what's alpha.23 / built-but-untested" questions are answered from `.bequite/tasks/REMAINING_WORK_MASTER.md` (sections: A built-untested · B maintenance · C alpha.23 /bq-offer · D V1 arguments · E V2 parked · F rejected · G recently completed). Never from memory alone. Wired into: bequite · now · suggest · recover · memory · skill-audit.

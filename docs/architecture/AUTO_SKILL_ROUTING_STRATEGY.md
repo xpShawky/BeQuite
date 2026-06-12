@@ -51,3 +51,9 @@ Current pack has no hard skill conflicts (registry column tracks this). Arbitrat
 ## Failure behavior
 
 Registry missing → rebuild from Glob (slow path) + flag for `/bq-skill-audit` · classification ambiguous between 2 domains → select both primaries if budget allows, else ask ONE question · user names a skill that doesn't exist → list nearest matches from registry
+
+## alpha.22 extension — capability domains + the second router
+
+Eight routing domains added for the alpha.22 capability commands + cross-cutting skills (see `SKILL_ROUTER.md`): Arabic/MENA/RTL → **localization-rtl** (auto-attach, any workflow) · post-work quality → **guard-pass** (auto-attach after implement/test, before verify/release) · plus the C3–C8 command domains (reference / knowledge / course / pain-radar / integrate / proposal). Registry now indexes **29 skills**.
+
+**Two routers, two questions:** the Skill Router (this strategy) answers *which expert procedures*; the **Workflow Command Router** (`WORKFLOW_COMMAND_ROUTER.md`, alpha.22) answers *which command next*. They run together in contract steps 2–4 (skills) and 12 (commands) and must never be conflated in output: `Skill Selection:` block vs `Next Command Recommendations:` block.

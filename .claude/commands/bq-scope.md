@@ -191,3 +191,11 @@ After successful completion:
 - `.bequite/state/MODE_HISTORY.md` — append mode + outcome (when invoked via `/bq-auto`-style mode)
 
 **Failure behavior:** don't claim `✅ done` if any of the above wasn't completed. Report PARTIAL with the specific gap.
+
+## Argument workflow (alpha.22)
+
+- **`/bq-scope from-interview "<transcript path>"`** — stakeholder interview transcript → spec + scope + assumptions + open questions + milestone sketch. Quotes from the transcript anchor every IN/OUT ruling; unstated wishes go to OPEN_QUESTIONS, not into scope.
+
+## Next Command Recommendations (alpha.22)
+
+Per contract step 12: Required next W1.4 `/bq-plan`; router block per `COMMAND_ROUTER.md`.

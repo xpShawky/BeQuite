@@ -295,3 +295,12 @@ After successful completion:
 - `.bequite/state/MODE_HISTORY.md` — append mode + outcome (when invoked via `/bq-auto`-style mode)
 
 **Failure behavior:** don't claim `✅ done` if any of the above wasn't completed. Report PARTIAL with the specific gap.
+
+## Argument workflows (alpha.22)
+
+- **`/bq-audit client`** — client-facing audit report: findings with severity, business impact in plain language, fix effort, and a quote table (effort × rate placeholders). Same evidence discipline as the internal audit; different audience register.
+- **`/bq-audit a11y`** — WCAG-focused audit + prioritized remediation plan as a deliverable (Discovery V3 #15).
+
+## Next Command Recommendations (alpha.22)
+
+Per contract step 12: router block per `COMMAND_ROUTER.md`.

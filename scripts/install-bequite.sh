@@ -9,7 +9,7 @@
 
 set -uo pipefail
 
-BEQUITE_VERSION="v3.0.0-alpha.21"
+BEQUITE_VERSION="v3.0.0-alpha.22"
 REPO_URL="https://github.com/xpShawky/BeQuite.git"
 TARGET="$(pwd)"
 FROM_LOCAL=""
@@ -112,7 +112,7 @@ echo "  hooks are NOT active by default — merge an example into settings.json 
 # --- 5. .bequite/ scaffold (alpha.5: principles + uiux + new state files) ---
 
 section "Scaffolding .bequite/ memory (alpha.5-13: principles, uiux, jobs, money, mistake memory, assumptions, delegate, presentations)"
-mkdir -p ./.bequite/{state,logs,prompts/user_prompts,prompts/generated_prompts,prompts/model_outputs,audits,plans,tasks,principles,decisions,design,uiux/screenshots,uiux/archive,jobs,money,backups,presentations/assets,presentations/outputs,writing,research,skills}
+mkdir -p ./.bequite/{state,logs,prompts/user_prompts,prompts/generated_prompts,prompts/model_outputs,audits,plans,tasks,principles,decisions,design,uiux/screenshots,uiux/archive,jobs,money,backups,presentations/assets,presentations/outputs,writing,research,skills,commands,reference,knowledge,courses,pain-radar,integrations,proposals}
 echo "  directory scaffold ready"
 
 # Copy alpha.5 templates into target project (preserve existing if present)
@@ -219,6 +219,11 @@ copy_template ".bequite/skills/SKILL_USAGE_LOG.md"             ".bequite/skills/
 copy_template ".bequite/state/CONFIDENCE_RULES.md"             ".bequite/state/CONFIDENCE_RULES.md"
 copy_template ".bequite/tasks/TASK_CONFIDENCE.md"              ".bequite/tasks/TASK_CONFIDENCE.md"
 copy_template ".bequite/state/FRONTIER_REASONING_SUMMARY.md"   ".bequite/state/FRONTIER_REASONING_SUMMARY.md"
+
+# alpha.22 - command router + catalog IDs (capability memory files are created on first run by C3-C8)
+copy_template ".bequite/commands/COMMAND_ID_MAP.md"            ".bequite/commands/COMMAND_ID_MAP.md"
+copy_template ".bequite/commands/COMMAND_ROUTER.md"            ".bequite/commands/COMMAND_ROUTER.md"
+copy_template ".bequite/commands/NEXT_COMMAND_LOG.md"          ".bequite/commands/NEXT_COMMAND_LOG.md"
 
 # Copy commands.md at repo root (top-level reference)
 if [[ -f "$SOURCE/commands.md" && ! -f "./commands.md" ]]; then

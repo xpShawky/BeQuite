@@ -6,7 +6,7 @@ description: BeQuite workflow advisor. Reads your situation + current state, the
 
 ## Purpose
 
-You have 39 commands and 15 skills. You may not know which to run. `/bq-suggest` is the BeQuite workflow expert that listens to your situation and **recommends a route**: which commands, in what order, with what skills, with which gates, and whether to use fast / deep / scoped auto / phase mode.
+You have 52 active commands and 29 skills. You may not know which to run. `/bq-suggest` is the BeQuite workflow expert that listens to your situation and **recommends a route**: which commands, in what order, with what skills, with which gates, and whether to use fast / deep / scoped auto / phase mode.
 
 **Read-only. Never implements.** It tells you what to do; you decide whether to run it.
 
@@ -295,3 +295,26 @@ Skill Selection:
 **The user never has to name skills** — describe the goal; the router picks the disciplines. An explicit user skill choice overrides routing (log the override). At writeback, append the selection + outcome to `.bequite/skills/SKILL_USAGE_LOG.md`.
 
 Strategy: `docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.
+
+## Main navigation assistant (alpha.22 — Command Router front-end)
+
+`/bq-suggest` is the interactive front-end of the Workflow Command Router (`docs/architecture/WORKFLOW_COMMAND_ROUTER.md`; routes in `.bequite/commands/COMMAND_ROUTER.md`; IDs in `COMMAND_ID_MAP.md`). Every answer now includes ALL of:
+
+1. **Next workflow command** (catalog ID + reason)
+2. **Relevant capability commands** (C# — only when task signals justify them)
+3. **Selected skills** (via the Skill Router — commands answer *what next*, skills answer *how well*; never confuse the two)
+4. **Confidence forecast** for the recommended route
+5. **Manual vs auto advice** (and the exact `/bq-auto` invocation if auto fits)
+6. **Gate status** — anything blocking, and the prerequisite command that unblocks it
+
+Output uses the multi-command format: Required next · Recommended command set (2–6, each with args + reason + skills + can-auto-run) · Optional accelerators · Do not run yet (+ why). Decisions append to `.bequite/commands/NEXT_COMMAND_LOG.md`.
+
+### Worked journey routes
+
+**"I want to create a course"** → 1. C5 `/bq-course` (validation + curriculum first) · 2. C4 `/bq-knowledge build` if source docs exist · 3. C1 `/bq-presentation` when slides needed · 4. C2 `/bq-writing-dna` for scripts/narration · 5. localization-rtl skill if Arabic/MENA. Skills: researcher, writing-dna, presentation-builder (+anti-hallucination if academic).
+
+**"I want to make money from a niche"** → 1. C6 `/bq-pain-radar` (verified pain first) · 2. C10 `/bq-make-money` (match to earning tracks) · 3. C8 `/bq-proposal` (pitch it) · 4. C5 `/bq-course` only if an education product is viable · 5. W4.2 `/bq-release proof` once something ships. Explain the order: evidence → opportunity → pitch → product → proof.
+
+**"I want this app to integrate with an API"** → 1. C7 `/bq-integrate` (blueprint) · 2. W1.4 `/bq-plan` · 3. W2.3 `/bq-feature` · 4. W3.1 `/bq-test from-spec` · 5. W4.1 `/bq-verify`. Skills: backend-architect, security-reviewer, testing-gate.
+
+**"I like this website style"** → 1. C3 `/bq-reference screenshot|url` (extraction + originality guardrails) · 2. W2.5 `/bq-uiux-variants` if multiple directions · 3. W2.3 `/bq-feature` once approved · 4. W4.1 `/bq-verify` (visual QA) · 5. W4.2 `/bq-release proof` for a case study. Skills: frontend-design-system, ux-ui-designer, frontend-quality.

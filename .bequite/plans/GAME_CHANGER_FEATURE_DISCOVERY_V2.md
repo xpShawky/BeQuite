@@ -68,3 +68,20 @@ Format per candidate: **Wow** · Pain · User can now · Example · Outputs · S
 ## Sprint verdicts
 
 **KEEP all 16** (none rejected this sprint — all pass the lightweight + new-thing-user-can-do bars). **Recommended first build (highest confidence × monetization × demo):** `/bq-proposal` (84%, very-high 💰), `/bq-announce` (86%), `/bq-client-audit` (81%), `/bq-proof` (82%) — note they form a coherent **freelancer monetization arc** with existing job-finder/make-money. **Needs research before commit:** `/bq-recording` (frame-extraction path, 58%). **Nothing graduates without user approval + the 15-step workflow.** Anti-clutter rule: several of these may ship as ARGUMENTS to existing commands or skills rather than 16 new slash commands — shape decision per FEATURE_TYPE_TAXONOMY at build time.
+
+---
+
+## alpha.22 status update (Consolidation Pass ruling)
+
+| V2 candidate | alpha.22 ruling |
+|---|---|
+| Screenshot→design-system + competitor rebuild + flow analysis | **BUILT — merged into C3 `/bq-reference`** (clone-safe naming; specs/REFERENCE_ENGINE.md) |
+| Knowledge pack / RAG | **BUILT as C4 `/bq-knowledge`** (build/ask/rag-plan/export; no vector DB default) |
+| Course Engine | **BUILT as C5 `/bq-course`** (specs/COURSE_ENGINE.md) |
+| Pain mining | **BUILT as C6 `/bq-pain-radar`** (public-sources-only ethics) |
+| API integration blueprint | **BUILT as C7 `/bq-integrate`** |
+| Proposal builder | **BUILT as C8 `/bq-proposal`** (no-overpromise rules) |
+| Roadmap-from-issues / interview / spec-tests / announce / proof / vault / client-audit | **ABSORBED as arguments**: `/bq-plan from-issues` · `/bq-scope from-interview` · `/bq-test from-spec` · `/bq-release announce|proof` · `/bq-handoff client` · `/bq-audit client` |
+| **`/bq-recording`** | **PARKED → V2-of-V2.** Reasons: video processing can be heavy; frame-extraction path needs research; not needed this phase. Revisit only with a researched lightweight path + real demand. |
+
+Full shape reasoning: `.bequite/plans/APPROVED_CAPABILITY_SHAPE_DECISIONS.md`.

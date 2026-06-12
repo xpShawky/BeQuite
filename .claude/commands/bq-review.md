@@ -287,3 +287,11 @@ Unknowns/blockers: <list or none>      Next: <recommended action>
 ```
 
 Bands: 90–100 routine · 75–89 likely · 50–74 needs exploration · 25–49 spike first · 0–24 blocked/insufficient info. **Confidence is not a feeling — it is a report** (evidence, tests, scope clarity, familiarity, dependency risk, verification). It must MOVE as evidence arrives (before-inspection → after-reading → after-implementation → after-verification; recorded per task in `.bequite/tasks/TASK_CONFIDENCE.md`). Never 100% — and ≥95% only with all tests passing + zero unresolved assumptions + EVIDENCE_LOG entry. Apply project modifiers from `.bequite/state/CONFIDENCE_RULES.md`; at verify/release, log forecast-vs-actual to `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`.
+
+## Guard Pass integration (alpha.22)
+
+For AI-generated diffs (delegate mode especially), the review includes a Guard Pass (`bequite-guard-pass`): hallucinated APIs · hardcoded success · catch-alls · over-mocking · doc drift. Spec-compliance still runs before code-quality.
+
+## Next Command Recommendations (alpha.22)
+
+Per contract step 12: clean review → Required next W4.1 `/bq-verify`; findings → W2.2 `/bq-implement` fixes. Router block per `COMMAND_ROUTER.md`.

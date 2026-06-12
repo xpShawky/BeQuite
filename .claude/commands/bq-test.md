@@ -168,3 +168,14 @@ After successful completion:
 - `.bequite/state/MODE_HISTORY.md` — append mode + outcome (when invoked via `/bq-auto`-style mode)
 
 **Failure behavior:** don't claim `✅ done` if any of the above wasn't completed. Report PARTIAL with the specific gap.
+
+## Argument workflows (alpha.22)
+
+- **`/bq-test from-spec "<spec path>"`** — spec acceptance criteria → acceptance tests + traceability matrix (criterion ↔ test ↔ status). Untestable criteria get flagged back to the spec, not silently skipped.
+- **`/bq-test fixtures`** — realistic seed/fixture data plan (shapes, edge cases, anonymization rules) — plan only, tool-neutral.
+
+Guard Pass (test guard) runs after tests are written — over-mocking / fake-success / missing-regression checks per `bequite-guard-pass`.
+
+## Next Command Recommendations (alpha.22)
+
+Per contract step 12: Required next W3.3 `/bq-review`; router block per `COMMAND_ROUTER.md`.

@@ -4,8 +4,10 @@
 >
 > For full procedural detail per command, click through to the matching file at `.claude/commands/<name>.md`.
 
-**Version:** v3.0.0-alpha.21 · 46 slash commands · 27 specialist skills · 6 workflow phases · **4 composable operating modes** · 23 workflow gates + 3 conditional frontend design gates · 17 hard human gates · **Automatic Skill Routing** (alpha.20) · **Writing DNA + Skill Audit + Execution Contract** (alpha.19) · **Opt-in Hooks + Context-Engineering** (alpha.18) · **Frontend Design Continuity** (alpha.17) · **Creative + Content Workflows** (alpha.13)
+**Version:** v3.0.0-alpha.22 · 52 active slash commands (catalog IDs W/N/O/C/M) · 29 specialist skills · 6 workflow phases · **4 composable operating modes** · 23 workflow gates + 3 conditional frontend design gates · 17 hard human gates · **Automatic Skill Routing** (alpha.20) · **Writing DNA + Skill Audit + Execution Contract** (alpha.19) · **Opt-in Hooks + Context-Engineering** (alpha.18) · **Frontend Design Continuity** (alpha.17) · **Creative + Content Workflows** (alpha.13)
 
+> **alpha.22 — Navigation & Capability Consolidation:** stable display-only **catalog IDs** for every command (`.bequite/commands/COMMAND_ID_MAP.md`; no file renames — feasibility ruling in `COMMAND_NUMBERING_AND_ORDERING_STRATEGY.md`); the **Workflow Command Router** makes every non-trivial command end with multi-command Next Command Recommendations and auto mode report "Internal workflow executed: <IDs>"; **6 new capability commands** — C3 `/bq-reference` · C4 `/bq-knowledge` · C5 `/bq-course` · C6 `/bq-pain-radar` · C7 `/bq-integrate` · C8 `/bq-proposal` (specs in `docs/specs/`); **Guard Pass** skill + strategy; **localization-rtl** auto-attach skill; 11 argument workflows (verify regressions|drift · release readiness|announce|proof|demo-video · plan from-issues|migration · scope from-interview · test from-spec|fixtures · handoff client · audit client|a11y); `/bq-recording` parked; Discovery V3 (20 fresh ideas, proposals only).
+>
 > **alpha.21 — Confidence Forecast + Frontier Playbook + Discovery V2:** every plan/task/feature now carries a calibrated **Confidence Forecast** (banded %, evidence level, what raises/lowers it — integrated into plan/assign/auto/feature/fix/implement/review/verify/release; no new command). The **Frontier Model Operating Playbook** + `bequite-frontier-reasoning-coach` skill (27th) make cheaper models follow frontier discipline — the 10-rule card ships inside every delegate pack. **Professional Expert** is documented as the `expert` composition alias (deep + strict evidence + safety scope + domain checklist), NOT a 5th mode. Discovery V2 found 16 genuinely new capability candidates (proposals only). Taxonomy: `docs/architecture/FEATURE_TYPE_TAXONOMY.md`.
 >
 > **alpha.20 — Automatic Skill Routing:** you describe the goal; BeQuite infers and loads the right skills — no manual skill naming. The execution contract is now 12 steps (registry check → task classification → auto-selection inserted as steps 2–4). Every action command (`/bq-auto`, `/bq-feature`, `/bq-fix`, `/bq-plan`, `/bq-implement`, `/bq-review`, `/bq-verify`, `/bq-suggest`) emits a `Skill Selection:` block with reasons. Mode sizing prevents over-triggering: fast = smallest safe set · deep = broader · token-saver = registry summary first, lazy-load skill files · delegate = skills named inside the task pack. Registry/router/usage-log: `.bequite/skills/`. Strategy: `docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.
@@ -213,7 +215,7 @@ The gate-aware project menu. Read-only.
 Full command reference (this file's source — read by Claude Code on demand).
 
 - **Phase:** Any
-- **Purpose:** print all 37 commands grouped by phase
+- **Purpose:** print all 52 active commands grouped by family with catalog IDs (W/N/O/C/M)
 - **Inputs:** none
 - **Next:** any command from the list
 - **Full spec:** [`.claude/commands/bq-help.md`](.claude/commands/bq-help.md)

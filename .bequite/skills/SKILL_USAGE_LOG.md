@@ -25,3 +25,10 @@ Pruning: archive entries older than ~90 days to `SKILL_USAGE_LOG-<date>.md`.
 **Not selected (notable):** frontend-design-system (no UI touched) · security-reviewer (no R3 paths beyond installer R2)
 **Outcome:** SUCCESS — registry + router + strategy shipped
 **Routing quality:** good
+
+## 2026-06-12 — alpha.22 consolidation pass (auto, deep)
+**Task domains:** meta (command navigation, capability consolidation, guard system, localization)
+**Selected:** skill-auditor (structure review) · anti-hallucination (evidence-cited audit + guard seed) · context-engineer (long multi-file pass) · workflow-advisor (router design) · frontier-reasoning-coach (deep mode)
+**Not selected (notable):** frontend-design-system (no UI built) · presentation-builder (no deck)
+**Outcome:** SUCCESS — 6 capability commands + 2 skills + command-router layer shipped; registry extended to 29
+**Routing quality:** good — new domains added to router for C3-C8 + localization + guard-pass

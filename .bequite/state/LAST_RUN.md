@@ -1,5 +1,19 @@
 # Last BeQuite command
 
+**Command:** v3.0.0-alpha.22 — Navigation & Capability Consolidation
+**Timestamp:** 2026-06-12 (UTC)
+**Model:** Claude Fable 5 throughout — no switch, no reroute
+**Result:** SUCCESS — audit-first consolidation pass:
+  - Catalog IDs (Option A display-only; no renames — B/C rejected with reasons): COMMAND_NUMBERING_AND_ORDERING_STRATEGY + COMMAND_ID_MAP (52 active + 1 alias)
+  - Workflow Command Router: WORKFLOW_COMMAND_ROUTER + COMMAND_ROUTER + NEXT_COMMAND_LOG; contract step 12 → multi-command recommendations; auto mode reports "Internal workflow executed: <IDs>"; /bq-suggest = main navigation assistant (4 journey routes)
+  - 6 capability commands: C3 /bq-reference · C4 /bq-knowledge · C5 /bq-course · C6 /bq-pain-radar · C7 /bq-integrate · C8 /bq-proposal (+7 specs; memory dirs scaffolded)
+  - 2 skills (29 total): localization-rtl (auto-attach Arabic/MENA/RTL) + guard-pass (+ GUARD_PASS_STRATEGY + seed report; finding #1 = user-caught stale INSTALL runbook, fixed)
+  - 11 argument workflows · Older-V1 review (12 candidates ruled) · Discovery V3 (20 fresh ideas, proposals only) · /bq-recording parked
+  - Installers alpha.22 (bash -n OK · ps1 parse 0 errors); counts synced everywhere (52/29)
+**Honesty notes:** course PDF not accessible this session — user's 12-topic summary used as Reference A (recorded in COURSE_ENGINE.md); CLAUDE.md found drifted at alpha.19 header, fixed
+**Next suggested:** live-trial one capability command on a real task (C5 /bq-course or C3 /bq-reference recommended), OR /bq-skill-audit to baseline the 2 new skills, OR approve V3 #1 /bq-offer for a future release.
+
+**Prior run (preserved):**
 **Command:** v3.0.0-alpha.21 — Confidence, Frontier Discipline & Discovery V2 (follows alpha.20 Automatic Skill Routing, same day)
 **Timestamp:** 2026-06-11 (UTC)
 **Model:** Claude Fable 5 throughout — no switch, no reroute

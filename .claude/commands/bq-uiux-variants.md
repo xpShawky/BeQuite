@@ -291,3 +291,7 @@ See `.bequite/principles/TOOL_NEUTRALITY.md`.
 - After merge: `/bq-live-edit "<refinement>"` to iterate within the chosen direction
 - `/bq-feature` for new UI features
 - `/bq-test` to verify the new UI doesn't break anything
+
+## Style directions (alpha.22)
+
+`style=<direction>` seeds all variants from a named direction — e.g. `/bq-uiux-variants 3 style=3d "<task>"` or `style=cinematic-3d` (V1 candidate #10 lives here + in `/bq-reference style=...`; reference knowledge in `bequite-frontend-design-system`). Variants must still be distinct *directions* within the style, not color swaps.

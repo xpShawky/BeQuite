@@ -286,3 +286,14 @@ Unknowns/blockers: <list or none>      Next: <recommended action>
 ```
 
 Bands: 90–100 routine · 75–89 likely · 50–74 needs exploration · 25–49 spike first · 0–24 blocked/insufficient info. **Confidence is not a feeling — it is a report** (evidence, tests, scope clarity, familiarity, dependency risk, verification). It must MOVE as evidence arrives (before-inspection → after-reading → after-implementation → after-verification; recorded per task in `.bequite/tasks/TASK_CONFIDENCE.md`). Never 100% — and ≥95% only with all tests passing + zero unresolved assumptions + EVIDENCE_LOG entry. Apply project modifiers from `.bequite/state/CONFIDENCE_RULES.md`; at verify/release, log forecast-vs-actual to `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`.
+
+## Argument workflows (alpha.22 — V1 candidates absorbed)
+
+- **`/bq-verify regressions`** — Regression Ledger check: re-validate guard records in `.bequite/state/REGRESSION_LEDGER.md` (created on first use; `/bq-fix` + `/bq-test` append a guard record per fixed bug). A previously-fixed bug recurring = automatic FAIL + MISTAKE_MEMORY entry.
+- **`/bq-verify drift`** — Drift Detector: compare actual `.claude/commands/` + `.claude/skills/` file counts vs README / commands.md / CLAUDE.md / COMMAND_ID_MAP / SKILL_REGISTRY / catalog claims; flag stale counts, dead references, unregistered skills, router routes pointing at missing commands. (Mechanical sibling of the Guard Pass docs guard.)
+
+Both run automatically inside full `/bq-verify` when their artifacts exist; the arguments run them standalone.
+
+## Next Command Recommendations (alpha.22)
+
+Per contract step 12: PASS → Required next W4.3 `/bq-changelog` then W4.2 `/bq-release`; FAIL → W2.4 `/bq-fix` with the failing evidence. Router block per `COMMAND_ROUTER.md`.

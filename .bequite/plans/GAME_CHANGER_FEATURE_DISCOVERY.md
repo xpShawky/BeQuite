@@ -48,3 +48,9 @@
 ## Decision rule
 
 A KEEP item graduates only when: user approves → 15-step workflow runs (research → scope → plan → tasks → impl → docs → verify) → entry moves to "Already built". This file is the memory that prevents both re-litigating rejects and forgetting approved intents.
+
+---
+
+## alpha.22 status update (Older V1 Candidate Review — full table in APPROVED_CAPABILITY_SHAPE_DECISIONS.md)
+
+Built+verified: #3 Confidence Surfacing (alpha.21) · #5 Expert alias (alpha.21). Absorbed as arguments this pass: #1 Regression Ledger → `/bq-verify regressions` · #2 Drift Detector → `/bq-verify drift` · #4 Ship-readiness → `/bq-release readiness` · #11 Product Movie → `/bq-release demo-video` · #10 3D Site → `/bq-reference style=cinematic-3d` + `/bq-uiux-variants style=3d`. Parked V2: #6 Workflow Export (secret-scan design first) · #7 Automation/Bot Builder (strongest parked candidate; spec first) · #8 Data-to-Product (merge-watch with C7) · #9 AI Service Business Builder (orchestrator; after C5/C6/C8 stabilize) · #12 Agent Pack Generator (prefer `/bq-skill-audit generate-pack`; after Guard Pass matures). Zero new commands from V1.

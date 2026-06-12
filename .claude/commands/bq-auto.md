@@ -466,3 +466,19 @@ Unknowns/blockers: <list or none>      Next: <recommended action>
 ```
 
 Bands: 90–100 routine · 75–89 likely · 50–74 needs exploration · 25–49 spike first · 0–24 blocked/insufficient info. **Confidence is not a feeling — it is a report** (evidence, tests, scope clarity, familiarity, dependency risk, verification). It must MOVE as evidence arrives (before-inspection → after-reading → after-implementation → after-verification; recorded per task in `.bequite/tasks/TASK_CONFIDENCE.md`). Never 100% — and ≥95% only with all tests passing + zero unresolved assumptions + EVIDENCE_LOG entry. Apply project modifiers from `.bequite/state/CONFIDENCE_RULES.md`; at verify/release, log forecast-vs-actual to `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`.
+
+## Internal workflow reporting (alpha.22 — Command Router)
+
+Auto mode does not invoke slash commands literally — it runs the equivalent internal workflow and reports the executed steps in catalog-ID vocabulary, then ends with the standard router block:
+
+```
+Internal workflow executed:
+- W0.3 /bq-discover
+- W1.2 /bq-research (3 dims, fast)
+- W1.4 /bq-plan
+- C5 /bq-course (curriculum)
+- C1 /bq-presentation (slides)
+- W4.1 /bq-verify — PASS
+```
+
+New intents route to the capability commands when signaled: course/teaching → C5 · docs/KB → C4 · visual reference → C3 · niche/pain → C6 · API → C7 · job post → C8. Hard human gates unchanged — the router recommends, never bypasses. IDs: `.bequite/commands/COMMAND_ID_MAP.md`; routes: `COMMAND_ROUTER.md`; log: `NEXT_COMMAND_LOG.md`.

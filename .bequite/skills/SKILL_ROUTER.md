@@ -1,4 +1,4 @@
-# Skill Router (alpha.20)
+# Skill Router (alpha.20; domains extended alpha.22)
 
 > The domain map + selection algorithm. Read AFTER `SKILL_REGISTRY.md`. Strategy: `docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.
 
@@ -10,6 +10,14 @@
 | presentation | **presentation-builder** | ux-ui-designer · writing-dna (speaker notes) · researcher (sources) · frontend-design-system (HTML decks) |
 | writing / content / brand voice | **writing-dna** | anti-hallucination (strict) · researcher (factual claims) |
 | academic writing | **writing-dna (strict)** + **researcher** | anti-hallucination · EVIDENCE_LOG mandatory |
+| Arabic / MENA / RTL / bilingual | **localization-rtl** (auto-attach) | frontend-design-system (UI) · writing-dna (content) · ux-ui-designer |
+| visual reference / competitor style / screenshot-to-design | **frontend-design-system** + **ux-ui-designer** (via C3 /bq-reference) | frontend-quality · researcher (url mode) · localization-rtl (Arabic UI) |
+| knowledge pack / FAQ / RAG / chatbot KB | **researcher** + **anti-hallucination** (via C4 /bq-knowledge) | context-engineer · writing-dna (strict prose) |
+| course / teaching / curriculum | **researcher** + **writing-dna** (via C5 /bq-course) | presentation-builder · product-strategist (paid) · localization-rtl (Arabic) · anti-hallucination (academic) |
+| niche pain / market mining | **researcher** + **make-money** (via C6 /bq-pain-radar) | scraping-automation (public, polite) · anti-hallucination |
+| API integration | **backend-architect** (via C7 /bq-integrate) | security-reviewer · testing-gate · anti-hallucination |
+| proposal / RFP / client pitch | **writing-dna** + **product-strategist** (via C8 /bq-proposal) | job-finder/make-money safety intake · anti-hallucination |
+| post-work quality gate / AI-diff review | **guard-pass** (auto-attach after implement/test, before verify/release) | anti-hallucination · testing-gate |
 | security / auth review | **security-reviewer** | anti-hallucination · testing-gate · FILE_RISK rules · devops-cloud (if infra) |
 | prompt injection / agent safety | **security-reviewer** (LLM Top-10 + red-team angle 10) | anti-hallucination · context-engineer (memory-poisoning review) |
 | backend / API | **backend-architect** | database-architect · security-reviewer · testing-gate |

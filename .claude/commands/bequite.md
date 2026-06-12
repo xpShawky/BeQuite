@@ -72,82 +72,81 @@ Recommended next 3 commands:
   2. /<command-2>     — <why>
   3. /<command-3>     — <why>
 
-Command map (34 commands, ordered by workflow phase):
+Command map (52 active commands + 1 deprecated alias — catalog IDs per .bequite/commands/COMMAND_ID_MAP.md):
 
-  Phase 0 — Setup and Discovery
-    /bequite            this menu
-    /bq-help            full command reference
-    /bq-init            initialize BeQuite in this repo
-    /bq-mode            select / show the workflow mode
-    /bq-new             begin a New Project workflow
-    /bq-existing        begin an Existing Project Audit workflow
-    /bq-discover        inspect repo → DISCOVERY_REPORT.md
-    /bq-doctor          environment health → DOCTOR_REPORT.md
+  W0 — Setup and Discovery
+    W0.1 /bequite       this menu
+    W0.2 /bq-init       initialize BeQuite in this repo
+    W0.3 /bq-discover   inspect repo → DISCOVERY_REPORT.md
+    W0.4 /bq-doctor     environment health → DOCTOR_REPORT.md
+    W0.5 /bq-mode       select / show the workflow mode
+    W0.6 /bq-new        begin a New Project workflow
+    W0.7 /bq-existing   begin an Existing Project Audit workflow
 
-  Phase 1 — Product Framing and Research
-    /bq-clarify         3-5 high-value clarifying questions
-    /bq-research        11-dimension verified evidence
-    /bq-scope           lock IN / OUT / NON-GOALS
-    /bq-plan            write IMPLEMENTATION_PLAN.md (no code yet)
-    /bq-multi-plan      unbiased multi-model planning (manual paste)
+  W1 — Product Framing and Research
+    W1.1 /bq-clarify    3-5 high-value clarifying questions
+    W1.2 /bq-research   11-dimension verified evidence
+    W1.3 /bq-scope      lock IN / OUT / NON-GOALS (+ from-interview)
+    W1.4 /bq-plan       IMPLEMENTATION_PLAN.md, no code yet (+ from-issues, migration)
+    W1.5 /bq-spec       one-page Spec Kit-compatible spec
+    W1.6 /bq-multi-plan unbiased multi-model planning (manual paste)
 
-  Phase 2 — Planning and Build
-    /bq-assign          break plan into atomic tasks
-    /bq-implement       implement one approved task at a time
-    /bq-feature         add feature workflow with 12-type router
-    /bq-fix             fix workflow with 15-type router
+  W2 — Planning and Build
+    W2.1 /bq-assign     break plan into atomic tasks
+    W2.2 /bq-implement  implement one approved task at a time
+    W2.3 /bq-feature    add feature workflow with 12-type router
+    W2.4 /bq-fix        fix workflow with 15-type router (+ regression ledger)
+    W2.5 /bq-uiux-variants  1-10 isolated UI directions (+ style=3d)
+    W2.6 /bq-live-edit  section-by-section frontend edits
 
-  Phase 3 — Quality and Review
-    /bq-test            run + write tests
-    /bq-audit           full project audit
-    /bq-review          review current changes
-    /bq-red-team        adversarial review (Skeptic mode)
+  W3 — Quality and Review
+    W3.1 /bq-test       run + write tests (+ from-spec, fixtures)
+    W3.2 /bq-audit      full project audit (+ client, a11y)
+    W3.3 /bq-review     review current changes (+ Guard Pass on AI diffs)
+    W3.4 /bq-red-team   adversarial review (Skeptic mode)
 
-  Phase 4 — Release
-    /bq-verify          full local verification
-    /bq-release         release prep (prints commands; user pushes)
-    /bq-changelog       categorize commits into CHANGELOG
+  W4 — Release
+    W4.1 /bq-verify     full local verification (+ regressions, drift)
+    W4.2 /bq-release    release prep; user pushes (+ readiness, announce, proof, demo-video)
+    W4.3 /bq-changelog  categorize commits into CHANGELOG
 
-  Phase 5 — Memory and Handoff
-    /bq-memory          read / write BeQuite memory snapshots
-    /bq-recover         resume after a session break
-    /bq-handoff         generate HANDOFF.md
+  W5 — Memory and Handoff
+    W5.1 /bq-memory     read / write BeQuite memory snapshots
+    W5.2 /bq-recover    resume after a session break
+    W5.3 /bq-handoff    generate HANDOFF.md (+ client bundle)
 
-  Opportunity and Workflows
-    /bq-suggest         workflow advisor — recommend commands for your situation
-    /bq-job-finder      find real work opportunities (jobs, freelance, AI gigs + community + hidden gems)
-    /bq-make-money      find legitimate earning opportunities (10 tracks + Hidden Gems + AI-assisted paths)
+  N — Navigation
+    N1 /bq-now          one-line status (faster than this menu)
+    N2 /bq-help         full command reference (with IDs)
+    N3 /bq-explain      plain-English explainer
+    N4 /bq-suggest      MAIN NAVIGATION ASSISTANT — commands + skills + mode + gates + confidence
+
+  O — Orchestrators
+    O1-O6 /bq-p0../bq-p5  walk one phase in order
+    O7 /bq-auto         scoped autonomous runner (reports "Internal workflow executed: <IDs>")
+
+  C — Capability commands
+    C1 /bq-presentation premium PPTX or HTML decks (variants, strict/creative, motion)
+    C2 /bq-writing-dna  reusable writing profile → writing in YOUR voice (ethics-bound)
+    C3 /bq-reference    screenshot/URL/flow → design extraction + clone-safe rebuild blueprint
+    C4 /bq-knowledge    docs → knowledge pack / FAQ / RAG blueprint (build/ask/rag-plan/export)
+    C5 /bq-course       Course Engine — validation → curriculum → launch (Arabic/MENA aware)
+    C6 /bq-pain-radar   public pain mining → MVP/service/course/automation ideas (ethical sources only)
+    C7 /bq-integrate    API docs → integration blueprint (UNVERIFIED markings, invents nothing)
+    C8 /bq-proposal     job post → honest tailored proposal (Writing DNA, no overpromising)
+    C9 /bq-job-finder   find real work opportunities (+ hidden gems)
+    C10 /bq-make-money  legitimate earning tracks (10 tracks + hidden gems)
+
+  M — Maintenance
+    M1 /bq-update       update BeQuite itself (safe + non-destructive)
+    M2 /bq-skill-audit  structural quality loop over all skills (+ command-router drift checks)
 
 Automatic skill routing (alpha.20): you describe the goal — BeQuite selects the
-right expert skills itself (registry at .bequite/skills/; every command explains
-its Skill Selection). You never need to name skills manually.
-
+right expert skills itself. You never need to name skills manually.
+Command Router (alpha.22): every non-trivial command ends with Next Command
+Recommendations (required next + 2-6 set + accelerators + do-not-run-yet).
 Confidence Forecast (alpha.21): plans and tasks carry calibrated success
 percentages with evidence levels — confidence is a report, not a feeling.
-Frontier discipline (alpha.21): the 10-rule card (.bequite/state/
-FRONTIER_REASONING_SUMMARY.md) governs any model working here.
-
-  Writing + Skill Quality (alpha.19)
-    /bq-writing-dna     reusable writing profile from your samples → human-quality writing in YOUR voice (ethical: no fabricated citations, no detector-evasion)
-    /bq-skill-audit     structural quality loop over all skills (report-only by default)
-
-  Creative and Content Workflows (alpha.13)
-    /bq-presentation    premium PPTX or HTML presentation builder (variants, strict/creative, morph-like motion)
-
-  Maintenance
-    /bq-update          update BeQuite itself (safe + non-destructive)
-    /bq-memory          read / write BeQuite memory snapshots
-    /bq-recover         resume after a session break
-    /bq-handoff         generate HANDOFF.md
-
-  Phase orchestrators
-    /bq-p0              walk Phase 0 in order
-    /bq-p1              walk Phase 1 in order
-    /bq-p2              walk Phase 2 in order
-    /bq-p3              walk Phase 3 in order
-    /bq-p4              walk Phase 4 in order
-    /bq-p5              walk Phase 5 in order
-    /bq-auto            walk ALL phases autonomously (stops at hard gates)
 
 Operating modes (alpha.12 — composable, set per command):
   deep                  quality matters most · full 11-dim research · full red-team

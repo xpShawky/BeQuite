@@ -32,7 +32,7 @@ param(
 )
 
 $ErrorActionPreference = "Continue"
-$BEQUITE_VERSION = "v3.0.0-alpha.21"
+$BEQUITE_VERSION = "v3.0.0-alpha.22"
 
 function Write-Section($text) {
   Write-Host ""
@@ -163,7 +163,14 @@ $SCAFFOLD = @(
   ".bequite\presentations\outputs",
   ".bequite\writing",
   ".bequite\research",
-  ".bequite\skills"
+  ".bequite\skills",
+  ".bequite\commands",
+  ".bequite\reference",
+  ".bequite\knowledge",
+  ".bequite\courses",
+  ".bequite\pain-radar",
+  ".bequite\integrations",
+  ".bequite\proposals"
 )
 foreach ($dir in $SCAFFOLD) {
   if (-not (Test-Path $dir)) {
@@ -213,6 +220,10 @@ $TEMPLATES = @{
   ".bequite\state\CONFIDENCE_RULES.md"               = ".bequite\state\CONFIDENCE_RULES.md"
   ".bequite\tasks\TASK_CONFIDENCE.md"                = ".bequite\tasks\TASK_CONFIDENCE.md"
   ".bequite\state\FRONTIER_REASONING_SUMMARY.md"     = ".bequite\state\FRONTIER_REASONING_SUMMARY.md"
+  # alpha.22 - command router + catalog IDs (capability memory files created on first run by C3-C8)
+  ".bequite\commands\COMMAND_ID_MAP.md"            = ".bequite\commands\COMMAND_ID_MAP.md"
+  ".bequite\commands\COMMAND_ROUTER.md"            = ".bequite\commands\COMMAND_ROUTER.md"
+  ".bequite\commands\NEXT_COMMAND_LOG.md"          = ".bequite\commands\NEXT_COMMAND_LOG.md"
   # alpha.8 jobs
   ".bequite\jobs\JOB_PROFILE.md"          = ".bequite\jobs\JOB_PROFILE.md"
   ".bequite\jobs\JOB_SEARCH_LOG.md"       = ".bequite\jobs\JOB_SEARCH_LOG.md"

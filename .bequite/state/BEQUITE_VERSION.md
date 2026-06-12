@@ -1,11 +1,11 @@
 # BeQuite installed version
 
-**Version:** v3.0.0-alpha.21 — Confidence, Frontier Discipline & Discovery V2
-**Updated:** 2026-06-11
+**Version:** v3.0.0-alpha.22 — Navigation & Capability Consolidation
+**Updated:** 2026-06-12
 **Source:** github
 **Source path / repo:** xpShawky/BeQuite (branch: main)
-**Previous version:** v3.0.0-alpha.20
-**Last check:** 2026-06-11
+**Previous version:** v3.0.0-alpha.21
+**Last check:** 2026-06-12
 **Update count:** 0 (this is the seed file; updates from /bq-update increment)
 
 ---

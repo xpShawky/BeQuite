@@ -278,3 +278,11 @@ After successful completion:
 - `.bequite/state/MODE_HISTORY.md` — append mode + outcome (when invoked via `/bq-auto`-style mode)
 
 **Failure behavior:** don't claim `✅ done` if any of the above wasn't completed. Report PARTIAL with the specific gap.
+
+## Argument workflow (alpha.22)
+
+- **`/bq-handoff client`** — client-facing handoff bundle: runbooks, **credential checklist WITHOUT values** (names + where they live + rotation owner — never the secrets themselves), maintenance calendar, warranty/support checklist, plain-language "what you own now" summary. Secret values appearing in the bundle = hard stop (secret-handling gate).
+
+## Next Command Recommendations (alpha.22)
+
+Per contract step 12: router block per `COMMAND_ROUTER.md`.

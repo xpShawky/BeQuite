@@ -49,3 +49,12 @@ Rules:
 **Key output:** line 2 = full description string intact
 **Verified by:** read live this session
 **Related:** SKILL_QUALITY_AUDIT.md finding #4 (false alarm)
+
+## 2026-06-12 — alpha.22 verification evidence
+
+- `bash -n scripts/install-bequite.sh` → exit 0 ("sh syntax OK")
+- PowerShell `[Parser]::ParseFile(install-bequite.ps1)` → "ps1 parse OK - 0 errors" (BOM preserved via utf-8-sig round-trip)
+- File counts post-pass: `ls .claude/commands/*.md | wc -l` → **53** (52 active + 1 deprecated alias) · `ls -d .claude/skills/bequite-*/ | wc -l` → **29**
+- guard-skills concept: WebFetch https://github.com/amElnagdy/guard-skills → 5 guards, progressive disclosure, reactive diff-review, no-scripts/no-network principles (concept only; nothing copied)
+- Course PDF: `find . -iname "*.pdf"` → no results — PDF NOT accessible this session; recorded honestly in COURSE_ENGINE.md
+- Stale-count sweep: fixed INSTALL runbook (24/7, alpha.1-era), bequite.md ("34 commands"), bq-help quality gate ("37"), bq-suggest ("39/15"), commands.md:218 ("37"), CLAUDE.md (header drifted at alpha.19)

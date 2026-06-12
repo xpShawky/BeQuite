@@ -71,3 +71,12 @@ Skill dir unreadable → list + skip + note · ambiguous merge call → propose 
 ## Usual next command
 
 User reviews `SKILL_QUALITY_AUDIT.md` → `/bq-skill-audit apply=true` for approved repairs → `/bq-update` consumers pick up improvements next refresh
+
+## alpha.22 additions
+
+- **Drift inputs:** also reads `.bequite/commands/COMMAND_ID_MAP.md` + `COMMAND_ROUTER.md` + `NEXT_COMMAND_LOG.md` — flags: commands missing IDs, router routes to nonexistent commands, recommendations that are always ignored (demote) or follow-ups users run unrecommended (add).
+- **Future (V2, not built):** `generate-pack` — Agent Pack Generator candidate (V1 #12) parked until Guard Pass + this audit mature one more cycle.
+
+## Next Command Recommendations (alpha.22)
+
+Per contract step 12: router block per `COMMAND_ROUTER.md` (typically: fixes on approval → W4.1 `/bq-verify drift` to confirm).

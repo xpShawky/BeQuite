@@ -41,3 +41,17 @@ Ship command + skill + memory pack + docs per the 15-step workflow.
 2. Changelogs name the type for every added feature.
 3. Discovery sprints (V2 onward) only count type-1 candidates as "new capabilities."
 4. When in doubt: "what can the user do AFTER this that they couldn't before?" No answer → not type 1.
+
+## alpha.22 worked shape decisions (precedents)
+
+| Request | Shape ruling | Why |
+|---|---|---|
+| Reference/knowledge/course/pain-radar/integrate/proposal | **commands** (C3–C8) | major workflow + distinct artifact set + own memory dir + cross-project reuse |
+| Roadmap/interview/spec-tests/announce/proof/vault/client-audit/regressions/drift/readiness/demo-video | **arguments** on plan/scope/test/release/handoff/audit/verify | variants of an existing workflow's intent; no distinct surface |
+| Localization/RTL | **skill** (auto-attach) | cross-cutting concern, attaches to any workflow; standalone command would idle |
+| Guard Pass | **skill** + strategy doc | reactive procedure invoked by other commands, not a user destination |
+| Catalog IDs / Command Router | **docs + memory pattern** | navigation metadata, not behavior users invoke directly |
+| 3D site builder | **argument** (`style=` on reference/uiux-variants) | a direction within an existing surface, not a new workflow |
+| /bq-recording | **roadmap (parked)** | heavy media path unresearched; fails the lightweight test |
+
+Anti-bloat outcome: 11 capability requests → 6 commands, not 17. Use these as precedents in future shape decisions.

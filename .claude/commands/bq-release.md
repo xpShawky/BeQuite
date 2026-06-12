@@ -190,3 +190,14 @@ Unknowns/blockers: <list or none>      Next: <recommended action>
 ```
 
 Bands: 90–100 routine · 75–89 likely · 50–74 needs exploration · 25–49 spike first · 0–24 blocked/insufficient info. **Confidence is not a feeling — it is a report** (evidence, tests, scope clarity, familiarity, dependency risk, verification). It must MOVE as evidence arrives (before-inspection → after-reading → after-implementation → after-verification; recorded per task in `.bequite/tasks/TASK_CONFIDENCE.md`). Never 100% — and ≥95% only with all tests passing + zero unresolved assumptions + EVIDENCE_LOG entry. Apply project modifiers from `.bequite/state/CONFIDENCE_RULES.md`; at verify/release, log forecast-vs-actual to `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`.
+
+## Argument workflows (alpha.22 — the launch kit family)
+
+- **`/bq-release readiness`** — Ship-readiness Scorecard (V1 #4): verify status · open P0/P1s · docs/install accuracy · rollback path · support plan · honest GO / NO-GO with reasons. Answers "should this ship?", complementing `/bq-verify`'s "does it work?".
+- **`/bq-release announce`** — CHANGELOG → announcement kit: X thread, LinkedIn/Facebook post, email, in-app banner, YouTube short/TikTok script, release notes. **Drafts only — publishing is a hard human gate; BeQuite never posts.**
+- **`/bq-release proof`** — finished project → case study / before-after / evidence pack / metrics / walkthrough script / portfolio copy (feeds C8 `/bq-proposal`).
+- **`/bq-release demo-video`** — Product Movie plan (V1 #11): product story, script, scene list, demo flow, voiceover lines, thumbnail ideas, launch-video plan. **Planning artifacts only — no video rendering.**
+
+## Next Command Recommendations (alpha.22)
+
+Per contract step 12: Required next = user-run `git push` / `git tag` (gate 17 — never auto). Set: W5.1 `/bq-memory` · `announce`/`proof` args when launching publicly · W5.3 `/bq-handoff client` for client work. Router block per `COMMAND_ROUTER.md`.

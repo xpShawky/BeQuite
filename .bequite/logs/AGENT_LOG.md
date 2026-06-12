@@ -2,6 +2,10 @@
 
 Append-only chronicle of every BeQuite command run. Newest at top.
 
+## 2026-06-12 — alpha.22 ship: Navigation & Capability Consolidation (Claude Fable 5)
+
+**Action:** Consolidation + navigation + selected game-changer planning pass. Model: Fable 5 throughout; no switch/reroute. Audit-first: `COMMAND_NAVIGATION_AND_CAPABILITY_CONSOLIDATION_AUDIT.md` written before any change. Numbering feasibility ruled (Option A display-only; B/C rejected). Command Router layer added (strategy + operational map + log + contract step-12 upgrade + 14 command files wired). 6 capability commands built (C3 reference · C4 knowledge · C5 course · C6 pain-radar · C7 integrate · C8 proposal) + 7 specs + 2 skills (localization-rtl auto-attach, guard-pass). Guard Pass adapted from guard-skills concept (WebFetch-verified; nothing copied/installed) — seed report's finding #1 = the user-caught stale INSTALL runbook (24/7 since alpha.1), fixed. Older-V1 review: 12 candidates ruled (4→arguments, 1→style arg, 2 verified built, 5 parked). Discovery V3: 20 fresh ideas (13 best-shaped as arguments/skills — anti-bloat holds). /bq-recording parked in V2 tracker. Honesty notes: course PDF not accessible this session (user's 12-topic summary used as Reference A; recorded in COURSE_ENGINE.md); CLAUDE.md found drifted at alpha.19 header — fixed. Installers → alpha.22 (+7 dirs, +3 templates; bash -n OK, ps1 parse 0 errors, BOM preserved). Counts synced: 52 active commands + 1 alias / 29 skills (README badges, commands.md, CLAUDE.md, catalog, menus, advisor skill, runbooks).
+
 ## 2026-06-11 — alpha.21 ship: Confidence, Frontier Discipline & Discovery V2 (Claude Fable 5)
 
 **Action:** User prompt 2 of 2 — three specific goals: (1) confidence/success-probability reporting, (2) distill Fable-5 operating discipline so other models can imitate it, (3) a genuinely NEW game-changer discovery sprint. Model: Fable 5 throughout; no switch/reroute occurred (explicitly verified + reported per prompt requirement).

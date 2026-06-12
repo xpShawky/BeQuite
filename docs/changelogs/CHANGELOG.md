@@ -4,6 +4,25 @@ Format: [Keep a Changelog v1.1](https://keepachangelog.com/en/1.1.0/) · Version
 
 Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANGELOG-legacy.md`](../legacy/CHANGELOG-legacy.md) after Phase B cleanup.
 
+## [3.0.0-alpha.22] - 2026-06-12 — Navigation & Capability Consolidation
+
+### Added
+- **Catalog IDs (Option A — display-only):** every command has a stable ID (W0.1–W5.3 workflow · N navigation · O orchestrators · C capabilities · M maintenance); files never renamed. `COMMAND_NUMBERING_AND_ORDERING_STRATEGY.md` + `.bequite/commands/COMMAND_ID_MAP.md` (52 active + 1 alias mapped); Options B/C formally rejected with reasons
+- **Workflow Command Router:** second routing layer — contract step 12 is now multi-command "Next Command Recommendations" (required next + 2–6 set with skills/auto-run + accelerators + do-not-run-yet); auto mode reports "Internal workflow executed: <IDs>"; `/bq-suggest` upgraded to main navigation assistant with 4 worked journey routes. `WORKFLOW_COMMAND_ROUTER.md` + `.bequite/commands/{COMMAND_ROUTER,NEXT_COMMAND_LOG}.md`
+- **6 capability commands (46 → 52):** C3 `/bq-reference` (clone-safe design extraction) · C4 `/bq-knowledge` (build/ask/rag-plan/export; no vector DB default) · C5 `/bq-course` (Course Engine; user PDF framework as ONE reference) · C6 `/bq-pain-radar` (public-sources-only ethics) · C7 `/bq-integrate` (UNVERIFIED-marked blueprints) · C8 `/bq-proposal` (no-overpromise rules) — 7 specs in `docs/specs/`; memory dirs scaffolded
+- **2 skills (27 → 29):** `bequite-localization-rtl` (auto-attach on Arabic/MENA/RTL) + `bequite-guard-pass` (post-work AI-failure-mode gates; guard-skills concept adapted — nothing copied/installed) + `GUARD_PASS_STRATEGY.md` + seed `GUARD_PASS_REPORT.md`
+- **11 argument workflows:** `/bq-verify regressions|drift` · `/bq-release readiness|announce|proof|demo-video` · `/bq-plan from-issues|migration` · `/bq-scope from-interview` · `/bq-test from-spec|fixtures` · `/bq-handoff client` · `/bq-audit client|a11y` · `/bq-uiux-variants style=`
+- **Reports:** `COMMAND_NAVIGATION_AND_CAPABILITY_CONSOLIDATION_AUDIT.md` · `APPROVED_CAPABILITY_SHAPE_DECISIONS.md` (incl. Older-V1 12-candidate review) · `GAME_CHANGER_FEATURE_DISCOVERY_V3.md` (20 fresh ranked ideas — proposals only)
+
+### Changed
+- Execution contract step 12 upgraded (alpha.20 → alpha.22); `/bequite` menu rebuilt with IDs (stale "34 commands" fixed); `/bq-help` + `/bq-suggest` counts fixed (37/39/15 stale) + ID sections; CLAUDE.md spec header alpha.19 → alpha.22 (was drifted); registry/router extended (8 new domains); taxonomy gains alpha.22 precedents; installers → alpha.22 (+7 scaffold dirs, +3 router templates; `bash -n` OK, ps1 parse 0 errors)
+
+### Fixed
+- `docs/runbooks/INSTALL_BEQUITE_IN_PROJECT.md` stale since alpha.1 ("24 commands / 7 skills") — Guard Pass seed finding #1, caught by the user
+
+### Decided
+- No file renames (Option C rejected) · no ordered aliases (Option B rejected) · `/bq-recording` PARKED to V2 · `/bq-localize` skill-first (proposal only) · no `knowledge-builder` skill (deliberate) · V1 candidates: 4 absorbed as arguments, 1 as style argument, 2 verified built, 5 parked · no beginner/advanced hiding system
+
 ---
 
 ## [Unreleased — alpha.22]

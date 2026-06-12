@@ -16,9 +16,14 @@ This repo IS the source of the skill pack. Its `.claude/commands/` + `.claude/sk
 
 ---
 
-## Current spec: v3.0.0-alpha.19 — Fable Strengthening Pass
+## Current spec: v3.0.0-alpha.22 — Navigation & Capability Consolidation
 
-- **46 slash commands** (`.claude/commands/bequite.md` + 45 × `.claude/commands/bq-*.md`) — adds `/bq-writing-dna` + `/bq-skill-audit` in alpha.19
+- **52 active slash commands + 1 deprecated alias** (`.claude/commands/`) — alpha.22 adds C3 `/bq-reference` · C4 `/bq-knowledge` · C5 `/bq-course` · C6 `/bq-pain-radar` · C7 `/bq-integrate` · C8 `/bq-proposal`; alpha.19 added `/bq-writing-dna` + `/bq-skill-audit`. **Catalog IDs (alpha.22):** display-only W0–W5 / N / O / C / M IDs in `.bequite/commands/COMMAND_ID_MAP.md` — files are NEVER renamed (`docs/architecture/COMMAND_NUMBERING_AND_ORDERING_STRATEGY.md`).
+- **29 skills** (alpha.22 adds `bequite-localization-rtl` (auto-attach on Arabic/MENA/RTL) + `bequite-guard-pass`; alpha.21 added `bequite-frontier-reasoning-coach`)
+- **Command Router (alpha.22)** — second routing layer: Skill Router answers *which skills*; Command Router answers *which command next*. Contract step 12 = multi-command "Next Command Recommendations" (required next + 2–6 set + accelerators + do-not-run-yet); auto mode reports "Internal workflow executed: <IDs>". Files: `docs/architecture/WORKFLOW_COMMAND_ROUTER.md` · `.bequite/commands/{COMMAND_ROUTER,COMMAND_ID_MAP,NEXT_COMMAND_LOG}.md`. `/bq-suggest` (N4) is the main navigation assistant.
+- **Guard Pass (alpha.22)** — reactive post-work gates for AI failure modes (code/test/docs guards; guard-skills concept adapted, nothing copied/installed): `bequite-guard-pass` + `docs/architecture/GUARD_PASS_STRATEGY.md` + `.bequite/audits/GUARD_PASS_REPORT.md`. Runs after implement/test, before verify/release.
+- **Capability memory (alpha.22)** — `.bequite/{reference,knowledge,courses,pain-radar,integrations,proposals}/` (files created on first run); specs in `docs/specs/{REFERENCE_ENGINE,KNOWLEDGE_ENGINE,COURSE_ENGINE,PAIN_RADAR,INTEGRATION_BLUEPRINT,PROPOSAL_BUILDER,LOCALIZATION_RTL}.md`; shape rulings in `.bequite/plans/APPROVED_CAPABILITY_SHAPE_DECISIONS.md` (incl. the Older-V1-candidate review)
+- **Automatic skill routing (alpha.20)** + **Confidence Forecast / Frontier Playbook / FEATURE_TYPE_TAXONOMY / Discovery V2 (alpha.21)** — registry/router/usage-log at `.bequite/skills/`; banded confidence on every plan/task; `expert` = composition alias, not a 5th mode
 - **26 skills** (`.claude/skills/bequite-*/SKILL.md`) — adds `bequite-writing-dna` + `bequite-skill-auditor` in alpha.19; `bequite-context-engineer` + `bequite-anti-hallucination` in alpha.18; `bequite-frontend-design-system` (master) in alpha.17; `bequite-presentation-builder` in alpha.13; `bequite-delegate-planner` in alpha.12
 - **Execution contract (alpha.19)** — every command follows the 11 steps in `docs/architecture/COMMAND_EXECUTION_CONTRACT.md` (preflight → gate → scope → skills → research-check → plan-check → action → verification → report → writeback → next). Strategy indexes: `HARNESS_ENGINEERING_STRATEGY.md` · `CONTEXT_ENGINEERING_STRATEGY.md` · `PROMPT_ENGINEERING_STANDARD.md` (+ `.bequite/prompts/PROMPT_PATTERNS.md`).
 - **File-edit safety (alpha.19)** — risky file edits (env/secrets/auth/migrations/deploy/CI/payments/RLS/mass-deletes) tiered R3-CONFIRM / R2-ANNOUNCE / R1 per `docs/architecture/FILE_RISK_CLASSIFICATION.md` + project-tunable `.bequite/state/FILE_RISK_RULES.md`. R3 edits are a hard human gate even in auto mode.
@@ -56,7 +61,10 @@ This repo IS the source of the skill pack. Its `.claude/commands/` + `.claude/sk
 
 | Need | Path |
 |---|---|
-| Slash commands (43) | `.claude/commands/bequite.md` + `.claude/commands/bq-*.md` |
+| Slash commands (52 active + 1 alias; IDs in COMMAND_ID_MAP) | `.claude/commands/` |
+| Command Router (alpha.22) | `.bequite/commands/{COMMAND_ID_MAP,COMMAND_ROUTER,NEXT_COMMAND_LOG}.md` · `docs/architecture/WORKFLOW_COMMAND_ROUTER.md` |
+| Capability memory (alpha.22) | `.bequite/{reference,knowledge,courses,pain-radar,integrations,proposals}/` |
+| Guard Pass (alpha.22) | `bequite-guard-pass` skill · `docs/architecture/GUARD_PASS_STRATEGY.md` · `.bequite/audits/GUARD_PASS_REPORT.md` |
 | Jobs memory | `.bequite/jobs/` (JOB_PROFILE, JOB_SEARCH_LOG, OPPORTUNITIES, APPLICATION_TRACKER, PITCH_TEMPLATES, HIDDEN_GEMS, COMMUNITY_SIGNALS, AI_ASSISTED_WORK) |
 | Money memory | `.bequite/money/` (MONEY_PROFILE, MONEY_SEARCH_LOG, OPPORTUNITIES, TRUST_CHECKS, ACTION_PLAN, HIDDEN_GEMS, COMMUNITY_SIGNALS, AI_ASSISTED_PATHS) |
 | Version + update tracking | `.bequite/state/BEQUITE_VERSION.md`, `UPDATE_SOURCE.md`; `.bequite/logs/UPDATE_LOG.md`; `.bequite/backups/` |
@@ -65,7 +73,7 @@ This repo IS the source of the skill pack. Its `.claude/commands/` + `.claude/sk
 | Delegate task pack (alpha.12) | `.bequite/tasks/DELEGATE_TASKS.md`, `DELEGATE_INSTRUCTIONS.md`, `DELEGATE_ACCEPTANCE_CRITERIA.md`, `DELEGATE_TEST_PLAN.md` |
 | Delegate review report (alpha.12) | `.bequite/audits/DELEGATE_REVIEW_REPORT.md` |
 | Presentation memory (alpha.13) | `.bequite/presentations/` (PRESENTATION_BRIEF, CONTENT_OUTLINE, SLIDE_PLAN, DESIGN_BRIEF, MOTION_PLAN, SPEAKER_NOTES, REFERENCES, PRESENTATION_VARIANTS_REPORT, EXPORT_LOG + assets/ + outputs/) |
-| Skills (22) | `.claude/skills/bequite-*/SKILL.md` |
+| Skills (29) | `.claude/skills/bequite-*/SKILL.md` |
 | Master frontend skill (alpha.17) | `.claude/skills/bequite-frontend-design-system/` (SKILL + references/ + examples/) |
 | Design memory (alpha.17) | `.bequite/design/` (DESIGN_DNA, FRONTEND_SKILL_MAP, DESIGN_CONTINUITY_REPORT) |
 | Frontend context summary (alpha.17) | `.bequite/state/FRONTEND_CONTEXT_SUMMARY.md` |

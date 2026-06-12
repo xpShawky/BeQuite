@@ -2,8 +2,8 @@
 
 > **The single citable contract every BeQuite command follows.** When a command file says "per the execution contract," it means these 12 steps, in this order. Commands may compress steps that don't apply (read-only commands skip 7–9) but may never reorder or silently skip an applicable step.
 
-**Status:** active · **Adopted:** alpha.19; **upgraded alpha.20** — skill selection became automatic (registry check + task classification + auto-selection, steps 2–4)
-**Deep references:** `HARNESS_AND_PROMPT_QUALITY.md` (authoring standard) · `MEMORY_FIRST_BEHAVIOR.md` · `WORKFLOW_GATES.md` · `CONTEXT_ENGINEERING.md` · `AUTO_SKILL_ROUTING_STRATEGY.md` (steps 2–4) · `CLAUDE_CODE_HOOKS_STRATEGY.md` (machine layer)
+**Status:** active · **Adopted:** alpha.19; **upgraded alpha.20** — skill selection became automatic (steps 2–4); **upgraded alpha.22** — step 12 became the Command Router multi-recommendation block
+**Deep references:** `HARNESS_AND_PROMPT_QUALITY.md` (authoring standard) · `MEMORY_FIRST_BEHAVIOR.md` · `WORKFLOW_GATES.md` · `CONTEXT_ENGINEERING.md` · `AUTO_SKILL_ROUTING_STRATEGY.md` (steps 2–4) · `WORKFLOW_COMMAND_ROUTER.md` (step 12) · `CLAUDE_CODE_HOOKS_STRATEGY.md` (machine layer)
 
 ---
 
@@ -42,8 +42,18 @@ Lead with outcome. State: what was done · files changed · skill selection (ste
 ### 11. Memory writeback
 `LAST_RUN` · `WORKFLOW_GATES` (gate state changes) · `CURRENT_PHASE` (phase changes) · `AGENT_LOG` (always for real actions) · `CHANGELOG [Unreleased]` (when files/behavior changed — **the most-skipped step; do not skip it**) · `MISTAKE_MEMORY` (when a lesson surfaced) · `MODE_HISTORY` (mode runs) · **`SKILL_USAGE_LOG`** (selection + outcome, alpha.20) · `WORKING_NOTES` / `CONTEXT_SUMMARY` (long tasks, at task boundaries).
 
-### 12. Next best command
-End with one recommended next step. Gate-aware — never recommend a command whose gates aren't met.
+### 12. Next Command Recommendations (Command Router, alpha.22)
+Every non-trivial command ends with the router block — vocabulary = catalog IDs (`.bequite/commands/COMMAND_ID_MAP.md`), routes from `COMMAND_ROUTER.md`:
+
+```
+Next Command Recommendations:
+Required next:         <ID> <cmd> — reason — can auto-run: yes/no — why
+Recommended set (2–6): <ID> <cmd> <args> | Reason | Skills likely used | Can auto-run
+Optional accelerators: <cmd> — why it may help now
+Do not run yet:        <cmd> — missing gate / artifact / order reason
+```
+
+Gate-aware — a command whose gates aren't met may only appear under "Do not run yet" with the missing gate named. Capability commands (C#) appear only on task signals — never pad the set. **Auto mode** doesn't invoke slash commands literally; it runs the equivalent internal workflow and reports `Internal workflow executed: <ID list>`, then emits this block for what follows. Non-trivial routing decisions append one line to `NEXT_COMMAND_LOG.md`. Trivial reads (`/bq-now`, `/bq-help`, `/bq-explain`) keep the old single-next form. Full spec: `docs/architecture/WORKFLOW_COMMAND_ROUTER.md`.
 
 ---
 
@@ -53,6 +63,7 @@ End with one recommended next step. Gate-aware — never recommend a command who
 |---|---|---|
 | This contract | all 12 steps | convention — the agent honors it; commands cite it |
 | Skill router | steps 2–4 | registry + domain map (`AUTO_SKILL_ROUTING_STRATEGY.md`) |
+| Command router | step 12 | ID map + routes (`WORKFLOW_COMMAND_ROUTER.md`) — recommends, never bypasses gates |
 | Workflow gates | step 5 | gate ledger refusal |
 | Hard human gates | steps 6/8 | 17 pause points in `/bq-auto` |
 | File-risk rules | step 8 | `FILE_RISK_CLASSIFICATION.md` tiers |

@@ -297,3 +297,7 @@ Both run automatically inside full `/bq-verify` when their artifacts exist; the 
 ## Next Command Recommendations (alpha.22)
 
 Per contract step 12: PASS → Required next W4.3 `/bq-changelog` then W4.2 `/bq-release`; FAIL → W2.4 `/bq-fix` with the failing evidence. Router block per `COMMAND_ROUTER.md`.
+
+## System-risk + guard verification (alpha.22 orchestration update)
+
+When the verified work touched risky domains, verification includes: the risk block's named tests actually ran (race/idempotency/transition tests — evidence required) · Guard Pass report exists for the produced work · confidence ≤89% while any concurrency/consistency risk lacks a passing test (`SYSTEM_DESIGN_REASONING_STANDARD.md` §5).

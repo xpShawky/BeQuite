@@ -28,7 +28,7 @@ Open Claude Code in `<your-project>`. Type `/bequite`. Follow the menu.
 2. Downloads BeQuite from `https://github.com/xpShawky/BeQuite` (shallow clone) — or uses `--from-local` if you already have a clone.
 3. Copies into your project:
    - `.claude/commands/` — **52 active slash commands + 1 deprecated alias** (markdown files; catalog IDs in `.bequite/commands/COMMAND_ID_MAP.md`)
-   - `.claude/skills/bequite-*` — **29 skills**
+   - `.claude/skills/bequite-*` — **30 skills**
    - `.claude/hooks/` + `settings*.json.example` — opt-in safety hooks (NOT active by default; review before enabling)
    - *(Counts as of v3.0.0-alpha.22 — the canonical counts live in `COMMAND_ID_MAP.md` + `SKILL_REGISTRY.md`; if this paragraph drifts again, `/bq-verify drift` will flag it.)*
 4. Scaffolds `.bequite/` memory (state, logs, prompts, audits, plans, tasks, research, skills, commands, writing, presentations, design, uiux, jobs, money, reference, knowledge, courses, pain-radar, integrations, proposals — see the installer source for the authoritative list) with sensible defaults; never overwrites an existing `.bequite/`.
@@ -219,7 +219,7 @@ The installer is supposed to append a fenced `<!-- BEQUITE --> ... <!-- /BEQUITE
 
 ## Multiple BeQuite versions on one machine
 
-Each project gets its own `.bequite/` + `.claude/` copy. There's no global install. Updating one project's BeQuite doesn't affect others.
+Each project gets its own `.bequite/` + `.claude/` copy — updating one project doesn't affect others. (A shared local clone CAN feed many projects via `--from-local`; see `INSTALL_FOR_OTHER_AGENTS.md` §1 for the global-clone layout.)
 
 If you want all projects on the same version, re-run the installer in each.
 

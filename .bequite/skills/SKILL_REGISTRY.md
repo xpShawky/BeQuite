@@ -1,10 +1,10 @@
-# Skill Registry (alpha.22)
+# Skill Registry (alpha.22 + orchestration update)
 
 > **The compact routing index over all BeQuite skills.** Loaded FIRST by the Skill Router (token-cheap); full SKILL.md files load only after selection. **Single-source-of-truth rule:** detailed "when to use / when not / inputs / outputs / procedure" live in each SKILL.md — this registry holds ROUTING METADATA + terse pointers, never duplicated prose.
 >
-> **Refreshed by:** `/bq-skill-audit` (registry refresh is now step 1 of every audit run). **Last refreshed:** 2026-06-12 (alpha.22 — **29 skills** indexed; localization-rtl + guard-pass added).
+> **Refreshed by:** `/bq-skill-audit` (registry refresh is now step 1 of every audit run). **Last refreshed:** 2026-06-12 (alpha.22 — **30 skills** indexed; orchestrator added in the orchestration update; localization-rtl + guard-pass added earlier in alpha.22).
 >
-> **Discovery scope:** project `.claude/skills/bequite-*/` ✅ (29 found) · global `~/.claude/skills/` checked 2026-06-11 → **empty/not present on this machine**; only project skills indexed. Re-probe at each refresh.
+> **Discovery scope:** project `.claude/skills/bequite-*/` ✅ (30 found) · global `~/.claude/skills/` checked 2026-06-11 → **empty/not present on this machine**; only project skills indexed. Re-probe at each refresh.
 
 Legend — **Cost** (token weight when fully loaded): L < 150 lines · M 150–300 · H > 300 or has references/. **Risk** (what damage misuse can do): L docs/advice · M writes project files · H touches security/prod/money domains. **Q** (quality status from last `/bq-skill-audit`): ✓ PASS · ~ improve-backlogged.
 
@@ -41,6 +41,7 @@ Legend — **Cost** (token weight when fully loaded): L < 150 lines · M 150–3
 | `writing-dna` | writing, content, academic, brand voice | write in my style, human-quality, rewrite, blog, academic, voice | writing-dna, presentation (notes) | anti-hallucination (strict), researcher | — | M | L | ✓ |
 | `localization-rtl` | Arabic, MENA, RTL, i18n | Arabic, Egypt, MENA, RTL, bilingual, translate app/course/site | course, feature, presentation, reference, live-edit, uiux-variants (auto-attach) | frontend-design-system, writing-dna, ux-ui-designer | — | M | L | ✓ |
 | `guard-pass` | post-work quality gates, AI failure modes | after implementation/tests, before verify/release, AI-generated diff review | implement, feature, fix, test, review, verify, release (auto-attach) | anti-hallucination, testing-gate, skill-auditor | — | M | L | ✓ |
+| `orchestrator` | global brain, conflict resolution, missing-capability | command/skill conflict, unclear next step, duplicated workflow, no capability fits | bequite, suggest, discover, plan, auto, implement, review, verify, skill-audit (auto-attach) | workflow-advisor, context-engineer | — | L | L | ✓ |
 
 ## Per-skill detail pointers
 
@@ -61,7 +62,7 @@ Memory-write hotspots worth knowing at routing time (so writeback step plans cor
 |---|---|
 | Skills indexed | 27 |
 | Last full review | 2026-06-11 (alpha.19 seed audit + alpha.21 registry refresh) |
-| Quality summary | 27 ✓ PASS (2 new alpha.22 skills pending first audit, provisionally ✓) · 2 ~ (problem-solver thin example, multi-model-planning stale phasing — backlogged) |
+| Quality summary | 27 ✓ PASS (3 new alpha.22 skills pending first audit, provisionally ✓) · 2 ~ (problem-solver thin example, multi-model-planning stale phasing — backlogged) |
 | Next refresh due | next `/bq-skill-audit` run, or when a skill is added/removed |
 
 **Maintainer rule:** adding or removing a skill without updating this registry in the same commit is a drift violation (caught by `/bq-skill-audit`).

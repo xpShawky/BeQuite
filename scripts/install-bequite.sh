@@ -225,6 +225,12 @@ copy_template ".bequite/commands/COMMAND_ID_MAP.md"            ".bequite/command
 copy_template ".bequite/commands/COMMAND_ROUTER.md"            ".bequite/commands/COMMAND_ROUTER.md"
 copy_template ".bequite/commands/NEXT_COMMAND_LOG.md"          ".bequite/commands/NEXT_COMMAND_LOG.md"
 
+# alpha.22 orchestration update
+copy_template ".bequite/state/ORCHESTRATION_MAP.md"            ".bequite/state/ORCHESTRATION_MAP.md"
+copy_template ".bequite/state/AUTO_MODE_RULES.md"              ".bequite/state/AUTO_MODE_RULES.md"
+copy_template ".bequite/state/CONTEXT_COMPACTION_RULES.md"     ".bequite/state/CONTEXT_COMPACTION_RULES.md"
+copy_template ".bequite/state/LOW_COST_MODEL_RULES.md"         ".bequite/state/LOW_COST_MODEL_RULES.md"
+
 # Copy commands.md at repo root (top-level reference)
 if [[ -f "$SOURCE/commands.md" && ! -f "./commands.md" ]]; then
   cp "$SOURCE/commands.md" "./commands.md"

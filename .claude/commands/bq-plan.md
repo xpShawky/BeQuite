@@ -392,3 +392,7 @@ Bands: 90–100 routine · 75–89 likely · 50–74 needs exploration · 25–4
 ## Next Command Recommendations (alpha.22)
 
 Per contract step 12: end with the router block (Required next: W2.1 `/bq-assign` on PASS · set per `COMMAND_ROUTER.md` · IDs from `COMMAND_ID_MAP.md`).
+
+## System Design Risk Check (alpha.22 orchestration update — mandatory when relevant)
+
+When the task touches payments · inventory · bookings · auth · permissions/tenancy · database writes · concurrency · queues · external APIs · webhooks · uploads · UGC · admin actions · production · security logic, the output MUST include the structured block from `docs/architecture/SYSTEM_DESIGN_REASONING_STANDARD.md` (Domain · Critical entities · State transitions · Concurrent user risks · Data consistency · Failure modes · Recovery · Security · Edge cases · Tests required · Confidence · Unknowns). Canonical test: one item in stock, two simultaneous buyers — if the plan can't answer reservation/locking/idempotency/order-states/user-visible-outcome, implementation does not start. Outside these domains: `Not applicable — reason:`. Risk without a named test = unfinished plan. Blocking unknowns stop the build.

@@ -1,5 +1,12 @@
 # Last BeQuite command
 
+**Command:** alpha.22 orchestration update (global orchestrator + auto-mode anti-skip + system-design risk checks + low-cost model strategy + per-agent setup docs)
+**Timestamp:** 2026-06-12 (UTC)
+**Model:** Claude Fable 5 (user briefly toggled Opus 4.8 and back before the pass; executed on Fable 5 — no silent switch)
+**Result:** SUCCESS — skill #30 bequite-orchestrator + ORCHESTRATION_MAP source of truth · 15-step anti-skip auto sequence · mandatory System Design Risk Check (plan/feature/implement; verified in review/verify) · context compaction 40/60/75/85% · tier A/B/C low-cost model strategy (honest gap-narrowing) · Missing Capability detection · INSTALL_FOR_OTHER_AGENTS (11 agents x Win/mac/Linux x global/per-project) · counts 29-to-30 synced · installers +4 templates (bash -n OK · ps1 0 errors). No heavy runtime; no provider integrations; no live trials claimed; /bq-offer still queued (C11).
+**Next suggested:** B-bucket maintenance (M2 /bq-skill-audit baseline for the 3 new alpha.22 skills + W4.1 /bq-verify drift), then live-trial C5/C3 or approve /bq-offer for alpha.23.
+
+**Prior run (preserved):**
 **Command:** alpha.22 stabilization pass (audits + OCR intake + cross-agent docs + README polish; doc-only, no version bump)
 **Timestamp:** 2026-06-12 (UTC)
 **Model:** Claude Fable 5 throughout — no switch, no reroute

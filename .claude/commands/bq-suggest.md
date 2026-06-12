@@ -318,3 +318,19 @@ Output uses the multi-command format: Required next · Recommended command set (
 **"I want this app to integrate with an API"** → 1. C7 `/bq-integrate` (blueprint) · 2. W1.4 `/bq-plan` · 3. W2.3 `/bq-feature` · 4. W3.1 `/bq-test from-spec` · 5. W4.1 `/bq-verify`. Skills: backend-architect, security-reviewer, testing-gate.
 
 **"I like this website style"** → 1. C3 `/bq-reference screenshot|url` (extraction + originality guardrails) · 2. W2.5 `/bq-uiux-variants` if multiple directions · 3. W2.3 `/bq-feature` once approved · 4. W4.1 `/bq-verify` (visual QA) · 5. W4.2 `/bq-release proof` for a case study. Skills: frontend-design-system, ux-ui-designer, frontend-quality.
+
+## Orchestrator + missing-capability detection (alpha.22 orchestration update)
+
+`/bq-suggest` consults the global brain first: `bequite-orchestrator` skill + `.bequite/state/ORCHESTRATION_MAP.md` (source of truth on conflict/confusion/duplication). When NO existing command/skill/workflow fits the request, never force a fit — emit:
+
+```
+Missing Capability Detected:
+- Needed capability:
+- Why existing commands/skills are not enough:
+- Temporary workaround:
+- Recommended new skill/command/spec:
+- Should this be built now or parked?
+- Confidence:
+```
+
+…and log it to OPEN_QUESTIONS / FEATURE_EXPANSION_ROADMAP (feature-workflow step 1).

@@ -7,7 +7,7 @@
 **Latest:** `v3.0.0-alpha.22` · MIT · by [@xpShawky](https://github.com/xpShawky)
 
 <a href="commands.md"><img alt="52 commands" src="https://img.shields.io/badge/slash_commands-52-7c3aed?style=flat-square"></a>
-<a href="#the-skill-pack"><img alt="29 skills" src="https://img.shields.io/badge/skills-29-10b981?style=flat-square"></a>
+<a href="#skills"><img alt="30 skills" src="https://img.shields.io/badge/skills-30-10b981?style=flat-square"></a>
 <img alt="zero runtime deps" src="https://img.shields.io/badge/runtime_deps-0-0ea5e9?style=flat-square">
 <img alt="markdown only" src="https://img.shields.io/badge/install-markdown_only-f59e0b?style=flat-square">
 
@@ -17,7 +17,7 @@
 
 ## What is BeQuite?
 
-BeQuite turns a coding agent into a disciplined senior engineering team. You describe a goal; BeQuite supplies the **workflow** (research → scope → plan → build → test → verify → release), the **expertise** (29 specialist skills the agent loads automatically), the **memory** (a `.bequite/` folder that survives context loss and session breaks), and the **brakes** (workflow gates, hard human approval points, and evidence rules that ban "should probably work" as a completion claim).
+BeQuite turns a coding agent into a disciplined senior engineering team. You describe a goal; BeQuite supplies the **workflow** (research → scope → plan → build → test → verify → release), the **expertise** (30 specialist skills the agent loads automatically), the **memory** (a `.bequite/` folder that survives context loss and session breaks), and the **brakes** (workflow gates, hard human approval points, and evidence rules that ban "should probably work" as a completion claim).
 
 It installs into any project as markdown files. No server, no database, no daemon, no dependencies — if you can read it in a text editor, that's all of it.
 
@@ -53,7 +53,7 @@ Then, in Claude Code:
 /bq-auto new "Build a booking dashboard for clinics"   → autonomous, gate-aware
 ```
 
-The installer copies `.claude/commands/` (52 active slash commands + 1 deprecated alias), `.claude/skills/` (29 skills), and scaffolds `.bequite/` memory. It never overwrites existing memory without `--force`. Canonical counts live in [`COMMAND_ID_MAP.md`](.bequite/commands/COMMAND_ID_MAP.md) and [`SKILL_REGISTRY.md`](.bequite/skills/SKILL_REGISTRY.md).
+The installer copies `.claude/commands/` (52 active slash commands + 1 deprecated alias), `.claude/skills/` (30 skills), and scaffolds `.bequite/` memory. It never overwrites existing memory without `--force`. Canonical counts live in [`COMMAND_ID_MAP.md`](.bequite/commands/COMMAND_ID_MAP.md) and [`SKILL_REGISTRY.md`](.bequite/skills/SKILL_REGISTRY.md).
 
 ## The BeQuite workflow
 
@@ -102,16 +102,18 @@ Beyond software workflows, BeQuite ships engines for the work *around* building:
 
 ## How it works together
 
+An **orchestration layer** ties everything into one pipeline — intent → command routing → skill routing → system-design risk check → confidence forecast → plan → implement → Guard Pass → verify → evidence → memory → next steps. A source-of-truth map (`.bequite/state/ORCHESTRATION_MAP.md`) resolves conflicts and makes the agent admit when no capability fits instead of improvising. For risky domains (payments, inventory, bookings, auth, concurrency), a mandatory **System Design Risk Check** answers questions like "one item in stock, two simultaneous buyers — what happens?" before any code is written. The same workflows also lift **smaller and local models**: structure, checklists, evidence rules, and tiered task assignment narrow the gap to frontier models (see the [smaller-models runbook](docs/runbooks/USING_BEQUITE_WITH_SMALLER_MODELS.md) — honest framing, no magic claims).
+
 Two routers, two questions:
 
-- The **Skill Router** answers *"which expert procedures should load?"* — you describe the goal; BeQuite selects from 29 skills (frontend design system, security reviewer, database architect, scraping discipline, localization/RTL, anti-hallucination, …) and tells you what it picked and why. You never name skills manually.
+- The **Skill Router** answers *"which expert procedures should load?"* — you describe the goal; BeQuite selects from 30 skills (frontend design system, security reviewer, database architect, scraping discipline, localization/RTL, anti-hallucination, …) and tells you what it picked and why. You never name skills manually.
 - The **Command Router** answers *"what should happen next?"* — every non-trivial command ends with a recommendation block: the required next step, a 2–6 command set with reasons and auto-run flags, optional accelerators, and "do not run yet" warnings with the blocking gate named.
 
 The **memory system** (`.bequite/`) holds state, gates, decisions, mistakes, research, evidence logs, and per-capability workspaces (courses, proposals, knowledge packs, design DNA…). Commands read it before acting and write back after — which is why a new session, a compacted context, or a different agent can pick up exactly where the last one stopped.
 
 ## Skills
 
-29 specialist skills encode senior-practitioner procedure: project architecture, research with verified evidence, product strategy, UX/UI + AI-slop detection, a frontend design-system master that kills "middle-section drift", backend/database/security/DevOps review, testing discipline, scraping & web automation (API-first, robots/ToS-respecting, tool catalog from Scrapy to Playwright to Scrapling), localization/RTL for Arabic/MENA work, delegate planning (strong model architects, cheaper model implements, strong model reviews), anti-hallucination, context engineering, and the Guard Pass. Registry: [`SKILL_REGISTRY.md`](.bequite/skills/SKILL_REGISTRY.md).
+30 specialist skills encode senior-practitioner procedure: project architecture, research with verified evidence, product strategy, UX/UI + AI-slop detection, a frontend design-system master that kills "middle-section drift", backend/database/security/DevOps review, testing discipline, scraping & web automation (API-first, robots/ToS-respecting, tool catalog from Scrapy to Playwright to Scrapling), localization/RTL for Arabic/MENA work, delegate planning (strong model architects, cheaper model implements, strong model reviews), anti-hallucination, context engineering, and the Guard Pass. Registry: [`SKILL_REGISTRY.md`](.bequite/skills/SKILL_REGISTRY.md).
 
 ## Scenarios
 
@@ -134,7 +136,7 @@ The **memory system** (`.bequite/`) holds state, gates, decisions, mistakes, res
 
 ## Cross-agent compatibility
 
-BeQuite is Claude-Code-first, but ~85% of it is agent-agnostic by construction: every command is a readable markdown playbook, and the memory contract is plain files. Codex/ChatGPT-style agents, Cursor, and other harnesses can run BeQuite playbooks today via the [compatibility strategy](docs/architecture/CROSS_AGENT_COMPATIBILITY_STRATEGY.md), the [outside-Claude-Code runbook](docs/runbooks/USING_BEQUITE_OUTSIDE_CLAUDE_CODE.md), and the [agent matrix](docs/specs/AGENT_COMPATIBILITY_MATRIX.md). What doesn't port (and what to do about it) is documented honestly: slash invocation, skill auto-attach, and the opt-in safety hooks.
+BeQuite is Claude-Code-first, but ~85% of it is agent-agnostic by construction: every command is a readable markdown playbook, and the memory contract is plain files. Codex/ChatGPT-style agents, Cursor, and other harnesses can run BeQuite playbooks today via the [compatibility strategy](docs/architecture/CROSS_AGENT_COMPATIBILITY_STRATEGY.md), the [outside-Claude-Code runbook](docs/runbooks/USING_BEQUITE_OUTSIDE_CLAUDE_CODE.md), and the [agent matrix](docs/specs/AGENT_COMPATIBILITY_MATRIX.md). **Per-agent setup** (Antigravity, Gemini CLI, Cursor, Codex app+CLI, Kimi, MiniMax, DeepSeek, Ollama, OpenClaw, Hermes — Windows/macOS/Linux, global or per-project): [INSTALL_FOR_OTHER_AGENTS.md](docs/runbooks/INSTALL_FOR_OTHER_AGENTS.md). What doesn't port (and what to do about it) is documented honestly: slash invocation, skill auto-attach, and the opt-in safety hooks.
 
 ## Design philosophy
 

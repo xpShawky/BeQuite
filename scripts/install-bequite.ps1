@@ -224,6 +224,11 @@ $TEMPLATES = @{
   ".bequite\commands\COMMAND_ID_MAP.md"            = ".bequite\commands\COMMAND_ID_MAP.md"
   ".bequite\commands\COMMAND_ROUTER.md"            = ".bequite\commands\COMMAND_ROUTER.md"
   ".bequite\commands\NEXT_COMMAND_LOG.md"          = ".bequite\commands\NEXT_COMMAND_LOG.md"
+  # alpha.22 orchestration update
+  ".bequite\state\ORCHESTRATION_MAP.md"            = ".bequite\state\ORCHESTRATION_MAP.md"
+  ".bequite\state\AUTO_MODE_RULES.md"              = ".bequite\state\AUTO_MODE_RULES.md"
+  ".bequite\state\CONTEXT_COMPACTION_RULES.md"     = ".bequite\state\CONTEXT_COMPACTION_RULES.md"
+  ".bequite\state\LOW_COST_MODEL_RULES.md"         = ".bequite\state\LOW_COST_MODEL_RULES.md"
   # alpha.8 jobs
   ".bequite\jobs\JOB_PROFILE.md"          = ".bequite\jobs\JOB_PROFILE.md"
   ".bequite\jobs\JOB_SEARCH_LOG.md"       = ".bequite\jobs\JOB_SEARCH_LOG.md"

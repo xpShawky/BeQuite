@@ -80,3 +80,7 @@ User reviews `SKILL_QUALITY_AUDIT.md` → `/bq-skill-audit apply=true` for appro
 ## Next Command Recommendations (alpha.22)
 
 Per contract step 12: router block per `COMMAND_ROUTER.md` (typically: fixes on approval → W4.1 `/bq-verify drift` to confirm).
+
+## Orchestrator reference (alpha.22 orchestration update)
+
+This command consults the global orchestration brain: `bequite-orchestrator` skill + `.bequite/state/ORCHESTRATION_MAP.md` — the source of truth when commands/skills conflict, workflows seem duplicated, the next step is unclear, or a task matches no existing capability (Missing Capability protocol).

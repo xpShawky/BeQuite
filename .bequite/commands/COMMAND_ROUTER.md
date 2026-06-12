@@ -77,3 +77,7 @@ Auto mode instead reports: `Internal workflow executed: <ID list>` then the same
 | "record a walkthrough" / live demo | `/bq-release demo-video` (demo-script profile) |
 | "package this project for resale" | `/bq-release template` (V2 — not yet built; say so) |
 | "build me a sellable offer" | future C11 `/bq-offer` (alpha.23 queue — until built, route to C6 pain-radar + C8 proposal) |
+
+## 7. Conflict + missing-capability rule (alpha.22 orchestration update)
+
+Two routes seem right / categories blur / task fits nothing: STOP choosing by similarity. Open .bequite/state/ORCHESTRATION_MAP.md (near-miss boundaries sections 1-5, missing-capability protocol section 12) via the bequite-orchestrator skill. Nothing fits: emit the Missing Capability Detected block — never stretch a wrong command.

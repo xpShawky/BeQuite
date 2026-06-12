@@ -503,3 +503,7 @@ Where `${CLAUDE_EFFORT}` is available it composes with the operating mode: low/m
 - **Not** a justification for skipping research (it scopes research to relevance, doesn't skip it)
 - **Not** a substitute for `/bq-plan` for new projects (it runs `/bq-plan` itself, then continues without asking)
 - **Not** a way to bypass tool neutrality (every new tool still requires a decision section)
+
+## Orchestration upgrade (alpha.22 orchestration update)
+
+Auto Mode is now formally an orchestration layer: 15-step anti-skip sequence, System Design Risk Check, context-pressure compaction, Guard Pass placement, and Missing Capability protocol — see AUTO_MODE_ORCHESTRATION_STRATEGY.md (strategy) + .bequite/state/AUTO_MODE_RULES.md (operational card) + BEQUITE_ORCHESTRATION_MODEL.md (the global brain, used beyond auto mode). Intents, modes, and the 17 hard gates in THIS doc remain canonical and unchanged.

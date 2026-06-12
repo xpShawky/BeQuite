@@ -6,6 +6,16 @@ Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANG
 
 ## [3.0.0-alpha.22] - 2026-06-12 — Navigation & Capability Consolidation
 
+### Orchestration update (2026-06-12 — same release)
+- **Global Orchestrator (skill #30):** `bequite-orchestrator` + `.bequite/state/ORCHESTRATION_MAP.md` (source of truth on conflict/confusion/duplication/missing-capability) + `BEQUITE_ORCHESTRATION_MODEL.md` (pipeline + layer table); consulted by bequite/suggest/discover/plan/auto/implement/review/verify/skill-audit; both routers defer to it on conflict
+- **Auto Mode = orchestration layer:** 15-step anti-skip sequence with Not-applicable/Blocked markings (`AUTO_MODE_ORCHESTRATION_STRATEGY.md` + `AUTO_MODE_RULES.md`); stop/ask/continue/compact rules; 17 hard gates unchanged
+- **System Design Risk Check (mandatory for risky domains):** `SYSTEM_DESIGN_REASONING_STANDARD.md` — structured block wired into plan/feature/implement, verified in review/verify; 6 domain risk libraries (e-commerce stock races, booking slots, SaaS tenancy, dashboards, AI apps, automation); confidence capped at 89% while concurrency/consistency risks lack passing tests
+- **Context compaction:** thresholds 40/60/75/85% + Context Compact format (`CONTEXT_COMPACTION_STRATEGY.md` + rules card); extends alpha.18 context engineering
+- **Low-cost model execution:** tier A/B/C strategy + 10 small-model rules + never-give-small list (`LOW_COST_MODEL_EXECUTION_STRATEGY.md` + `USING_BEQUITE_WITH_SMALLER_MODELS.md` + rules card) — honest framing: narrows the gap, does NOT equal frontier models
+- **Missing Capability detection:** structured block in suggest/plan/auto/skill-audit + both routers — never stretch a wrong command
+- **Per-agent setup (spec-kit style):** `INSTALL_FOR_OTHER_AGENTS.md` — universal AGENTS.md bridge + per-agent table (Antigravity, Gemini CLI, Cursor, Codex app+CLI, Kimi, MiniMax, DeepSeek, Ollama, OpenClaw, Hermes) for Windows/macOS/Linux, global-clone + per-project layouts; multi-agent shared-memory rules
+- Counts: skills 29 → **30**; installers +4 state templates (verified: bash -n OK, ps1 parse 0 errors); README/commands/CLAUDE.md/registry/advisor/runbooks synced
+
 ### Stabilization update (2026-06-12, doc-only — same release)
 - **4 repo-reality audits:** ALPHA_22_POST_RELEASE_STABILIZATION (7 doc findings fixed; Skill Expansion Reality Check: 0 new skills warranted, course-architect deferred to post-live-use) · SCRAPING_AUTOMATION_CONTEXT (capability VERIFIED PRESENT + first-class; Scrapling name live-verified; router signal row added) · CROSS_AGENT_COMPATIBILITY · COMMAND_CLASSIFICATION (0 misclassifications)
 - **Course Engine OCR:** 12-rule scanned/OCR PDF Source Intake in spec + command + catalog; new output `SOURCE_INTAKE_REPORT.md` (15 course outputs); never invents missing content; NEEDS REVIEW marking

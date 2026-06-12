@@ -482,3 +482,11 @@ Internal workflow executed:
 ```
 
 New intents route to the capability commands when signaled: course/teaching → C5 · docs/KB → C4 · visual reference → C3 · niche/pain → C6 · API → C7 · job post → C8. Hard human gates unchanged — the router recommends, never bypasses. IDs: `.bequite/commands/COMMAND_ID_MAP.md`; routes: `COMMAND_ROUTER.md`; log: `NEXT_COMMAND_LOG.md`.
+
+## Orchestration rules (alpha.22 orchestration update — anti-skip)
+
+Auto Mode is an orchestrator, never "continue coding" (`docs/architecture/AUTO_MODE_ORCHESTRATION_STRATEGY.md` + `.bequite/state/AUTO_MODE_RULES.md`; global brain: `bequite-orchestrator` skill + `.bequite/state/ORCHESTRATION_MAP.md`). Internal sequence per task — **no silent skips**:
+
+1 Memory preflight · 2 Command router check · 3 Skill router check · 4 **System design risk check** (mandatory for payments/inventory/bookings/auth/concurrency/webhooks/etc. — `SYSTEM_DESIGN_REASONING_STANDARD.md`) · 5 File risk classification · 6 Context budget check (compaction thresholds 40/60/75/85% — `CONTEXT_COMPACTION_RULES.md`) · 7 Confidence forecast · 8 Task plan · 9 Implementation · 10 Tests · 11 Guard Pass · 12 Verification · 13 Evidence log · 14 Memory writeback · 15 Next command recommendations
+
+Irrelevant step ⇒ `Not applicable — reason:`. Impossible step ⇒ `Blocked — reason:`. Missing capability ⇒ emit the `Missing Capability Detected:` block (ORCHESTRATION_MAP §12) — never stretch a wrong workflow. The 17 hard human gates are unchanged. fast/token-saver compress step size, never sequence. Smaller-model execution follows `LOW_COST_MODEL_RULES.md` tiers.

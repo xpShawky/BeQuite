@@ -68,3 +68,7 @@ Non-trivial routing decisions append one line to `NEXT_COMMAND_LOG.md` (date · 
 ## 7. Maintainer rule
 
 New command ⇒ add: ID map row + router routes + "usually next" links from neighbors. Removing ⇒ retire ID, purge routes. Skipping this = drift violation.
+
+## Orchestration linkage (alpha.22 orchestration update)
+
+The Command Router is one layer of the global orchestration model (BEQUITE_ORCHESTRATION_MODEL.md). On conflict, duplication, or unclear next step, routing defers to .bequite/state/ORCHESTRATION_MAP.md (source of truth) via the bequite-orchestrator skill. When no command fits, the router emits the Missing Capability block instead of forcing a nearest-match.

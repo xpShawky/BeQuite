@@ -91,3 +91,7 @@ Skill Selection:
 | pricing / "how much to charge" | **product-strategist** (pricing extension, V3 #11) | make-money (market rates) · writing-dna (negotiation script) — surfaces via `/bq-proposal price` |
 | persona usability simulation | **ux-ui-designer** (persona-walkthrough checklist) | frontend-quality · localization-rtl (Arabic persona) — surfaces via `/bq-review persona` |
 | demo data / "app looks empty" | **frontend-design-system** + **database-architect** (realistic shapes) | testing-gate (fixtures profile) — surfaces via `/bq-feature demo-data` |
+
+## Conflict rule (alpha.22 orchestration update)
+
+Overlapping skills / unclear selection / no skill fits: defer to .bequite/state/ORCHESTRATION_MAP.md (section 6 skill one-liners + section 12 missing-capability) via bequite-orchestrator. The orchestrator skill auto-attaches on: bequite · suggest · discover · plan · auto · implement · review · verify · skill-audit + any conflict signal.

@@ -295,3 +295,7 @@ For AI-generated diffs (delegate mode especially), the review includes a Guard P
 ## Next Command Recommendations (alpha.22)
 
 Per contract step 12: clean review → Required next W4.1 `/bq-verify`; findings → W2.2 `/bq-implement` fixes. Router block per `COMMAND_ROUTER.md`.
+
+## System-risk verification (alpha.22 orchestration update)
+
+For diffs in risky domains: check the implementation against the plan's System Design Risk Check block — every named risk needs a visible mitigation + test in the diff (risk without mitigation = finding; missing block where mandatory = finding). Orchestration conflicts during review resolve via `.bequite/state/ORCHESTRATION_MAP.md`.

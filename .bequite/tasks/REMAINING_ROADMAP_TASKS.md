@@ -45,7 +45,7 @@ All shaped as arguments in alpha.22/addendum — each is buildable in its owning
 | Community pack | parked | course adoption signal | 65% |
 | App store launch kit | parked V2 | a real mobile launch need | 68% |
 | Recording-to-assets (/bq-recording) | parked V2 | researched lightweight frame-extraction path + real demand | 55% |
-| Cross-agent adapters (`bq` wrapper · AGENTS.md generator · Cursor rules template) | roadmap (new this pass) | real cross-agent usage demand; stays a thin script, never an app | 70% |
+| Cross-agent adapters (`bq` wrapper · AGENTS.md generator · Cursor rules template) | roadmap — manual per-agent setup now documented in `INSTALL_FOR_OTHER_AGENTS.md` (orchestration update); adapters would automate what is already copy-paste-doable | real cross-agent usage demand; stays a thin script, never an app | 70% |
 | bequite-course-architect skill | deferred candidate (new this pass) | one real /bq-course run proves which pedagogy knowledge deserves a reusable SKILL.md | 72% |
 
 **Maintainer rule:** when an item moves buckets, update this file + LAST_RUN in the same commit. Promotion always goes through the 15-step feature workflow + shape taxonomy.

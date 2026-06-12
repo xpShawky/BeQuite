@@ -284,3 +284,7 @@ None. `/bequite` is read-only.
 ## Usual next command
 
 The first item in the "Recommended next 3" you printed.
+
+## Orchestrator reference (alpha.22 orchestration update)
+
+This command consults the global orchestration brain: `bequite-orchestrator` skill + `.bequite/state/ORCHESTRATION_MAP.md` — the source of truth when commands/skills conflict, workflows seem duplicated, the next step is unclear, or a task matches no existing capability (Missing Capability protocol).

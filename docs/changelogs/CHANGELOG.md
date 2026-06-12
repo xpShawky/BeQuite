@@ -6,6 +6,11 @@ Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANG
 
 ## [3.0.0-alpha.22] - 2026-06-12 — Navigation & Capability Consolidation
 
+### Addendum (2026-06-12, doc-only — same release)
+- **Alpha.22 task checklist:** the full mega-prompt converted to a done/remaining task ledger at `.bequite/tasks/ALPHA_22_TASK_CHECKLIST.md` (A→Z verification: all acceptance criteria met; 6 open items listed)
+- **Forgotten ChatGPT Candidate Review** (7 ideas) in `APPROVED_CAPABILITY_SHAPE_DECISIONS.md`: demo-data → `/bq-feature demo-data` argument (absorbs V3 #18; demo+fixtures profiles) · persona-sim → `/bq-review persona` argument · client-intake → `/bq-scope intake` argument · price → `/bq-proposal price` argument (+product-strategist) · demo-script → merged into `/bq-release demo-video` (demo-script profile) · template → `/bq-release template` V2 park · **`/bq-offer` confirmed as the alpha.23 build candidate (C11 queued)**. 0 new commands now — anti-bloat holds.
+- V3 addendum (A1–A3 + 2 verdict changes); router addendum signals; ID map ARG notes updated
+
 ### Added
 - **Catalog IDs (Option A — display-only):** every command has a stable ID (W0.1–W5.3 workflow · N navigation · O orchestrators · C capabilities · M maintenance); files never renamed. `COMMAND_NUMBERING_AND_ORDERING_STRATEGY.md` + `.bequite/commands/COMMAND_ID_MAP.md` (52 active + 1 alias mapped); Options B/C formally rejected with reasons
 - **Workflow Command Router:** second routing layer — contract step 12 is now multi-command "Next Command Recommendations" (required next + 2–6 set with skills/auto-run + accelerators + do-not-run-yet); auto mode reports "Internal workflow executed: <IDs>"; `/bq-suggest` upgraded to main navigation assistant with 4 worked journey routes. `WORKFLOW_COMMAND_ROUTER.md` + `.bequite/commands/{COMMAND_ROUTER,NEXT_COMMAND_LOG}.md`

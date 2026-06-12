@@ -64,3 +64,15 @@ Auto mode instead reports: `Internal workflow executed: <ID list>` then the same
 - C8 proposal before any evidence of the opportunity (C6/C9 output or user-provided post)
 - W2.5 variants winner merge before gate-16 user pick
 - Any R3 file edit without explicit confirm — even in auto
+
+## 6. Addendum signals (2026-06-12 — forgotten-candidate review)
+
+| Task signal | Suggest |
+|---|---|
+| "app looks empty" / demo day / portfolio screenshots | `/bq-feature demo-data` (demo profile) |
+| "can users actually use this?" / usability doubt / non-technical audience | `/bq-review persona` |
+| new client / project kickoff / "what should I ask the client?" | `/bq-scope intake` (before the call) → `/bq-scope from-interview` (after) |
+| "how much should I charge?" | `/bq-proposal price` (+ product-strategist pricing) |
+| "record a walkthrough" / live demo | `/bq-release demo-video` (demo-script profile) |
+| "package this project for resale" | `/bq-release template` (V2 — not yet built; say so) |
+| "build me a sellable offer" | future C11 `/bq-offer` (alpha.23 queue — until built, route to C6 pain-radar + C8 proposal) |

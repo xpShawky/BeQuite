@@ -35,3 +35,19 @@
 - **Pattern confirmed:** 13 of 20 best-shaped as arguments/skills, not commands — the anti-bloat charter holds. Command count should grow by ~1 (offer) across the next several releases, not 20.
 
 Nothing from this list is built in alpha.22. Promotion path: user approval → 15-step feature workflow → taxonomy shape check → build.
+
+---
+
+## Addendum (2026-06-12) — Forgotten ChatGPT Candidate Review outcomes
+
+Full review in `APPROVED_CAPABILITY_SHAPE_DECISIONS.md` § Forgotten ChatGPT Candidate Review. Changes to this V3 list:
+
+- **#1 /bq-offer — verdict UPGRADED:** confirmed as the **alpha.23 build candidate** (standalone command C11, pending user go + 15-step workflow). Reinforced by forgotten-candidate #3 (full output spec: offer name, target, pain, deliverables, tiers, outreach, demo idea, guarantee, onboarding questions, proof, proposal angle).
+- **#18 Test-Data Factory — ABSORBED** into the new **demo-data** capability: `/bq-feature demo-data` argument with two profiles (`demo` = realistic product/dashboard data so AI-built apps don't look empty; `fixtures` = test seed data). Conf 80%, V1.
+- **NEW A1 — Persona Sim:** `/bq-review persona` argument — simulate user personas (elderly, doctor, Arabic/RTL, first-timer) and report first-5 friction points; distinct from visual QA (usability vs visuals) and from #8 (market personas from data). Conf 78%, V1.
+- **NEW A2 — Client Intake:** `/bq-scope intake` argument — project-type-aware intake form + asset/access checklists + red flags; pairs with existing `from-interview` (intake before the call, interview after). Conf 80%, V1.
+- **NEW A3 — Project Templatizer:** `/bq-release template` argument — finished project → starter pack / Gumroad asset / agency boilerplate; needs secret-scan discipline. Conf 72%, **V2 park**.
+- **Pricing (#11) — surfacing decided:** product-strategist skill extension + `/bq-proposal price` argument (negotiation script, terms, pricing confidence); also feeds future `/bq-offer` tiers and `/bq-audit client` quote tables. Conf 75%, V1.
+- **Demo Script — covered:** merged into `/bq-release demo-video` as the `demo-script` profile (live click-by-click walkthrough variant).
+
+Core list stays 20 ideas; addendum adds A1–A3 + two verdict changes. Anti-bloat holds: 0 new commands from the addendum; 1 command total queued for alpha.23 (/bq-offer).

@@ -14,22 +14,22 @@ Display-only catalog IDs (Option A — files never renamed). Strategy: `docs/arc
 | W0.7 | `/bq-existing` | setup | P0 | start existing-audit | init | W0.3 | yes | no | WF |
 | W1.1 | `/bq-clarify` | framing | P1 | 3–5 high-value questions | doctor | W1.2 research | no (needs user) | no | WF |
 | W1.2 | `/bq-research` | framing | P1 | 11-dim verified evidence | clarify | W1.3 scope | yes | no | WF |
-| W1.3 | `/bq-scope` | framing | P1 | lock in/out/non-goals | research | W1.4 plan | yes | no | WF · ARG `from-interview` |
+| W1.3 | `/bq-scope` | framing | P1 | lock in/out/non-goals | research | W1.4 plan | yes | no | WF · ARG `from-interview`, `intake` |
 | W1.4 | `/bq-plan` | framing | P1 | implementation plan + file map | scope | W2.1 assign | yes | no | WF · ARG `from-issues`, `delegate` |
 | W1.5 | `/bq-spec` | framing | P1 | one-page Spec Kit spec | scope | W1.4 plan | yes | no | WF |
 | W1.6 | `/bq-multi-plan` | framing | P1 | multi-model planning (paste) | plan | W2.1 | no (manual paste) | no | WF |
 | W2.1 | `/bq-assign` | build | P2 | atomic task list | plan | W2.2 implement | yes | no | WF · ARG `delegate` |
 | W2.2 | `/bq-implement` | build | P2 | one task at a time | assign | W3.1 test | yes | no | WF |
-| W2.3 | `/bq-feature` | build | P2 | add-feature mini-cycle | plan | W3.1 test | yes | no | WF |
+| W2.3 | `/bq-feature` | build | P2 | add-feature mini-cycle | plan | W3.1 test | yes | no | WF · ARG `demo-data` |
 | W2.4 | `/bq-fix` | build | P2 | reproduce-first fix | (bug) | W4.1 verify | yes | no | WF |
 | W2.5 | `/bq-uiux-variants` | build/UI | P2 | 1–10 design directions | plan | gate-16 winner pick | partial (gate 16) | no | WF |
 | W2.6 | `/bq-live-edit` | build/UI | P2 | section-by-section UI edits | (running FE) | W4.1 verify | yes | no | WF |
-| W3.1 | `/bq-test` | quality | P3 | run + write tests | implement | W3.3 review | yes | no | WF · ARG `from-spec` |
+| W3.1 | `/bq-test` | quality | P3 | run + write tests | implement | W3.3 review | yes | no | WF · ARG `from-spec`, `fixtures` |
 | W3.2 | `/bq-audit` | quality | P3 | full project audit | discover/test | W3.3 review | yes | no | WF · ARG `client` |
-| W3.3 | `/bq-review` | quality | P3 | spec-then-quality diff review | test | W4.1 verify | yes | no | WF · ARG `delegate` |
+| W3.3 | `/bq-review` | quality | P3 | spec-then-quality diff review | test | W4.1 verify | yes | no | WF · ARG `delegate`, `persona` |
 | W3.4 | `/bq-red-team` | quality | P3 | 10-angle adversarial review | review | W4.1 verify | yes | no | WF |
 | W4.1 | `/bq-verify` | release | P4 | full local verification | review | W4.2 release | yes | no | WF · ARG `regressions`, `drift` |
-| W4.2 | `/bq-release` | release | P4 | release prep (never pushes) | verify | W4.3 + user push (gate 17) | partial (gate 17) | no | WF · ARG `readiness`, `announce`, `proof`, `demo-video` |
+| W4.2 | `/bq-release` | release | P4 | release prep (never pushes) | verify | W4.3 + user push (gate 17) | partial (gate 17) | no | WF · ARG `readiness`, `announce`, `proof`, `demo-video` (launch-video/demo-script profiles); `template` approved V2 |
 | W4.3 | `/bq-changelog` | release | P4 | changelog entry | verify | W4.2 | yes | no | WF |
 | W5.1 | `/bq-memory` | memory | P5 | snapshot / inspect memory | release | W5.3 handoff | yes | no | WF |
 | W5.2 | `/bq-recover` | memory | P5 | resume after break | (new session) | per checkpoint | yes | no | WF |
@@ -54,4 +54,4 @@ Display-only catalog IDs (Option A — files never renamed). Strategy: `docs/arc
 | M2 | `/bq-skill-audit` | maintenance | any | skill-pack quality audit | (drift sign) | fixes on approval | yes (report-only) | no | MNT |
 | X1 | `/bq-add-feature` | deprecated | — | alias → W2.3 `/bq-feature` | — | — | — | listed as deprecated | alias |
 
-**Proposed only (not built):** `/bq-localize` — localization/RTL is skill-first (`bequite-localization-rtl`, auto-attached); command added only if demand proves it.
+**Queued for alpha.23 (approved, not built):** C11 `/bq-offer` — sellable-offer builder (forgotten-candidate review + V3 #1). **Proposed only (not built):** `/bq-localize` — localization/RTL is skill-first (`bequite-localization-rtl`, auto-attached); command added only if demand proves it.

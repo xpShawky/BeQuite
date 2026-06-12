@@ -201,3 +201,7 @@ Bands: 90–100 routine · 75–89 likely · 50–74 needs exploration · 25–4
 ## Next Command Recommendations (alpha.22)
 
 Per contract step 12: Required next = user-run `git push` / `git tag` (gate 17 — never auto). Set: W5.1 `/bq-memory` · `announce`/`proof` args when launching publicly · W5.3 `/bq-handoff client` for client work. Router block per `COMMAND_ROUTER.md`.
+
+## Addendum (2026-06-12)
+
+`demo-video` supports two profiles: **launch-video** (product story for launch) and **demo-script** (live click-by-click screen-recording walkthrough: what to click, what to say, before/after moment, CTA, short/long + platform variants). `template` (project → reusable starter pack) is approved as a **V2** argument — not yet built; requires secret-scan discipline first.

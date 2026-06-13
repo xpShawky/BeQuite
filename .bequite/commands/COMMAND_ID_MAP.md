@@ -1,7 +1,7 @@
 # BeQuite Command ID Map (canonical) — alpha.22
 
 Display-only catalog IDs (Option A — files never renamed). Strategy: `docs/architecture/COMMAND_NUMBERING_AND_ORDERING_STRATEGY.md`.
-**59 active commands + 1 deprecated alias.** Shapes: WF = workflow · CAP = capability · NAV = navigation · ORC = orchestrator · MNT = maintenance · ARG noted where argument workflows exist.
+**60 active commands + 1 deprecated alias.** Shapes: WF = workflow · CAP = capability · NAV = navigation · ORC = orchestrator · MNT = maintenance · ARG noted where argument workflows exist.
 
 | ID | Command | Category | Phase | Purpose | Usually follows | Usually next | Auto-run? | Hidden? | Shape |
 |---|---|---|---|---|---|---|---|---|---|
@@ -59,6 +59,7 @@ Display-only catalog IDs (Option A — files never renamed). Strategy: `docs/arc
 | C17 | `/bq-start` | capability | any | choose how to start (profile/brand/platform/niche/career) | user goal | C14 / C5 / C11 / C9 | yes | no | CAP (alpha.24) |
 | M1 | `/bq-update` | maintenance | any | self-update from source | (new release) | W0.4 doctor | yes (backup-gated) | no | MNT |
 | M2 | `/bq-skill-audit` | maintenance | any | skill-pack quality audit | (drift sign) | fixes on approval | yes (report-only) | no | MNT |
+| M3 | `/bq-hooks` | maintenance | any | manage opt-in safety hooks (status/enable/disable/test) | (want enforcement) | reload + test | partial (enable/disable = R3 hard gate) | no | MNT (alpha.24) |
 | X1 | `/bq-add-feature` | deprecated | — | alias → W2.3 `/bq-feature` | — | — | — | listed as deprecated | alias |
 
 **Proposed only (not built):** `/bq-localize` — localization/RTL is skill-first (`bequite-localization-rtl`, auto-attached); command added only if demand proves it.

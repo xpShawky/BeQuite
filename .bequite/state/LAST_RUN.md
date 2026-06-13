@@ -1,5 +1,12 @@
 # Last BeQuite command
 
+**Command:** alpha.24 add - M3 /bq-hooks (manage opt-in safety hooks) + hook verification
+**Timestamp:** 2026-06-13 (UTC)
+**Model:** claude-opus-4-8 (user /model set it)
+**Result:** SUCCESS - explained why hooks are OFF by default (RCE-vector opt-in; not wired into settings). Proved the 3 hook scripts WORK via direct stdin test (rm -rf->exit2 BLOCK, ls->exit0 ALLOW, secret->exit2 BLOCK). Built M3 /bq-hooks (status/enable/disable/test; enable merges hooks block into settings.json, R3 gate + reload; test checks exit codes without reload). Wired everywhere (60 active commands). Did NOT enable hooks in this repo.
+**Next suggested:** in your project run `/bq-hooks enable` (it asks first, merges into settings.json), reload Claude Code, then `/bq-hooks test` + try a throwaway `rm -rf` to confirm the block fires.
+
+**Prior run (preserved):**
 **Command:** alpha.24 HOTFIX #2 - ps1 BOM/non-ASCII broke `irm|iex` (now pure ASCII, no BOM)
 **Timestamp:** 2026-06-13 (UTC)
 **Model:** claude-opus-4-8 (user /model set it)

@@ -2,7 +2,7 @@
 
 **When confused, conflicted, or capability-missing: come HERE first.** This is the compact brain index — one-liners + pointers; details live in the canonical files named. Model doc: `docs/architecture/BEQUITE_ORCHESTRATION_MODEL.md`. Used by: bequite · suggest · discover · plan · auto · implement · review · verify · skill-audit (+ both routers on conflict).
 
-## 1–5. Commands (59 active + 1 alias — full map: `.bequite/commands/COMMAND_ID_MAP.md`)
+## 1–5. Commands (60 active + 1 alias — full map: `.bequite/commands/COMMAND_ID_MAP.md`)
 
 - **W0 setup:** bequite(menu) · init · discover · doctor · mode · new · existing
 - **W1 framing:** clarify · research · scope(+from-interview,intake) · plan(+from-issues,migration,delegate) · spec · multi-plan
@@ -13,7 +13,7 @@
 - **N navigation:** now · help · explain · suggest(MAIN navigation assistant)
 - **O orchestrators:** p0–p5 · auto(17 intents; 15-step sequence)
 - **C capabilities:** presentation · writing-dna · reference · knowledge · course · pain-radar · integrate · proposal · job-finder · make-money · offer(C11) · automation(C12) · local-business(C13) · brand-kit(C14) · community(C15) · recording(C16) · start(C17) — C11-C17 built alpha.23/24, not live-tested
-- **M maintenance:** update · skill-audit · **X:** add-feature(deprecated→feature)
+- **M maintenance:** update · skill-audit · hooks(M3, opt-in safety hooks: status/enable/disable/test) · **X:** add-feature(deprecated→feature)
 
 **Near-miss boundaries (conflict killers):** audit=whole-project vs review=diff · spec=one-pager vs scope=boundaries vs plan=blueprint · now=1-line vs bequite=menu vs suggest=advisor · pain-radar=find problems vs make-money=find earning tracks · proposal=per-client pitch vs offer=standing productized package · verify="does it work" vs release readiness="should it ship".
 

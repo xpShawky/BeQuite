@@ -1,6 +1,6 @@
 # BeQuite installed version
 
-**Version:** v3.0.0-alpha.24 - Selected-V2 build (C12-C17 + extensions) + P1 maintenance
+**Version:** v3.0.0-alpha.24 - Selected-V2 build (C12-C17 + extensions) + P1 maintenance (+ M3 /bq-hooks added 2026-06-13)
 **Updated:** 2026-06-12
 **Source:** github
 **Source path / repo:** xpShawky/BeQuite (branch: main)

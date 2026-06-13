@@ -6,7 +6,7 @@
 
 **Latest:** `v3.0.0-alpha.24` · MIT · by [@xpShawky](https://github.com/xpShawky)
 
-<a href="commands.md"><img alt="59 commands" src="https://img.shields.io/badge/slash_commands-59-7c3aed?style=flat-square"></a>
+<a href="commands.md"><img alt="60 commands" src="https://img.shields.io/badge/slash_commands-60-7c3aed?style=flat-square"></a>
 <a href="#skills"><img alt="31 skills" src="https://img.shields.io/badge/skills-31-10b981?style=flat-square"></a>
 <img alt="zero runtime deps" src="https://img.shields.io/badge/runtime_deps-0-0ea5e9?style=flat-square">
 <img alt="markdown only" src="https://img.shields.io/badge/install-markdown_only-f59e0b?style=flat-square">

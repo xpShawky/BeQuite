@@ -1,6 +1,6 @@
 ---
 name: bequite-workflow-advisor
-description: BeQuite workflow recommendation engine. Knows 59 active commands (with W/N/O/C/M catalog IDs) + 31 skills + 23 gates + 6 workflow modes + 6 phases + 17 hard human gates + 4 operating modes (deep / fast / token-saver / delegate). Matches user situation to a route. Read-only. Invoked by /bq-suggest.
+description: BeQuite workflow recommendation engine. Knows 60 active commands (with W/N/O/C/M catalog IDs) + 31 skills + 23 gates + 6 workflow modes + 6 phases + 17 hard human gates + 4 operating modes (deep / fast / token-saver / delegate). Matches user situation to a route. Read-only. Invoked by /bq-suggest.
 allowed-tools: Read, Glob, Grep
 ---
 

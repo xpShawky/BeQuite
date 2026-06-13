@@ -72,7 +72,7 @@ Recommended next 3 commands:
   2. /<command-2>     — <why>
   3. /<command-3>     — <why>
 
-Command map (59 active commands + 1 deprecated alias — catalog IDs per .bequite/commands/COMMAND_ID_MAP.md):
+Command map (60 active commands + 1 deprecated alias — catalog IDs per .bequite/commands/COMMAND_ID_MAP.md):
 
   W0 — Setup and Discovery
     W0.1 /bequite       this menu
@@ -147,6 +147,7 @@ Command map (59 active commands + 1 deprecated alias — catalog IDs per .bequit
   M — Maintenance
     M1 /bq-update       update BeQuite itself (safe + non-destructive)
     M2 /bq-skill-audit  structural quality loop over all skills (+ command-router drift checks)
+    M3 /bq-hooks        manage opt-in safety hooks (status/enable/disable/test) - OFF by default
 
 Automatic skill routing (alpha.20): you describe the goal — BeQuite selects the
 right expert skills itself. You never need to name skills manually.

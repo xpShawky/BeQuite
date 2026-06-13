@@ -224,7 +224,7 @@ Run `/bequite` for the menu. It reads your current state and tells you the next 
 **When NOT to use:** quick orientation (use `/bq-now`); gate-aware menu (use `/bequite`); full deep reference (open [`commands.md`](../../commands.md) — has Preconditions / Required gates / Quality gate / Failure behavior fields per command).
 **Preconditions:** none
 **Required previous gates:** none
-**Quality gate:** output covers all 59 active commands (+1 deprecated alias) grouped by family with catalog IDs (W0-W5 / N / O / C / M per `.bequite/commands/COMMAND_ID_MAP.md`); no out-of-date phase names; surfaces the alpha.22 capability commands (C3 `/bq-reference`, C4 `/bq-knowledge`, C5 `/bq-course`, C6 `/bq-pain-radar`, C7 `/bq-integrate`, C8 `/bq-proposal`) and argument workflows
+**Quality gate:** output covers all 60 active commands (+1 deprecated alias) grouped by family with catalog IDs (W0-W5 / N / O / C / M per `.bequite/commands/COMMAND_ID_MAP.md`); no out-of-date phase names; surfaces the alpha.22 capability commands (C3 `/bq-reference`, C4 `/bq-knowledge`, C5 `/bq-course`, C6 `/bq-pain-radar`, C7 `/bq-integrate`, C8 `/bq-proposal`) and argument workflows
 **Failure behavior:** if the user wants more depth than this command provides, point them at `commands.md` (the full reference) or `/bequite` (the menu)
 **Memory updates:** none (read-only)
 **Log updates:** none (read-only navigation aid)

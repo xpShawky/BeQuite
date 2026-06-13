@@ -195,3 +195,9 @@ This file grows. To prevent bloat:
 - **What happened:** a `;` instead of `&&` in the shell chain let `git commit+push` run after the python finalization script crashed (encoding anchor), shipping an incomplete release commit with temp scripts included.
 - **Prevention rule:** never chain git after a script with a semicolon - use `&&` end-to-end so any failure stops the release; keep anchors ASCII-safe (curly quotes break cross-encoding matching); verify `git status` is clean of temp files before any release commit.
 - **How to detect next time:** release commit diff contains `scripts/_tmp_*` or logs/version files unchanged.
+
+## [release][installer] `irm | iex` never worked on Windows - param() block (alpha.24 hotfix, 2026-06-13)
+- **What happened:** install-bequite.ps1 started with `[CmdletBinding()] param(...)`. That is valid when the file is RUN (`& script.ps1`), so `[Parser]::ParseFile` reported 0 errors every release — but the documented primary path `irm <url> | iex` pipes the script as a STRING to Invoke-Expression, which CANNOT evaluate a param()/attribute block ("Unexpected attribute CmdletBinding"). So the Windows one-liner had been broken the whole time; only the bash `curl|bash` path worked.
+- **Verification gap (root cause):** I validated the ps1 with `ParseFile` (file-syntax) but never with the iex evaluation path. ParseFile != iex.
+- **Prevention rule:** for any script meant to run via `irm|iex`, test the ACTUAL path: `[ScriptBlock]::Create((Get-Content -Raw script.ps1))` must compile (this is what iex does). NO `param()`/`[CmdletBinding()]` at top of an iex-piped script — parse args from `$args` + env fallbacks instead. Add this iex-compile check to every installer-touching release verify.
+- **How to detect next time:** grep the ps1 for `param(` / `[CmdletBinding()]` near the top; if present and the docs say `irm|iex`, it is broken.

@@ -1,5 +1,12 @@
 # Last BeQuite command
 
+**Command:** alpha.24 HOTFIX - ps1 `irm|iex` install path (param() block removed)
+**Timestamp:** 2026-06-13 (UTC)
+**Model:** claude-opus-4-8 (user /model set it)
+**Result:** SUCCESS - user-reported real bug: `irm install-bequite.ps1 | iex` failed (param()/CmdletBinding invalid under Invoke-Expression; broken on Windows since early alpha, bash path unaffected). Fixed: manual $args+env parsing, no param block; -FromLocal/-Force preserved for file run. Verified the real iex path via [ScriptBlock]::Create (OK) + ParseFile (0 errors). Verification-gap lesson logged (ParseFile != iex); new standing installer check added.
+**Next suggested:** re-run `irm ...install-bequite.ps1 | iex` to confirm install works end-to-end in your Food app project; then first live trial of a capability command.
+
+**Prior run (preserved):**
 **Command:** v3.0.0-alpha.24 - Selected-V2 build (C12-C17 + extensions) + P1 maintenance
 **Timestamp:** 2026-06-13 (UTC)
 **Model:** claude-opus-4-8 (the /model command set it; user text said "fable 5" - conflict reported, not hidden; ran on the harness-selected model)

@@ -58,3 +58,8 @@ Rules:
 - guard-skills concept: WebFetch https://github.com/amElnagdy/guard-skills → 5 guards, progressive disclosure, reactive diff-review, no-scripts/no-network principles (concept only; nothing copied)
 - Course PDF: `find . -iname "*.pdf"` → no results — PDF NOT accessible this session; recorded honestly in COURSE_ENGINE.md
 - Stale-count sweep: fixed INSTALL runbook (24/7, alpha.1-era), bequite.md ("34 commands"), bq-help quality gate ("37"), bq-suggest ("39/15"), commands.md:218 ("37"), CLAUDE.md (header drifted at alpha.19)
+
+## 2026-06-13 - alpha.24 hotfix: ps1 install via iex
+- Repro (user-reported): `irm ...install-bequite.ps1 | iex` -> "Unexpected attribute CmdletBinding" / "Unexpected token param". Root cause: param() block invalid under Invoke-Expression.
+- Fix verified: replaced param() with manual $args/env parsing. `[ScriptBlock]::Create((Get-Content -Raw install-bequite.ps1))` -> "iex-path compile: OK"; `ParseFile` -> 0 errors. Both paths now compile.
+- New standing check: installer release verify must run the [ScriptBlock]::Create iex-path test, not only ParseFile.

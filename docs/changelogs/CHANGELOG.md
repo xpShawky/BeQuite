@@ -6,6 +6,9 @@ Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANG
 
 ## [3.0.0-alpha.24] - 2026-06-13 - Selected-V2 build + P1 maintenance
 
+### Fixed (hotfix 2026-06-13)
+- **`irm | iex` Windows install was broken in every prior release** — install-bequite.ps1 led with `[CmdletBinding()] param()`, which `Invoke-Expression` cannot evaluate when the script is piped as a string (file-syntax was valid, so `ParseFile` never caught it; the bash `curl|bash` path always worked). Replaced the param block with manual `$args` + env-var (`BEQUITE_FROM_LOCAL`/`BEQUITE_FORCE`) parsing; `-FromLocal`/`-Force` still work for file execution. Verified via `[ScriptBlock]::Create((Get-Content -Raw ...))` (the real iex path). New standing release check: test the iex-compile path, not only ParseFile.
+
 ### Added
 - **6 capability commands (53 -> 59):** C12 /bq-automation (tool-neutral workflow+bot blueprints; official-API-first; idempotency/retry/failure/secrets/kill-switch; bot safety; installs nothing) · C13 /bq-local-business (offline -> minimum digital system; MENA/WhatsApp-aware) · C14 /bq-brand-kit (non-generic identity; research-driven; reference-safe) · C15 /bq-community · C16 /bq-recording (video -> knowledge; transcript-first; meaningful-change keyframe dedup; tools OPTIONAL, none installed; no ToS-violating downloads) · C17 /bq-start (Starting Path Advisor). 8 specs in docs/specs/.
 - **Extensions:** /bq-offer business-system/agency/service-business (AI Service Business Builder, merged not separate) · /bq-handoff workflow-export (secret-scanned) · /bq-release template (multi-tenant isolation mandatory) · Course Architect inside /bq-course.

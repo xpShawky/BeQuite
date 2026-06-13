@@ -25,11 +25,20 @@
   # Or, with a local BeQuite clone
   & C:\dev\BeQuite\scripts\install-bequite.ps1 -FromLocal C:\dev\BeQuite
 #>
-[CmdletBinding()]
-param(
-  [string]$FromLocal = "",
-  [switch]$Force = $false
-)
+# NOTE: deliberately NO param()/[CmdletBinding()] block.
+# The primary install path is `irm <url> | iex`, which evaluates this script as a
+# piped string via Invoke-Expression — and Invoke-Expression CANNOT evaluate a
+# param()/[CmdletBinding()] block (it errors with "Unexpected attribute 'CmdletBinding'").
+# So args are parsed manually from $args (file execution: `& install-bequite.ps1 -FromLocal X -Force`)
+# with env-var fallbacks (iex path: `$env:BEQUITE_FROM_LOCAL` / `$env:BEQUITE_FORCE`).
+$FromLocal = if ($env:BEQUITE_FROM_LOCAL) { $env:BEQUITE_FROM_LOCAL } else { "" }
+$Force = [bool]($env:BEQUITE_FORCE)
+for ($i = 0; $i -lt $args.Count; $i++) {
+  switch -regex ("$($args[$i])") {
+    '^-+[Ff]rom[Ll]ocal$' { if ($i + 1 -lt $args.Count) { $i++; $FromLocal = "$($args[$i])" } }
+    '^-+[Ff]orce$'        { $Force = $true }
+  }
+}
 
 $ErrorActionPreference = "Continue"
 $BEQUITE_VERSION = "v3.0.0-alpha.24"

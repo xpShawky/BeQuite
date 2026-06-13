@@ -19,6 +19,10 @@ All use **exit 2 = block** (exit 1 does NOT block). They **fail soft**: if they 
 1. macOS/Linux/WSL: open `.claude/settings.json.example`. Windows: open `.claude/settings.windows.json.example`.
 2. **Merge** its `hooks` block into your real `.claude/settings.json` (or `settings.local.json`) — don't overwrite an existing settings file.
 3. (unix) `chmod +x .claude/hooks/*.sh`. (Windows) you may need `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`.
-4. Restart Claude Code (or `/hooks` to confirm they're registered). Test with a harmless trigger before relying on them.
+4. Hooks load when Claude Code reads settings (often immediately in current builds; reload the window if `/hooks` doesn't list them). Test with a harmless trigger before relying on them.
+
+## Known gotcha (verified live 2026-06-13)
+
+The destructive-block + secret-scan hooks scan the **entire command/content string** - including echo text, labels, comments, and example text. So do NOT write `rm -rf`, `DROP TABLE`, or a secret-shaped string literally even as documentation inside a command you run, or the whole tool call is blocked (exit 2). Refer to dangerous patterns by description, or split the literal. The destructive matcher covers both the **Bash and PowerShell** tools on Windows (widened from the original Bash-only example).
 
 Full protocol + tuning + disable instructions: `docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`.

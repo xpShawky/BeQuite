@@ -46,6 +46,12 @@ macOS/Linux: `printf '<json>' | bash .claude/hooks/<hook>.sh ; echo $?`. Report 
 
 Remove ONLY BeQuite's `hooks` block (the destructive/secret/weasel entries) from settings; leave the rest intact. Reload to take effect.
 
+## Field notes (verified live 2026-06-13)
+
+- The destructive-block matcher covers **both Bash and PowerShell** tools (`"matcher": "Bash|PowerShell"`) - the original example was Bash-only, which missed PowerShell-tool commands on Windows.
+- Hooks scan the **whole command/content string** (incl. echo/comment/example text) - do not write `rm -rf` / `DROP TABLE` / secret-shaped strings literally in a command you run, or it self-blocks. Refer by description or split the literal.
+- Hooks often load immediately in current Claude Code (no restart); reload only if `/hooks` does not list them. All 3 hooks confirmed firing live (incl. the Stop hook).
+
 ## Files
 
 Reads: `.claude/hooks/*` · `.claude/settings*.json*` · the two `.json.example` files. Writes (enable/disable only, with confirmation): `.claude/settings.json` (merge) + AGENT_LOG + LAST_RUN. **R3 file-risk** (settings/config) — enable/disable is a hard human gate even in auto mode.

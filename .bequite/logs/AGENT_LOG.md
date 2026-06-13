@@ -2,6 +2,10 @@
 
 Append-only chronicle of every BeQuite command run. Newest at top.
 
+## 2026-06-13 - hooks examples hardened from live field report (claude-opus-4-8)
+
+**Action:** A live hook-enable session (another chat, user Food app) confirmed all 3 hooks fire end-to-end (incl. the Stop hook - resolves the not-load-tested caveat) and surfaced 2 real gaps in the SHIPPED examples: (1) destructive matcher was Bash-only -> PowerShell-tool commands slipped past on Windows; (2) hooks scan the whole command string so literal rm -rf/DROP TABLE/secret tokens in echo/comment text self-block. Ported both into the source repo: widened matcher to Bash|PowerShell in both settings examples (JSON re-validated); documented the whole-string gotcha + matcher note in hook README + CLAUDE_CODE_HOOKS_STRATEGY + /bq-hooks field-notes; logged to MISTAKE_MEMORY. No new command/skill; counts unchanged (60/31). Model: opus-4-8.
+
 ## 2026-06-13 - alpha.24 add: M3 /bq-hooks + hook verification (claude-opus-4-8)
 
 **Action:** User reported hooks disabled + asked how to enable/verify + for a /bq-hooks command. Diagnosed: hooks ship OFF by design (RCE-vector opt-in); Claude Code loads hooks only from settings.json/settings.local.json at session start; user settings.local.json has only permissions, no hooks block. Proved the 3 hook SCRIPTS work via direct stdin test (rm -rf -> exit 2 BLOCK, ls -> exit 0 ALLOW, secret write -> exit 2 BLOCK). Built M3 /bq-hooks (status/enable/disable/test): enable MERGES the OS-correct example hooks block into settings.json (never overwrites; R3 hard gate + confirm; reload required); test validates scripts by exit code without a Claude reload. Wired M3 into ID map / orchestration map / menu / help / commands.md / catalog / CLAUDE.md / README badge / advisor (60 active commands). Did NOT enable hooks in this dev repo (user asked for the command + how-to for their Food app). Model: opus-4-8.

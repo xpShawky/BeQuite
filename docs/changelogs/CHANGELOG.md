@@ -7,6 +7,7 @@ Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANG
 ## [3.0.0-alpha.24] - 2026-06-13 - Selected-V2 build + P1 maintenance
 
 ### Added (2026-06-13, same release)
+- **Hooks examples hardened (field-verified live):** destructive-block matcher widened from `Bash` to `Bash|PowerShell` in both settings examples (the Bash-only example missed PowerShell-tool commands on Windows); documented the whole-command-string scan gotcha (literal `rm -rf`/`DROP TABLE`/secret tokens in echo/comment text self-block) in the hook README + CLAUDE_CODE_HOOKS_STRATEGY + /bq-hooks. All 3 hooks confirmed firing live in a real project (destructive x3, secret AWS+Anthropic, Stop hook on a weasel-word claim - resolving the earlier not-load-tested caveat).
 - **M3 `/bq-hooks` (59 -> 60 commands):** manage the opt-in Claude Code safety hooks - `status` / `enable` / `disable` / `test`. Hooks still ship OFF by default (RCE-vector; review-before-enable). `enable` MERGES the hooks block into `.claude/settings.json` (never overwrites; R3 hard gate + confirmation; reload required). `test` fires each hook script with crafted stdin JSON and checks exit codes (2=block, 0=allow) without needing a Claude reload. Verified all 3 PS1 hooks return correct codes (destructive rm -rf -> 2, safe ls -> 0, secret write -> 2).
 
 ### Fixed (hotfix 2026-06-13)

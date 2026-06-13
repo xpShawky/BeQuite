@@ -88,3 +88,9 @@ The scripts are written to the **documented protocol** (exit codes, stdin JSON s
 - For teams that want a **`Stop`-hook self-verify loop** ("don't end the turn until build + tests pass"), see the recipe in `docs/runbooks/USING_BEQUITE_COMMANDS.md` — it's the same protocol (`Stop` + `stop_hook_active` guard) pointed at the project's own test command. Shipped as a documented opt-in, not a default (BeQuite can't know your test command).
 
 See also: ADR-005 (the decision), `docs/architecture/WORKFLOW_GATES.md` (the gates), `bequite-security-reviewer` (secret-handling discipline).
+
+## Field-verified notes (2026-06-13, live enable in a real project)
+- **Matcher must cover PowerShell on Windows.** The original Windows example matched only `Bash`; commands run via the PowerShell tool slipped past the destructive-block hook. The shipped examples now use `"matcher": "Bash|PowerShell"` for the destructive hook.
+- **Whole-string scan gotcha.** The destructive/secret hooks scan the full command/content string (incl. echo/label/comment/example text). Writing `rm -rf` / `DROP TABLE` / a secret-shaped token literally - even as documentation inside a command being run - triggers a block (exit 2). Refer to patterns by description or split the literal.
+- **Load timing.** Hooks were picked up immediately on enable in current Claude Code (no restart needed in that build); still reload the window if `/hooks` does not list them.
+- **Live verification:** all 3 hooks confirmed firing (destructive block x3, secret-scan block on AWS+Anthropic keys, Stop hook fired on a weasel-word completion claim). `/bq-hooks` (M3) manages enable/disable/status/test.

@@ -1,5 +1,12 @@
 # Last BeQuite command
 
+**Command:** hooks examples hardened (Bash|PowerShell matcher + whole-string-scan gotcha) from live field report
+**Timestamp:** 2026-06-13 (UTC)
+**Model:** claude-opus-4-8 (user /model set it)
+**Result:** SUCCESS - a live hook-enable session confirmed all 3 hooks fire end-to-end (incl. Stop hook - caveat resolved) and exposed 2 shipped-example gaps: Bash-only matcher (missed PowerShell tool on Windows) + whole-command-string scan (literal rm -rf/DROP/secret in echo text self-blocks). Both ported to source: widened matcher to Bash|PowerShell in both examples (JSON valid); gotcha + matcher note in hook README + strategy + /bq-hooks; MISTAKE_MEMORY logged. Counts unchanged (60/31).
+**Next suggested:** the hooks feature is verified live + the examples are hardened for new installs; nothing outstanding on hooks. Resume the workflow when ready (first live trial of a capability command, or whatever your project needs).
+
+**Prior run (preserved):**
 **Command:** alpha.24 add - M3 /bq-hooks (manage opt-in safety hooks) + hook verification
 **Timestamp:** 2026-06-13 (UTC)
 **Model:** claude-opus-4-8 (user /model set it)

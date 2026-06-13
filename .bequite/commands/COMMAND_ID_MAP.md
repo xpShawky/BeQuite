@@ -1,7 +1,7 @@
 # BeQuite Command ID Map (canonical) — alpha.22
 
 Display-only catalog IDs (Option A — files never renamed). Strategy: `docs/architecture/COMMAND_NUMBERING_AND_ORDERING_STRATEGY.md`.
-**53 active commands + 1 deprecated alias.** Shapes: WF = workflow · CAP = capability · NAV = navigation · ORC = orchestrator · MNT = maintenance · ARG noted where argument workflows exist.
+**59 active commands + 1 deprecated alias.** Shapes: WF = workflow · CAP = capability · NAV = navigation · ORC = orchestrator · MNT = maintenance · ARG noted where argument workflows exist.
 
 | ID | Command | Category | Phase | Purpose | Usually follows | Usually next | Auto-run? | Hidden? | Shape |
 |---|---|---|---|---|---|---|---|---|---|
@@ -50,7 +50,13 @@ Display-only catalog IDs (Option A — files never renamed). Strategy: `docs/arc
 | C8 | `/bq-proposal` | capability | any | job post → honest tailored proposal | C9 / C6 | (user sends) | yes | no | CAP (alpha.22) |
 | C9 | `/bq-job-finder` | capability | any | real work opportunities | (profile) | C8 proposal | yes | no | CAP |
 | C10 | `/bq-make-money` | capability | any | legitimate earning tracks | (profile) | C6 / C8 | yes | no | CAP |
-| C11 | `/bq-offer` | capability | any | idea/niche/pain → sellable productized offer (12-file pack; no overpromise, no fake income claims) | C6 / C10 / C8 / C5 / user idea | C8 proposal / W4.2 proof / C1 / C2 / W1.3 intake / W2.3 landing | yes | no | CAP (alpha.23) · ARG `refine`, `lang=` |
+| C11 | `/bq-offer` | capability | any | idea/niche/pain → sellable productized offer (12-file pack; no overpromise, no fake income claims) | C6 / C10 / C8 / C5 / user idea | C8 proposal / W4.2 proof / C1 / C2 / W1.3 intake / W2.3 landing | yes | no | CAP (alpha.23) · ARG `refine`, `lang=`, `business-system`/`agency`/`service-business` |
+| C12 | `/bq-automation` | capability | any | workflow/bot → tool-neutral automation blueprint (official-API-first; idempotency/retry/secrets) | C6 / C7 / C13 / user idea | W1.4 plan / W2.3 feature / C7 / C11 | yes | no | CAP (alpha.24) · ARG `bot`, `workflow`, `local-business` |
+| C13 | `/bq-local-business` | capability | any | offline business → minimum digital system (MENA-aware) | C6 / user idea | C11 / W2.3 / C12 | yes | no | CAP (alpha.24) |
+| C14 | `/bq-brand-kit` | capability | any | niche → non-generic brand identity (research-driven, reference-safe) | C17 / user idea | C3 / W2.3 landing / C2 | yes | no | CAP (alpha.24) |
+| C15 | `/bq-community` | capability | any | course/brand/launch → community plan | C5 / W4.2 / C14 | C2 / C12 | yes | no | CAP (alpha.24) |
+| C16 | `/bq-recording` | capability | any | video/recording → structured knowledge (transcript-first, dedup) | user video/transcript | C4 / C5 / C2 | yes | no | CAP (alpha.24) · tools optional |
+| C17 | `/bq-start` | capability | any | choose how to start (profile/brand/platform/niche/career) | user goal | C14 / C5 / C11 / C9 | yes | no | CAP (alpha.24) |
 | M1 | `/bq-update` | maintenance | any | self-update from source | (new release) | W0.4 doctor | yes (backup-gated) | no | MNT |
 | M2 | `/bq-skill-audit` | maintenance | any | skill-pack quality audit | (drift sign) | fixes on approval | yes (report-only) | no | MNT |
 | X1 | `/bq-add-feature` | deprecated | — | alias → W2.3 `/bq-feature` | — | — | — | listed as deprecated | alias |

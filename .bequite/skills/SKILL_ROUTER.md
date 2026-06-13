@@ -10,6 +10,7 @@
 | presentation | **presentation-builder** | ux-ui-designer · writing-dna (speaker notes) · researcher (sources) · frontend-design-system (HTML decks) |
 | writing / content / brand voice | **writing-dna** | anti-hallucination (strict) · researcher (factual claims) |
 | academic writing | **writing-dna (strict)** + **researcher** | anti-hallucination · EVIDENCE_LOG mandatory |
+| automation / workflow / bot / "make X happen automatically" | **automation-engineer** (via C12 /bq-automation, C13 local-business) | scraping-automation (web triggers) · backend-architect (services/queues) · security-reviewer (secrets/webhooks) |
 | Arabic / MENA / RTL / bilingual | **localization-rtl** (auto-attach) | frontend-design-system (UI) · writing-dna (content) · ux-ui-designer |
 | visual reference / competitor style / screenshot-to-design | **frontend-design-system** + **ux-ui-designer** (via C3 /bq-reference) | frontend-quality · researcher (url mode) · localization-rtl (Arabic UI) |
 | knowledge pack / FAQ / RAG / chatbot KB | **researcher** + **anti-hallucination** (via C4 /bq-knowledge) | context-engineer · writing-dna (strict prose) |

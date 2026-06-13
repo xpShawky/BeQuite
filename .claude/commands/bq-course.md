@@ -46,3 +46,15 @@ When source files are provided, run the 12-rule Course Source Intake (spec §Cou
 ## Reference A + language rule (2026-06-12 update)
 
 The course-building PDF (*Your First Million* executive task list, Arabic) is now **verified Reference A** — concepts extracted in English at `.bequite/courses/COURSE_PDF_REFERENCE_NOTES.md` (11 stages: gap → persona → offer → lean curriculum → delivery → branding → content engine → funnel → closing → gamification → MVP launch). It is one reference, not the only authority — global best practices still researched per spec. **Language rule:** docs hold concepts in English; the COURSE OUTPUT language always follows the user's request (Arabic request ⇒ Arabic course; English ⇒ English) — source language never forces output language.
+
+## Course Architect (alpha.24 strengthening)
+
+Before curriculum, decide the **course architecture** — these choices change everything downstream:
+
+- **Goal type:** academic · technical · monetized · crash · cohort-based · university-style · corporate training · certification prep · YouTube/free · paid premium.
+- **Learner + transformation + required depth + length + lecture count/duration + practical-project requirement + assessment style.**
+- **Field risk level** — medical / legal / financial / technical / business / low-risk creative. **High-risk fields (medical/legal/financial/academic):** references REQUIRED, do not invent facts, cite claims, include uncertainty, and **separate teaching simplification from factual claims** (anti-hallucination attaches; citation/reference requirements enforced).
+- **Architecture pattern:** fast crash course · project-first · theory-first academic · case-study · cohort implementation · challenge-based · certification roadmap.
+- **Pacing:** 5–10-min micro-lessons · 20–45-min deep lessons · workshops · labs · assignments.
+
+Examples: n8n AI-automation crash course (project-first, low-risk) · medical/academic course (theory + mandatory citations, high-risk) · business monetization course (cohort + offer) · technical course with projects. These choices are recorded in `COURSE_BRIEF.md` and drive CURRICULUM_MAP/LESSON_PLAN/ASSESSMENT. A dedicated `bequite-course-architect` skill stays deferred until a live `/bq-course` run proves which pedagogy logic is reusable (MASTER §E).

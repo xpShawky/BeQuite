@@ -4,10 +4,10 @@
 
 **A disciplined AI-engineering workflow for coding agents — slash commands, expert skills, persistent memory, and quality gates, all in plain markdown.**
 
-**Latest:** `v3.0.0-alpha.23` · MIT · by [@xpShawky](https://github.com/xpShawky)
+**Latest:** `v3.0.0-alpha.24` · MIT · by [@xpShawky](https://github.com/xpShawky)
 
-<a href="commands.md"><img alt="53 commands" src="https://img.shields.io/badge/slash_commands-53-7c3aed?style=flat-square"></a>
-<a href="#skills"><img alt="30 skills" src="https://img.shields.io/badge/skills-30-10b981?style=flat-square"></a>
+<a href="commands.md"><img alt="59 commands" src="https://img.shields.io/badge/slash_commands-59-7c3aed?style=flat-square"></a>
+<a href="#skills"><img alt="31 skills" src="https://img.shields.io/badge/skills-31-10b981?style=flat-square"></a>
 <img alt="zero runtime deps" src="https://img.shields.io/badge/runtime_deps-0-0ea5e9?style=flat-square">
 <img alt="markdown only" src="https://img.shields.io/badge/install-markdown_only-f59e0b?style=flat-square">
 
@@ -17,7 +17,7 @@
 
 ## What is BeQuite?
 
-BeQuite turns a coding agent into a disciplined senior engineering team. You describe a goal; BeQuite supplies the **workflow** (research → scope → plan → build → test → verify → release), the **expertise** (30 specialist skills the agent loads automatically), the **memory** (a `.bequite/` folder that survives context loss and session breaks), and the **brakes** (workflow gates, hard human approval points, and evidence rules that ban "should probably work" as a completion claim).
+BeQuite turns a coding agent into a disciplined senior engineering team. You describe a goal; BeQuite supplies the **workflow** (research → scope → plan → build → test → verify → release), the **expertise** (31 specialist skills the agent loads automatically), the **memory** (a `.bequite/` folder that survives context loss and session breaks), and the **brakes** (workflow gates, hard human approval points, and evidence rules that ban "should probably work" as a completion claim).
 
 It installs into any project as markdown files. No server, no database, no daemon, no dependencies — if you can read it in a text editor, that's all of it.
 
@@ -53,7 +53,7 @@ Then, in Claude Code:
 /bq-auto new "Build a booking dashboard for clinics"   → autonomous, gate-aware
 ```
 
-The installer copies `.claude/commands/` (53 active slash commands + 1 deprecated alias), `.claude/skills/` (30 skills), and scaffolds `.bequite/` memory. It never overwrites existing memory without `--force`. Canonical counts live in [`COMMAND_ID_MAP.md`](.bequite/commands/COMMAND_ID_MAP.md) and [`SKILL_REGISTRY.md`](.bequite/skills/SKILL_REGISTRY.md).
+The installer copies `.claude/commands/` (59 active slash commands + 1 deprecated alias), `.claude/skills/` (31 skills), and scaffolds `.bequite/` memory. It never overwrites existing memory without `--force`. Canonical counts live in [`COMMAND_ID_MAP.md`](.bequite/commands/COMMAND_ID_MAP.md) and [`SKILL_REGISTRY.md`](.bequite/skills/SKILL_REGISTRY.md).
 
 ## The BeQuite workflow
 
@@ -99,6 +99,9 @@ Beyond software workflows, BeQuite ships engines for the work *around* building:
 - **`/bq-integrate`** — API docs → integration blueprint (auth flow, endpoint map, error matrix, retry/idempotency, rate limits, test plan). Never invents endpoints; unknowns are marked `UNVERIFIED`.
 - **`/bq-proposal`** — a job post or RFP → an honest, tailored proposal in your voice with milestones, pricing options, and explicit scope boundaries. Never claims experience you don't have on record.
 - **`/bq-offer`** — a skill, niche, or pain point → a sellable productized offer: specific target client, deliverables with explicit exclusions, pricing tiers, a guarantee you can actually honor, outreach, demo idea, and proof checklist. Completes the monetization chain (pain-radar → make-money → offer → proposal → proof). No invented demand, no income hype.
+- **`/bq-offer`** — a skill/niche/pain → a sellable productized offer (target client, deliverables + exclusions, pricing tiers, honorable guarantee); `business-system`/`agency` modes build a whole service business. No invented demand, no income hype.
+- **`/bq-automation`** — a workflow or bot idea → a tool-neutral automation blueprint (official-API-first, idempotency, retry/failure, secrets, bot safety). Installs nothing.
+- **`/bq-local-business`** — an offline business → a practical minimum digital system (MENA/WhatsApp-aware). **`/bq-brand-kit`** — a non-generic brand identity. **`/bq-community`** — a community plan. **`/bq-recording`** — a long video → structured knowledge (transcript-first). **`/bq-start`** — choose how to start (profile vs brand, which platform, niche, career).
 - **`/bq-job-finder`** / **`/bq-make-money`** — verified work opportunities and legitimate earning tracks, safety-first.
 
 ## How it works together
@@ -107,14 +110,14 @@ An **orchestration layer** ties everything into one pipeline — intent → comm
 
 Two routers, two questions:
 
-- The **Skill Router** answers *"which expert procedures should load?"* — you describe the goal; BeQuite selects from 30 skills (frontend design system, security reviewer, database architect, scraping discipline, localization/RTL, anti-hallucination, …) and tells you what it picked and why. You never name skills manually.
+- The **Skill Router** answers *"which expert procedures should load?"* — you describe the goal; BeQuite selects from 31 skills (frontend design system, security reviewer, database architect, scraping discipline, localization/RTL, anti-hallucination, …) and tells you what it picked and why. You never name skills manually.
 - The **Command Router** answers *"what should happen next?"* — every non-trivial command ends with a recommendation block: the required next step, a 2–6 command set with reasons and auto-run flags, optional accelerators, and "do not run yet" warnings with the blocking gate named.
 
 The **memory system** (`.bequite/`) holds state, gates, decisions, mistakes, research, evidence logs, and per-capability workspaces (courses, proposals, knowledge packs, design DNA…). Commands read it before acting and write back after — which is why a new session, a compacted context, or a different agent can pick up exactly where the last one stopped.
 
 ## Skills
 
-30 specialist skills encode senior-practitioner procedure: project architecture, research with verified evidence, product strategy, UX/UI + AI-slop detection, a frontend design-system master that kills "middle-section drift", backend/database/security/DevOps review, testing discipline, scraping & web automation (API-first, robots/ToS-respecting, tool catalog from Scrapy to Playwright to Scrapling), localization/RTL for Arabic/MENA work, delegate planning (strong model architects, cheaper model implements, strong model reviews), anti-hallucination, context engineering, and the Guard Pass. Registry: [`SKILL_REGISTRY.md`](.bequite/skills/SKILL_REGISTRY.md).
+31 specialist skills encode senior-practitioner procedure: project architecture, research with verified evidence, product strategy, UX/UI + AI-slop detection, a frontend design-system master that kills "middle-section drift", backend/database/security/DevOps review, testing discipline, scraping & web automation (API-first, robots/ToS-respecting, tool catalog from Scrapy to Playwright to Scrapling), localization/RTL for Arabic/MENA work, delegate planning (strong model architects, cheaper model implements, strong model reviews), anti-hallucination, context engineering, and the Guard Pass. Registry: [`SKILL_REGISTRY.md`](.bequite/skills/SKILL_REGISTRY.md).
 
 ## Scenarios
 

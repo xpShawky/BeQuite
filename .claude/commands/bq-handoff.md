@@ -286,3 +286,7 @@ After successful completion:
 ## Next Command Recommendations (alpha.22)
 
 Per contract step 12: router block per `COMMAND_ROUTER.md`.
+
+## Argument: workflow-export (alpha.24)
+
+`/bq-handoff workflow-export` — export a BeQuite workflow as a reusable, **secret-safe** playbook/prompt-pack (spec `docs/specs/WORKFLOW_EXPORT.md`; outputs `.bequite/exports/`). **Mandatory secret/privacy scan runs first** (`SAFETY_AND_SECRET_SCAN.md`); export is blocked until it passes — never export secrets, keys, client/personal data, env values, internal paths, or unlicensed content. Produces WORKFLOW_PLAYBOOK · PROMPT_PACK (Claude/Codex/Cursor) · COMMAND_SEQUENCE (catalog IDs + skills + gates) · HANDOFF_NOTES; AGENTS.md-ready (reuses the cross-agent bridge format).

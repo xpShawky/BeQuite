@@ -159,3 +159,32 @@ Before claiming this skill's work complete:
 - [ ] Memory state files (LAST_RUN, WORKFLOW_GATES, CURRENT_PHASE) updated when gate state changed
 
 If any item fails, do not claim done — report PARTIAL with the specific gap.
+
+---
+
+## The diagnostic workflow (alpha.24 strengthening — follow in order, no skipping)
+
+1. **Reproduce first.** Get the exact failing command/click/input and run it. No repro → no fix (you're guessing). Record the exact steps.
+2. **Expected vs actual.** Write both in one line each. "Clicking Save should POST /bookings and show a toast; actual: nothing happens, no network request."
+3. **Symptom vs root cause.** The visible failure is rarely the cause. Ask "why" until you hit something that, if changed, makes the symptom impossible.
+4. **Inspect before editing.** Read the involved files (handler, caller, config, types) with Read/Grep BEFORE any edit. Map the data + control flow end to end.
+5. **Check recent changes.** `git log`/`git diff` the touched area — most regressions are in the last few commits. `git bisect` if the bad commit is unclear.
+6. **Check logs/errors.** Console, network tab, server logs, exit codes, stack traces. The real error is often swallowed by a catch-all (Guard Pass catches these).
+7. **Smallest safe fix.** Change the one thing that addresses the root cause. No drive-by refactors, no touching unrelated files.
+8. **Regression test.** Add a test that fails on the old code and passes on the fix — then the bug can't silently return (feeds the regression ledger).
+9. **Verify with evidence.** Re-run the repro; paste command + exit code + output. Symptom gone = done; otherwise back to step 3.
+10. **Mistake memory.** If the bug was a repeat pattern or a non-obvious trap, append to MISTAKE_MEMORY.
+
+**Anti-patterns (refuse these):** fixing by vibes (changing things hoping it helps), broad refactors mid-bug, editing files unrelated to the repro, claiming fixed without re-running the repro, suppressing the symptom (try/catch the error away) instead of fixing the cause.
+
+### Worked example — "button click does nothing"
+
+**Repro:** click "Save booking" on /bookings/new → nothing. **Expected:** POST /api/bookings, success toast. **Actual:** no toast, no row.
+1. Network tab: **no request fired** → the failure is client-side, before the call (not the API).
+2. Console: `Uncaught TypeError: onSubmit is not a function`. Symptom (dead button) ≠ root cause (handler not wired).
+3. Read the form component: `<form onSubmit={handleSubmit}>` but the prop is passed as `onSave`, not `handleSubmit` — a rename in the last commit (`git diff` confirms: `onSubmit`→`onSave` on the parent, child not updated). Root cause = broken prop contract from a partial rename.
+4. Smallest fix: align the child to the new prop name (one line) — NOT rewriting the form.
+5. Regression test: render the form, click submit, assert `onSave` called once. Fails on old code, passes on fix.
+6. Verify: re-run repro → request fires, toast shows, row appears. Evidence pasted. MISTAKE_MEMORY: "partial rename across parent/child = broken contract; grep the old prop name everywhere before claiming a rename done."
+
+This pattern (no-request → client-side → console error → contract mismatch from a recent change → one-line fix + test) generalizes to API-500s (inspect server log + the one handler), fresh-clone install fails (diff lockfile/env/Node version, not the app code), and CLI-fails-on-Windows (path separators / line endings / shell builtins — check the OS-specific layer first).

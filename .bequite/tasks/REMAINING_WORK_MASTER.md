@@ -1,8 +1,11 @@
 # REMAINING WORK MASTER — the canonical "what remains now?" ledger
 
-**This file is the single source of truth for remaining work.** When the user asks *what remains / what's left / what's next / what's parked / what's alpha.23 / what's V2 / what's built-but-untested* — BeQuite reads THIS file and answers from it, never from memory alone. Wired into: `/bequite` · `/bq-now` · `/bq-suggest` · `/bq-recover` · `/bq-memory` · `/bq-skill-audit` · ORCHESTRATION_MAP §14. Predecessors (`REMAINING_ROADMAP_TASKS.md`, `ALPHA_22_TASK_CHECKLIST.md`) remain as history; THIS file is canonical. **Updated:** 2026-06-12 (alpha.23 - /bq-offer built; tightening audits complete).
+**This file is the single source of truth for remaining work.** When the user asks *what remains / what's left / what's next / what's parked / what's alpha.23 / what's V2 / what's built-but-untested* — BeQuite reads THIS file and answers from it, never from memory alone. Wired into: `/bequite` · `/bq-now` · `/bq-suggest` · `/bq-recover` · `/bq-memory` · `/bq-skill-audit` · ORCHESTRATION_MAP §14. Predecessors (`REMAINING_ROADMAP_TASKS.md`, `ALPHA_22_TASK_CHECKLIST.md`) remain as history; THIS file is canonical. **Updated:** 2026-06-13 (alpha.24 - 6 capability commands C12-C17 + 4 argument/extension workflows + automation-engineer skill built; P1 patches done; legacy skill/ folder legacy-marked).
 
-## A. Built but NOT live-tested (alpha.22 capability commands + alpha.23 offer)
+## A. Built but NOT live-tested (alpha.22-24 capability commands)
+
+**alpha.24 additions (all built this pass, NONE live-tested):** C12 /bq-automation (+bot) · C13 /bq-local-business · C14 /bq-brand-kit · C15 /bq-community · C16 /bq-recording · C17 /bq-start · /bq-offer business-system/agency modes · /bq-handoff workflow-export · /bq-release template · Course Architect in /bq-course. First live trial of any one (C17 /bq-start or C11 /bq-offer business-system recommended) gates alpha.25 priorities.
+
 
 All six exist as full command files + specs + scaffolded memory dirs; **none has run against real input** — that is the single biggest open item.
 
@@ -52,7 +55,21 @@ Historical record (pre-build status): **Status was: QUEUED, NOT BUILT** (ID rese
 | explain diagram | N3 | code/architecture → mermaid diagrams | first handoff needing visuals | low | 72% |
 | job-finder resume | C9 | ATS-aware honest resume tailoring | first application | low | 70% |
 
-## E. V2 / PARKED (promotion conditions explicit; stays parked until met)
+## E. V2 / PARKED (post-alpha.24 — most former parked items now BUILT)
+
+**Built in alpha.24 (moved out of parked → section A):** /bq-automation · /bq-local-business · /bq-brand-kit · /bq-community · /bq-recording · /bq-release template · workflow-export · AI Service Business Builder (merged into /bq-offer business-system). **Still parked (the user explicitly deferred these):**
+
+| Item | Why parked | Promotion condition | Conf. |
+|---|---|---|---|
+| /bq-data-product | overlap with C7 unresolved | C7 + automation see real use → merge-vs-standalone decision | 60% |
+| Agent Pack Generator | prefers `/bq-skill-audit generate-pack`; maturity needed | Guard Pass + skill audit one more cycle | 62% |
+| App Store Launch Kit | no mobile launch yet | a real mobile launch need | 68% |
+| Cross-agent adapters (`bq` wrapper · AGENTS.md generator · Cursor rules template) | manual setup documented (INSTALL_FOR_OTHER_AGENTS); AGENTS.md now a standard | sustained real non-Claude usage demand | 70% |
+| Heavy media runtime (beyond /bq-recording workflow/spec) | recording is spec-first + tools-optional by charter | never as a default; only project-specific opt-in | n/a |
+| Provider API integrations / new app/dashboard/studio | violates ADR-001/004 | not planned | n/a |
+| Doctrine-pack import (13 legacy doctrines) | new — found in legacy skill/ audit | a regulated project needs the richer doctrine set | 60% |
+
+### (historical) Former parked table — superseded by the above
 
 | Item | Why parked | Promotion condition | Dependencies | Conf. | Review trigger |
 |---|---|---|---|---|---|

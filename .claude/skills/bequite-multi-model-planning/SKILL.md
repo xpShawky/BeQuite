@@ -225,3 +225,20 @@ Before claiming this skill's work complete:
 - [ ] `.bequite/logs/AGENT_LOG.md` entry appended
 
 If any item fails, do not claim done — report PARTIAL with the specific gap.
+
+---
+
+## Current-system alignment (alpha.24 refresh)
+
+This skill predates the alpha.12–23 system; it now operates inside it:
+
+- **Operating modes:** multi-model planning is most valuable in **deep** mode and as the planning half of **delegate** mode (strong model plans → cheap model implements → strong model reviews — see `bequite-delegate-planner` + `LOW_COST_MODEL_RULES.md` tiers A/B/C). In **fast**/**token-saver** it is usually skipped (one good plan beats three rushed ones).
+- **Orchestration:** on conflict about which command/skill to use, defer to `.bequite/state/ORCHESTRATION_MAP.md` via `bequite-orchestrator`. The Command Router decides what runs next; this skill only produces the plan content.
+- **Phasing:** "Phase plan" here means the **workflow phases P0–P5** (setup→framing→build→quality→release→memory), not the retired v2 phase IDs. A merged plan slots into W1.4 `/bq-plan` output.
+- **Conflict resolution between model outputs:** when pasted models disagree, do NOT average them — pick per evidence: the option with a citation/repro beats the asserted one; mark unresolved disagreements as OPEN_QUESTIONS, never silently choose. Confidence on the merged plan follows the banded forecast (`CONFIDENCE_RULES.md`) and must MOVE as evidence arrives.
+- **Evidence + compaction:** every external-model claim adopted into the plan needs a source or an `UNVERIFIED` label (anti-hallucination). On long planning sessions, externalize to `WORKING_NOTES.md` at the compaction thresholds.
+- **No provider integrations:** manual-paste only, ToS-clean; BeQuite never calls a provider API to do this.
+
+### Multimodal inputs (alpha.24)
+
+Plans increasingly start from a screenshot, PDF, scanned PDF, image, slide deck, transcript, or video-derived notes. Rule: **a model may only reason over a source the agent actually inspected.** Each multimodal source gets a **source map** (item · what was extracted · confidence) and a confidence label; never claim a model "saw" a screenshot/video unless the file was read this session. Scanned/RTL sources route through the relevant intake (Course Source Intake rules / `/bq-recording` dedup) before planning. Low-confidence extractions are marked NEEDS REVIEW and excluded from load-bearing plan decisions until confirmed.

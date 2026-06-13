@@ -205,3 +205,7 @@ Per contract step 12: Required next = user-run `git push` / `git tag` (gate 17 �
 ## Addendum (2026-06-12)
 
 `demo-video` supports two profiles: **launch-video** (product story for launch) and **demo-script** (live click-by-click screen-recording walkthrough: what to click, what to say, before/after moment, CTA, short/long + platform variants). `template` (project → reusable starter pack) is approved as a **V2** argument — not yet built; requires secret-scan discipline first.
+
+## Argument: template (alpha.24 — built)
+
+`/bq-release template` — turn a finished project into a reusable starter/template/product (spec `docs/specs/RELEASE_TEMPLATE.md`; outputs `.bequite/templates/`). Produces TEMPLATE_BRIEF · TEMPLATE_SCOPE · CUSTOMIZATION_GUIDE · DEMO_DATA_PLAN · SECURITY_AND_SECRET_SCAN · TENANCY_AND_DATA_ISOLATION · INSTALL_GUIDE · LICENSING_NOTES · SUPPORT_NOTES · RELEASE_CHECKLIST. **Hard rules:** remove secrets (scan) · seed/demo data only (never real client data) · **explicit multi-tenant-vs-single-tenant decision + named, tested data-isolation mechanism** (two clients on one template must never see each other's data) · no hardcoded branding · licensing + support boundaries stated.

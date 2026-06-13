@@ -1,5 +1,12 @@
 # Last BeQuite command
 
+**Command:** v3.0.0-alpha.24 - Selected-V2 build (C12-C17 + extensions) + P1 maintenance
+**Timestamp:** 2026-06-13 (UTC)
+**Model:** claude-opus-4-8 (the /model command set it; user text said "fable 5" - conflict reported, not hidden; ran on the harness-selected model)
+**Result:** SUCCESS - 6 new commands (automation/local-business/brand-kit/community/recording/start) + 8 specs + 4 extensions + automation-engineer skill (31); P1 patches (problem-solver + multi-model-planning -> PASS); legacy skill/ inventoried + legacy-marked (nothing deleted); high-risk + okay-command audits; counts 59/31 synced; installers alpha.24 (+8 dirs). No live trials claimed; parked items documented.
+**Next suggested:** FIRST LIVE TRIAL of a new capability (C17 /bq-start, C12 /bq-automation, or C11 /bq-offer business-system); trials gate alpha.25.
+
+**Prior run (preserved):**
 **Command:** v3.0.0-alpha.23 - Offer Engine (/bq-offer C11) + repo-wide tightening pass
 **Timestamp:** 2026-06-12 (UTC)
 **Model:** Claude Fable 5 - available, no reroute, no degradation

@@ -1,10 +1,10 @@
 # BeQuite installed version
 
-**Version:** v3.0.0-alpha.23 - Offer Engine (/bq-offer C11) + tightening pass
+**Version:** v3.0.0-alpha.24 - Selected-V2 build (C12-C17 + extensions) + P1 maintenance
 **Updated:** 2026-06-12
 **Source:** github
 **Source path / repo:** xpShawky/BeQuite (branch: main)
-**Previous version:** v3.0.0-alpha.22
+**Previous version:** v3.0.0-alpha.23
 **Last check:** 2026-06-12
 **Update count:** 0 (this is the seed file; updates from /bq-update increment)
 

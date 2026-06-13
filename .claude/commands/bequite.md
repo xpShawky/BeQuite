@@ -72,7 +72,7 @@ Recommended next 3 commands:
   2. /<command-2>     — <why>
   3. /<command-3>     — <why>
 
-Command map (53 active commands + 1 deprecated alias — catalog IDs per .bequite/commands/COMMAND_ID_MAP.md):
+Command map (59 active commands + 1 deprecated alias — catalog IDs per .bequite/commands/COMMAND_ID_MAP.md):
 
   W0 — Setup and Discovery
     W0.1 /bequite       this menu
@@ -136,7 +136,13 @@ Command map (53 active commands + 1 deprecated alias — catalog IDs per .bequit
     C8 /bq-proposal     job post → honest tailored proposal (Writing DNA, no overpromising)
     C9 /bq-job-finder   find real work opportunities (+ hidden gems)
     C10 /bq-make-money  legitimate earning tracks (10 tracks + hidden gems)
-    C11 /bq-offer       idea/niche -> sellable productized offer (honest: no fake demand or income claims)
+    C11 /bq-offer       idea/niche -> sellable productized offer (+ business-system/agency modes)
+    C12 /bq-automation  workflow/bot -> tool-neutral automation blueprint (installs nothing)
+    C13 /bq-local-business  offline business -> minimum digital system (MENA-aware)
+    C14 /bq-brand-kit   niche -> non-generic brand identity (research-driven)
+    C15 /bq-community   course/brand/launch -> community plan
+    C16 /bq-recording   video/recording -> structured knowledge (transcript-first)
+    C17 /bq-start       choose how to start (profile/brand/platform/niche/career)
 
   M — Maintenance
     M1 /bq-update       update BeQuite itself (safe + non-destructive)

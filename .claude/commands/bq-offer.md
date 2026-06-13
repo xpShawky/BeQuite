@@ -53,3 +53,14 @@ product-strategist (offer/pricing) · writing-dna (voice) · make-money (opportu
 - Wants marketing assets → C2 `/bq-writing-dna repurpose` · W4.2 `/bq-release announce` (publishing = hard human gate) · W2.3 `/bq-feature landing`.
 - Wants the sales process → W1.3 `/bq-scope intake` → C8 proposal → W4.2 `/bq-release proof`.
 - Do not run yet: building the offered service/product before one real buyer signal — MVP-first discipline (Reference A stage 11) applies to offers too.
+
+## Business-system modes (alpha.24 — AI Service Business Builder, merged here)
+
+For users who want a whole service business, not one offer:
+
+```
+/bq-offer business-system "<idea>"     ← full AI/service business system
+/bq-offer agency "<niche>"             ← agency package
+/bq-offer service-business "<service>" ← productized service business
+```
+Ask first what they want: one offer · full service business · agency package · course+service hybrid · local-business package · automation service · retainer · one-time productized service. **Only in these modes**, additionally produce: `BUSINESS_MODEL.md` · `OFFER_STACK.md` · `DELIVERY_SYSTEM.md` · `CLIENT_ACQUISITION.md` · `PROOF_ENGINE.md` · `OPERATIONS.md` · `RISKS_AND_CONSTRAINTS.md`. Same honest rules apply harder: **no fake income claims, no guaranteed revenue, assumptions marked, pricing confidence stated, proof gaps listed, MVP-first** (sell one offer before building the whole machine). This is an orchestration of the existing offer chain (C6 pain-radar → C10 make-money → offer stack → C8 proposal → W4.2 proof), not a separate command.

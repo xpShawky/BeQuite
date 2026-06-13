@@ -6,7 +6,7 @@ description: BeQuite workflow advisor. Reads your situation + current state, the
 
 ## Purpose
 
-You have 52 active commands and 29 skills. You may not know which to run. `/bq-suggest` is the BeQuite workflow expert that listens to your situation and **recommends a route**: which commands, in what order, with what skills, with which gates, and whether to use fast / deep / scoped auto / phase mode.
+You have 59 active commands and 31 skills. You may not know which to run. `/bq-suggest` is the BeQuite workflow expert that listens to your situation and **recommends a route**: which commands, in what order, with what skills, with which gates, and whether to use fast / deep / scoped auto / phase mode.
 
 **Read-only. Never implements.** It tells you what to do; you decide whether to run it.
 

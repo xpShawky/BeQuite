@@ -42,3 +42,8 @@ Pruning: archive entries older than ~90 days to `SKILL_USAGE_LOG-<date>.md`.
 **Selected:** product-strategist + make-money + writing-dna (offer design) · anti-hallucination (honest-selling rules + audit labels) · skill-auditor (matrices) · orchestrator (C11 wiring + conflict scan) · researcher (LIVE: agents.md standard, Slidev currency)
 **Outcome:** SUCCESS - C11 built + wired; 4 audits + evidence log + tightening plan; AGENTS.md-standard finding patched into cross-agent docs
 **Routing quality:** good
+
+## 2026-06-13 - alpha.24: selected-V2 build + P1 maintenance (deep)
+**Selected:** automation-engineer (NEW, merged from legacy) · product-strategist + make-money + writing-dna (offer business-system, start, local-business, brand) · researcher (brand niche scan, recording) · ux-ui-designer + frontend-design-system (brand) · skill-auditor (P1 + matrices) · orchestrator (wiring + legacy merge) · problem-solver + multi-model-planning (PATCHED)
+**Outcome:** SUCCESS - 6 commands + 4 extensions + 1 skill built; legacy skill/ inventoried + legacy-marked; high-risk + okay audits; counts 59/31 synced
+**Routing quality:** good - automation-engineer is the legacy-merge home; no other new skills needed

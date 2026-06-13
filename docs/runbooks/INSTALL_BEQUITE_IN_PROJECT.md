@@ -27,11 +27,11 @@ Open Claude Code in `<your-project>`. Type `/bequite`. Follow the menu.
 1. Refuses to overwrite an existing `.bequite/` (your memory) without `--force`.
 2. Downloads BeQuite from `https://github.com/xpShawky/BeQuite` (shallow clone) — or uses `--from-local` if you already have a clone.
 3. Copies into your project:
-   - `.claude/commands/` — **52 active slash commands + 1 deprecated alias** (markdown files; catalog IDs in `.bequite/commands/COMMAND_ID_MAP.md`)
-   - `.claude/skills/bequite-*` — **30 skills**
+   - `.claude/commands/` — **59 active slash commands + 1 deprecated alias** (markdown files; catalog IDs in `.bequite/commands/COMMAND_ID_MAP.md`)
+   - `.claude/skills/bequite-*` — **31 skills**
    - `.claude/hooks/` + `settings*.json.example` — opt-in safety hooks (NOT active by default; review before enabling)
-   - *(Counts as of v3.0.0-alpha.22 — the canonical counts live in `COMMAND_ID_MAP.md` + `SKILL_REGISTRY.md`; if this paragraph drifts again, `/bq-verify drift` will flag it.)*
-4. Scaffolds `.bequite/` memory (state, logs, prompts, audits, plans, tasks, research, skills, commands, writing, presentations, design, uiux, jobs, money, reference, knowledge, courses, pain-radar, integrations, proposals — see the installer source for the authoritative list) with sensible defaults; never overwrites an existing `.bequite/`.
+   - *(Counts as of v3.0.0-alpha.24 — the canonical counts live in `COMMAND_ID_MAP.md` + `SKILL_REGISTRY.md`; if this paragraph drifts again, `/bq-verify drift` will flag it.)*
+4. Scaffolds `.bequite/` memory (state, logs, prompts, audits, plans, tasks, research, skills, commands, writing, presentations, design, uiux, jobs, money, reference, knowledge, courses, pain-radar, integrations, proposals, offers, automation, exports, templates, local-business, brand, community, recordings, start — see the installer source for the authoritative list) with sensible defaults; never overwrites an existing `.bequite/`.
 5. Appends a short "BeQuite" section to your `CLAUDE.md` (or creates one if missing).
 6. Works outside Claude Code too — the commands are readable markdown playbooks; see `docs/runbooks/USING_BEQUITE_OUTSIDE_CLAUDE_CODE.md` for Codex/Cursor/other-agent usage.
 7. Prints next steps.

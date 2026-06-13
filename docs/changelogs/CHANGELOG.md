@@ -4,6 +4,22 @@ Format: [Keep a Changelog v1.1](https://keepachangelog.com/en/1.1.0/) · Version
 
 Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANGELOG-legacy.md`](../legacy/CHANGELOG-legacy.md) after Phase B cleanup.
 
+## [3.0.0-alpha.24] - 2026-06-13 - Selected-V2 build + P1 maintenance
+
+### Added
+- **6 capability commands (53 -> 59):** C12 /bq-automation (tool-neutral workflow+bot blueprints; official-API-first; idempotency/retry/failure/secrets/kill-switch; bot safety; installs nothing) · C13 /bq-local-business (offline -> minimum digital system; MENA/WhatsApp-aware) · C14 /bq-brand-kit (non-generic identity; research-driven; reference-safe) · C15 /bq-community · C16 /bq-recording (video -> knowledge; transcript-first; meaningful-change keyframe dedup; tools OPTIONAL, none installed; no ToS-violating downloads) · C17 /bq-start (Starting Path Advisor). 8 specs in docs/specs/.
+- **Extensions:** /bq-offer business-system/agency/service-business (AI Service Business Builder, merged not separate) · /bq-handoff workflow-export (secret-scanned) · /bq-release template (multi-tenant isolation mandatory) · Course Architect inside /bq-course.
+- **+1 skill (30 -> 31):** bequite-automation-engineer (distilled from retired v2 automation content; concept merge, not a copy).
+- **Audits/plans:** ALPHA_24_SELECTED_V2_BATCH_PLAN · P1_SKILL_PATCH_AUDIT · LEGACY_SKILL_FOLDER_AUDIT · HIGH_RISK_COMMAND_TEST_CASES + HIGH_RISK_COMMAND_HARDENING_AUDIT · OKAY_COMMAND_TIGHTENING_AUDIT. 8 memory scaffolds.
+
+### Changed / Fixed
+- **P1:** problem-solver (10-step diagnostic workflow + worked example) and multi-model-planning (current-system + multimodal) patched to PASS; /bq-mode mode-decision pointer.
+- **Legacy skill/ folder:** inventoried (119 files), legacy-marked with skill/README.md DEPRECATED pointer; useful automation content merged; nothing deleted.
+- Installers -> alpha.24 (+8 scaffold dirs; bash -n OK, ps1 parse 0 errors); routers/map/registry/menus/README/commands.md/catalog/CLAUDE.md synced (59/31).
+
+### Honest status
+- Model: ran on claude-opus-4-8 (the /model command set it; user text said fable 5 - conflict reported, logged). No live trials on any of the now-13 capability commands. Parked-and-documented: data-product, agent-pack, app-store-kit, cross-agent adapters, heavy media runtime, provider integrations.
+
 ## [3.0.0-alpha.23] - 2026-06-12 - Offer Engine + Tightening Pass
 
 ### Added

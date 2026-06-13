@@ -1,33 +1,15 @@
-﻿<#
-.SYNOPSIS
-  Install BeQuite (lightweight skill pack) into the current project.
-
-.DESCRIPTION
-  Copies the BeQuite slash commands, skills, principles, memory scaffold,
-  and command reference into your project directory. No heavy dependencies.
-  No Docker. No database. No frontend. No localhost app. Just markdown files.
-
-  By default, this script downloads from the BeQuite GitHub repo. If you've
-  already cloned BeQuite locally, pass -FromLocal <path> to copy from there.
-
-.PARAMETER FromLocal
-  Path to a local BeQuite clone. If omitted, downloads from GitHub.
-
-.PARAMETER Force
-  Overwrite existing .bequite/, .claude/commands/, .claude/skills/. Without
-  this flag, refuses to overwrite — you'd lose memory.
-
-.EXAMPLE
-  # From inside the target project directory
-  irm https://raw.githubusercontent.com/xpShawky/BeQuite/main/scripts/install-bequite.ps1 | iex
-
-.EXAMPLE
-  # Or, with a local BeQuite clone
-  & C:\dev\BeQuite\scripts\install-bequite.ps1 -FromLocal C:\dev\BeQuite
-#>
+# install-bequite.ps1 - install BeQuite (lightweight skill pack) into the current project.
+# Copies BeQuite slash commands, skills, principles, memory scaffold, and the command
+# reference into your project. No heavy dependencies, no Docker, no database - just markdown.
+#
+# Primary use (from inside the target project):
+#   irm https://raw.githubusercontent.com/xpShawky/BeQuite/main/scripts/install-bequite.ps1 | iex
+# File execution with args:
+#   & C:\dev\BeQuite\scripts\install-bequite.ps1 -FromLocal C:\dev\BeQuite -Force
+# Via iex with options: set $env:BEQUITE_FROM_LOCAL / $env:BEQUITE_FORCE before the irm line.
 # NOTE: deliberately NO param()/[CmdletBinding()] block.
 # The primary install path is `irm <url> | iex`, which evaluates this script as a
-# piped string via Invoke-Expression — and Invoke-Expression CANNOT evaluate a
+# piped string via Invoke-Expression - and Invoke-Expression CANNOT evaluate a
 # param()/[CmdletBinding()] block (it errors with "Unexpected attribute 'CmdletBinding'").
 # So args are parsed manually from $args (file execution: `& install-bequite.ps1 -FromLocal X -Force`)
 # with env-var fallbacks (iex path: `$env:BEQUITE_FROM_LOCAL` / `$env:BEQUITE_FORCE`).
@@ -59,7 +41,7 @@ $REPO_URL = "https://github.com/xpShawky/BeQuite.git"
 $TARGET = (Get-Location).Path
 
 Write-Host ""
-Write-Host "  BeQuite installer ($BEQUITE_VERSION — lightweight skill pack)" -ForegroundColor Yellow
+Write-Host "  BeQuite installer ($BEQUITE_VERSION - lightweight skill pack)" -ForegroundColor Yellow
 Write-Host "  Target: $TARGET"
 Write-Host ""
 
@@ -109,10 +91,10 @@ if ($FromLocal -ne "") {
 
 # --- 3. Copy .claude/commands/ ---
 
-Write-Section "Installing .claude/commands/ (46 slash commands)"
+Write-Section "Installing .claude/commands/ (59 slash commands)"
 $SRC_CMD = Join-Path $SOURCE ".claude\commands"
 if (-not (Test-Path $SRC_CMD)) {
-  Exit-Fatal "Source missing $SRC_CMD — is this a valid BeQuite repo?"
+  Exit-Fatal "Source missing $SRC_CMD - is this a valid BeQuite repo?"
 }
 New-Item -ItemType Directory -Path ".\.claude\commands" -Force | Out-Null
 Copy-Item -Path "$SRC_CMD\*" -Destination ".\.claude\commands\" -Recurse -Force
@@ -121,7 +103,7 @@ Write-Host "  $count slash commands installed" -ForegroundColor Green
 
 # --- 4. Copy .claude/skills/bequite-* (26 specialist skills) ---
 
-Write-Section "Installing .claude/skills/bequite-* (27 specialist skills)"
+Write-Section "Installing .claude/skills/bequite-* (31 specialist skills)"
 $SRC_SKILLS = Join-Path $SOURCE ".claude\skills"
 if (-not (Test-Path $SRC_SKILLS)) {
   Exit-Fatal "Source missing $SRC_SKILLS"
@@ -133,19 +115,19 @@ Get-ChildItem $SRC_SKILLS -Directory -Filter "bequite-*" | ForEach-Object {
   Write-Host "  + $skillName"
 }
 
-# --- 4b. Copy .claude/hooks/ + settings examples (alpha.18 — OPT-IN; NOT auto-enabled) ---
+# --- 4b. Copy .claude/hooks/ + settings examples (alpha.18 - OPT-IN; NOT auto-enabled) ---
 
 $SRC_HOOKS = Join-Path $SOURCE ".claude\hooks"
 if (Test-Path $SRC_HOOKS) {
   New-Item -ItemType Directory -Path ".\.claude\hooks" -Force | Out-Null
   Copy-Item -Path "$SRC_HOOKS\*" -Destination ".\.claude\hooks\" -Recurse -Force
-  Write-Host "  + .claude/hooks/ (opt-in — review before enabling)"
+  Write-Host "  + .claude/hooks/ (opt-in - review before enabling)"
 }
 foreach ($ex in @("settings.json.example","settings.windows.json.example")) {
   $src = Join-Path $SOURCE ".claude\$ex"
   if (Test-Path $src) { Copy-Item -Path $src -Destination ".\.claude\$ex" -Force; Write-Host "  + .claude/$ex" }
 }
-Write-Host "  hooks are NOT active by default — merge an example into settings.json to enable (see docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md)"
+Write-Host "  hooks are NOT active by default - merge an example into settings.json to enable (see docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md)"
 
 # --- 5. Create .bequite/ scaffold (alpha.5-alpha.8: principles + uiux + jobs + money + new state files) ---
 
@@ -197,7 +179,7 @@ foreach ($dir in $SCAFFOLD) {
 }
 Write-Host "  directory scaffold ready"
 
-# Copy alpha.5–alpha.8 template files into target project (preserves existing)
+# Copy alpha.5-alpha.8 template files into target project (preserves existing)
 $TEMPLATES = @{
   # alpha.3 principles
   ".bequite\principles\TOOL_NEUTRALITY.md" = ".bequite\principles\TOOL_NEUTRALITY.md"
@@ -219,7 +201,7 @@ $TEMPLATES = @{
   ".bequite\state\PROJECT_DNA.md"               = ".bequite\state\PROJECT_DNA.md"
   ".bequite\state\WORKING_NOTES.md"             = ".bequite\state\WORKING_NOTES.md"
   ".bequite\plans\FILE_RESPONSIBILITY_MAP.md"   = ".bequite\plans\FILE_RESPONSIBILITY_MAP.md"
-  # alpha.19 — Fable Strengthening Pass
+  # alpha.19 - Fable Strengthening Pass
   ".bequite\writing\WRITING_DNA.md"                = ".bequite\writing\WRITING_DNA.md"
   ".bequite\writing\STYLE_SAMPLES.md"              = ".bequite\writing\STYLE_SAMPLES.md"
   ".bequite\writing\WRITING_RULES.md"              = ".bequite\writing\WRITING_RULES.md"
@@ -230,11 +212,11 @@ $TEMPLATES = @{
   ".bequite\research\EVIDENCE_LOG.md"              = ".bequite\research\EVIDENCE_LOG.md"
   ".bequite\prompts\PROMPT_PATTERNS.md"            = ".bequite\prompts\PROMPT_PATTERNS.md"
   ".bequite\plans\GAME_CHANGER_FEATURE_DISCOVERY.md" = ".bequite\plans\GAME_CHANGER_FEATURE_DISCOVERY.md"
-  # alpha.20 — automatic skill routing
+  # alpha.20 - automatic skill routing
   ".bequite\skills\SKILL_REGISTRY.md"                = ".bequite\skills\SKILL_REGISTRY.md"
   ".bequite\skills\SKILL_ROUTER.md"                  = ".bequite\skills\SKILL_ROUTER.md"
   ".bequite\skills\SKILL_USAGE_LOG.md"               = ".bequite\skills\SKILL_USAGE_LOG.md"
-  # alpha.21 — confidence + frontier discipline
+  # alpha.21 - confidence + frontier discipline
   ".bequite\state\CONFIDENCE_RULES.md"               = ".bequite\state\CONFIDENCE_RULES.md"
   ".bequite\tasks\TASK_CONFIDENCE.md"                = ".bequite\tasks\TASK_CONFIDENCE.md"
   ".bequite\state\FRONTIER_REASONING_SUMMARY.md"     = ".bequite\state\FRONTIER_REASONING_SUMMARY.md"
@@ -316,7 +298,7 @@ if (-not (Test-Path $CLAUDE_MD)) {
   Set-Content -Path $CLAUDE_MD -Encoding utf8 -Value @"
 # CLAUDE.md
 
-This project uses **BeQuite $BEQUITE_VERSION** — a lightweight Claude Code skill pack.
+This project uses **BeQuite $BEQUITE_VERSION** - a lightweight Claude Code skill pack.
 
 $BQ_MARKER
 
@@ -327,7 +309,7 @@ $BQ_MARKER
 - Run ``/bq-help`` for the full command reference (or open ``commands.md``).
 - ``/bq-init`` to formally initialize (creates baseline state files).
 - ``/bq-auto [intent] "task"`` for scoped autonomous mode (17 intents).
-- ``/bq-suggest "<situation>"`` for workflow advice — recommends commands + mode.
+- ``/bq-suggest "<situation>"`` for workflow advice - recommends commands + mode.
 - ``/bq-job-finder`` or ``/bq-make-money`` for opportunity discovery (Claude searches; deep intelligence + ``worldwide_hidden=true``).
 - ``/bq-update`` to safely refresh BeQuite itself when a new alpha ships.
 - BeQuite memory lives in ``.bequite/`` (state / logs / plans / tasks / audits / principles / uiux / jobs / money / backups).
@@ -336,12 +318,12 @@ $BQ_MARKER
 
 ## Core operating rules (BeQuite)
 
-1. **Tool neutrality** — named tools are EXAMPLES, not commands. See ``.bequite/principles/TOOL_NEUTRALITY.md``.
+1. **Tool neutrality** - named tools are EXAMPLES, not commands. See ``.bequite/principles/TOOL_NEUTRALITY.md``.
 2. Never claim a task is "done" unless ``/bq-verify`` passes.
 3. Always update ``.bequite/logs/AGENT_LOG.md`` when you take a real action.
 4. Always update ``.bequite/state/WORKFLOW_GATES.md`` when a gate is met.
 5. Banned weasel words: should, probably, seems to, appears to, I think it works, might, hopefully, in theory.
-6. No out-of-order commands — gate system blocks them.
+6. No out-of-order commands - gate system blocks them.
 
 <!-- /BEQUITE -->
 "@
@@ -357,17 +339,17 @@ $BQ_MARKER
 
 # BeQuite $BEQUITE_VERSION
 
-This project uses **BeQuite** — a lightweight Claude Code skill pack.
+This project uses **BeQuite** - a lightweight Claude Code skill pack.
 
-- ``/bequite`` — gate-aware menu
-- ``/bq-now`` — one-line status
-- ``/bq-help`` — full reference (also at ``commands.md``)
-- ``/bq-auto [intent] "task"`` — scoped autonomous mode
-- ``/bq-suggest "<situation>"`` — workflow advisor
-- ``/bq-job-finder`` / ``/bq-make-money`` — opportunity discovery with deep intelligence + ``worldwide_hidden=true``
-- ``/bq-update`` — safe BeQuite self-update (backups + non-destructive)
+- ``/bequite`` - gate-aware menu
+- ``/bq-now`` - one-line status
+- ``/bq-help`` - full reference (also at ``commands.md``)
+- ``/bq-auto [intent] "task"`` - scoped autonomous mode
+- ``/bq-suggest "<situation>"`` - workflow advisor
+- ``/bq-job-finder`` / ``/bq-make-money`` - opportunity discovery with deep intelligence + ``worldwide_hidden=true``
+- ``/bq-update`` - safe BeQuite self-update (backups + non-destructive)
 
-See ``.bequite/`` for memory + state. Named tools are EXAMPLES — see ``.bequite/principles/TOOL_NEUTRALITY.md``.
+See ``.bequite/`` for memory + state. Named tools are EXAMPLES - see ``.bequite/principles/TOOL_NEUTRALITY.md``.
 Memory-first principle: see ``docs/architecture/MEMORY_FIRST_BEHAVIOR.md``.
 
 <!-- /BEQUITE -->
@@ -415,7 +397,7 @@ Write-Host "  Maintenance (alpha.10):" -ForegroundColor Cyan
 Write-Host "    /bq-update                       safe BeQuite self-update (backups + no overwrites)" -ForegroundColor White
 Write-Host "    /bq-update check                 preview what would change" -ForegroundColor White
 Write-Host ""
-Write-Host "  Operating modes (alpha.12 — composable):" -ForegroundColor Cyan
+Write-Host "  Operating modes (alpha.12 - composable):" -ForegroundColor Cyan
 Write-Host "    /bq-auto deep ""..""              full 11-dim research + red-team for quality-critical work" -ForegroundColor White
 Write-Host "    /bq-auto fast ""..""              short discovery; still tests + verifies" -ForegroundColor White
 Write-Host "    /bq-auto token-saver ""..""       (alias: lean) low context cost; reuse cached research" -ForegroundColor White
@@ -432,6 +414,6 @@ Write-Host ""
 Write-Host "  Memory:        .bequite/ (state / logs / plans / tasks / audits / uiux / jobs / money / presentations / backups)" -ForegroundColor Gray
 Write-Host "  Commands:      .claude/commands/" -ForegroundColor Gray
 Write-Host "  Skills:        .claude/skills/" -ForegroundColor Gray
-Write-Host "  Reference:     commands.md (repo root) — full command catalog" -ForegroundColor Gray
+Write-Host "  Reference:     commands.md (repo root) - full command catalog" -ForegroundColor Gray
 Write-Host "  Tool rule:     .bequite/principles/TOOL_NEUTRALITY.md" -ForegroundColor Gray
 Write-Host ""

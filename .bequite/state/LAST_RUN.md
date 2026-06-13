@@ -1,5 +1,12 @@
 # Last BeQuite command
 
+**Command:** alpha.24 HOTFIX #2 - ps1 BOM/non-ASCII broke `irm|iex` (now pure ASCII, no BOM)
+**Timestamp:** 2026-06-13 (UTC)
+**Model:** claude-opus-4-8 (user /model set it)
+**Result:** SUCCESS - 2nd install error (BOM glued to `<#` + em/en-dashes -> help lines ran as commands). Fixed: pure ASCII, no BOM, `#` comments (file-exec stays safe without BOM). VERIFIED END-TO-END: `Get-Content -Raw | iex` in temp dir (env from-local, no network) -> "v3.0.0-alpha.24 installed", 60 cmd files / 31 skills / full scaffold. Banner counts fixed (46->59, 27->31). Two hotfixes total (param block + BOM); both were latent in every prior release; bash path always worked.
+**Next suggested:** re-run `irm ...install-bequite.ps1 | iex` in your Food app - it should now install cleanly end-to-end.
+
+**Prior run (preserved):**
 **Command:** alpha.24 HOTFIX - ps1 `irm|iex` install path (param() block removed)
 **Timestamp:** 2026-06-13 (UTC)
 **Model:** claude-opus-4-8 (user /model set it)

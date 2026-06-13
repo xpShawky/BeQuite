@@ -63,3 +63,7 @@ Rules:
 - Repro (user-reported): `irm ...install-bequite.ps1 | iex` -> "Unexpected attribute CmdletBinding" / "Unexpected token param". Root cause: param() block invalid under Invoke-Expression.
 - Fix verified: replaced param() with manual $args/env parsing. `[ScriptBlock]::Create((Get-Content -Raw install-bequite.ps1))` -> "iex-path compile: OK"; `ParseFile` -> 0 errors. Both paths now compile.
 - New standing check: installer release verify must run the [ScriptBlock]::Create iex-path test, not only ParseFile.
+
+## 2026-06-13 - alpha.24 hotfix #2: BOM/non-ASCII in ps1 install
+- 2nd user error after param fix: `.SYNOPSIS`/`Copies`/`No`/`By` "not recognized" + `﻿<#` token. Cause: UTF-8 BOM + em/en-dashes; BOM glued to `<#` so comment block never opened under iex.
+- Fix: stripped BOM, replaced all em/en-dashes with ASCII "-", replaced `<# #>` help block with `#` comments. Verified: 0 bytes >127, no BOM, [ScriptBlock]::Create(UTF8 decode) OK, AND full end-to-end run via `Get-Content -Raw | iex` (env BEQUITE_FROM_LOCAL, temp dir) -> "v3.0.0-alpha.24 installed", 60 cmd files / 31 skills / scaffold incl automation. No network.

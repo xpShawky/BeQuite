@@ -621,4 +621,4 @@ See `.bequite/audits/FEATURE_WORKFLOW_AUDIT.md` for the alpha.13 precedent that 
 
 ## Current-state note (2026-06-12 stabilization)
 
-The catalog now spans 59 active commands + 1 deprecated alias with stable display IDs (`.bequite/commands/COMMAND_ID_MAP.md`) and 31 skills. The walkthroughs above predate the alpha.22 capability commands (`/bq-reference` `/bq-knowledge` `/bq-course` `/bq-pain-radar` `/bq-integrate` `/bq-proposal`) — their usage lives in each command file and `docs/specs/`; walkthroughs will be added here after their first live runs. Using BeQuite with Codex, Cursor, or other agents: `USING_BEQUITE_OUTSIDE_CLAUDE_CODE.md`.
+The catalog now spans 60 active commands + 1 deprecated alias with stable display IDs (`.bequite/commands/COMMAND_ID_MAP.md`) and 31 skills. The walkthroughs above predate the alpha.22 capability commands (`/bq-reference` `/bq-knowledge` `/bq-course` `/bq-pain-radar` `/bq-integrate` `/bq-proposal`) — their usage lives in each command file and `docs/specs/`; walkthroughs will be added here after their first live runs. Using BeQuite with Codex, Cursor, or other agents: `USING_BEQUITE_OUTSIDE_CLAUDE_CODE.md`.

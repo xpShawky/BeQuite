@@ -53,7 +53,7 @@ Then, in Claude Code:
 /bq-auto new "Build a booking dashboard for clinics"   → autonomous, gate-aware
 ```
 
-The installer copies `.claude/commands/` (59 active slash commands + 1 deprecated alias), `.claude/skills/` (31 skills), and scaffolds `.bequite/` memory. It never overwrites existing memory without `--force`. Canonical counts live in [`COMMAND_ID_MAP.md`](.bequite/commands/COMMAND_ID_MAP.md) and [`SKILL_REGISTRY.md`](.bequite/skills/SKILL_REGISTRY.md).
+The installer copies `.claude/commands/` (60 active slash commands + 1 deprecated alias), `.claude/skills/` (31 skills), and scaffolds `.bequite/` memory. It never overwrites existing memory without `--force`. Canonical counts live in [`COMMAND_ID_MAP.md`](.bequite/commands/COMMAND_ID_MAP.md) and [`SKILL_REGISTRY.md`](.bequite/skills/SKILL_REGISTRY.md).
 
 ## The BeQuite workflow
 
@@ -81,8 +81,8 @@ Every command has a stable catalog ID — workflow (`W0.1`–`W5.3`), navigation
 | **W5 Memory** | `/bq-memory` · `/bq-recover` · `/bq-handoff` |
 | **N Navigation** | `/bq-now` · `/bq-help` · `/bq-explain` · `/bq-suggest` |
 | **O Orchestrators** | `/bq-p0`…`/bq-p5` · `/bq-auto` |
-| **C Capabilities** | `/bq-presentation` · `/bq-writing-dna` · `/bq-reference` · `/bq-knowledge` · `/bq-course` · `/bq-pain-radar` · `/bq-integrate` · `/bq-proposal` · `/bq-offer` · `/bq-job-finder` · `/bq-make-money` |
-| **M Maintenance** | `/bq-update` · `/bq-skill-audit` |
+| **C Capabilities** | `/bq-presentation` · `/bq-writing-dna` · `/bq-reference` · `/bq-knowledge` · `/bq-course` · `/bq-pain-radar` · `/bq-integrate` · `/bq-proposal` · `/bq-offer` · `/bq-job-finder` · `/bq-make-money` · `/bq-automation` · `/bq-local-business` · `/bq-brand-kit` · `/bq-community` · `/bq-recording` · `/bq-start` |
+| **M Maintenance** | `/bq-update` · `/bq-skill-audit` · `/bq-hooks` |
 
 Many commands take argument workflows instead of spawning new commands: `/bq-verify regressions|drift`, `/bq-release readiness|announce|proof|demo-video`, `/bq-plan from-issues|migration`, `/bq-scope from-interview`, `/bq-test from-spec`, `/bq-handoff client`, `/bq-audit client|a11y`, and more — BeQuite deliberately grows arguments, not command count.
 
@@ -144,11 +144,12 @@ BeQuite is Claude-Code-first, but ~85% of it is agent-agnostic by construction: 
 
 ## Design philosophy
 
-**Lightweight on purpose.** No Studio app, no heavy CLI/TUI, no dashboard, no Docker, no database — markdown in, markdown out (see ADR-001 and ADR-004 in `docs/decisions/`). **Tool-neutral:** named tools are candidates, never defaults; every significant pick runs through ten decision questions and gets a recorded rationale. **Anti-bloat:** new capabilities must justify their shape (command vs skill vs argument vs template vs docs) through a taxonomy before being built — that's why 52 commands cover what could have sprawled into 100. **Honest by contract:** unverified means saying `UNVERIFIED`; opt-in hooks can machine-enforce the safety subset (destructive-op blocking, secret scanning, weasel-word interception — review before enabling).
+**Lightweight on purpose.** No Studio app, no heavy CLI/TUI, no dashboard, no Docker, no database — markdown in, markdown out (see ADR-001 and ADR-004 in `docs/decisions/`). **Tool-neutral:** named tools are candidates, never defaults; every significant pick runs through ten decision questions and gets a recorded rationale. **Anti-bloat:** new capabilities must justify their shape (command vs skill vs argument vs template vs docs) through a taxonomy before being built — that's why ~60 commands cover what could have sprawled into 100. **Honest by contract:** unverified means saying `UNVERIFIED`; opt-in hooks can machine-enforce the safety subset (destructive-op blocking, secret scanning, weasel-word interception — review before enabling).
 
 ## Update · Docs · Roadmap
 
 - **Update:** `/bq-update` — refreshes commands/skills/docs from GitHub, backs up first, never touches your project memory.
+- **Safety hooks (opt-in):** `/bq-hooks status|enable|disable|test` — machine-enforce the safety subset (block destructive ops, scan for secrets, intercept weasel-word "done" claims). OFF by default (they run shell on each tool call); `enable` merges the hooks block into `.claude/settings.json` after you confirm. See `docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`.
 - **Docs:** [`commands.md`](commands.md) (full reference) · [`docs/specs/COMMAND_CATALOG.md`](docs/specs/COMMAND_CATALOG.md) · [`docs/runbooks/`](docs/runbooks/) (install, usage, outside-Claude-Code) · [`docs/architecture/`](docs/architecture/) (the strategy layer) · [`docs/changelogs/CHANGELOG.md`](docs/changelogs/CHANGELOG.md).
 - **Roadmap:** newest command is `/bq-offer` (alpha.23, not yet live-tested); parked candidates (automation builder, data-to-product, agent-pack generator, and more) live in the canonical ledger `.bequite/tasks/REMAINING_WORK_MASTER.md` with explicit promotion conditions.
 

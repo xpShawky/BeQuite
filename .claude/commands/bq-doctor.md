@@ -259,3 +259,7 @@ After successful completion:
 - `.bequite/state/MODE_HISTORY.md` — append mode + outcome (when invoked via `/bq-auto`-style mode)
 
 **Failure behavior:** don't claim `✅ done` if any of the above wasn't completed. Report PARTIAL with the specific gap.
+
+## Hooks status (alpha.24)
+
+When reporting environment health, also note whether BeQuite's opt-in safety hooks are wired: check for a `hooks` block in `.claude/settings.json` / `settings.local.json`. If absent, report "safety hooks: DISABLED (opt-in) - run `/bq-hooks enable` to turn on; `/bq-hooks status` for detail." Hooks are never required; this is informational.

@@ -27,9 +27,9 @@ Open Claude Code in `<your-project>`. Type `/bequite`. Follow the menu.
 1. Refuses to overwrite an existing `.bequite/` (your memory) without `--force`.
 2. Downloads BeQuite from `https://github.com/xpShawky/BeQuite` (shallow clone) — or uses `--from-local` if you already have a clone.
 3. Copies into your project:
-   - `.claude/commands/` — **59 active slash commands + 1 deprecated alias** (markdown files; catalog IDs in `.bequite/commands/COMMAND_ID_MAP.md`)
+   - `.claude/commands/` — **60 active slash commands + 1 deprecated alias** (markdown files; catalog IDs in `.bequite/commands/COMMAND_ID_MAP.md`)
    - `.claude/skills/bequite-*` — **31 skills**
-   - `.claude/hooks/` + `settings*.json.example` — opt-in safety hooks (NOT active by default; review before enabling)
+   - `.claude/hooks/` + `settings*.json.example` — opt-in safety hooks (NOT active by default; review before enabling). To turn them on later, run `/bq-hooks enable` (it merges the hooks block into `.claude/settings.json` after you confirm); `/bq-hooks status|test` to check.
    - *(Counts as of v3.0.0-alpha.24 — the canonical counts live in `COMMAND_ID_MAP.md` + `SKILL_REGISTRY.md`; if this paragraph drifts again, `/bq-verify drift` will flag it.)*
 4. Scaffolds `.bequite/` memory (state, logs, prompts, audits, plans, tasks, research, skills, commands, writing, presentations, design, uiux, jobs, money, reference, knowledge, courses, pain-radar, integrations, proposals, offers, automation, exports, templates, local-business, brand, community, recordings, start — see the installer source for the authoritative list) with sensible defaults; never overwrites an existing `.bequite/`.
 5. Appends a short "BeQuite" section to your `CLAUDE.md` (or creates one if missing).

@@ -1,6 +1,6 @@
 # BeQuite installed version
 
-**Version:** v3.0.0-alpha.24 - Selected-V2 build (C12-C17 + extensions) + P1 maintenance (+ M3 /bq-hooks added 2026-06-13)
+**Version:** v3.0.0-alpha.24 - Selected-V2 build (C12-C17 + extensions) + P1 maintenance (+ M3 /bq-hooks added 2026-06-13; hooks examples hardened: Bash|PowerShell matcher + whole-string-scan gotcha documented)
 **Updated:** 2026-06-12
 **Source:** github
 **Source path / repo:** xpShawky/BeQuite (branch: main)

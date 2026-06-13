@@ -907,6 +907,21 @@ Safely update BeQuite itself (commands, skills, docs, templates) without re-runn
 - **Conflict handling:** local edits to `.claude/commands/*.md` surface as `<file>.bequite-update.md` sibling files for manual review
 - **Full spec:** [`.claude/commands/bq-update.md`](.claude/commands/bq-update.md)
 
+### `/bq-hooks` (M3, NEW in alpha.24)
+
+Manage BeQuite's opt-in Claude Code safety hooks (destructive-op block · secret scan · banned-weasel-word stop).
+
+- **Purpose:** turn the safety hooks on/off and verify them. Hooks ship **OFF by default** (they run shell on every tool call = RCE vector; review before enabling).
+- **Phase:** Maintenance (not part of P0-P5)
+- **Modes:**
+  - `/bq-hooks status` — installed? wired into settings? which OS variant? reload needed?
+  - `/bq-hooks test` — fire each hook script with crafted input, check exit codes (2=block, 0=allow); no Claude reload needed
+  - `/bq-hooks enable` — **merges** the OS-correct hooks block into `.claude/settings.json` (asks first; never overwrites; R3 hard gate)
+  - `/bq-hooks disable` — remove only BeQuite's hooks block
+- **Notes:** destructive matcher covers **Bash + PowerShell**; hooks scan the whole command string (don't write `rm -rf`/`DROP TABLE` literally in a command when hooks are on); loads immediately in current Claude Code (reload only if `/hooks` doesn't list them).
+- **Writes (enable/disable only, with confirmation):** `.claude/settings.json` (merge)
+- **Full spec:** [`.claude/commands/bq-hooks.md`](.claude/commands/bq-hooks.md) · strategy: [`docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`](docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md)
+
 ---
 
 ## Quick orientation

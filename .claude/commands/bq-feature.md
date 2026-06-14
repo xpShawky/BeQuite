@@ -269,3 +269,7 @@ Per contract step 12: end with the router block — Required next W3.1 `/bq-test
 ## System Design Risk Check (alpha.22 orchestration update — mandatory when relevant)
 
 When the task touches payments · inventory · bookings · auth · permissions/tenancy · database writes · concurrency · queues · external APIs · webhooks · uploads · UGC · admin actions · production · security logic, the output MUST include the structured block from `docs/architecture/SYSTEM_DESIGN_REASONING_STANDARD.md` (Domain · Critical entities · State transitions · Concurrent user risks · Data consistency · Failure modes · Recovery · Security · Edge cases · Tests required · Confidence · Unknowns). Canonical test: one item in stock, two simultaneous buyers — if the plan can't answer reservation/locking/idempotency/order-states/user-visible-outcome, implementation does not start. Outside these domains: `Not applicable — reason:`. Risk without a named test = unfinished plan. Blocking unknowns stop the build.
+
+## Skills-first + post-phase verify (alpha.25)
+
+Announce selected skills before building (contract step 4). After the feature is implemented, run the post-phase test + verify gate (select testing-gate + guard-pass + domain skills first; run tests/build; evidence in `EVIDENCE_LOG.md`) before claiming done — and before the Design Continuity / Visual QA gates for UI. Failure → `/bq-fix`.

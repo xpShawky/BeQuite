@@ -293,3 +293,7 @@ After successful completion:
 ## Orchestrator reference (alpha.22 orchestration update)
 
 This command consults the global orchestration brain: `bequite-orchestrator` skill + `.bequite/state/ORCHESTRATION_MAP.md` — the source of truth when commands/skills conflict, workflows seem duplicated, the next step is unclear, or a task matches no existing capability (Missing Capability protocol).
+
+## Skills-first (alpha.25)
+
+Before inspecting anything, select + announce the skills this discovery needs (emit the `Skill Selection:` block first — contract step 4). Discovery routinely loads researcher (+ project-architect for stack signals, security-reviewer if secrets/auth present, frontend-design-system if a UI exists). While discovering, also note skill GAPS: if the repo's domain needs expertise BeQuite lacks, flag it for `/bq-research` to evaluate a verified external skill (safe path in AUTO_SKILL_ROUTING_STRATEGY §alpha.25) — never auto-install.

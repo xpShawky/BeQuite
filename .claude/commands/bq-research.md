@@ -409,3 +409,7 @@ Every recommendation in RESEARCH_REPORT.md must enable a decision section: Probl
 Research depth covers 11 dimensions — not just stack. Project domain, user needs, competitors, failure modes, success patterns, UX, security, scalability, deployment, differentiation. **Tool choice comes after project understanding, never before.**
 
 See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.
+
+## Skills-first + research-discovered skills (alpha.25)
+
+Announce selected skills before researching (contract step 4; researcher always, + domain specialists). **Skill discovery is part of research:** (1) check BeQuite's own `SKILL_REGISTRY.md` for a fitting skill first; (2) if a real gap exists and a public skill (e.g. a GitHub Claude Code skill) would fill it on best practices, you MAY recommend it — but only via the safe path: verify the repo/author/recency + read the SKILL.md (anti-hallucination + PhantomRaven), run the 10 tool-neutrality questions, confirm it's inspectable markdown that doesn't duplicate an existing skill, and **install ONLY with explicit user approval** (third-party SKILL.md = supply-chain/R2-R3 risk; never auto-install). On approval, copy into `.claude/skills/` + register in `SKILL_REGISTRY.md` with provenance. Default: prefer BeQuite's own skills.

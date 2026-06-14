@@ -42,6 +42,9 @@ No fitting command/skill ⇒ emit `Missing Capability Detected:` block (needed �
 ## 13. Next-command recommendation rules
 Contract step 12 (`COMMAND_EXECUTION_CONTRACT.md`); IDs are the shared vocabulary; capability suggestions only on task signals; gates never bypassed, blocked items appear under do-not-run-yet with the gate named.
 
+## 15. Skills-first + execution profile + post-phase verify (alpha.25)
+Every command (workflow + capability + maintenance; trivial reads exempt) announces its `Skill Selection:` block BEFORE acting. `/bq-plan` records skills per phase; `/bq-assign` records per task + an Execution Profile (recommended model+tier · effort · confidence — `docs/architecture/TASK_EXECUTION_PROFILE.md`). `/bq-discover`+`/bq-research` may recommend a VERIFIED external skill on a real gap (user-approved install only). After each phase/task: select verification skills + run tests/verify with evidence before advancing (failure → `/bq-fix`). BeQuite recommends models, never switches them.
+
 **Maintainer rule:** command/skill/rule changes update this map in the same commit (drift-checked by `/bq-verify drift` + skill-audit).
 
 ## 14. Remaining-work source of truth

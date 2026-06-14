@@ -18,8 +18,10 @@ Load `.bequite/skills/SKILL_REGISTRY.md` — the token-cheap routing index — N
 ### 3. Task classification (alpha.20)
 Classify the request into domains per `SKILL_ROUTER.md`, using (in priority order): user text → invoking command → files present / repo type → mode + phase → memory (PROJECT_DNA, MISTAKE_MEMORY, MODE_HISTORY) → risk tier of likely-touched paths → requested output type.
 
-### 4. Automatic skill selection (alpha.20)
+### 4. Automatic skill selection (alpha.20; **skills-first, global — alpha.25**)
 Select skills per the domain map + cross-cutting auto-attach + mode sizing (fast = smallest safe set · deep = broader · token-saver = lazy-load · delegate = skills named in the task pack). **The user never has to name skills** — but an explicit user choice overrides routing. Emit the `Skill Selection:` block (selected + reasons; notable not-selected + reasons) in the output. Load only the selected SKILL.md files.
+
+**Skills-first is a GLOBAL hard rule (alpha.25):** this happens BEFORE any real work, for **every** command — workflow commands AND capability commands (course, presentation, reference, offer, automation, brand-kit, …) AND maintenance. The `Skill Selection:` block is the first substantive thing the command emits; you do not write a plan, generate content, edit a file, or call a tool for the task until skills are selected and announced. A command that acts before announcing its skills is a contract violation. (Trivial read-only commands — now/help/explain — are exempt.)
 
 ### 5. Gate check
 Verify this command's required gates are `✅` in the gate ledger. If not: **refuse**, name the missing gate, recommend the prerequisite command, stop. ("You're trying to run X, but Y must be completed first.")
@@ -31,10 +33,10 @@ Parse the user request. Separate **stated scope** from **inferred scope**. If sc
 Before researching: check `.bequite/research/` for an existing report covering this domain. Reuse + cite it; research only the delta. New research lands in `.bequite/research/<DOMAIN>_RESEARCH_REPORT.md` so the next run can reuse it. Depth per mode: deep = 11 dims · fast = 3 dims · token-saver = reuse-only unless gap is blocking.
 
 ### 8. Plan or task check → Action
-For multi-file work: confirm a plan exists (`IMPLEMENTATION_PLAN.md` or feature mini-spec) and a File-Responsibility Map for >5-file changes. New BeQuite features additionally follow the 15-step feature-addition workflow (CLAUDE.md rule 13). Then act: smallest safe change · failing-test-first where tests exist · new code matches `PROJECT_DNA.md` · no drive-by refactors · file edits respect `FILE_RISK_RULES.md` — R3 paths require explicit user confirmation even in auto mode.
+For multi-file work: confirm a plan exists (`IMPLEMENTATION_PLAN.md` or feature mini-spec) and a File-Responsibility Map for >5-file changes. New BeQuite features additionally follow the 15-step feature-addition workflow (CLAUDE.md rule 13). Plans carry a per-phase **Execution Profile** and task lists a per-task one (selected skills · recommended model+tier · effort · confidence — `TASK_EXECUTION_PROFILE.md`). Then act: smallest safe change · failing-test-first where tests exist · new code matches `PROJECT_DNA.md` · no drive-by refactors · file edits respect `FILE_RISK_RULES.md` — R3 paths require explicit user confirmation even in auto mode.
 
-### 9. Verification
-Run the relevant checks (build/test/lint/visual per scope). **Evidence over claims:** record command + exit code + key output in `EVIDENCE_LOG.md` (or paste inline for small runs). No banned weasel words. If unverified, say `UNVERIFIED:` explicitly.
+### 9. Verification (+ **post-phase verify gate — alpha.25**)
+Run the relevant checks (build/test/lint/visual per scope). **Evidence over claims:** record command + exit code + key output in `EVIDENCE_LOG.md` (or paste inline for small runs). No banned weasel words. If unverified, say `UNVERIFIED:` explicitly. **After implementing any phase or task, run test + verification for what was just built — before moving on** (select the verification skills first per step 4: testing-gate, guard-pass, security-reviewer/system-design for risky domains, frontend-quality for UI). Phase is not "done" until its named tests pass with evidence; a failure routes to `/bq-fix`, not to the next phase.
 
 ### 10. Report
 Lead with outcome. State: what was done · files changed · skill selection (step 4 block) · evidence · remaining issues · verification status (PASS / PARTIAL / FAIL — honestly).

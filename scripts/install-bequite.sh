@@ -9,7 +9,7 @@
 
 set -uo pipefail
 
-BEQUITE_VERSION="v3.0.0-alpha.24"
+BEQUITE_VERSION="v3.0.0-alpha.25"
 REPO_URL="https://github.com/xpShawky/BeQuite.git"
 TARGET="$(pwd)"
 FROM_LOCAL=""
@@ -80,15 +80,15 @@ fi
 
 # --- 3. .claude/commands/ (37 slash commands) ---
 
-section "Installing .claude/commands/ (46 slash commands)"
+section "Installing .claude/commands/ (60 slash commands)"
 mkdir -p "./.claude/commands"
 cp -r "$SOURCE/.claude/commands/"* "./.claude/commands/"
 count=$(ls -1 ./.claude/commands/*.md 2>/dev/null | wc -l)
 echo "  $(green "$count slash commands installed")"
 
-# --- 4. .claude/skills/bequite-* (27 specialist skills) ---
+# --- 4. .claude/skills/bequite-* (31 specialist skills) ---
 
-section "Installing .claude/skills/bequite-* (27 specialist skills)"
+section "Installing .claude/skills/bequite-* (31 specialist skills)"
 mkdir -p "./.claude/skills"
 for skill in "$SOURCE"/.claude/skills/bequite-*/; do
   if [[ -d "$skill" ]]; then
@@ -273,6 +273,7 @@ $BQ_MARKER
 4. Always update \`.bequite/state/WORKFLOW_GATES.md\` when a gate is met.
 5. Banned weasel words: should, probably, seems to, appears to, I think it works, might, hopefully, in theory.
 6. No out-of-order commands — gate system blocks them.
+7. **Skills-first** — before doing ANY command (workflow or capability: course, presentation, etc.), select + announce the suitable BeQuite skills FIRST, then act. \`/bq-plan\` records skills per phase; \`/bq-assign\` records skills + recommended model + effort + confidence per task; after each phase, run test + verification before moving on.
 
 <!-- /BEQUITE -->
 EOF
@@ -298,6 +299,7 @@ This project uses **BeQuite** — a lightweight Claude Code skill pack.
 - \`/bq-update\` — safe BeQuite self-update (backups + non-destructive)
 
 See \`.bequite/\` for memory + state. Named tools are EXAMPLES — see \`.bequite/principles/TOOL_NEUTRALITY.md\`.
+**Skills-first:** before any command (incl. course/presentation/etc.), select + announce suitable skills before acting; \`/bq-assign\` tags each task with skills + recommended model + effort + confidence; verify each phase before the next.
 Memory-first principle: see \`docs/architecture/MEMORY_FIRST_BEHAVIOR.md\`.
 
 <!-- /BEQUITE -->

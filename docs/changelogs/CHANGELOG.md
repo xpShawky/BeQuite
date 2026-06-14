@@ -4,6 +4,15 @@ Format: [Keep a Changelog v1.1](https://keepachangelog.com/en/1.1.0/) · Version
 
 Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANGELOG-legacy.md`](../legacy/CHANGELOG-legacy.md) after Phase B cleanup.
 
+## [3.0.0-alpha.25] - 2026-06-13 - Skills-first workflow law + per-task execution profile + post-phase verify
+
+### Changed (workflow law)
+- **Skills-first, global:** the execution contract (step 4) now makes selecting + announcing skills the FIRST substantive step of EVERY command - workflow AND capability (course/presentation/reference/offer/automation/brand-kit/community/recording/start) AND maintenance. Acting before announcing skills is a contract violation (trivial reads exempt). CLAUDE.md core rule 17 added; mirrored into the installer-written project CLAUDE.md ("system prompt").
+- **Skills chosen across the pipeline:** /bq-discover + /bq-research select skills (and research may recommend a VERIFIED external GitHub skill on a real gap - safe path: verify repo/author/recency, 10 tool-neutrality questions, inspectable markdown, **user-approved install only, never auto-install**); /bq-plan records per-phase skills; /bq-assign records per-task skills.
+- **Per-task Execution Profile:** /bq-plan (per phase) and /bq-assign (per task) now carry recommended model + tier · effort (quick/standard/high/max) · confidence % (new `docs/architecture/TASK_EXECUTION_PROFILE.md`). Honest: BeQuite recommends a model, never switches it; never-give-small list forces tier A for security/migrations/auth/payments/destructive/broad-refactor/release.
+- **Post-phase verify gate:** after implementing any phase/task, select verification skills (testing-gate/guard-pass/security/system-design/frontend-quality) and run its tests + verification with evidence BEFORE advancing; failure routes to /bq-fix. Wired into the contract (step 9), /bq-implement, /bq-feature.
+- Synced: AUTO_SKILL_ROUTING_STRATEGY, ORCHESTRATION_MAP (s15), CLAUDE.md, both installers (+banner counts 60/31, version alpha.25). No new commands/skills (60/31).
+
 ## [3.0.0-alpha.24] - 2026-06-13 - Selected-V2 build + P1 maintenance
 
 ### Added (2026-06-13, same release)

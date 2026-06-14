@@ -4,7 +4,7 @@
 
 **A disciplined AI-engineering workflow for coding agents — slash commands, expert skills, persistent memory, and quality gates, all in plain markdown.**
 
-**Latest:** `v3.0.0-alpha.24` · MIT · by [@xpShawky](https://github.com/xpShawky)
+**Latest:** `v3.0.0-alpha.25` · MIT · by [@xpShawky](https://github.com/xpShawky)
 
 <a href="commands.md"><img alt="60 commands" src="https://img.shields.io/badge/slash_commands-60-7c3aed?style=flat-square"></a>
 <a href="#skills"><img alt="31 skills" src="https://img.shields.io/badge/skills-31-10b981?style=flat-square"></a>

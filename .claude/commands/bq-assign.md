@@ -206,3 +206,12 @@ Unknowns/blockers: <list or none>      Next: <recommended action>
 ```
 
 Bands: 90–100 routine · 75–89 likely · 50–74 needs exploration · 25–49 spike first · 0–24 blocked/insufficient info. **Confidence is not a feeling — it is a report** (evidence, tests, scope clarity, familiarity, dependency risk, verification). It must MOVE as evidence arrives (before-inspection → after-reading → after-implementation → after-verification; recorded per task in `.bequite/tasks/TASK_CONFIDENCE.md`). Never 100% — and ≥95% only with all tests passing + zero unresolved assumptions + EVIDENCE_LOG entry. Apply project modifiers from `.bequite/state/CONFIDENCE_RULES.md`; at verify/release, log forecast-vs-actual to `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`.
+
+## Per-task Execution Profile (alpha.25)
+
+Each task in `TASK_LIST.md` carries skills-first selection AND an Execution Profile (`docs/architecture/TASK_EXECUTION_PROFILE.md`):
+
+```
+T<n>  <task>   skills: <registry skills> · recommended: <model id> (tier A|B|C) · effort: <quick|standard|high|max> · confidence: <band % + evidence>
+```
+Example: `T2 Payment + idempotency · skills: backend-architect, security-reviewer · recommended: claude-opus-4-8 · effort: max · confidence: 78% (inferred — concurrency)`. Model names are examples + tool-neutral (opus-4-8 frontier / sonnet-4-6 mid / haiku-4-5 small / fable-5); pick per task, not by habit. BeQuite recommends — it does not switch models (reports any reroute). Confidence trajectory also written to `TASK_CONFIDENCE.md`. Delegate mode consumes the per-task model recommendation (tier-A plans → recommended tier executes → tier-A reviews).

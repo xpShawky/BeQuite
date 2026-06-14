@@ -1,10 +1,10 @@
 # BeQuite installed version
 
-**Version:** v3.0.0-alpha.24 - Selected-V2 build (C12-C17 + extensions) + P1 maintenance (+ M3 /bq-hooks added 2026-06-13; hooks examples hardened: Bash|PowerShell matcher + whole-string-scan gotcha documented)
+**Version:** v3.0.0-alpha.25 - Skills-first workflow law + per-task execution profile (model/effort/confidence) + post-phase verify gate
 **Updated:** 2026-06-12
 **Source:** github
 **Source path / repo:** xpShawky/BeQuite (branch: main)
-**Previous version:** v3.0.0-alpha.23
+**Previous version:** v3.0.0-alpha.24
 **Last check:** 2026-06-12
 **Update count:** 0 (this is the seed file; updates from /bq-update increment)
 

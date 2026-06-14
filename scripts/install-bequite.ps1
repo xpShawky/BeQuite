@@ -1,4 +1,4 @@
-# install-bequite.ps1 - install BeQuite (lightweight skill pack) into the current project.
+﻿# install-bequite.ps1 - install BeQuite (lightweight skill pack) into the current project.
 # Copies BeQuite slash commands, skills, principles, memory scaffold, and the command
 # reference into your project. No heavy dependencies, no Docker, no database - just markdown.
 #
@@ -23,7 +23,7 @@ for ($i = 0; $i -lt $args.Count; $i++) {
 }
 
 $ErrorActionPreference = "Continue"
-$BEQUITE_VERSION = "v3.0.0-alpha.24"
+$BEQUITE_VERSION = "v3.0.0-alpha.25"
 
 function Write-Section($text) {
   Write-Host ""
@@ -91,7 +91,7 @@ if ($FromLocal -ne "") {
 
 # --- 3. Copy .claude/commands/ ---
 
-Write-Section "Installing .claude/commands/ (59 slash commands)"
+Write-Section "Installing .claude/commands/ (60 slash commands)"
 $SRC_CMD = Join-Path $SOURCE ".claude\commands"
 if (-not (Test-Path $SRC_CMD)) {
   Exit-Fatal "Source missing $SRC_CMD - is this a valid BeQuite repo?"
@@ -101,7 +101,7 @@ Copy-Item -Path "$SRC_CMD\*" -Destination ".\.claude\commands\" -Recurse -Force
 $count = (Get-ChildItem .\.claude\commands\*.md).Count
 Write-Host "  $count slash commands installed" -ForegroundColor Green
 
-# --- 4. Copy .claude/skills/bequite-* (26 specialist skills) ---
+# --- 4. Copy .claude/skills/bequite-* (31 specialist skills) ---
 
 Write-Section "Installing .claude/skills/bequite-* (31 specialist skills)"
 $SRC_SKILLS = Join-Path $SOURCE ".claude\skills"
@@ -324,6 +324,7 @@ $BQ_MARKER
 4. Always update ``.bequite/state/WORKFLOW_GATES.md`` when a gate is met.
 5. Banned weasel words: should, probably, seems to, appears to, I think it works, might, hopefully, in theory.
 6. No out-of-order commands - gate system blocks them.
+7. **Skills-first** - before doing ANY command (workflow or capability: course, presentation, etc.), select + announce the suitable BeQuite skills FIRST, then act. /bq-plan records skills per phase; /bq-assign records skills + recommended model + effort + confidence per task; after each phase, run test + verification before moving on.
 
 <!-- /BEQUITE -->
 "@
@@ -350,6 +351,7 @@ This project uses **BeQuite** - a lightweight Claude Code skill pack.
 - ``/bq-update`` - safe BeQuite self-update (backups + non-destructive)
 
 See ``.bequite/`` for memory + state. Named tools are EXAMPLES - see ``.bequite/principles/TOOL_NEUTRALITY.md``.
+**Skills-first:** before any command (incl. course/presentation/etc.), select + announce suitable skills before acting; /bq-assign tags each task with skills + recommended model + effort + confidence; verify each phase before the next.
 Memory-first principle: see ``docs/architecture/MEMORY_FIRST_BEHAVIOR.md``.
 
 <!-- /BEQUITE -->

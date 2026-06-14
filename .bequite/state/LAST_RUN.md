@@ -1,5 +1,12 @@
 # Last BeQuite command
 
+**Command:** v3.0.0-alpha.25 - skills-first workflow law + per-task execution profile + post-phase verify gate
+**Timestamp:** 2026-06-13 (UTC)
+**Model:** claude-opus-4-8 (user /model set it)
+**Result:** SUCCESS - 3 workflow upgrades codified: (1) skills-first GLOBAL (every command incl. capabilities announces skills before acting - contract step 4 + CLAUDE.md rule 17 + installer project-CLAUDE.md); discover/research/plan/assign select+record skills; research can recommend a verified external skill (user-approved install only). (2) Per-task Execution Profile - recommended model+tier/effort/confidence in plan (per phase) + assign (per task); BeQuite recommends, never switches. (3) Post-phase test+verify gate before advancing (contract step 9 + implement + feature). New TASK_EXECUTION_PROFILE.md; AUTO_SKILL_ROUTING + ORCHESTRATION_MAP extended; version->alpha.25; installers parse OK (60/31).
+**Next suggested:** first live trial of a capability command will exercise all three (skills announced first -> per-task profile -> post-phase verify). C5 /bq-course or C12 /bq-automation recommended.
+
+**Prior run (preserved):**
 **Command:** hooks examples hardened (Bash|PowerShell matcher + whole-string-scan gotcha) from live field report
 **Timestamp:** 2026-06-13 (UTC)
 **Model:** claude-opus-4-8 (user /model set it)

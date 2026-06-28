@@ -1,5 +1,12 @@
 # Last BeQuite command
 
+**Command:** alpha.25 HOTFIX - install-bequite.ps1 BOM regression broke `irm|iex`
+**Timestamp:** 2026-06-13 (UTC)
+**Model:** claude-opus-4-8 (user /model set it)
+**Result:** SUCCESS - user re-ran `irm|iex` after the alpha.25 push and hit `lightweight : ... not recognized` (a `﻿#` BOM on line 1). Root cause: the alpha.25 version-bump script wrote the .ps1 with Python `utf-8-sig`, re-adding the BOM that hotfix #2 had stripped; ParseFile + [ScriptBlock]::Create both mask a leading BOM so the release check missed it. Fix: stripped the 3-byte BOM (pure ASCII, no BOM; no other change). REPRODUCED via the faithful `UTF8.GetString(ReadAllBytes(...)) | iex` byte path, then RE-VERIFIED clean on that path in a temp dir (no `lightweight`/`CommandNotFound`; 61 cmd files / 31 skills). Sharpened release check (byte-level BOM assert + real `iex` run) + MISTAKE_MEMORY. Counts 60/31.
+**Next suggested:** re-run `irm https://raw.githubusercontent.com/xpShawky/BeQuite/main/scripts/install-bequite.ps1 | iex` in your Studio project - it now installs clean end-to-end. Then a first live trial of a capability command.
+
+**Prior run (preserved):**
 **Command:** v3.0.0-alpha.25 - skills-first workflow law + per-task execution profile + post-phase verify gate
 **Timestamp:** 2026-06-13 (UTC)
 **Model:** claude-opus-4-8 (user /model set it)

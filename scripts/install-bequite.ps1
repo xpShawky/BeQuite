@@ -1,4 +1,4 @@
-﻿# install-bequite.ps1 - install BeQuite (lightweight skill pack) into the current project.
+# install-bequite.ps1 - install BeQuite (lightweight skill pack) into the current project.
 # Copies BeQuite slash commands, skills, principles, memory scaffold, and the command
 # reference into your project. No heavy dependencies, no Docker, no database - just markdown.
 #

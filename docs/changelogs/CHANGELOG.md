@@ -13,6 +13,9 @@ Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANG
 - **Post-phase verify gate:** after implementing any phase/task, select verification skills (testing-gate/guard-pass/security/system-design/frontend-quality) and run its tests + verification with evidence BEFORE advancing; failure routes to /bq-fix. Wired into the contract (step 9), /bq-implement, /bq-feature.
 - Synced: AUTO_SKILL_ROUTING_STRATEGY, ORCHESTRATION_MAP (s15), CLAUDE.md, both installers (+banner counts 60/31, version alpha.25). No new commands/skills (60/31).
 
+### Fixed (hotfix 2026-06-13 - same release)
+- **`irm | iex` Windows install broke again - BOM regression.** The alpha.25 version-bump script wrote install-bequite.ps1 with Python `utf-8-sig`, which **re-prepended the UTF-8 BOM** that hotfix #2 had stripped. Piped through `iex`, the BOM glued to the leading `#` so line 1 stopped being a comment and PowerShell ran `lightweight` (the comment text) as a command. `ParseFile` AND `[ScriptBlock]::Create` both mask a leading BOM, so the alpha.25 "ps1 OK" check missed it. Fix: stripped the 3-byte BOM - the file is pure ASCII, no BOM again (no other change). **Reproduced** the exact failure via `[Text.Encoding]::UTF8.GetString([IO.File]::ReadAllBytes(...)) | iex` (the faithful irm|iex byte path), then **re-verified clean** on that same path in an isolated temp dir: no `lightweight`/`CommandNotFound`, 61 command files / 31 skill dirs installed. **Sharpened standing release check:** byte-level BOM assert (first 3 bytes != `EF BB BF`) + an actual `iex` run - never trust ParseFile/ScriptBlock::Create alone, and never write the .ps1 with `utf-8-sig` or PowerShell's default (BOM-adding) encoding.
+
 ## [3.0.0-alpha.24] - 2026-06-13 - Selected-V2 build + P1 maintenance
 
 ### Added (2026-06-13, same release)

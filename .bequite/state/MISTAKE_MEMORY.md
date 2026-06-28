@@ -38,6 +38,17 @@ Project-specific lessons. When BeQuite or the agent makes a mistake, hits an err
 
 ## Entries (newest at top)
 
+## 2026-06-13 — install-bequite.ps1 BOM regression (`utf-8-sig` re-added the BOM that breaks `irm|iex`)
+
+**Context:** alpha.25 release. User ran `irm .../install-bequite.ps1 | iex` and hit `lightweight : ... not recognized` with a `﻿#` BOM on line 1. This is a REPEAT of the alpha.24 hotfix #2 BOM class — it regressed.
+**Mistake:** The alpha.25 version-bump script (`_tmp_a25.py`) read+wrote install-bequite.ps1 with Python encoding `utf-8-sig`, which prepends a UTF-8 BOM on write. That re-introduced the exact BOM hotfix #2 had removed.
+**Root cause:** `utf-8-sig` (and PowerShell's default `Out-File`/`Set-Content`) ADD a BOM. A leading BOM piped through `Invoke-Expression` makes the first `#` stop being a comment, so PowerShell executes the comment text (`lightweight`, …) as commands.
+**Fix:** `scripts/install-bequite.ps1:1` — stripped the 3-byte BOM via byte-level rewrite (`open(p,'wb')`); file is pure ASCII, no BOM. No other change.
+**Prevention rule:** NEVER write install-bequite.ps1 with `utf-8-sig` (Python) or default PowerShell encoding. Write pure UTF-8 / ASCII, NO BOM (Python: write bytes via `open(p,'wb')`, or text mode `encoding='utf-8'` — never `utf-8-sig`). Any release touching the .ps1 MUST run BOTH (1) a byte-level BOM assert and (2) an actual `iex` run in a temp dir. **`ParseFile` AND `[ScriptBlock]::Create` both strip/mask a leading BOM and will falsely report OK.**
+**Related files:** scripts/install-bequite.ps1 (sh path is never affected by a BOM)
+**Related command:** install (`irm|iex`) / release verification
+**How to detect next time:** `python3 -c "import sys;sys.exit(open('scripts/install-bequite.ps1','rb').read()[:3]==b'\xef\xbb\xbf')"` (exit 1 = BOM present = BAD). Faithful repro: `[Text.Encoding]::UTF8.GetString([IO.File]::ReadAllBytes($ps1)) | iex` then grep output for `lightweight`/`CommandNotFound`.
+
 <!--
   Examples of good entries:
 

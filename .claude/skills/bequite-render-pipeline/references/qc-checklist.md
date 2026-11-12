@@ -35,6 +35,19 @@ Also: `ffprobe` duration matches the plan (±1 frame) and audio is 48 kHz stereo
 | smoothness | phone preview at full speed | user's verdict recorded in `review.md` |
 | Arabic / RTL lines | stills of each line | joins intact, right-to-left reveals, nothing clipped (`.claude/skills/bequite-kinetic-type/references/arabic-rtl.md`) |
 
+## B2. AI-tell QA (every AI-generated shot)
+
+Reject the shot on any hit; regenerate or cut around it, don't patch in prompts. Record the selection ratio (generated vs kept) in `evidence.md`; professionals keep roughly 1 in 10 or fewer. Sources and the full list: `motion-library/CRAFT_RESEARCH.md` section 3.
+
+- [ ] **Hands and bodies:** no merging fingers, wrong digit counts, joints bending wrong, impossible gaits in the background.
+- [ ] **Text:** no gibberish or shifting in-scene text (put real text in as graphics instead).
+- [ ] **Physics:** objects don't float, sink into surfaces or pass through each other; motion shows contact (feet, hands, props).
+- [ ] **Clip ends:** trim the deceleration tail; no shot ends in a freeze or a camera that stops dead (cut about 0.5 s early).
+- [ ] **Consistency across shots:** same product shape, colour, logo, character face and wardrobe in every shot.
+- [ ] **Look:** not the stock AI look (golden-hour backlight + shallow depth of field + slow motion; flat uniform light; over-saturated or orange skin). One base grade for the whole film, then subtle grain.
+- [ ] **Faces and voice:** no sudden reaction zooms, no slow-blinking "perfect skin" headshots; lips close on b/p/m; breaths reduced to natural, not loud or missing.
+- [ ] **Sound:** music cuts and swells are tied to picture events, not a generic swell.
+
 ## C. Truth and rights
 
 | Check | Pass |

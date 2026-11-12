@@ -42,4 +42,10 @@ As found in research notes dated 2026-09 to 2026-11 (`UNVERIFIED` unless re-chec
 - Free tiers of many tools (video, voice, music, 3D) were **non-commercial** or watermarked; paid tiers usually added commercial rights. Open-weight models can carry licences that exclude regions or cap users.
 - No model rendered small UI text or logos reliably.
 
+**Google Flow, checked 2026-11-12** (official help pages; full sources in `motion-library/CRAFT_RESEARCH.md` section 4):
+- Default video model **Omni Flash 1.2**: 3-15 s clips on paid plans (3-10 s free), 360p or 720p native, paid upscale to 1080p / 4K; Extend is paid-only. **Veo 3.1 Fast, Veo 3.1 Quality and Omni Flash 1.1 retire on 2026-12-05**; Veo Extend retired 2026-11-05. Image models for keyframes: Nano Banana Pro / 2.1 / 2 Lite. All output carries a SynthID watermark.
+- Omni is **multi-shot by default**: for one shot write "In a single continuous shot … No scene cuts." There are **no negative prompts**: write "Do not …". One action per clip; name one camera move ("push in", "locked off", "one continuous shot"); change one thing per edit; paste the identical character/product description into every prompt.
+- Recipe: lock stills first (keyframes with the anchor composition in the same pixel position) → Frames-to-video or Ingredients on Omni Flash 1.2 → 3-6 variations per shot, keep the best → trim head and tail of every clip → grade, grain and sound outside Flow (Scenebuilder is rough assembly only) → run the AI-tell QA in `bequite-render-pipeline/references/qc-checklist.md`.
+- Unresolved: maximum extended length (30 s vs 40 s in Google's own docs); test before planning around it.
+
 The durable lesson: never hard-code a model. Write the capability in `plan.md`, list 2–3 candidate vendors with today's price and terms (with URLs and the date checked), and re-check at the moment of spending.

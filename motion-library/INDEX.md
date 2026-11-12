@@ -39,7 +39,9 @@
 - Crushed, clipped loudness (−6 LUFS, peaks above 0 dB) with no dynamics. Master around −14 LUFS with real quiet moments.
 - The default "AI startup" look: black + one orange/neon accent + particles everywhere. Keep the structure, invent the motif.
 - Generic epic AI faces and "everything is golden hour"; legal text dumped over footage.
-- Breath sounds, frozen frames, camera moves that stop dead, sudden reaction zooms (owner's list; see the research notes when added).
+- AI-video tells: loud or missing breaths, frozen frames and clip-end slowdowns, camera moves that stop dead, sudden reaction zooms, morphing hands, gibberish text, floaty physics, objects that change between shots, the golden-hour + shallow-focus + slow-motion stock look. Full sourced list and fixes: `CRAFT_RESEARCH.md` section 3; QC gate: `bequite-render-pipeline/references/qc-checklist.md` B2.
+
+Craft research (editing, kinetic type trends, AI-video fixes, Google Flow, sound): `CRAFT_RESEARCH.md`.
 
 ## Finished work (`inbox/I finished/`)
 

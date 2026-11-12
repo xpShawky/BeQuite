@@ -49,6 +49,8 @@ for (let i = 0; i < argv.length; i++) {
 }
 if (!o.project || !fs.existsSync(o.project)) { console.error("project not found: " + o.project); process.exit(2); }
 if (o.comp && !o.output) { console.error("--comp needs --output"); process.exit(2); }
+// aerender refuses to write into a folder that does not exist ("Directory does not exist"): create it first.
+if (o.output) fs.mkdirSync(path.dirname(o.output), { recursive: true });
 
 const ae = findAe();
 if (ae.error) { console.error(ae.error); process.exit(2); }

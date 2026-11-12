@@ -118,7 +118,7 @@ Combine them (`/bq-auto deep delegate "..."`). If two conflict (deep + fast), Be
 | C15 | `/bq-community "<who + purpose>"` | community plan |
 | C16 | `/bq-recording "<video \| transcript>"` | long video → structured knowledge |
 | C17 | `/bq-start "<what you want to start>"` | choose how to start |
-| C18 | `/bq-motion "<idea>"` · `M<n>` · `study <path>` · `recut <platform>` · `post` · `status` | direct a film: references → script → style → render plan → build → sound → QC → recuts, posts, making-of guide |
+| C18 | `/bq-motion "<idea>"` · `M<n>` · `study <path>` · `lab <technique>` · `recut <platform>` · `post` · `status` | direct a film: references → script → style → render plan → build → sound → QC → recuts, posts, making-of guide |
 
 ## M Maintenance
 

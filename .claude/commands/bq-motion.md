@@ -23,13 +23,14 @@ The director brain is the skill `bequite-motion-director` (phases M0-M9, hard st
 /bq-motion "<idea>" [length=30s] [aspect=16:9,9:16] [lang=en|ar] [refs=<file|folder|url>] [engine=auto|ae|remotion|blender|resolve|ai]
 /bq-motion                     continue the active motion work from its next phase
 /bq-motion M<n>                jump to a phase of the active motion work (gates still apply)
-/bq-motion study <file|folder|url>   study reference films into motion-library (frames + breakdown + INDEX row)
+/bq-motion study <file|folder|url>   study reference films into motion-library: measure (film_study + transcribe + director_sheet), breakdown, TECHNIQUES + INDEX rows, move to inbox/old
+/bq-motion lab <technique>     try one technique for real (smallest test in AE / Premiere / Blender / code / Flow), measure it, log worked or failed in motion-library/LAB.md
 /bq-motion recut <platform>    extra delivery recut (9:16, 1:1, 4:5, a 15 s cut ...)
 /bq-motion post                launch posts + comment-to-DM plan + making-of guide (M9)
 /bq-motion status              phase, motion gates, open notes, next step
 ```
 
-Examples: `/bq-motion "Launch film for BeQuite v4, Apple-style, 45s, 16:9 + 9:16"` · `/bq-motion "Reel for our clinic booking app in Arabic" lang=ar` · `/bq-motion study motion-library/inbox/`.
+Examples: `/bq-motion "Launch film for BeQuite v4, Apple-style, 45s, 16:9 + 9:16"` · `/bq-motion "Reel for our clinic booking app in Arabic" lang=ar` · `/bq-motion study motion-library/inbox/New/` · `/bq-motion lab "position-locked colour-swap cut"`. Study and lab follow `bequite-motion-director/references/learning-orchestra.md` (the crew, the study loop, the lab loop, write-back).
 
 ## Steps
 

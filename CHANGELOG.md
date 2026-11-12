@@ -8,6 +8,16 @@ Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANG
 
 The biggest release since the lightweight rewrite: per-work folders, rules enforced by checks, a motion studio, web motion with a performance budget, clean installs, and a leaner public repo. Breaking changes: `/bq-add-feature` removed; `/bq-p0`-`/bq-p5` and `/bq-now` are redirects; per-work artifacts moved from the flat `.bequite/plans|tasks|audits` files to `.bequite/work/<id>/` (old files are migrated on first use).
 
+### Added - motion learning orchestra (before the v4.0.0 tag)
+- **`/bq-motion lab <technique>`**: try one technique for real (After Effects through the ExtendScript bridge, Premiere, Blender, code or Flow), measure the result, and log worked or failed in `motion-library/LAB.md`. First test: the lineage flicker (partly worked; notes in `motion-library/lab/001-lineage-flicker/`).
+- **Film measurement scripts** in `bequite-motion-director/scripts/`: `film_study.py` (cuts incl. colour swaps, pacing curve, camera moves, match-cut candidates, loudness, tempo, onsets, silences, what the sound does at each cut), `transcribe.py` (faster-whisper, GPU when present, uses an existing install) and `director_sheet.py` (picture, cuts, sound and voice on one shot-by-shot table). `/bq-motion study` uses them.
+- **`references/learning-orchestra.md`**: the director's crew, the study loop, the lab loop and write-back.
+- **Motion library**: 58 new films studied (69 in total) with breakdowns; `TECHNIQUES.md` (about 170 techniques merged across films, each labelled generate / post / 3D / code with a lab status), `CRAFT_LESSONS.md` (editing and AI-film playbook), a 22-direction menu in `INDEX.md`, and "directing generated shots like the films we studied" in `references/ai-generation.md`.
+
+### Fixed - motion tools
+- `aerender.js` now creates the output folder (aerender refused to write into a missing one).
+- First verified run of the After Effects bridge inside After Effects 2026 (build + aerender render).
+
 ### Changed - T0 safety
 - **Installer no longer leaks BeQuite's own memory into your project.** Both installers used to copy BeQuite's live `MISTAKE_MEMORY`, `EVIDENCE_LOG`, `AGENT_LOG`, `SKILL_USAGE_LOG` and version history into every install. They now copy a clean scaffold from `templates/bequite/`. Existing project memory is never overwritten, even with `--force` (which now only refreshes commands and skills).
 - **Installers simplified and unified.** One CLAUDE.md block (`templates/CLAUDE.bequite.md`) feeds both installers. Re-running refreshes the BeQuite section in place instead of appending a second one. The PowerShell installer no longer uses `exit`, which closed the user's shell under `irm | iex`.

@@ -32,6 +32,29 @@ Most important first: **AI generation is for organic in-between shots, plates an
 
 **Disclosure:** platforms label realistic AI video and audio (some require it, some read embedded content credentials or watermarks automatically). Check each platform's current AI-label rule at M9; many generators embed an invisible watermark you cannot and should not strip.
 
+## Directing generated shots like the films we studied
+
+Generated plates are raw footage; the direction is ours. Plan each shot as **gen** (a Flow plate) or **post** (After Effects / Premiere / Blender / code) in the shot list; most "Apple" moves are post moves applied to generated or rendered plates. Measured basis: `motion-library/TECHNIQUES.md` (sections 1, 8, 11 and "Measured truths").
+
+**Decide what is generated.** Generate the organic in-betweens: worlds, materials, light, macro textures, a figure in a space, the hook's physical impact. Build in post or 3D everything that must be exact: UI, type, logos, product geometry, anything that has to line up across a cut. The labs that sell intelligence keep AI footage stylised or brief; a BeQuite film follows them.
+
+**Generate for the cut, not for the clip.**
+1. **Lock the constant first.** Apple's smoothness comes from something that stays put across cuts. For a position-locked sequence, make one master still (layout, horizon, where the object sits), then generate each world with frames-to-video from that still or with the same composition written into the prompt ("the object centred, lower third horizon, camera at eye level"). Align the plates in post with a guide layer; the constant (type, UI chip, product render) is composited on top in post, never generated.
+2. **One shot = one action + one camera move**, written as a single continuous motion ("In a single continuous shot … No scene cuts"). Name the move and its direction, and keep the same direction across neighbouring shots so the motion carries across the cut.
+3. **Generate longer than you need and cut inside.** Use the middle of the clip; cut about 0.5 s before the end (clip-end deceleration) and trim head morphs. Never hold fast AI motion: action shots 4-12 frames, covered by the cut and the sound.
+4. **Keep action inside one shot.** AI cannot yet carry action across angles (8 of 92 cuts in the best AI trailer studied); stage each beat within one shot and change angle only on a new idea.
+5. **Style prefix + keyframe-first.** Paste the same light, palette, lens, grain and "no music, no text" block first in every prompt; perfect the stills (anti-plastic: haze, colder light, grain, real blacks) before animating.
+6. **Budget for selection.** Hard shots keep about 1 in 50-100 generations; easy atmosphere shots far more. Log batches (failure type → prompt change) in the work `evidence.md`.
+
+**Direct it in the edit (post), where the Apple feel actually comes from:**
+- cut on ideas and on the voice, not on the beat grid; put a designed low boom under the cuts that change ideas; let motion inside shots land on the hits;
+- one burst of 0.1-0.2 s cuts only at the physical impact, then hold;
+- silence (0.5-3 s) before the reveal; the music's section change on the picture's section change;
+- a calm voice (100-130 wpm) over a fast edit, or no voice;
+- end on the logo 1-2 s before the music ends, then silence.
+
+**QC every generated clip** with the AI-tell gate (`bequite-render-pipeline/references/qc-checklist.md` B2) and a duplicate-frame check (`ffmpeg -i clip.mp4 -vf mpdecimate -loglevel debug -f null -` and count drops): reject, don't patch.
+
 ## Landscape snapshot — dated, re-verify before use
 
 As found in research notes dated 2026-09 to 2026-11 (`UNVERIFIED` unless re-checked in this session; lineups changed twice in Q3–Q4 2026):

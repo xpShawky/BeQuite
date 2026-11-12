@@ -132,3 +132,11 @@ motion-library/**/*.pdf
 
 # The repo's own BeQuite working memory stays local (the shipped scaffold lives in templates/bequite/).
 .bequite/
+
+# Motion lab: notes and build scripts are tracked; projects, renders and AE build output stay local.
+motion-library/lab/*/render/
+motion-library/lab/*/build/
+motion-library/lab/**/*.aep
+motion-library/lab/**/*.prproj
+motion-library/lab/**/*.blend
+motion-library/lab/**/*Logs/

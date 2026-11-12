@@ -56,6 +56,10 @@ Full phase playbook, artefact templates and checklists: `references/phases-and-a
 ## Craft references (load on demand)
 
 - `references/studying-references.md` — motion-library first, frame study, what to write, model-assisted video analysis.
+- `references/learning-orchestra.md` — the director's crew (editor, sound designer, voice director, designer, typographer, DP/3D, AI generalist, QA), the study loop, the lab loop (try it, measure it, log worked/failed), and how plans draw on `motion-library/TECHNIQUES.md`.
+- `.claude/skills/bequite-motion-director/scripts/film_study.py` — measure a film: cuts (incl. colour swaps), shot lengths, pacing curve, camera moves, match-cut candidates (graphic / position-locked / motion carried), loudness, tempo, onsets, silences, what the sound does at each cut; writes summary.md, metrics.json, shots.jpg, matches.jpg, timeline.png.
+- `.claude/skills/bequite-motion-director/scripts/transcribe.py` — timestamped voice-over transcript with faster-whisper (GPU when available; uses an existing install).
+- `.claude/skills/bequite-motion-director/scripts/director_sheet.py` — joins picture, cuts, sound and voice (words per minute, pauses, pitch, cuts in pauses vs mid-line) into one shot-by-shot table.
 - `references/story-and-pacing.md` — story shapes, beat pacing, demo speed, fast vs slow, the pause before the reveal, 15/30/60 s templates.
 - `references/style-system.md` — plain vs living background, one brand hue, filmed vs graphic, product-type table, phone-first type sizes, banned list.
 - `references/motion-grammar.md` — easing by intent, smoothness, transitions (match cuts, motivated wipes, guide element with a destination), camera language.

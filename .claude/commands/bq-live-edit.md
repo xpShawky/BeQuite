@@ -254,6 +254,7 @@ See `.bequite/state/MISTAKE_MEMORY.md` template.
 
 - **Before editing:** read `.bequite/design/DESIGN_DNA.md` (or the compact `.bequite/state/FRONTEND_CONTEXT_SUMMARY.md`) — the edited section must still match the DNA, not just satisfy the literal request.
 - **After editing:** re-check the edited section AND its neighbors against `.claude/skills/bequite-frontend-design-system/references/design-continuity-checklist.md` — confirm the edit didn't introduce all-caps misuse, wide tracking, gray-on-color, overflow, or off-DNA spacing/radius.
+- **Motion edits:** if the edit adds or changes scroll motion, video or 3D, re-run the web-motion performance pass (`PERF_BUDGET_PASS`: Lighthouse mobile within the budget in `.claude/skills/bequite-frontend-design-system/references/web-motion.md`, CPU 4x scroll trace, real phone or `UNVERIFIED: no device`) for that page.
 - If structure changed, update `SECTION_MAP.md`. Log any `[fe][design]` lesson to `MISTAKE_MEMORY.md`. Update `FRONTEND_CONTEXT_SUMMARY.md` after the edit.
 
 This is the **section-level half** of the gate; the **full-page** gate runs at `/bq-feature`, `/bq-auto`, and `/bq-verify`. Owner skill: `bequite-frontend-design-system`. Spec: `.claude/bequite/docs/architecture/DESIGN_CONTINUITY_GATE.md`.

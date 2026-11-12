@@ -279,6 +279,7 @@ Each variant is generated under a Design DNA and **continuity-checked before it'
 - Per variant: derive a `DESIGN_DNA.md` direction, then check the reference screen's sections against it (`references/design-continuity-checklist.md`). The comparison table already has a "Not AI-slop" row — treat "Design continuity (all sections consistent)" as a sibling criterion.
 - Pick the product type per `references/product-type-rules.md` so directions fit the product (not all "cinematic SaaS landing").
 - **After the user picks the winner (hard gate #16) and it merges:** run the FULL Design Continuity Gate across the merged UI → `.bequite/design/DESIGN_CONTINUITY_REPORT.md`, plus Visual QA → `.bequite/audits/VISUAL_QA_REPORT.md`. Lock the chosen DNA and set `DESIGN_DNA_LOCKED` + `DESIGN_CONTINUITY_PASS` + `VISUAL_QA_DONE`.
+- **Motion variants:** variants with scroll motion, video or 3D are judged on taste **and** the web-motion performance pass (`PERF_BUDGET_PASS`: Lighthouse mobile within the budget in `.claude/skills/bequite-frontend-design-system/references/web-motion.md`, CPU 4x scroll trace, real phone or `UNVERIFIED: no device`); a variant that blows the budget must say how its lite tier stays within it.
 
 **Effort awareness:** low/medium → check reference screen; high → full per-variant; xhigh/Ultracode → per-variant critique + post-merge browser visual QA.
 

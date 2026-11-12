@@ -132,3 +132,16 @@
 4. **On identity change** — update here FIRST, then propagate to `tokens.css` and components.
 
 See `.claude/bequite/docs/architecture/DESIGN_CONTINUITY_GATE.md`, `.claude/bequite/docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md`, and `.claude/skills/bequite-frontend-design-system/references/design-dna-template.md`.
+
+## Motion taste profile
+
+Keeps the user's motion taste across sessions. Fill it from references and feedback, not guesses.
+
+- **References liked** (link or file + what exactly is liked):
+- **Effects liked:** (e.g. scroll-scrubbed product story, travelling object, cut-out depth, write-on logo)
+- **Effects disliked / rejected:**
+- **Intro:** (type, max duration ≤ 1.2 s, skippable)
+- **Chapter colours / backgrounds:** (plain or living, per chapter)
+- **Depth strategy:** pre-rendered (default on phones) / runtime 3D (reason)
+- **Device tiers:** full / lite / static behaviour
+- **Performance budget overrides** (default `web-motion.md` §3):

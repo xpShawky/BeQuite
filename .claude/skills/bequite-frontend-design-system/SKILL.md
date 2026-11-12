@@ -57,6 +57,8 @@ Read the product type from the DNA and apply the matching row of `references/pro
 
 Don't force motion. When the product genuinely calls for cinematic/3D, gate it on: performance, mobile fallback, reduced-motion, load time, accessibility, readability, business fit, distraction risk, conversion impact, progressive enhancement, fallback states. Checklist: `references/cinematic-ui-checklist.md`. Mobile-app specifics: `references/mobile-app-ui-checklist.md`.
 
+**Web motion (scroll scenes, frame sequences, video, 3D):** load `references/web-motion.md`, the motion grammar plus the mobile performance budget, 19 checkable rules and full / lite / static device tiers. A motion page is not done until the performance pass is recorded and `PERF_BUDGET_PASS` is set in the work's `gates.md`. Record the user's motion taste in the DNA's `Motion taste profile`.
+
 ## Effort awareness (`${CLAUDE_EFFORT}` / Ultracode)
 
 - **low / medium** — compact: run the grep heuristics + spot-check the weakest middle sections.
@@ -68,7 +70,7 @@ If effort is unavailable, infer from operating mode: `deep`→high+, `fast`→co
 ## References (load on demand — do NOT inline all of these)
 
 - `references/design-continuity-checklist.md` — the gate's drift detection (grep + visual)
-- `references/visual-qa-checklist.md` · `references/mobile-app-ui-checklist.md` · `references/cinematic-ui-checklist.md`
+- `references/visual-qa-checklist.md` · `references/mobile-app-ui-checklist.md` · `references/cinematic-ui-checklist.md` · `references/web-motion.md` (budget + rules + device tiers)
 - `references/product-type-rules.md` — product-category → design rules
 - `references/design-dna-template.md` — how to fill a DNA
 - `references/impeccable-notes.md` · `references/ui-ux-pro-max-notes.md` · `references/superpowers-notes.md` — researched principles

@@ -203,6 +203,7 @@ For features classified Frontend UI / Admin panel / Dashboard (types 1 / 8 / 9),
 - Run the Design Continuity Gate → `.bequite/design/DESIGN_CONTINUITY_REPORT.md` (no BLOCKER/HIGH drift; close the quality cliff between weakest and strongest section).
 - Run Visual QA → `.bequite/audits/VISUAL_QA_REPORT.md` (render it; never claim a visual PASS you didn't see).
 - Set `DESIGN_CONTINUITY_PASS` + `VISUAL_QA_DONE`. Log any `[fe][design]` lesson to `MISTAKE_MEMORY.md`.
+- If the feature adds scroll motion, video, frame sequences or 3D: run the web-motion performance pass (`PERF_BUDGET_PASS`: Lighthouse mobile within the budget in `.claude/skills/bequite-frontend-design-system/references/web-motion.md`, CPU 4x scroll trace, real phone or `UNVERIFIED: no device`) and set it in the work's `gates.md`.
 
 **Effort awareness:** low/medium → compact heuristic check; high → full per-section; xhigh/Ultracode → per-section critique + browser visual QA + final polish.
 

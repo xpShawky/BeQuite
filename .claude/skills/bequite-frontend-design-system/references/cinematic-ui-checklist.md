@@ -53,7 +53,7 @@ Tick every row. A blank row blocks the build.
 | Exit duration | ~75% of the entrance duration. |
 | Easing | Exponential ease-out only — `cubic-bezier(0.16, 1, 0.3, 1)` family. NO bounce, NO elastic. |
 | Animatable props | `transform` + `opacity` ONLY. Never animate `width` / `height` / `top` / `left` / `margin`. |
-| Scroll triggers | Use Intersection Observer. Never raw scroll-event listeners. |
+| Scroll triggers | CSS scroll-driven animations first; otherwise one rAF-coalesced scroll reader or a vetted library; IntersectionObserver starts/stops scenes. Never one rAF per scroll event. Budgets and rules: `web-motion.md`. |
 | `will-change` | Use sparingly, on the few elements about to animate; remove after. Not blanket. |
 | Stagger budget | Total stagger ≤500ms; the sequence must not feel slow. |
 | Reveal-safety | Never gate content visibility on a class-triggered transition — content is visible by default; motion enhances. If the class never lands, content still shows. |
@@ -94,7 +94,8 @@ Treat the a11y fallback as the performance fallback. Build the lighter path firs
 - [ ] Only `transform` + `opacity` animated; no `width`/`height`/`top`/`left`.
 - [ ] Easing is exponential ease-out (`cubic-bezier(0.16, 1, 0.3, 1)` family); no bounce/elastic.
 - [ ] Timings within bands: 100-150 / 200-300 / 300-500ms; exit ≈75% of entrance.
-- [ ] Scroll work uses Intersection Observer, not scroll listeners.
+- [ ] Scroll work follows `web-motion.md` rule 8 (scroll timelines or one coalesced reader) and scenes stop off-screen.
+- [ ] Performance pass recorded (`PERF_BUDGET_PASS`): Lighthouse mobile within the `web-motion.md` budget, CPU 4x scroll trace, real phone or UNVERIFIED.
 - [ ] `will-change` is targeted and removed after use; total stagger ≤500ms.
 - [ ] `prefers-reduced-motion: reduce` fallback verified (motion removed/instant; 3D shows a still).
 - [ ] Content is visible WITHOUT the animation (reveal-safety): disable JS and confirm the page reads.

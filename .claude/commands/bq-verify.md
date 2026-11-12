@@ -37,6 +37,7 @@ Based on what the project has (from DISCOVERY), enumerate gates. For each, attem
 | Smoke (curl) | has HTTP server | `curl /healthz` (after starting server) |
 | Frontend e2e | Playwright installed | `npx playwright test` |
 | Design continuity | frontend present | section-by-section vs the Design DNA → `.bequite/design/DESIGN_CONTINUITY_REPORT.md` exists + no BLOCKER/HIGH drift (alpha.17) |
+| Web performance | page has scroll motion, video, frame sequences or 3D | the web-motion performance pass (`PERF_BUDGET_PASS`: Lighthouse mobile within the budget in `.claude/skills/bequite-frontend-design-system/references/web-motion.md`, CPU 4x scroll trace, real phone or `UNVERIFIED: no device`) → evidence in `work/<id>/evidence.md` + Performance table in `.bequite/audits/VISUAL_QA_REPORT.md` |
 | Visual QA | frontend present | render at highest browser tier → `.bequite/audits/VISUAL_QA_REPORT.md` (browser tier, or honest tier-3 note) (alpha.17) |
 | API smoke | API present | as smoke; or run e2e api tests |
 | CLI smoke | CLI present | `<cli> --version`, `<cli> --help` |
@@ -222,6 +223,7 @@ See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.
 When a frontend exists, `/bq-verify` does not PASS on code-only checks. The matrix includes two frontend quality gates:
 
 - **Design continuity** — a passing `.bequite/design/DESIGN_CONTINUITY_REPORT.md` (every section consistent with the DNA; no BLOCKER/HIGH drift; quality cliff closed). Run it via `bequite-frontend-design-system` if not already produced this cycle.
+- **Web performance** — the web-motion performance pass (`PERF_BUDGET_PASS`: Lighthouse mobile within the budget in `.claude/skills/bequite-frontend-design-system/references/web-motion.md`, CPU 4x scroll trace, real phone or `UNVERIFIED: no device`) when the page has motion; otherwise mark `n/a`.
 - **Visual QA** — a `.bequite/audits/VISUAL_QA_REPORT.md` from rendering the app at the highest available browser tier (Playwright MCP → project Playwright → code inspection + screenshots; never auto-install). Honest tier-3 is acceptable and must be labeled as such — do NOT claim a visual PASS you did not see (Article VI + banned weasel words).
 
 If either is missing or failing when a frontend is present, verdict is **FAIL** (or PARTIAL with the specific gap). **Effort:** verification depth scales with `${CLAUDE_EFFORT}` (low/medium compact · high full · xhigh/Ultracode browser visual QA per section). Owner: `bequite-frontend-design-system`. Spec: `.claude/bequite/docs/architecture/DESIGN_CONTINUITY_GATE.md`.

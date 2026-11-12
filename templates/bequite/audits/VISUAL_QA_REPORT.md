@@ -69,3 +69,10 @@ Do **not** install Playwright for a visual QA pass. If the project genuinely nee
 State what actually ran, in this session, against this code. If browser automation was unavailable, say "tier 3 — code inspection; visual confirmation requested from user," not "PASS." Do not claim a visual PASS you did not see. Banned weasel words apply.
 
 **Final status:** `template — not yet run`
+
+## Performance (web motion)
+
+| Page / URL tested | Tier | LCP | INP / TBT | CLS | Bytes before scroll | Scroll fps (CPU 4x) | Real phone | Verdict |
+|---|---|---|---|---|---|---|---|---|
+
+Budget: `.claude/skills/bequite-frontend-design-system/references/web-motion.md` §3. Record the delivery URL actually tested (not only localhost).

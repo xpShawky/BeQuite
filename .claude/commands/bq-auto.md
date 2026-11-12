@@ -407,6 +407,7 @@ When `/bq-auto` works on a frontend (intents `uiux` / `frontend` / `live-edit` /
 **It must NOT claim complete until ALL of:**
 - full scope is implemented (every section, not just the hero)
 - `.bequite/design/DESIGN_CONTINUITY_REPORT.md` exists and passes (no BLOCKER/HIGH; quality cliff closed)
+- When the UI has motion (scroll scenes, video, frame sequences, 3D): the web-motion performance pass (`PERF_BUDGET_PASS`: Lighthouse mobile within the budget in `.claude/skills/bequite-frontend-design-system/references/web-motion.md`, CPU 4x scroll trace, real phone or `UNVERIFIED: no device`).
 - `.bequite/audits/VISUAL_QA_REPORT.md` exists (browser tier, or honest tier-3 note)
 - tests / browser checks ran
 - `MISTAKE_MEMORY.md` updated if any `[fe][design]` issue found

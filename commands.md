@@ -8,19 +8,19 @@
 
 > **alpha.24 (2026-06-13) — Selected-V2 build + P1 maintenance:** 6 new capability commands — **C12 /bq-automation** (tool-neutral workflow+bot blueprints; installs nothing), **C13 /bq-local-business** (offline→minimum digital system, MENA-aware), **C14 /bq-brand-kit** (non-generic identity), **C15 /bq-community**, **C16 /bq-recording** (video→knowledge, transcript-first, tools optional), **C17 /bq-start** (Starting Path Advisor). Extensions: /bq-offer `business-system`/`agency` (AI Service Business Builder, merged not separate), /bq-handoff `workflow-export` (secret-scanned), /bq-release `template`, Course Architect inside /bq-course. +1 skill `bequite-automation-engineer` (31). P1 patches: problem-solver + multi-model-planning; legacy `skill/` folder legacy-marked. Parked-and-documented: data-product, agent-pack, app-store-kit, cross-agent adapters. No live trials claimed.
 >
-> **alpha.23 (2026-06-12) — `/bq-offer` (C11), the Offer Engine:** turn a skill, service, automation, product idea, course idea, niche, or pain point into a sellable productized offer — 12 artifacts in `.bequite/offers/` (offer, target client, pain/outcome, deliverables + exclusions, pricing tiers, guarantee/risk-reversal, onboarding questions, outreach, demo idea, proof checklist, proposal angle, next steps). Honest by contract: no invented demand, no fake income claims, promise separated from guarantee, no legal advice, assumptions marked. Completes the monetization chain C6 pain-radar → C10 make-money → C11 offer → C8 proposal → W4.2 release proof. Spec: `docs/specs/OFFER_ENGINE.md`. Status: built, NOT live-tested.
+> **alpha.23 (2026-06-12) — `/bq-offer` (C11), the Offer Engine:** turn a skill, service, automation, product idea, course idea, niche, or pain point into a sellable productized offer — 12 artifacts in `.bequite/offers/` (offer, target client, pain/outcome, deliverables + exclusions, pricing tiers, guarantee/risk-reversal, onboarding questions, outreach, demo idea, proof checklist, proposal angle, next steps). Honest by contract: no invented demand, no fake income claims, promise separated from guarantee, no legal advice, assumptions marked. Completes the monetization chain C6 pain-radar → C10 make-money → C11 offer → C8 proposal → W4.2 release proof. Spec: `.claude/bequite/docs/specs/OFFER_ENGINE.md`. Status: built, NOT live-tested.
 >
 > **alpha.22 orchestration update (2026-06-12):** global Orchestrator (`bequite-orchestrator` skill #30 + `ORCHESTRATION_MAP.md` source of truth) · auto mode = 15-step anti-skip sequence with Not-applicable/Blocked markings · mandatory System Design Risk Check (payments/inventory/bookings/auth/concurrency/webhooks...) in plan/feature/implement, verified in review/verify · context compaction thresholds (40/60/75/85%) · low-cost model tiers A/B/C (narrows the gap — does NOT make small models frontier) · Missing Capability detection in suggest/plan/auto/skill-audit · per-agent setup runbook (`INSTALL_FOR_OTHER_AGENTS.md`: Antigravity, Gemini CLI, Cursor, Codex, Kimi, MiniMax, DeepSeek, Ollama, OpenClaw, Hermes — Win/mac/Linux, global + per-project).
 >
 > **alpha.22 stabilization (2026-06-12):** repo-reality audits (post-release · scraping context · cross-agent · classification) confirmed all alpha.22 artifacts and fixed 7 doc-drift findings; Course Engine gained the 12-rule scanned/OCR PDF Source Intake (`SOURCE_INTAKE_REPORT.md`); cross-agent compatibility documented (strategy + outside-Claude-Code runbook + agent matrix); README rewritten as public product docs; roadmap ledger at `.bequite/tasks/REMAINING_ROADMAP_TASKS.md`. No new commands; `/bq-offer` remains queued for alpha.23; **no live trials run yet.**
 >
-> **alpha.22 — Navigation & Capability Consolidation:** stable display-only **catalog IDs** for every command (`.bequite/commands/COMMAND_ID_MAP.md`; no file renames — feasibility ruling in `COMMAND_NUMBERING_AND_ORDERING_STRATEGY.md`); the **Workflow Command Router** makes every non-trivial command end with multi-command Next Command Recommendations and auto mode report "Internal workflow executed: <IDs>"; **6 new capability commands** — C3 `/bq-reference` · C4 `/bq-knowledge` · C5 `/bq-course` · C6 `/bq-pain-radar` · C7 `/bq-integrate` · C8 `/bq-proposal` (specs in `docs/specs/`); **Guard Pass** skill + strategy; **localization-rtl** auto-attach skill; 11 argument workflows (verify regressions|drift · release readiness|announce|proof|demo-video · plan from-issues|migration · scope from-interview · test from-spec|fixtures · handoff client · audit client|a11y); `/bq-recording` parked; Discovery V3 (20 fresh ideas, proposals only).
+> **alpha.22 — Navigation & Capability Consolidation:** stable display-only **catalog IDs** for every command (`.bequite/commands/COMMAND_ID_MAP.md`; no file renames — feasibility ruling in `COMMAND_NUMBERING_AND_ORDERING_STRATEGY.md`); the **Workflow Command Router** makes every non-trivial command end with multi-command Next Command Recommendations and auto mode report "Internal workflow executed: <IDs>"; **6 new capability commands** — C3 `/bq-reference` · C4 `/bq-knowledge` · C5 `/bq-course` · C6 `/bq-pain-radar` · C7 `/bq-integrate` · C8 `/bq-proposal` (specs in `.claude/bequite/docs/specs/`); **Guard Pass** skill + strategy; **localization-rtl** auto-attach skill; 11 argument workflows (verify regressions|drift · release readiness|announce|proof|demo-video · plan from-issues|migration · scope from-interview · test from-spec|fixtures · handoff client · audit client|a11y); `/bq-recording` parked; Discovery V3 (20 fresh ideas, proposals only).
 >
-> **alpha.21 — Confidence Forecast + Frontier Playbook + Discovery V2:** every plan/task/feature now carries a calibrated **Confidence Forecast** (banded %, evidence level, what raises/lowers it — integrated into plan/assign/auto/feature/fix/implement/review/verify/release; no new command). The **Frontier Model Operating Playbook** + `bequite-frontier-reasoning-coach` skill (27th) make cheaper models follow frontier discipline — the 10-rule card ships inside every delegate pack. **Professional Expert** is documented as the `expert` composition alias (deep + strict evidence + safety scope + domain checklist), NOT a 5th mode. Discovery V2 found 16 genuinely new capability candidates (proposals only). Taxonomy: `docs/architecture/FEATURE_TYPE_TAXONOMY.md`.
+> **alpha.21 — Confidence Forecast + Frontier Playbook + Discovery V2:** every plan/task/feature now carries a calibrated **Confidence Forecast** (banded %, evidence level, what raises/lowers it — integrated into plan/assign/auto/feature/fix/implement/review/verify/release; no new command). The **Frontier Model Operating Playbook** + `bequite-frontier-reasoning-coach` skill (27th) make cheaper models follow frontier discipline — the 10-rule card ships inside every delegate pack. **Professional Expert** is documented as the `expert` composition alias (deep + strict evidence + safety scope + domain checklist), NOT a 5th mode. Discovery V2 found 16 genuinely new capability candidates (proposals only). Taxonomy: `.claude/bequite/docs/architecture/FEATURE_TYPE_TAXONOMY.md`.
 >
-> **alpha.20 — Automatic Skill Routing:** you describe the goal; BeQuite infers and loads the right skills — no manual skill naming. The execution contract is now 12 steps (registry check → task classification → auto-selection inserted as steps 2–4). Every action command (`/bq-auto`, `/bq-feature`, `/bq-fix`, `/bq-plan`, `/bq-implement`, `/bq-review`, `/bq-verify`, `/bq-suggest`) emits a `Skill Selection:` block with reasons. Mode sizing prevents over-triggering: fast = smallest safe set · deep = broader · token-saver = registry summary first, lazy-load skill files · delegate = skills named inside the task pack. Registry/router/usage-log: `.bequite/skills/`. Strategy: `docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.
+> **alpha.20 — Automatic Skill Routing:** you describe the goal; BeQuite infers and loads the right skills — no manual skill naming. The execution contract is now 12 steps (registry check → task classification → auto-selection inserted as steps 2–4). Every action command (`/bq-auto`, `/bq-feature`, `/bq-fix`, `/bq-plan`, `/bq-implement`, `/bq-review`, `/bq-verify`, `/bq-suggest`) emits a `Skill Selection:` block with reasons. Mode sizing prevents over-triggering: fast = smallest safe set · deep = broader · token-saver = registry summary first, lazy-load skill files · delegate = skills named inside the task pack. Registry/router/usage-log: `.bequite/skills/`. Strategy: `.claude/bequite/docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.
 
-> **alpha.19 — Fable Strengthening Pass:** every command now follows the 11-step [`COMMAND_EXECUTION_CONTRACT`](docs/architecture/COMMAND_EXECUTION_CONTRACT.md) (memory preflight → gate check → scope → skills → research check → plan check → action → verification → report → writeback → next command). Risky file edits are tiered per [`FILE_RISK_CLASSIFICATION`](docs/architecture/FILE_RISK_CLASSIFICATION.md). Two new commands:
+> **alpha.19 — Fable Strengthening Pass:** every command now follows the 11-step [`COMMAND_EXECUTION_CONTRACT`](.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md) (memory preflight → gate check → scope → skills → research check → plan check → action → verification → report → writeback → next command). Risky file edits are tiered per [`FILE_RISK_CLASSIFICATION`](.claude/bequite/docs/architecture/FILE_RISK_CLASSIFICATION.md). Two new commands:
 >
 > **`/bq-writing-dna`** — build a reusable writing profile (genre / audience / tone / rhythm / vocabulary / citation style / forbidden patterns) from your samples, then generate or rewrite in that voice. Strict mode = full source fidelity, zero invented citations. Memory: `.bequite/writing/`. Ethical assistance only — no detector-evasion, no academic dishonesty.
 > ```
@@ -31,9 +31,9 @@
 >
 > **`/bq-skill-audit`** — structural quality loop over all 26 skills (bloat / shallowness / duplication / missing sections / stale counts). Evidence-cited findings, report-only by default; `apply=true` to execute approved repairs. Writes `.bequite/audits/SKILL_QUALITY_AUDIT.md`.
 
-> **alpha.18 — Harness, Hooks & Context-Engineering:** opt-in Claude Code hooks machine-enforce the safety subset (destructive ops · secrets · weasel-word claims; review before enabling). `bequite-context-engineer` generalizes the frontend DNA/continuity pattern to all workflows; `bequite-anti-hallucination` enforces evidence-over-claims + citation-or-strike + package verification. See `docs/architecture/{CLAUDE_CODE_HOOKS_STRATEGY,CONTEXT_ENGINEERING,HARNESS_AND_PROMPT_QUALITY}.md`. Game-changer features: report only (`docs/specs/GAME_CHANGER_FEATURES.md`).
+> **alpha.18 — Harness, Hooks & Context-Engineering:** opt-in Claude Code hooks machine-enforce the safety subset (destructive ops · secrets · weasel-word claims; review before enabling). `bequite-context-engineer` generalizes the frontend DNA/continuity pattern to all workflows; `bequite-anti-hallucination` enforces evidence-over-claims + citation-or-strike + package verification. See `.claude/bequite/docs/architecture/{CLAUDE_CODE_HOOKS_STRATEGY,CONTEXT_ENGINEERING,HARNESS_AND_PROMPT_QUALITY}.md`. Game-changer features: report only (`.claude/bequite/docs/specs/GAME_CHANGER_FEATURES.md`).
 
-> **Frontend Design Continuity (alpha.17):** master skill `bequite-frontend-design-system` + a **Design Continuity Gate** keep UI quality consistent from hero to footer — killing "middle-section drift." Persist a Design DNA before coding, build section-by-section, gate every section against the DNA, visual-QA the whole page. Runs inside `/bq-feature`, `/bq-fix`, `/bq-auto`, `/bq-uiux-variants`, `/bq-live-edit`, `/bq-audit`, `/bq-review`, `/bq-red-team`, `/bq-verify`. **Quality promise:** every visible section must meet the Design DNA. Spec: `docs/architecture/DESIGN_CONTINUITY_GATE.md`.
+> **Frontend Design Continuity (alpha.17):** master skill `bequite-frontend-design-system` + a **Design Continuity Gate** keep UI quality consistent from hero to footer — killing "middle-section drift." Persist a Design DNA before coding, build section-by-section, gate every section against the DNA, visual-QA the whole page. Runs inside `/bq-feature`, `/bq-fix`, `/bq-auto`, `/bq-uiux-variants`, `/bq-live-edit`, `/bq-audit`, `/bq-review`, `/bq-red-team`, `/bq-verify`. **Quality promise:** every visible section must meet the Design DNA. Spec: `.claude/bequite/docs/architecture/DESIGN_CONTINUITY_GATE.md`.
 
 ---
 
@@ -162,7 +162,7 @@ Phase-3 review by strong model must check: file placement · function design · 
 
 - **Active mode for current run:** `.bequite/state/CURRENT_MODE.md`
 - **History of all mode picks + outcomes + approx cost:** `.bequite/state/MODE_HISTORY.md`
-- **Strategy detail:** [`docs/architecture/AUTO_MODE_STRATEGY.md`](docs/architecture/AUTO_MODE_STRATEGY.md) §11
+- **Strategy detail:** [`.claude/bequite/docs/architecture/AUTO_MODE_STRATEGY.md`](.claude/bequite/docs/architecture/AUTO_MODE_STRATEGY.md) §11
 
 ### Skills behind the modes
 
@@ -718,7 +718,7 @@ Scoped autonomous workflow runner.
   /bq-auto fix "..." --mode fast
   /bq-auto new "..." --mode deep
   ```
-- **Strategy doc:** [`docs/architecture/AUTO_MODE_STRATEGY.md`](docs/architecture/AUTO_MODE_STRATEGY.md)
+- **Strategy doc:** [`.claude/bequite/docs/architecture/AUTO_MODE_STRATEGY.md`](.claude/bequite/docs/architecture/AUTO_MODE_STRATEGY.md)
 - **Full spec:** [`.claude/commands/bq-auto.md`](.claude/commands/bq-auto.md)
 
 ---
@@ -742,7 +742,7 @@ Generate 1-10 isolated UI design directions.
   /bq-uiux-variants 5 "five dashboard concepts"
   /bq-uiux-variants 10 "ten landing page directions"
   ```
-- **Strategy doc:** [`docs/architecture/UIUX_VARIANTS_STRATEGY.md`](docs/architecture/UIUX_VARIANTS_STRATEGY.md)
+- **Strategy doc:** [`.claude/bequite/docs/architecture/UIUX_VARIANTS_STRATEGY.md`](.claude/bequite/docs/architecture/UIUX_VARIANTS_STRATEGY.md)
 - **Full spec:** [`.claude/commands/bq-uiux-variants.md`](.claude/commands/bq-uiux-variants.md)
 
 ### `/bq-live-edit "<task>"`
@@ -762,7 +762,7 @@ Lightweight section-by-section frontend live edit.
   /bq-live-edit "Improve empty state on /dashboard"
   /bq-live-edit "Fix mobile layout overflow on hero"
   ```
-- **Strategy doc:** [`docs/architecture/LIVE_EDIT_STRATEGY.md`](docs/architecture/LIVE_EDIT_STRATEGY.md)
+- **Strategy doc:** [`.claude/bequite/docs/architecture/LIVE_EDIT_STRATEGY.md`](.claude/bequite/docs/architecture/LIVE_EDIT_STRATEGY.md)
 - **Full spec:** [`.claude/commands/bq-live-edit.md`](.claude/commands/bq-live-edit.md)
 
 ---
@@ -920,7 +920,7 @@ Manage BeQuite's opt-in Claude Code safety hooks (destructive-op block · secret
   - `/bq-hooks disable` — remove only BeQuite's hooks block
 - **Notes:** destructive matcher covers **Bash + PowerShell**; hooks scan the whole command string (don't write `rm -rf`/`DROP TABLE` literally in a command when hooks are on); loads immediately in current Claude Code (reload only if `/hooks` doesn't list them).
 - **Writes (enable/disable only, with confirmation):** `.claude/settings.json` (merge)
-- **Full spec:** [`.claude/commands/bq-hooks.md`](.claude/commands/bq-hooks.md) · strategy: [`docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`](docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md)
+- **Full spec:** [`.claude/commands/bq-hooks.md`](.claude/commands/bq-hooks.md) · strategy: [`.claude/bequite/docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`](.claude/bequite/docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md)
 
 ---
 
@@ -961,10 +961,10 @@ Three commands for daily-driver use:
 
 - [`README.md`](README.md) — project overview + install
 - [`CLAUDE.md`](CLAUDE.md) — Claude-Code operating instructions
-- [`docs/architecture/`](docs/architecture/) — strategy docs per workflow + auto mode + variants + live edit + workflow gates + research depth + feature/fix workflows + devops safety
-- [`docs/decisions/`](docs/decisions/) — 4 ADRs
-- [`docs/specs/COMMAND_CATALOG.md`](docs/specs/COMMAND_CATALOG.md) — terse machine-readable catalog (this file is the human-readable one)
-- [`docs/specs/MVP_LIGHTWEIGHT_SCOPE.md`](docs/specs/MVP_LIGHTWEIGHT_SCOPE.md) — MVP boundaries
-- [`docs/runbooks/USING_BEQUITE_COMMANDS.md`](docs/runbooks/USING_BEQUITE_COMMANDS.md) — practical walkthroughs with output examples
+- [`.claude/bequite/docs/architecture/`](.claude/bequite/docs/architecture/) — strategy docs per workflow + auto mode + variants + live edit + workflow gates + research depth + feature/fix workflows + devops safety
+- [`.claude/bequite/docs/decisions/`](.claude/bequite/docs/decisions/) — 4 ADRs
+- [`.claude/bequite/docs/specs/COMMAND_CATALOG.md`](.claude/bequite/docs/specs/COMMAND_CATALOG.md) — terse machine-readable catalog (this file is the human-readable one)
+- [`.claude/bequite/docs/specs/MVP_LIGHTWEIGHT_SCOPE.md`](.claude/bequite/docs/specs/MVP_LIGHTWEIGHT_SCOPE.md) — MVP boundaries
+- [`.claude/bequite/docs/runbooks/USING_BEQUITE_COMMANDS.md`](.claude/bequite/docs/runbooks/USING_BEQUITE_COMMANDS.md) — practical walkthroughs with output examples
 - [`.bequite/principles/TOOL_NEUTRALITY.md`](.bequite/principles/TOOL_NEUTRALITY.md) — tool-choice discipline
 - [`.bequite/plans/FEATURE_EXPANSION_ROADMAP.md`](.bequite/plans/FEATURE_EXPANSION_ROADMAP.md) — v2 feature families

@@ -350,7 +350,7 @@ If savings < 30%, recommend NOT using delegate (overhead isn't worth it).
 
 ## See also
 
-- `docs/architecture/AUTO_MODE_STRATEGY.md` §"Mode flags" + §"Mode composition"
+- `.claude/bequite/docs/architecture/AUTO_MODE_STRATEGY.md` §"Mode flags" + §"Mode composition"
 - `bequite-multi-model-planning` skill — related but different (two strong models thinking independently)
 - `bequite-workflow-advisor` skill — recommends when delegate mode fits
 - `.claude/commands/bq-auto.md` — the entry point for `delegate` mode

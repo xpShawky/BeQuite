@@ -1,6 +1,6 @@
 # Confidence Rules (project-tunable)
 
-> Per-project calibration rules per `docs/architecture/CONFIDENCE_CALIBRATION_STRATEGY.md`. Read at forecast time; updated when the calibration report reveals systematic error.
+> Per-project calibration rules per `.claude/bequite/docs/architecture/CONFIDENCE_CALIBRATION_STRATEGY.md`. Read at forecast time; updated when the calibration report reveals systematic error.
 
 ## Base modifiers (defaults — tune per project)
 

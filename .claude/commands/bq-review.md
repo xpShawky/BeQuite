@@ -1,5 +1,5 @@
 ---
-description: Review CURRENT changes (uncommitted diff or recent commits) — spec-compliance first, then code quality. Per-file commentary with file:line evidence. Arguments — delegate (review a cheaper model's implementation), persona (simulated-user friction review). Includes a Guard Pass on AI-generated diffs. Verdict: Approved / Approved-with-comments / Blocked.
+description: 'Review CURRENT changes (uncommitted diff or recent commits) — spec-compliance first, then code quality. Per-file commentary with file:line evidence. Arguments — delegate (review a cheaper model''s implementation), persona (simulated-user friction review). Includes a Guard Pass on AI-generated diffs. Verdict: Approved / Approved-with-comments / Blocked.'
 ---
 
 # /bq-review — review changes
@@ -227,7 +227,7 @@ Before doing any work:
 
    Don't proceed when a required gate is missing. Recommend the prerequisite + how to resume.
 
-2. **Memory preflight.** Read these files first (per `docs/architecture/MEMORY_FIRST_BEHAVIOR.md`):
+2. **Memory preflight.** Read these files first (per `.claude/bequite/docs/architecture/MEMORY_FIRST_BEHAVIOR.md`):
 
    - `.bequite/state/PROJECT_STATE.md`
    - `.bequite/state/CURRENT_MODE.md`
@@ -271,13 +271,13 @@ Skill Selection:
 
 **The user never has to name skills** — describe the goal; the router picks the disciplines. An explicit user skill choice overrides routing (log the override). At writeback, append the selection + outcome to `.bequite/skills/SKILL_USAGE_LOG.md`.
 
-Strategy: `docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.
+Strategy: `.claude/bequite/docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.
 
 ---
 
 ## Confidence Forecast (alpha.21)
 
-For each phase / task / feature this command handles, report calibrated confidence per `docs/architecture/CONFIDENCE_CALIBRATION_STRATEGY.md`:
+For each phase / task / feature this command handles, report calibrated confidence per `.claude/bequite/docs/architecture/CONFIDENCE_CALIBRATION_STRATEGY.md`:
 
 ```
 Confidence: NN% (band) — <one-line why>

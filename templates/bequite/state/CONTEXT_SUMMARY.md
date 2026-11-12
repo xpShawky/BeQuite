@@ -2,7 +2,7 @@
 
 > **The compact, compaction-surviving summary of current work** — the generic counterpart to `FRONTEND_CONTEXT_SUMMARY.md`. Written at task boundaries during long/multi-domain work; read FIRST when resuming a session (before LAST_RUN). Keep it under ~40 lines — its value is density.
 >
-> Created alpha.19 (Fable Strengthening Pass). Maintained per `docs/architecture/CONTEXT_ENGINEERING_STRATEGY.md`.
+> Created alpha.19 (Fable Strengthening Pass). Maintained per `.claude/bequite/docs/architecture/CONTEXT_ENGINEERING_STRATEGY.md`.
 
 ---
 

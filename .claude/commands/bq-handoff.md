@@ -254,7 +254,7 @@ Before doing any work:
 
    Don't proceed when a required gate is missing. Recommend the prerequisite + how to resume.
 
-2. **Memory preflight.** Read these files first (per `docs/architecture/MEMORY_FIRST_BEHAVIOR.md`):
+2. **Memory preflight.** Read these files first (per `.claude/bequite/docs/architecture/MEMORY_FIRST_BEHAVIOR.md`):
 
    - `.bequite/state/PROJECT_STATE.md`
    - `.bequite/state/CURRENT_MODE.md`
@@ -289,4 +289,4 @@ Per contract step 12: router block per `COMMAND_ROUTER.md`.
 
 ## Argument: workflow-export (alpha.24)
 
-`/bq-handoff workflow-export` — export a BeQuite workflow as a reusable, **secret-safe** playbook/prompt-pack (spec `docs/specs/WORKFLOW_EXPORT.md`; outputs `.bequite/exports/`). **Mandatory secret/privacy scan runs first** (`SAFETY_AND_SECRET_SCAN.md`); export is blocked until it passes — never export secrets, keys, client/personal data, env values, internal paths, or unlicensed content. Produces WORKFLOW_PLAYBOOK · PROMPT_PACK (Claude/Codex/Cursor) · COMMAND_SEQUENCE (catalog IDs + skills + gates) · HANDOFF_NOTES; AGENTS.md-ready (reuses the cross-agent bridge format).
+`/bq-handoff workflow-export` — export a BeQuite workflow as a reusable, **secret-safe** playbook/prompt-pack (spec `.claude/bequite/docs/specs/WORKFLOW_EXPORT.md`; outputs `.bequite/exports/`). **Mandatory secret/privacy scan runs first** (`SAFETY_AND_SECRET_SCAN.md`); export is blocked until it passes — never export secrets, keys, client/personal data, env values, internal paths, or unlicensed content. Produces WORKFLOW_PLAYBOOK · PROMPT_PACK (Claude/Codex/Cursor) · COMMAND_SEQUENCE (catalog IDs + skills + gates) · HANDOFF_NOTES; AGENTS.md-ready (reuses the cross-agent bridge format).

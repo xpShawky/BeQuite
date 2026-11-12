@@ -4,7 +4,7 @@ description: Knowledge Engine (C4). Turn docs into a knowledge pack, FAQ, glossa
 
 # /bq-knowledge — docs → knowledge products (C4)
 
-Full spec: `docs/specs/KNOWLEDGE_ENGINE.md`. Follows the 12-step execution contract including skill routing, Confidence Forecast, and the step-12 router block.
+Full spec: `.claude/bequite/docs/specs/KNOWLEDGE_ENGINE.md`. Follows the 12-step execution contract including skill routing, Confidence Forecast, and the step-12 router block.
 
 ## Syntax
 

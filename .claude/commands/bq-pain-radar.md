@@ -1,10 +1,10 @@
 ---
-description: Pain Radar (C6). Mine PUBLIC pain in a niche/industry/market and turn it into buildable opportunities — MVP, service, automation, bot, and course ideas with source + opportunity confidence. Differs from /bq-make-money (earning tracks): pain-radar finds problems worth building for. Never scrapes behind login, never bypasses auth, never violates platform terms.
+description: 'Pain Radar (C6). Mine PUBLIC pain in a niche/industry/market and turn it into buildable opportunities — MVP, service, automation, bot, and course ideas with source + opportunity confidence. Differs from /bq-make-money (earning tracks): pain-radar finds problems worth building for. Never scrapes behind login, never bypasses auth, never violates platform terms.'
 ---
 
 # /bq-pain-radar — public pain → buildable opportunities (C6)
 
-Full spec: `docs/specs/PAIN_RADAR.md`. Follows the 12-step execution contract including skill routing, Confidence Forecast, and the step-12 router block.
+Full spec: `.claude/bequite/docs/specs/PAIN_RADAR.md`. Follows the 12-step execution contract including skill routing, Confidence Forecast, and the step-12 router block.
 
 ## Syntax
 

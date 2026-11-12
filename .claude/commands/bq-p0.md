@@ -1,5 +1,5 @@
 ---
-description: Phase 0 orchestrator — Setup and Discovery. Walks /bq-init → /bq-mode → /bq-discover → /bq-doctor in order, pausing only at the mode-selection gate. Goal: learn what's there before deciding anything.
+description: 'Phase 0 orchestrator — Setup and Discovery. Walks /bq-init → /bq-mode → /bq-discover → /bq-doctor in order, pausing only at the mode-selection gate. Goal: learn what''s there before deciding anything.'
 ---
 
 # /bq-p0 — Phase 0 orchestrator: Setup and Discovery

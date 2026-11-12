@@ -79,7 +79,7 @@ Look in `.github/workflows/`, `.gitlab-ci.yml`, etc.
 Report whether the opt-in BeQuite hooks are present + active:
 - **Present:** `.claude/hooks/*.{sh,ps1}` exist (shipped + reviewable).
 - **Active:** the project's `.claude/settings.json` (or `settings.local.json`) has a `hooks` block referencing them.
-- If present-but-not-active → note "hooks available but not enabled — review + merge `.claude/settings.json.example` (or `.windows.`) to turn on; see `docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`." **Never enable them automatically** (security: review-before-enable).
+- If present-but-not-active → note "hooks available but not enabled — review + merge `.claude/settings.json.example` (or `.windows.`) to turn on; see `.claude/bequite/docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`." **Never enable them automatically** (security: review-before-enable).
 
 ## Step 8 — Write the report
 
@@ -235,7 +235,7 @@ Before doing any work:
 
    Don't proceed when a required gate is missing. Recommend the prerequisite + how to resume.
 
-2. **Memory preflight.** Read these files first (per `docs/architecture/MEMORY_FIRST_BEHAVIOR.md`):
+2. **Memory preflight.** Read these files first (per `.claude/bequite/docs/architecture/MEMORY_FIRST_BEHAVIOR.md`):
 
    - `.bequite/state/PROJECT_STATE.md`
    - `.bequite/state/CURRENT_MODE.md`

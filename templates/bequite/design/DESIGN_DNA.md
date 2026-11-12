@@ -131,4 +131,4 @@
 3. **Design Continuity Gate** — every section is judged against §1–§19 of this file.
 4. **On identity change** — update here FIRST, then propagate to `tokens.css` and components.
 
-See `docs/architecture/DESIGN_CONTINUITY_GATE.md`, `docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md`, and `.claude/skills/bequite-frontend-design-system/references/design-dna-template.md`.
+See `.claude/bequite/docs/architecture/DESIGN_CONTINUITY_GATE.md`, `.claude/bequite/docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md`, and `.claude/skills/bequite-frontend-design-system/references/design-dna-template.md`.

@@ -1,6 +1,6 @@
 # Low-Cost Model Rules (operational card)
 
-Strategy: `docs/architecture/LOW_COST_MODEL_EXECUTION_STRATEGY.md` · runbook: `docs/runbooks/USING_BEQUITE_WITH_SMALLER_MODELS.md`. **Honest claim: BeQuite narrows the gap (structure · memory · checklists · decomposition · evidence · gates) — it does not make small models frontier models.**
+Strategy: `.claude/bequite/docs/architecture/LOW_COST_MODEL_EXECUTION_STRATEGY.md` · runbook: `.claude/bequite/docs/runbooks/USING_BEQUITE_WITH_SMALLER_MODELS.md`. **Honest claim: BeQuite narrows the gap (structure · memory · checklists · decomposition · evidence · gates) — it does not make small models frontier models.**
 
 ## Tiers
 

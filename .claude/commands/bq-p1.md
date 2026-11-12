@@ -1,5 +1,5 @@
 ---
-description: Phase 1 orchestrator — Product Framing and Research. Walks /bq-clarify → /bq-research → /bq-scope → /bq-plan in order, with optional /bq-multi-plan for high-stakes decisions. Goal: decide what to build before writing code.
+description: 'Phase 1 orchestrator — Product Framing and Research. Walks /bq-clarify → /bq-research → /bq-scope → /bq-plan in order, with optional /bq-multi-plan for high-stakes decisions. Goal: decide what to build before writing code.'
 ---
 
 # /bq-p1 — Phase 1 orchestrator: Product Framing and Research

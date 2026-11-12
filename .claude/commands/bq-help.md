@@ -254,15 +254,15 @@ Additional commands not listed above (alpha.2+):
 
 ### Confidence Forecast (alpha.21)
 
-Plans, tasks, and features carry a calibrated success forecast: banded % (90–100 routine · 75–89 likely · 50–74 explore · 25–49 spike · 0–24 blocked) + evidence level (verified/inferred/assumed/unknown) + what raises/lowers it. The number must MOVE as evidence arrives; never 100%. Integrated into plan/assign/auto/feature/fix/implement/review/verify/release. Strategy: `docs/architecture/CONFIDENCE_CALIBRATION_STRATEGY.md`.
+Plans, tasks, and features carry a calibrated success forecast: banded % (90–100 routine · 75–89 likely · 50–74 explore · 25–49 spike · 0–24 blocked) + evidence level (verified/inferred/assumed/unknown) + what raises/lowers it. The number must MOVE as evidence arrives; never 100%. Integrated into plan/assign/auto/feature/fix/implement/review/verify/release. Strategy: `.claude/bequite/docs/architecture/CONFIDENCE_CALIBRATION_STRATEGY.md`.
 
 ### Frontier Operating Playbook (alpha.21)
 
-Cheaper/weaker models follow frontier discipline via `docs/architecture/FRONTIER_MODEL_OPERATING_PLAYBOOK.md` + the `bequite-frontier-reasoning-coach` skill + the 10-rule card (`.bequite/state/FRONTIER_REASONING_SUMMARY.md` — embedded in every delegate task pack).
+Cheaper/weaker models follow frontier discipline via `.claude/bequite/docs/architecture/FRONTIER_MODEL_OPERATING_PLAYBOOK.md` + the `bequite-frontier-reasoning-coach` skill + the 10-rule card (`.bequite/state/FRONTIER_REASONING_SUMMARY.md` — embedded in every delegate task pack).
 
 ### Automatic skill routing (alpha.20)
 
-You never need to name skills manually. Every action command classifies your task (per `.bequite/skills/SKILL_ROUTER.md`), auto-selects the right skills from the registry, and shows a `Skill Selection:` block with reasons. Mode sizing prevents over-triggering (fast = minimal set · deep = broader · token-saver = lazy-load · delegate = skills named in the task pack). Strategy: `docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.
+You never need to name skills manually. Every action command classifies your task (per `.bequite/skills/SKILL_ROUTER.md`), auto-selects the right skills from the registry, and shows a `Skill Selection:` block with reasons. Mode sizing prevents over-triggering (fast = minimal set · deep = broader · token-saver = lazy-load · delegate = skills named in the task pack). Strategy: `.claude/bequite/docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.
 
 ### Alpha.17 — Frontend Design Continuity
 
@@ -272,17 +272,17 @@ No new command. A new **master skill** + a **Design Continuity Gate** keep UI qu
 - **Design DNA** (`.bequite/design/DESIGN_DNA.md`) is the persisted source of truth — read before any UI work, locked before first UI code (gate `DESIGN_DNA_LOCKED`).
 - **The gate** (`DESIGN_CONTINUITY_PASS` + `VISUAL_QA_DONE`) runs inside `/bq-feature`, `/bq-fix`, `/bq-auto`, `/bq-uiux-variants`, `/bq-live-edit`, `/bq-audit`, `/bq-review`, `/bq-red-team`, `/bq-verify`.
 - **Quality promise:** every visible section must meet the Design DNA; no UI is complete without a Design Continuity pass + a Visual QA pass.
-- Docs: `docs/architecture/DESIGN_CONTINUITY_GATE.md`, `docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md`. Skill map: `.bequite/design/FRONTEND_SKILL_MAP.md`.
+- Docs: `.claude/bequite/docs/architecture/DESIGN_CONTINUITY_GATE.md`, `.claude/bequite/docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md`. Skill map: `.bequite/design/FRONTEND_SKILL_MAP.md`.
 
 ### Alpha.18 — Harness, Hooks & Context-Engineering
 
 No new command. Reliability upgrades (skills 22 → 24):
 
-- **Opt-in Claude Code hooks** (`.claude/hooks/*` + `settings.json.example`) machine-enforce the safety subset — block destructive ops, secret leaks, and weasel-word "done" claims. **NOT active by default**; review + merge to enable. See `docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`.
-- **`bequite-context-engineer`** — generalizes the frontend DNA/continuity pattern to ALL workflows: `PROJECT_DNA.md` (codebase conventions), `WORKING_NOTES.md` (per-task scratchpad), compact/clear/externalize, session-orientation. See `docs/architecture/CONTEXT_ENGINEERING.md`.
+- **Opt-in Claude Code hooks** (`.claude/hooks/*` + `settings.json.example`) machine-enforce the safety subset — block destructive ops, secret leaks, and weasel-word "done" claims. **NOT active by default**; review + merge to enable. See `.claude/bequite/docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`.
+- **`bequite-context-engineer`** — generalizes the frontend DNA/continuity pattern to ALL workflows: `PROJECT_DNA.md` (codebase conventions), `WORKING_NOTES.md` (per-task scratchpad), compact/clear/externalize, session-orientation. See `.claude/bequite/docs/architecture/CONTEXT_ENGINEERING.md`.
 - **`bequite-anti-hallucination`** — evidence-over-claims, citation-or-strike, in-session package verification, `UNVERIFIED` / "I don't know" forced-fork.
-- Command upgrades: `/bq-review` two-pass (spec→quality), `/bq-verify` evidence + Definition-of-Done, `/bq-discover` map-before-act, `/bq-fix`+`/bq-feature` test-first + package-verify, `/bq-plan`+`/bq-assign` File-Responsibility Map, `/bq-auto` confidence + tighter blocker reset. Authoring standard: `docs/architecture/HARNESS_AND_PROMPT_QUALITY.md`.
-- Game-changer features: ranked **report** at `docs/specs/GAME_CHANGER_FEATURES.md` (proposed, not built).
+- Command upgrades: `/bq-review` two-pass (spec→quality), `/bq-verify` evidence + Definition-of-Done, `/bq-discover` map-before-act, `/bq-fix`+`/bq-feature` test-first + package-verify, `/bq-plan`+`/bq-assign` File-Responsibility Map, `/bq-auto` confidence + tighter blocker reset. Authoring standard: `.claude/bequite/docs/architecture/HARNESS_AND_PROMPT_QUALITY.md`.
+- Game-changer features: ranked **report** at `.claude/bequite/docs/specs/GAME_CHANGER_FEATURES.md` (proposed, not built).
 
 ### Alpha.10 deep intelligence for opportunity commands
 
@@ -340,14 +340,14 @@ No new command. Reliability upgrades (skills 22 → 24):
 
 - Active mode for current run: `.bequite/state/CURRENT_MODE.md`
 - Mode history + outcomes + cost: `.bequite/state/MODE_HISTORY.md`
-- Full strategy: `docs/architecture/AUTO_MODE_STRATEGY.md` §11
+- Full strategy: `.claude/bequite/docs/architecture/AUTO_MODE_STRATEGY.md` §11
 - Delegate task pack: `.bequite/tasks/DELEGATE_*.md` + `.bequite/audits/DELEGATE_REVIEW_REPORT.md`
 
 For the complete picture: [`commands.md`](../../commands.md).
 
 ## Catalog IDs + alpha.22 additions (display in every /bq-help output)
 
-Every command carries a stable display-only catalog ID (files are never renamed — see `docs/architecture/COMMAND_NUMBERING_AND_ORDERING_STRATEGY.md`). Families: **W0–W5** workflow by phase · **N** navigation (now/help/explain/suggest) · **O** orchestrators (p0–p5, auto) · **C** capabilities · **M** maintenance. Full map: `.bequite/commands/COMMAND_ID_MAP.md`.
+Every command carries a stable display-only catalog ID (files are never renamed — see `.claude/bequite/docs/architecture/COMMAND_NUMBERING_AND_ORDERING_STRATEGY.md`). Families: **W0–W5** workflow by phase · **N** navigation (now/help/explain/suggest) · **O** orchestrators (p0–p5, auto) · **C** capabilities · **M** maintenance. Full map: `.bequite/commands/COMMAND_ID_MAP.md`.
 
 New in alpha.22 — capability commands:
 - **C3 `/bq-reference`** screenshot|url|flow|style= — inspiration → design extraction + clone-safe rebuild blueprint (originality guardrails mandatory)

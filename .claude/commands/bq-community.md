@@ -4,7 +4,7 @@ description: Community Pack (C15). Plan a community for a course, brand, content
 
 # /bq-community — community strategy & structure (C15)
 
-Full spec: `docs/specs/COMMUNITY_PACK.md`. Follows the 12-step contract. Skills: product-strategist + writing-dna (tone/prompts) + localization-rtl (Arabic/MENA groups). Shared capability used by course/launch/brand workflows.
+Full spec: `.claude/bequite/docs/specs/COMMUNITY_PACK.md`. Follows the 12-step contract. Skills: product-strategist + writing-dna (tone/prompts) + localization-rtl (Arabic/MENA groups). Shared capability used by course/launch/brand workflows.
 
 ## Syntax
 

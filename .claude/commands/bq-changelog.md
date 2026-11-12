@@ -169,7 +169,7 @@ Before doing any work:
 
    Don't proceed when a required gate is missing. Recommend the prerequisite + how to resume.
 
-2. **Memory preflight.** Read these files first (per `docs/architecture/MEMORY_FIRST_BEHAVIOR.md`):
+2. **Memory preflight.** Read these files first (per `.claude/bequite/docs/architecture/MEMORY_FIRST_BEHAVIOR.md`):
 
    - `.bequite/state/PROJECT_STATE.md`
    - `.bequite/state/CURRENT_MODE.md`

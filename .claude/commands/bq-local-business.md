@@ -4,7 +4,7 @@ description: Local Business Digitizer (C13). Turn an offline/low-tech local busi
 
 # /bq-local-business — offline business → practical digital system (C13)
 
-Full spec: `docs/specs/LOCAL_BUSINESS.md`. Follows the 12-step contract. Skills: automation-engineer + product-strategist + localization-rtl (MENA) + make-money (offer angle). Reuses C6 pain-radar + C11 offer + C12 automation rather than duplicating them.
+Full spec: `.claude/bequite/docs/specs/LOCAL_BUSINESS.md`. Follows the 12-step contract. Skills: automation-engineer + product-strategist + localization-rtl (MENA) + make-money (offer angle). Reuses C6 pain-radar + C11 offer + C12 automation rather than duplicating them.
 
 ## Syntax
 

@@ -1,5 +1,5 @@
 ---
-description: Phase 2 orchestrator — Planning and Build. Walks /bq-assign → /bq-implement (looping) OR /bq-feature OR /bq-fix per the active mode. Goal: build the thing.
+description: 'Phase 2 orchestrator — Planning and Build. Walks /bq-assign → /bq-implement (looping) OR /bq-feature OR /bq-fix per the active mode. Goal: build the thing.'
 ---
 
 # /bq-p2 — Phase 2 orchestrator: Planning and Build

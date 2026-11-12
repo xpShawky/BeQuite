@@ -1,5 +1,5 @@
 ---
-description: Phase 3 orchestrator — Quality and Review. Walks /bq-test → /bq-audit (if requested) → /bq-review → optional /bq-red-team. Goal: confirm the build works before shipping.
+description: 'Phase 3 orchestrator — Quality and Review. Walks /bq-test → /bq-audit (if requested) → /bq-review → optional /bq-red-team. Goal: confirm the build works before shipping.'
 ---
 
 # /bq-p3 — Phase 3 orchestrator: Quality and Review

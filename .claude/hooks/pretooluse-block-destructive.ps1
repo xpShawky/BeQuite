@@ -1,5 +1,5 @@
 # BeQuite hook — PreToolUse — block destructive operations (PowerShell).
-# OPT-IN. Review before enabling. See docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md
+# OPT-IN. Review before enabling. See .claude/bequite/docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md
 # Protocol: stdin JSON; exit 2 = BLOCK (stderr -> Claude); exit 0 = allow. (exit 1 does NOT block.)
 $raw = [Console]::In.ReadToEnd()
 try { $j = $raw | ConvertFrom-Json -ErrorAction Stop } catch { exit 0 }

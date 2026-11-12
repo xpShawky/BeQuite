@@ -39,11 +39,11 @@ The check-after-each-section is the whole point: drift is caught while it's chea
 
 ## Context engineering (why this works)
 
-Persist design, don't remember it. Before any frontend task, read `FRONTEND_CONTEXT_SUMMARY.md` (1-screen digest); escalate to the full DNA / section map only when needed. Never continue from vague memory — if you can't state the font, primary color, spacing scale, and product type, re-read the DNA. After each section, update the summary. Full rules: `docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md`.
+Persist design, don't remember it. Before any frontend task, read `FRONTEND_CONTEXT_SUMMARY.md` (1-screen digest); escalate to the full DNA / section map only when needed. Never continue from vague memory — if you can't state the font, primary color, spacing scale, and product type, re-read the DNA. After each section, update the summary. Full rules: `.claude/bequite/docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md`.
 
 ## The Design Continuity Gate
 
-Run it on **every** surface (not a 3-screen sample): hero · every middle section · final sections · nav · footer · cards · forms · modals · dashboards · tables · empty/loading/error/hover/focus states · all breakpoints. It catches: text overflow, all-caps misuse, wide tracking, inconsistent sizes/radius, random gradients, weak contrast, gray-on-color, pure-black-vs-tinted-neutral, nested cards, cliché SaaS layouts, broken hierarchy, mixed icon styles, dead buttons, unfinished/off-DNA sections, generic AI UI. Detection heuristics: `references/design-continuity-checklist.md`. Gate spec: `docs/architecture/DESIGN_CONTINUITY_GATE.md`. Gate name: `DESIGN_CONTINUITY_PASS`.
+Run it on **every** surface (not a 3-screen sample): hero · every middle section · final sections · nav · footer · cards · forms · modals · dashboards · tables · empty/loading/error/hover/focus states · all breakpoints. It catches: text overflow, all-caps misuse, wide tracking, inconsistent sizes/radius, random gradients, weak contrast, gray-on-color, pure-black-vs-tinted-neutral, nested cards, cliché SaaS layouts, broken hierarchy, mixed icon styles, dead buttons, unfinished/off-DNA sections, generic AI UI. Detection heuristics: `references/design-continuity-checklist.md`. Gate spec: `.claude/bequite/docs/architecture/DESIGN_CONTINUITY_GATE.md`. Gate name: `DESIGN_CONTINUITY_PASS`.
 
 ## Visual QA (render it — don't trust code inspection)
 

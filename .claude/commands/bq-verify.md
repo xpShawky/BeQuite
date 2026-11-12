@@ -204,7 +204,7 @@ See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.
 
 **Definition-of-Done gate** (before verdict = PASS): runnable + typecheck green + relevant tests green + **no stub/TODO/placeholder in changed files** + docs/memory updated + (if a `REGRESSION_LEDGER.md` exists) prior fixed-bug cases still pass. A frontend present → also the Design Continuity + Visual QA reports (below).
 
-**Optional deterministic backstop:** teams can enable the opt-in `Stop`-hook self-verify recipe ("don't end the turn until build + tests pass") — see `docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`. Not installed by default (BeQuite can't know your test command).
+**Optional deterministic backstop:** teams can enable the opt-in `Stop`-hook self-verify recipe ("don't end the turn until build + tests pass") — see `.claude/bequite/docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`. Not installed by default (BeQuite can't know your test command).
 
 ## Design Continuity Gate (alpha.17)
 
@@ -213,7 +213,7 @@ When a frontend exists, `/bq-verify` does not PASS on code-only checks. The matr
 - **Design continuity** — a passing `.bequite/design/DESIGN_CONTINUITY_REPORT.md` (every section consistent with the DNA; no BLOCKER/HIGH drift; quality cliff closed). Run it via `bequite-frontend-design-system` if not already produced this cycle.
 - **Visual QA** — a `.bequite/audits/VISUAL_QA_REPORT.md` from rendering the app at the highest available browser tier (Playwright MCP → project Playwright → code inspection + screenshots; never auto-install). Honest tier-3 is acceptable and must be labeled as such — do NOT claim a visual PASS you did not see (Article VI + banned weasel words).
 
-If either is missing or failing when a frontend is present, verdict is **FAIL** (or PARTIAL with the specific gap). **Effort:** verification depth scales with `${CLAUDE_EFFORT}` (low/medium compact · high full · xhigh/Ultracode browser visual QA per section). Owner: `bequite-frontend-design-system`. Spec: `docs/architecture/DESIGN_CONTINUITY_GATE.md`.
+If either is missing or failing when a frontend is present, verdict is **FAIL** (or PARTIAL with the specific gap). **Effort:** verification depth scales with `${CLAUDE_EFFORT}` (low/medium compact · high full · xhigh/Ultracode browser visual QA per section). Owner: `bequite-frontend-design-system`. Spec: `.claude/bequite/docs/architecture/DESIGN_CONTINUITY_GATE.md`.
 
 ---
 
@@ -226,7 +226,7 @@ Before doing any work:
 
    Don't proceed when a required gate is missing. Recommend the prerequisite + how to resume.
 
-2. **Memory preflight.** Read these files first (per `docs/architecture/MEMORY_FIRST_BEHAVIOR.md`):
+2. **Memory preflight.** Read these files first (per `.claude/bequite/docs/architecture/MEMORY_FIRST_BEHAVIOR.md`):
 
    - `.bequite/state/PROJECT_STATE.md`
    - `.bequite/state/CURRENT_MODE.md`
@@ -270,13 +270,13 @@ Skill Selection:
 
 **The user never has to name skills** — describe the goal; the router picks the disciplines. An explicit user skill choice overrides routing (log the override). At writeback, append the selection + outcome to `.bequite/skills/SKILL_USAGE_LOG.md`.
 
-Strategy: `docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.
+Strategy: `.claude/bequite/docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.
 
 ---
 
 ## Confidence Forecast (alpha.21)
 
-For each phase / task / feature this command handles, report calibrated confidence per `docs/architecture/CONFIDENCE_CALIBRATION_STRATEGY.md`:
+For each phase / task / feature this command handles, report calibrated confidence per `.claude/bequite/docs/architecture/CONFIDENCE_CALIBRATION_STRATEGY.md`:
 
 ```
 Confidence: NN% (band) — <one-line why>

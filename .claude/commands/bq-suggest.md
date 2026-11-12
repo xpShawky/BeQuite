@@ -132,7 +132,7 @@ Decision tree (high-level):
 | "Frontend is inconsistent / middle sections look weak / design drifted / hero good but body generic" | lock `DESIGN_DNA.md` → `/bq-audit` (full continuity sweep) → `/bq-fix`/`/bq-live-edit` per finding → `/bq-verify` (continuity + visual QA). Skill: `bequite-frontend-design-system`. (alpha.17) |
 | "Build a frontend that stays consistent top-to-bottom" | `/bq-auto frontend "..."` (deep) — runs Design DNA → section-by-section loop → continuity gate → visual QA |
 | "Make the agent more reliable / stop it skipping safety rules / set up guardrails" | review + enable the opt-in hooks (`.claude/settings*.json.example`); lock `PROJECT_DNA.md`; lean on `bequite-context-engineer` + `bequite-anti-hallucination`. Docs: `CLAUDE_CODE_HOOKS_STRATEGY.md`. (alpha.18) |
-| "Agent keeps forgetting / repeating mistakes / losing the plan" | `bequite-context-engineer` (PROJECT_DNA + WORKING_NOTES + compact/clear/externalize); read `docs/architecture/CONTEXT_ENGINEERING.md`. (alpha.18) |
+| "Agent keeps forgetting / repeating mistakes / losing the plan" | `bequite-context-engineer` (PROJECT_DNA + WORKING_NOTES + compact/clear/externalize); read `.claude/bequite/docs/architecture/CONTEXT_ENGINEERING.md`. (alpha.18) |
 | "Multi-domain X + Y" | scoped auto: `/bq-auto "X + Y audit and fix"` or sequential `/bq-audit` → focused fixes |
 | "Spec Kit / one-page spec" | `/bq-spec "..."` |
 | "Understand inherited code" | `/bq-explain "..."` |
@@ -294,11 +294,11 @@ Skill Selection:
 
 **The user never has to name skills** — describe the goal; the router picks the disciplines. An explicit user skill choice overrides routing (log the override). At writeback, append the selection + outcome to `.bequite/skills/SKILL_USAGE_LOG.md`.
 
-Strategy: `docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.
+Strategy: `.claude/bequite/docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.
 
 ## Main navigation assistant (alpha.22 — Command Router front-end)
 
-`/bq-suggest` is the interactive front-end of the Workflow Command Router (`docs/architecture/WORKFLOW_COMMAND_ROUTER.md`; routes in `.bequite/commands/COMMAND_ROUTER.md`; IDs in `COMMAND_ID_MAP.md`). Every answer now includes ALL of:
+`/bq-suggest` is the interactive front-end of the Workflow Command Router (`.claude/bequite/docs/architecture/WORKFLOW_COMMAND_ROUTER.md`; routes in `.bequite/commands/COMMAND_ROUTER.md`; IDs in `COMMAND_ID_MAP.md`). Every answer now includes ALL of:
 
 1. **Next workflow command** (catalog ID + reason)
 2. **Relevant capability commands** (C# — only when task signals justify them)

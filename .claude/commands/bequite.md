@@ -175,13 +175,13 @@ Active mode: .bequite/state/CURRENT_MODE.md · History: MODE_HISTORY.md
 Frontend design continuity (alpha.17 — the quality promise):
   Hero quality is not enough — every visible section must meet the Design DNA.
   Master skill: bequite-frontend-design-system (coordinates ux-ui-designer / frontend-quality / live-edit)
-  Design DNA: .bequite/design/DESIGN_DNA.md · Gate spec: docs/architecture/DESIGN_CONTINUITY_GATE.md
+  Design DNA: .bequite/design/DESIGN_DNA.md · Gate spec: .claude/bequite/docs/architecture/DESIGN_CONTINUITY_GATE.md
   Runs inside: /bq-feature /bq-fix /bq-auto /bq-uiux-variants /bq-live-edit /bq-audit /bq-review /bq-red-team /bq-verify
 
 Reliability & hooks (alpha.18):
   Opt-in Claude Code hooks machine-enforce the safety subset (destructive ops · secrets · weasel-word "done" claims) — review before enabling, NOT active by default.
   bequite-context-engineer (PROJECT_DNA + WORKING_NOTES, all workflows) · bequite-anti-hallucination (evidence over claims · citation-or-strike).
-  Docs: docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md · CONTEXT_ENGINEERING.md · HARNESS_AND_PROMPT_QUALITY.md
+  Docs: .claude/bequite/docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md · CONTEXT_ENGINEERING.md · HARNESS_AND_PROMPT_QUALITY.md
 
 Run /bq-help for detailed usage of each command.
 ```

@@ -367,13 +367,13 @@ Skill Selection:
 
 **The user never has to name skills** — describe the goal; the router picks the disciplines. An explicit user skill choice overrides routing (log the override). At writeback, append the selection + outcome to `.bequite/skills/SKILL_USAGE_LOG.md`.
 
-Strategy: `docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.
+Strategy: `.claude/bequite/docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.
 
 ---
 
 ## Confidence Forecast (alpha.21)
 
-For each phase / task / feature this command handles, report calibrated confidence per `docs/architecture/CONFIDENCE_CALIBRATION_STRATEGY.md`:
+For each phase / task / feature this command handles, report calibrated confidence per `.claude/bequite/docs/architecture/CONFIDENCE_CALIBRATION_STRATEGY.md`:
 
 ```
 Confidence: NN% (band) — <one-line why>
@@ -395,8 +395,8 @@ Per contract step 12: end with the router block (Required next: W2.1 `/bq-assign
 
 ## System Design Risk Check (alpha.22 orchestration update — mandatory when relevant)
 
-When the task touches payments · inventory · bookings · auth · permissions/tenancy · database writes · concurrency · queues · external APIs · webhooks · uploads · UGC · admin actions · production · security logic, the output MUST include the structured block from `docs/architecture/SYSTEM_DESIGN_REASONING_STANDARD.md` (Domain · Critical entities · State transitions · Concurrent user risks · Data consistency · Failure modes · Recovery · Security · Edge cases · Tests required · Confidence · Unknowns). Canonical test: one item in stock, two simultaneous buyers — if the plan can't answer reservation/locking/idempotency/order-states/user-visible-outcome, implementation does not start. Outside these domains: `Not applicable — reason:`. Risk without a named test = unfinished plan. Blocking unknowns stop the build.
+When the task touches payments · inventory · bookings · auth · permissions/tenancy · database writes · concurrency · queues · external APIs · webhooks · uploads · UGC · admin actions · production · security logic, the output MUST include the structured block from `.claude/bequite/docs/architecture/SYSTEM_DESIGN_REASONING_STANDARD.md` (Domain · Critical entities · State transitions · Concurrent user risks · Data consistency · Failure modes · Recovery · Security · Edge cases · Tests required · Confidence · Unknowns). Canonical test: one item in stock, two simultaneous buyers — if the plan can't answer reservation/locking/idempotency/order-states/user-visible-outcome, implementation does not start. Outside these domains: `Not applicable — reason:`. Risk without a named test = unfinished plan. Blocking unknowns stop the build.
 
 ## Per-phase Execution Profile (alpha.25)
 
-`IMPLEMENTATION_PLAN.md` records, for EACH phase, an Execution Profile (`docs/architecture/TASK_EXECUTION_PROFILE.md`): **Selected skills** for the phase · **Recommended model** + tier (A frontier / B mid / C small) · **Effort** (quick/standard/high/max) · **Confidence** (banded % + evidence). Skills are chosen here at plan time and refined per task in `/bq-assign`. Honest: BeQuite *recommends* the model, it does not switch it (the user/harness sets the model; never-give-small list forces tier A or A-reviewed for security/migrations/auth/payments/destructive/broad-refactor/release work).
+`IMPLEMENTATION_PLAN.md` records, for EACH phase, an Execution Profile (`.claude/bequite/docs/architecture/TASK_EXECUTION_PROFILE.md`): **Selected skills** for the phase · **Recommended model** + tier (A frontier / B mid / C small) · **Effort** (quick/standard/high/max) · **Confidence** (banded % + evidence). Skills are chosen here at plan time and refined per task in `/bq-assign`. Honest: BeQuite *recommends* the model, it does not switch it (the user/harness sets the model; never-give-small list forces tier A or A-reviewed for security/migrations/auth/payments/destructive/broad-refactor/release work).

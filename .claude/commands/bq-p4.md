@@ -1,5 +1,5 @@
 ---
-description: Phase 4 orchestrator — Release. Walks /bq-verify → /bq-changelog → /bq-release (instructions only, never auto-pushes). Goal: ship the change with a clean trail.
+description: 'Phase 4 orchestrator — Release. Walks /bq-verify → /bq-changelog → /bq-release (instructions only, never auto-pushes). Goal: ship the change with a clean trail.'
 ---
 
 # /bq-p4 — Phase 4 orchestrator: Release

@@ -4,7 +4,7 @@ description: Offer Engine (C11). Turn a skill, service, automation, product idea
 
 # /bq-offer — idea → sellable productized offer (C11)
 
-Full spec: `docs/specs/OFFER_ENGINE.md`. Follows the 12-step execution contract (skill routing, Confidence Forecast, router block). The monetization connector: pain-radar finds problems, make-money finds tracks, **offer packages the standing product**, proposal pitches it per-client.
+Full spec: `.claude/bequite/docs/specs/OFFER_ENGINE.md`. Follows the 12-step execution contract (skill routing, Confidence Forecast, router block). The monetization connector: pain-radar finds problems, make-money finds tracks, **offer packages the standing product**, proposal pitches it per-client.
 
 ## Syntax
 

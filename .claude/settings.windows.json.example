@@ -1,5 +1,5 @@
 {
-  "_comment_bequite": "OPT-IN BeQuite hooks (Windows, PowerShell). Review the .ps1 scripts first, then MERGE this 'hooks' block into your real .claude/settings.json (or settings.local.json). Do NOT blindly overwrite an existing settings file. You may also need: Set-ExecutionPolicy -Scope CurrentUser RemoteSigned. See docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md.",
+  "_comment_bequite": "OPT-IN BeQuite hooks (Windows, PowerShell). Review the .ps1 scripts first, then MERGE this 'hooks' block into your real .claude/settings.json (or settings.local.json). Do NOT blindly overwrite an existing settings file. You may also need: Set-ExecutionPolicy -Scope CurrentUser RemoteSigned. See .claude/bequite/docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md.",
   "hooks": {
     "PreToolUse": [
       {

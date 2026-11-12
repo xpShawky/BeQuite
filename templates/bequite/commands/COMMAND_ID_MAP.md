@@ -1,6 +1,6 @@
 # BeQuite Command ID Map (canonical) — alpha.22
 
-Display-only catalog IDs (Option A — files never renamed). Strategy: `docs/architecture/COMMAND_NUMBERING_AND_ORDERING_STRATEGY.md`.
+Display-only catalog IDs (Option A — files never renamed). Strategy: `.claude/bequite/docs/architecture/COMMAND_NUMBERING_AND_ORDERING_STRATEGY.md`.
 **60 active commands + 1 deprecated alias.** Shapes: WF = workflow · CAP = capability · NAV = navigation · ORC = orchestrator · MNT = maintenance · ARG noted where argument workflows exist.
 
 | ID | Command | Category | Phase | Purpose | Usually follows | Usually next | Auto-run? | Hidden? | Shape |

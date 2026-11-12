@@ -4,7 +4,7 @@ description: Integration Blueprint (C7). Turn API docs, OpenAPI specs, or SDK do
 
 # /bq-integrate — API docs → integration blueprint (C7)
 
-Full spec: `docs/specs/INTEGRATION_BLUEPRINT.md`. Follows the 12-step execution contract including skill routing, Confidence Forecast, and the step-12 router block.
+Full spec: `.claude/bequite/docs/specs/INTEGRATION_BLUEPRINT.md`. Follows the 12-step execution contract including skill routing, Confidence Forecast, and the step-12 router block.
 
 ## Syntax
 

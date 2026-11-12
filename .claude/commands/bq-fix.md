@@ -320,7 +320,7 @@ For type-1 (frontend visual/state) and type-15 (cross-browser/platform) fixes, a
 
 **Effort awareness:** low/medium → check the touched section + grep heuristics; high → touched page; xhigh/Ultracode → full continuity + visual QA sweep.
 
-Spec: `docs/architecture/DESIGN_CONTINUITY_GATE.md`.
+Spec: `.claude/bequite/docs/architecture/DESIGN_CONTINUITY_GATE.md`.
 
 ---
 
@@ -368,13 +368,13 @@ Skill Selection:
 
 **The user never has to name skills** — describe the goal; the router picks the disciplines. An explicit user skill choice overrides routing (log the override). At writeback, append the selection + outcome to `.bequite/skills/SKILL_USAGE_LOG.md`.
 
-Strategy: `docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.
+Strategy: `.claude/bequite/docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.
 
 ---
 
 ## Confidence Forecast (alpha.21)
 
-For each phase / task / feature this command handles, report calibrated confidence per `docs/architecture/CONFIDENCE_CALIBRATION_STRATEGY.md`:
+For each phase / task / feature this command handles, report calibrated confidence per `.claude/bequite/docs/architecture/CONFIDENCE_CALIBRATION_STRATEGY.md`:
 
 ```
 Confidence: NN% (band) — <one-line why>

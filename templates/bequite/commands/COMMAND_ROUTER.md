@@ -1,6 +1,6 @@
 # Command Router — operational routing map (alpha.22)
 
-Strategy: `docs/architecture/WORKFLOW_COMMAND_ROUTER.md` · IDs: `COMMAND_ID_MAP.md` · log: `NEXT_COMMAND_LOG.md`.
+Strategy: `.claude/bequite/docs/architecture/WORKFLOW_COMMAND_ROUTER.md` · IDs: `COMMAND_ID_MAP.md` · log: `NEXT_COMMAND_LOG.md`.
 Commands answer **what next**; skills answer **how well** (see `.bequite/skills/SKILL_ROUTER.md`).
 
 ## 1. Spine routes (gate-aware; PASS path)

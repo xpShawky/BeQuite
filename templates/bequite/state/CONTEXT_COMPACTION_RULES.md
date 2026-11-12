@@ -1,6 +1,6 @@
 # Context Compaction Rules (operational card)
 
-Strategy: `docs/architecture/CONTEXT_COMPACTION_STRATEGY.md` · primitives: `CONTEXT_ENGINEERING.md` + `bequite-context-engineer`.
+Strategy: `.claude/bequite/docs/architecture/CONTEXT_COMPACTION_STRATEGY.md` · primitives: `CONTEXT_ENGINEERING.md` + `bequite-context-engineer`.
 
 | Pressure | Do |
 |---|---|

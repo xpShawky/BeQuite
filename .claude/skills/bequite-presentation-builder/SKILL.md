@@ -355,7 +355,7 @@ Recorded in `.bequite/state/DECISIONS.md` and referenced from `EXPORT_LOG.md`.
 - Front-end quality (AI-slop detection): `.claude/skills/bequite-frontend-quality/SKILL.md`
 - Tool neutrality: `.bequite/principles/TOOL_NEUTRALITY.md`
 - Operating modes: `commands.md` §Operating Modes
-- Memory-first behavior: `docs/architecture/MEMORY_FIRST_BEHAVIOR.md`
+- Memory-first behavior: `.claude/bequite/docs/architecture/MEMORY_FIRST_BEHAVIOR.md`
 - Workflow advisor (mode controller): `.claude/skills/bequite-workflow-advisor/SKILL.md`
 
 ---

@@ -4,7 +4,7 @@ description: Reference Engine (C3). Turn a screenshot, competitor URL, or app fl
 
 # /bq-reference — inspiration → original design direction (C3)
 
-Full spec: `docs/specs/REFERENCE_ENGINE.md`. Follows the 12-step execution contract (`docs/architecture/COMMAND_EXECUTION_CONTRACT.md`) including automatic skill routing, Confidence Forecast, and the step-12 router block.
+Full spec: `.claude/bequite/docs/specs/REFERENCE_ENGINE.md`. Follows the 12-step execution contract (`.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md`) including automatic skill routing, Confidence Forecast, and the step-12 router block.
 
 ## Syntax
 

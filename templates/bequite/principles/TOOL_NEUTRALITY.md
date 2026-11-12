@@ -2,7 +2,7 @@
 
 **Status:** active doctrine (binding on every BeQuite skill, command, doctrine, plan, ADR, and conversation)
 **Adopted:** 2026-05-11 (v3.0.0-alpha.3)
-**ADR:** `docs/decisions/ADR-003-tool-neutrality.md`
+**ADR:** `.claude/bequite/docs/decisions/ADR-003-tool-neutrality.md`
 
 ---
 
@@ -102,7 +102,7 @@ Every major tool, library, framework, or method pick must produce a decision sec
 
 ADR path convention (for project-level tool ADRs, inside the target project): `.bequite/decisions/ADR-<NNN>-<short-slug>.md`. Increment NNN per project.
 
-(BeQuite's own framework-level ADRs live at `docs/decisions/`. Tool-neutrality formalizes there as ADR-003.)
+(BeQuite's own framework-level ADRs live at `.claude/bequite/docs/decisions/`. Tool-neutrality formalizes there as ADR-003.)
 
 ---
 

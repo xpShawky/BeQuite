@@ -1,6 +1,6 @@
 # Skill Router (alpha.20; domains extended alpha.22)
 
-> The domain map + selection algorithm. Read AFTER `SKILL_REGISTRY.md`. Strategy: `docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.
+> The domain map + selection algorithm. Read AFTER `SKILL_REGISTRY.md`. Strategy: `.claude/bequite/docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.
 
 ## Domain → skill map
 

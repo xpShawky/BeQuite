@@ -70,7 +70,9 @@ for skill in "$SOURCE"/.claude/skills/bequite-*/; do
   rm -rf "./.claude/skills/$name"
   cp -r "$skill" "./.claude/skills/$name"
 done
-echo "  $(green "$(ls -1 ./.claude/commands/*.md | wc -l | tr -d ' ') commands, $(ls -d ./.claude/skills/bequite-*/ | wc -l | tr -d ' ') skills")"
+rm -rf ./.claude/bequite
+cp -r "$SOURCE/.claude/bequite" ./.claude/bequite
+echo "  $(green "$(ls -1 ./.claude/commands/*.md | wc -l | tr -d ' ') commands, $(ls -d ./.claude/skills/bequite-*/ | wc -l | tr -d ' ') skills, reference docs in .claude/bequite/docs")"
 
 if [[ -d "$SOURCE/.claude/hooks" ]]; then
   mkdir -p ./.claude/hooks

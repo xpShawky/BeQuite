@@ -4,7 +4,7 @@ description: Course Engine (C5). Build a complete course from idea to launch —
 
 # /bq-course — the Course Engine (C5)
 
-Full spec: `docs/specs/COURSE_ENGINE.md`. Follows the 12-step execution contract including skill routing, Confidence Forecast, and the step-12 router block. Reference policy: the user's course-building PDF framework is ONE reference (12 topics: gap validation → persona → offer → lean curriculum → practical tasks → delivery → branding → content engine → funnel → objections → gamification → MVP launch) alongside runtime research on cohort courses, YouTube education, Udemy/Coursera structure, adult learning, completion psychology, and Arabic/MENA delivery.
+Full spec: `.claude/bequite/docs/specs/COURSE_ENGINE.md`. Follows the 12-step execution contract including skill routing, Confidence Forecast, and the step-12 router block. Reference policy: the user's course-building PDF framework is ONE reference (12 topics: gap validation → persona → offer → lean curriculum → practical tasks → delivery → branding → content engine → funnel → objections → gamification → MVP launch) alongside runtime research on cohort courses, YouTube education, Udemy/Coursera structure, adult learning, completion psychology, and Arabic/MENA delivery.
 
 ## Syntax
 

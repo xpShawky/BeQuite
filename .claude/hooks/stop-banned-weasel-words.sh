@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # BeQuite hook — Stop — block a completion claim that uses banned weasel words instead of evidence.
 # OPT-IN and the MOST EXPERIMENTAL of the three (reads the transcript; fails soft on any uncertainty).
-# Review before enabling. See docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md
+# Review before enabling. See .claude/bequite/docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md
 #
 # Protocol (verified vs docs): Stop hook gets {stop_hook_active, transcript_path, ...}.
 #   exit 2 = block the turn from ending (forces Claude to keep working); stderr -> Claude.

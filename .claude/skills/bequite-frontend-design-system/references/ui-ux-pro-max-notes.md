@@ -1,6 +1,6 @@
 # UI UX Pro Max — researched reference notes
 
-**Source:** nextlevelbuilder — https://github.com/nextlevelbuilder/ui-ux-pro-max-skill (MIT). Verified against `.claude/skills/ui-ux-pro-max/SKILL.md`, `core.py`, `design_system.py`, and the `ui-reasoning.csv` / `colors.csv` / `typography.csv` / `styles.csv` data (alpha.17 research pass).
+**Source:** nextlevelbuilder — https://github.com/nextlevelbuilder/ui-ux-pro-max-skill (MIT). Verified against the upstream repo's `SKILL.md`, `core.py`, `design_system.py`, and the `ui-reasoning.csv` / `colors.csv` / `typography.csv` / `styles.csv` data (alpha.17 research pass).
 
 > Reference, not a dependency. BeQuite ports the *product-type-first* idea as a lightweight Markdown table (`product-type-rules.md`), NOT the Python/CSV engine.
 

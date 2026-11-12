@@ -7,7 +7,7 @@ description: Guard Pass — reactive second-pass quality gates that catch common
 
 ## Purpose
 
-After the agent produces work, run a **reactive review pass** targeting the failure modes AI-generated work specifically exhibits. Concept adapted from the guard-skills pattern (amElnagdy/guard-skills — concept only: no code copied, no dependency installed; see `docs/architecture/GUARD_PASS_STRATEGY.md`). Markdown-only, no scripts, no network, no credentials.
+After the agent produces work, run a **reactive review pass** targeting the failure modes AI-generated work specifically exhibits. Concept adapted from the guard-skills pattern (amElnagdy/guard-skills — concept only: no code copied, no dependency installed; see `.claude/bequite/docs/architecture/GUARD_PASS_STRATEGY.md`). Markdown-only, no scripts, no network, no credentials.
 
 ## When this skill activates
 

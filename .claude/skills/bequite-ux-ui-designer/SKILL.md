@@ -258,7 +258,7 @@ For UI variant generation:
 8. Pause for user selection (hard human gate)
 9. After selection, merge winner; archive rejected
 
-Strategy: `docs/architecture/UIUX_VARIANTS_STRATEGY.md`.
+Strategy: `.claude/bequite/docs/architecture/UIUX_VARIANTS_STRATEGY.md`.
 
 ## When activated by /bq-live-edit
 
@@ -268,7 +268,7 @@ For section-by-section edits:
 3. Verify the edit doesn't trigger any of the 15 AI-slop patterns
 4. Confirm responsive + accessibility hold post-edit
 
-Strategy: `docs/architecture/LIVE_EDIT_STRATEGY.md`.
+Strategy: `.claude/bequite/docs/architecture/LIVE_EDIT_STRATEGY.md`.
 
 ## When activated by /bq-audit (UI audit)
 

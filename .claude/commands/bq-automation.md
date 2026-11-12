@@ -4,7 +4,7 @@ description: Automation Engine (C12). Turn a workflow or bot idea into a tool-ne
 
 # /bq-automation — workflow & bot automation blueprints (C12)
 
-Full spec: `docs/specs/AUTOMATION_ENGINE.md`. Follows the 12-step execution contract. Skill: `bequite-automation-engineer` (+ scraping-automation for web triggers, backend-architect for services). **Tool-neutral — no tool installed or required by default.**
+Full spec: `.claude/bequite/docs/specs/AUTOMATION_ENGINE.md`. Follows the 12-step execution contract. Skill: `bequite-automation-engineer` (+ scraping-automation for web triggers, backend-architect for services). **Tool-neutral — no tool installed or required by default.**
 
 ## Syntax
 

@@ -258,7 +258,7 @@ See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.
 
 ## Design Continuity Gate (alpha.17)
 
-When the repo has a frontend, the audit runs the **Design Continuity Gate** instead of the old "sample 3 screens" pass. Sweep **every** section of every in-scope route, comparing middle sections to the hero (the drift hotspot). Read `.bequite/design/DESIGN_DNA.md` first (judge against the DNA, not a universal template — use the product type's row in `references/product-type-rules.md`). Use the detection heuristics in `.claude/skills/bequite-frontend-design-system/references/design-continuity-checklist.md`. Write findings (severity + quality-cliff result) to `.bequite/design/DESIGN_CONTINUITY_REPORT.md`; seed `[fe][design]` patterns into `MISTAKE_MEMORY.md`. **Effort:** the sweep depth scales with `${CLAUDE_EFFORT}` (low/medium compact · high full · xhigh/Ultracode senior design-review with browser visual QA). Owner: `bequite-frontend-design-system`. Spec: `docs/architecture/DESIGN_CONTINUITY_GATE.md`.
+When the repo has a frontend, the audit runs the **Design Continuity Gate** instead of the old "sample 3 screens" pass. Sweep **every** section of every in-scope route, comparing middle sections to the hero (the drift hotspot). Read `.bequite/design/DESIGN_DNA.md` first (judge against the DNA, not a universal template — use the product type's row in `references/product-type-rules.md`). Use the detection heuristics in `.claude/skills/bequite-frontend-design-system/references/design-continuity-checklist.md`. Write findings (severity + quality-cliff result) to `.bequite/design/DESIGN_CONTINUITY_REPORT.md`; seed `[fe][design]` patterns into `MISTAKE_MEMORY.md`. **Effort:** the sweep depth scales with `${CLAUDE_EFFORT}` (low/medium compact · high full · xhigh/Ultracode senior design-review with browser visual QA). Owner: `bequite-frontend-design-system`. Spec: `.claude/bequite/docs/architecture/DESIGN_CONTINUITY_GATE.md`.
 
 ---
 
@@ -271,7 +271,7 @@ Before doing any work:
 
    Don't proceed when a required gate is missing. Recommend the prerequisite + how to resume.
 
-2. **Memory preflight.** Read these files first (per `docs/architecture/MEMORY_FIRST_BEHAVIOR.md`):
+2. **Memory preflight.** Read these files first (per `.claude/bequite/docs/architecture/MEMORY_FIRST_BEHAVIOR.md`):
 
    - `.bequite/state/PROJECT_STATE.md`
    - `.bequite/state/CURRENT_MODE.md`

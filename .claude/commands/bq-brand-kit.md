@@ -4,7 +4,7 @@ description: Brand Kit Generator (C14). Build a non-generic brand identity from 
 
 # /bq-brand-kit — non-generic brand identity (C14)
 
-Full spec: `docs/specs/BRAND_KIT_ENGINE.md`. Follows the 12-step contract. Skills: ux-ui-designer + frontend-design-system + researcher (niche scan) + writing-dna (tone) + localization-rtl (Arabic/MENA). Reference-safe: extracts patterns, never copies (shares C3's originality discipline).
+Full spec: `.claude/bequite/docs/specs/BRAND_KIT_ENGINE.md`. Follows the 12-step contract. Skills: ux-ui-designer + frontend-design-system + researcher (niche scan) + writing-dna (tone) + localization-rtl (Arabic/MENA). Reference-safe: extracts patterns, never copies (shares C3's originality discipline).
 
 ## Syntax
 

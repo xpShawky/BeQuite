@@ -63,7 +63,7 @@ Format: `GATE_NAME` — `state` — `evidence`
 | `DESIGN_CONTINUITY_PASS` (alias `DESIGN_CONTINUITY_OK`) | ⚪ conditional | `.bequite/design/DESIGN_CONTINUITY_REPORT.md` exists; every section consistent with the DNA; no BLOCKER/HIGH drift open |
 | `VISUAL_QA_DONE` | ⚪ conditional | `.bequite/audits/VISUAL_QA_REPORT.md` exists; browser-tier or honest tier-3 pass; no unresolved BLOCKER |
 
-These are **quality gates that apply when a frontend exists** — they do not block non-frontend projects and never bypass any of the 17 hard human gates. Owner: `bequite-frontend-design-system`. Spec: `docs/architecture/DESIGN_CONTINUITY_GATE.md`.
+These are **quality gates that apply when a frontend exists** — they do not block non-frontend projects and never bypass any of the 17 hard human gates. Owner: `bequite-frontend-design-system`. Spec: `.claude/bequite/docs/architecture/DESIGN_CONTINUITY_GATE.md`.
 
 ### Phase 4 — Ship
 

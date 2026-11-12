@@ -1,6 +1,6 @@
 # BeQuite hook — Stop — block a completion claim that uses banned weasel words (PowerShell).
 # OPT-IN and the MOST EXPERIMENTAL of the three (reads the transcript; fails soft on uncertainty).
-# Review before enabling. See docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md
+# Review before enabling. See .claude/bequite/docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md
 # Protocol: exit 2 = block turn-end (forces Claude to keep working). MUST exit 0 when
 # stop_hook_active is true (avoid infinite loop). Claude Code force-overrides after 8 blocks.
 $raw = [Console]::In.ReadToEnd()

@@ -103,9 +103,9 @@ If effort is unavailable, infer from operating mode: `deep`→high+, `fast`→co
 
 ## Cross-references
 
-- `docs/architecture/CONTEXT_ENGINEERING.md` — the full doctrine (this skill is its operational front end).
-- `docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md` + `bequite-frontend-design-system` — the **frontend cousin**; this skill is the generalization. For UI tasks, that pair owns Design DNA + section map; this skill owns the generic PROJECT DNA + working notes.
-- `docs/architecture/MEMORY_FIRST_BEHAVIOR.md` — the read-before-act rule this skill operationalizes.
+- `.claude/bequite/docs/architecture/CONTEXT_ENGINEERING.md` — the full doctrine (this skill is its operational front end).
+- `.claude/bequite/docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md` + `bequite-frontend-design-system` — the **frontend cousin**; this skill is the generalization. For UI tasks, that pair owns Design DNA + section map; this skill owns the generic PROJECT DNA + working notes.
+- `.claude/bequite/docs/architecture/MEMORY_FIRST_BEHAVIOR.md` — the read-before-act rule this skill operationalizes.
 
 ## Tool neutrality (global rule)
 

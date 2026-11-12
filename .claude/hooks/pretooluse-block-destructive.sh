@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # BeQuite hook — PreToolUse — block destructive operations.
-# OPT-IN. Review this script before enabling it. See docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md
+# OPT-IN. Review this script before enabling it. See .claude/bequite/docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md
 #
 # Protocol (verified vs code.claude.com/docs/en/hooks):
 #   stdin  = JSON {tool_name, tool_input:{command|file_path|...}, ...}

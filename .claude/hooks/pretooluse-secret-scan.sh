@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # BeQuite hook — PreToolUse (matcher: Write|Edit) — block secret-shaped strings before they hit disk.
-# OPT-IN. Review before enabling. See docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md
+# OPT-IN. Review before enabling. See .claude/bequite/docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md
 #
 # Protocol: stdin JSON; exit 2 blocks (stderr -> Claude); exit 0 allows.
 # Only HIGH-CONFIDENCE patterns block (near-zero false positives). The generic

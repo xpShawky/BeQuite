@@ -195,7 +195,7 @@ For features classified Frontend UI / Admin panel / Dashboard (types 1 / 8 / 9),
 
 **Effort awareness:** low/medium → compact heuristic check; high → full per-section; xhigh/Ultracode → per-section critique + browser visual QA + final polish.
 
-Spec: `docs/architecture/DESIGN_CONTINUITY_GATE.md`. Map: `.bequite/design/FRONTEND_SKILL_MAP.md`.
+Spec: `.claude/bequite/docs/architecture/DESIGN_CONTINUITY_GATE.md`. Map: `.bequite/design/FRONTEND_SKILL_MAP.md`.
 
 ---
 
@@ -245,13 +245,13 @@ Skill Selection:
 
 **The user never has to name skills** — describe the goal; the router picks the disciplines. An explicit user skill choice overrides routing (log the override). At writeback, append the selection + outcome to `.bequite/skills/SKILL_USAGE_LOG.md`.
 
-Strategy: `docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.
+Strategy: `.claude/bequite/docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.
 
 ---
 
 ## Confidence Forecast (alpha.21)
 
-For each phase / task / feature this command handles, report calibrated confidence per `docs/architecture/CONFIDENCE_CALIBRATION_STRATEGY.md`:
+For each phase / task / feature this command handles, report calibrated confidence per `.claude/bequite/docs/architecture/CONFIDENCE_CALIBRATION_STRATEGY.md`:
 
 ```
 Confidence: NN% (band) — <one-line why>
@@ -268,7 +268,7 @@ Per contract step 12: end with the router block — Required next W3.1 `/bq-test
 
 ## System Design Risk Check (alpha.22 orchestration update — mandatory when relevant)
 
-When the task touches payments · inventory · bookings · auth · permissions/tenancy · database writes · concurrency · queues · external APIs · webhooks · uploads · UGC · admin actions · production · security logic, the output MUST include the structured block from `docs/architecture/SYSTEM_DESIGN_REASONING_STANDARD.md` (Domain · Critical entities · State transitions · Concurrent user risks · Data consistency · Failure modes · Recovery · Security · Edge cases · Tests required · Confidence · Unknowns). Canonical test: one item in stock, two simultaneous buyers — if the plan can't answer reservation/locking/idempotency/order-states/user-visible-outcome, implementation does not start. Outside these domains: `Not applicable — reason:`. Risk without a named test = unfinished plan. Blocking unknowns stop the build.
+When the task touches payments · inventory · bookings · auth · permissions/tenancy · database writes · concurrency · queues · external APIs · webhooks · uploads · UGC · admin actions · production · security logic, the output MUST include the structured block from `.claude/bequite/docs/architecture/SYSTEM_DESIGN_REASONING_STANDARD.md` (Domain · Critical entities · State transitions · Concurrent user risks · Data consistency · Failure modes · Recovery · Security · Edge cases · Tests required · Confidence · Unknowns). Canonical test: one item in stock, two simultaneous buyers — if the plan can't answer reservation/locking/idempotency/order-states/user-visible-outcome, implementation does not start. Outside these domains: `Not applicable — reason:`. Risk without a named test = unfinished plan. Blocking unknowns stop the build.
 
 ## Skills-first + post-phase verify (alpha.25)
 

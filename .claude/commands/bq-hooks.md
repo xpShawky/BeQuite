@@ -4,7 +4,7 @@ description: Manage BeQuite's opt-in Claude Code safety hooks (M3). status / ena
 
 # /bq-hooks — manage the opt-in safety hooks (M3)
 
-The 3 BeQuite hooks (destructive-op block · secret scan · banned-weasel-word stop) ship as `.claude/hooks/*.{sh,ps1}` but are **OFF by default** — Claude Code only runs hooks listed in `.claude/settings.json` (or `settings.local.json`), and BeQuite never adds them automatically because hooks execute shell on every tool call (RCE vector; review first). Strategy: `docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md` · ADR-005.
+The 3 BeQuite hooks (destructive-op block · secret scan · banned-weasel-word stop) ship as `.claude/hooks/*.{sh,ps1}` but are **OFF by default** — Claude Code only runs hooks listed in `.claude/settings.json` (or `settings.local.json`), and BeQuite never adds them automatically because hooks execute shell on every tool call (RCE vector; review first). Strategy: `.claude/bequite/docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md` · ADR-005.
 
 ## Syntax
 

@@ -276,7 +276,7 @@ Auto-run is fine. Each PR gets its own scratch DB.
 
 ## Deployment runbooks
 
-Every project ships a deployment runbook at `docs/runbooks/DEPLOY.md`:
+Every project ships a deployment runbook at `docs/runbooks/DEPLOY.md` (in the project):
 
 ```markdown
 # Deploy runbook

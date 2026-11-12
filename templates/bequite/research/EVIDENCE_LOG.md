@@ -2,7 +2,7 @@
 
 > **Durable verification evidence** — the file backing `bequite-anti-hallucination`'s evidence-over-claims rule. Every "works / done / passes" claim in a long run records its proof here so it survives compaction and feeds `/bq-verify`, `/bq-review`, and audits. Short runs may paste evidence inline instead; long runs MUST externalize here.
 >
-> Created alpha.19 (Fable Strengthening Pass). Per `docs/architecture/CONTEXT_ENGINEERING_STRATEGY.md` + execution contract step 8.
+> Created alpha.19 (Fable Strengthening Pass). Per `.claude/bequite/docs/architecture/CONTEXT_ENGINEERING_STRATEGY.md` + execution contract step 8.
 
 ---
 

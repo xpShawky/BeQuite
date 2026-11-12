@@ -15,8 +15,14 @@ Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANG
 - v2 heavy-direction leftovers: `cli/`, `tests/`, `template/`, `skill/`, `examples/`, `prompts/`, `state/`, `evidence/`, `package.json`, `Makefile`, `.env.example`, `.dockerignore`, `.commitlintrc.json`, the v2 bootstrap/install scripts, three v2 CI workflows, `docs/legacy/`, `docs/audits/`, the v2 root changelog, and the master/bootstrap brief files. Tracked files: 625 → 193.
 - The repo's own `.bequite/` working memory is no longer published (local only; snapshot on `archive/v2`). This changelog moved to the repo root.
 
-### Added - T0
-- `scripts/bq_check.py`: standard-library self-check that turns rules into failing checks (first check: installer encoding and iex safety).
+### Fixed - T1 truth fixes
+- **BeQuite's reference docs now reach your project.** 82 command/skill files cited 47 BeQuite docs (`docs/architecture`, `docs/specs`, `docs/decisions`, `docs/runbooks`) that were never installed, so those pointers led nowhere in user projects. The docs moved to `.claude/bequite/docs/` and the installers copy them with the commands and skills; 302 references were rewritten (paths that mean the *user's* project, such as `docs/runbooks/DEPLOY.md`, were kept as project paths).
+- 9 commands had invalid YAML frontmatter (`bq-p0`–`bq-p5`, `bq-pain-radar`, `bq-review`, `bq-update`), so their descriptions were lost; now quoted.
+- `.gitattributes` pins line endings (`*.sh` LF so installers run on macOS/Linux).
+- Removed the v2 `LOCAL_DEV.md` runbook (Docker-based).
+
+### Added - T0/T1
+- `scripts/bq_check.py`: standard-library self-check that turns rules into failing checks: installer encoding and iex safety, frontmatter validity, references to repo files, `/bq-*` commands and `bequite-*` skills that must exist, and doc counts that must match the filesystem.
 - `motion-library/`: a local reference-film library for `/bq-motion` (`inbox/` for films, written breakdowns in `refs/`, `INDEX.md`). Third-party media is gitignored.
 
 ## [3.0.0-alpha.25] - 2026-06-13 - Skills-first workflow law + per-task execution profile + post-phase verify

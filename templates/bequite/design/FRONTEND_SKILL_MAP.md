@@ -49,10 +49,10 @@ The master does NOT restate the supporting skills' canonical lists — it **call
 
 ## Governing docs
 
-- `docs/architecture/DESIGN_CONTINUITY_GATE.md` — the gate the master runs
-- `docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md` — why design is persisted, not held in chat
-- `docs/architecture/LIVE_EDIT_STRATEGY.md`, `docs/architecture/UIUX_VARIANTS_STRATEGY.md` — the two FE workflows
-- `docs/architecture/MEMORY_FIRST_BEHAVIOR.md` — read design memory before acting
+- `.claude/bequite/docs/architecture/DESIGN_CONTINUITY_GATE.md` — the gate the master runs
+- `.claude/bequite/docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md` — why design is persisted, not held in chat
+- `.claude/bequite/docs/architecture/LIVE_EDIT_STRATEGY.md`, `.claude/bequite/docs/architecture/UIUX_VARIANTS_STRATEGY.md` — the two FE workflows
+- `.claude/bequite/docs/architecture/MEMORY_FIRST_BEHAVIOR.md` — read design memory before acting
 
 ## Anti-clutter rule
 

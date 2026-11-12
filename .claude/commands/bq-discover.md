@@ -254,7 +254,7 @@ Discovery's job is to **reduce** later context, not inflate it ("more context is
 - **Token-budget the "read these first" list:** rank by (1) files touching the change → (2) immediate callers/deps → (3) covering tests → (4) layer constraints → (5) domain context → (6) exemplars. Surface that ranked list in the report so later commands don't re-walk the tree.
 - **Stamp freshness:** every discovery/DNA artifact carries a commit hash + timestamp + a refresh rule. Trust it only while fresh.
 
-Owner skill: `bequite-context-engineer`. See `docs/architecture/CONTEXT_ENGINEERING.md`.
+Owner skill: `bequite-context-engineer`. See `.claude/bequite/docs/architecture/CONTEXT_ENGINEERING.md`.
 
 ## Gate check + memory preflight (alpha.15)
 
@@ -265,7 +265,7 @@ Before doing any work:
 
    Don't proceed when a required gate is missing. Recommend the prerequisite + how to resume.
 
-2. **Memory preflight.** Read these files first (per `docs/architecture/MEMORY_FIRST_BEHAVIOR.md`):
+2. **Memory preflight.** Read these files first (per `.claude/bequite/docs/architecture/MEMORY_FIRST_BEHAVIOR.md`):
 
    - `.bequite/state/PROJECT_STATE.md`
    - `.bequite/state/CURRENT_MODE.md`

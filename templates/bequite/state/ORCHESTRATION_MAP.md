@@ -1,6 +1,6 @@
 # BeQuite Orchestration Map — source of truth (alpha.22 orchestration update)
 
-**When confused, conflicted, or capability-missing: come HERE first.** This is the compact brain index — one-liners + pointers; details live in the canonical files named. Model doc: `docs/architecture/BEQUITE_ORCHESTRATION_MODEL.md`. Used by: bequite · suggest · discover · plan · auto · implement · review · verify · skill-audit (+ both routers on conflict).
+**When confused, conflicted, or capability-missing: come HERE first.** This is the compact brain index — one-liners + pointers; details live in the canonical files named. Model doc: `.claude/bequite/docs/architecture/BEQUITE_ORCHESTRATION_MODEL.md`. Used by: bequite · suggest · discover · plan · auto · implement · review · verify · skill-audit (+ both routers on conflict).
 
 ## 1–5. Commands (60 active + 1 alias — full map: `.bequite/commands/COMMAND_ID_MAP.md`)
 
@@ -33,7 +33,7 @@ Domain map + mode sizing (fast=smallest safe · deep=broader · token-saver=lazy
 ## 10. Context compaction → `.bequite/state/CONTEXT_COMPACTION_RULES.md`
 ~40% summary · ~60% externalize · ~75% no new tasks · ~85% handoff; Context Compact format; facts live in files, never chat-only.
 
-## 11. System design risk → `docs/architecture/SYSTEM_DESIGN_REASONING_STANDARD.md`
+## 11. System design risk → `.claude/bequite/docs/architecture/SYSTEM_DESIGN_REASONING_STANDARD.md`
 Mandatory block for payments/inventory/bookings/auth/permissions/db-writes/concurrency/queues/APIs/webhooks/uploads/UGC/admin/prod/security; domain risk libraries; risk-without-test = wish.
 
 ## 12. Missing capability detection
@@ -43,7 +43,7 @@ No fitting command/skill ⇒ emit `Missing Capability Detected:` block (needed �
 Contract step 12 (`COMMAND_EXECUTION_CONTRACT.md`); IDs are the shared vocabulary; capability suggestions only on task signals; gates never bypassed, blocked items appear under do-not-run-yet with the gate named.
 
 ## 15. Skills-first + execution profile + post-phase verify (alpha.25)
-Every command (workflow + capability + maintenance; trivial reads exempt) announces its `Skill Selection:` block BEFORE acting. `/bq-plan` records skills per phase; `/bq-assign` records per task + an Execution Profile (recommended model+tier · effort · confidence — `docs/architecture/TASK_EXECUTION_PROFILE.md`). `/bq-discover`+`/bq-research` may recommend a VERIFIED external skill on a real gap (user-approved install only). After each phase/task: select verification skills + run tests/verify with evidence before advancing (failure → `/bq-fix`). BeQuite recommends models, never switches them.
+Every command (workflow + capability + maintenance; trivial reads exempt) announces its `Skill Selection:` block BEFORE acting. `/bq-plan` records skills per phase; `/bq-assign` records per task + an Execution Profile (recommended model+tier · effort · confidence — `.claude/bequite/docs/architecture/TASK_EXECUTION_PROFILE.md`). `/bq-discover`+`/bq-research` may recommend a VERIFIED external skill on a real gap (user-approved install only). After each phase/task: select verification skills + run tests/verify with evidence before advancing (failure → `/bq-fix`). BeQuite recommends models, never switches them.
 
 **Maintainer rule:** command/skill/rule changes update this map in the same commit (drift-checked by `/bq-verify drift` + skill-audit).
 

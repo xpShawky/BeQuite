@@ -4,7 +4,7 @@ description: Recording-to-Assets (C16). Turn long videos/lectures/webinars/meeti
 
 # /bq-recording — video/recording → knowledge assets (C16)
 
-Full spec: `docs/specs/RECORDING_TO_ASSETS.md`. Follows the 12-step contract. Skills: researcher + knowledge (C4 pack) + anti-hallucination + localization-rtl (Arabic). **Not a heavy runtime:** transcript-first; tools optional + tool-dependent; nothing installed by default; never download video in violation of platform terms — prefer user-provided transcript/video or official export.
+Full spec: `.claude/bequite/docs/specs/RECORDING_TO_ASSETS.md`. Follows the 12-step contract. Skills: researcher + knowledge (C4 pack) + anti-hallucination + localization-rtl (Arabic). **Not a heavy runtime:** transcript-first; tools optional + tool-dependent; nothing installed by default; never download video in violation of platform terms — prefer user-provided transcript/video or official export.
 
 ## Syntax
 

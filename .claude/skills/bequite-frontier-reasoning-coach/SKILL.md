@@ -8,7 +8,7 @@ allowed-tools: Read, Glob, Grep
 
 ## Purpose
 
-Frontier-model output quality comes less from raw capability than from OPERATING DISCIPLINE: recover-before-act, audit-before-add, evidence-over-claims, calibrated confidence, single-source-of-truth, full-scope completion. This skill makes any model follow that discipline by enforcing the checklists in `docs/architecture/FRONTIER_MODEL_OPERATING_PLAYBOOK.md`. It contains **no private chain-of-thought** — only external, reusable execution patterns.
+Frontier-model output quality comes less from raw capability than from OPERATING DISCIPLINE: recover-before-act, audit-before-add, evidence-over-claims, calibrated confidence, single-source-of-truth, full-scope completion. This skill makes any model follow that discipline by enforcing the checklists in `.claude/bequite/docs/architecture/FRONTIER_MODEL_OPERATING_PLAYBOOK.md`. It contains **no private chain-of-thought** — only external, reusable execution patterns.
 
 ## When this skill activates
 

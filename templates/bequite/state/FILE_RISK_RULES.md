@@ -1,6 +1,6 @@
 # File Risk Rules (project-tunable)
 
-> Per-project overrides for `docs/architecture/FILE_RISK_CLASSIFICATION.md`. The pack-wide tiers (R3 CONFIRM / R2 ANNOUNCE / R1 NORMAL) apply by default; this file adds project-specific paths or lowers tiers for paths the user has explicitly cleared.
+> Per-project overrides for `.claude/bequite/docs/architecture/FILE_RISK_CLASSIFICATION.md`. The pack-wide tiers (R3 CONFIRM / R2 ANNOUNCE / R1 NORMAL) apply by default; this file adds project-specific paths or lowers tiers for paths the user has explicitly cleared.
 
 **Read by:** every command at execution-contract step 7, before any Edit/Write.
 

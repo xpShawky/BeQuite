@@ -8,7 +8,7 @@ description: Generate multiple UI/UX design directions in isolation. 1-10 varian
 
 Generate **N isolated UI variants** so the user can choose a design direction before committing. Each variant is a different direction (not a color tweak). Original UI stays intact. After selection, the winner merges into main UI; rejected variants archive.
 
-Full strategy: `docs/architecture/UIUX_VARIANTS_STRATEGY.md`.
+Full strategy: `.claude/bequite/docs/architecture/UIUX_VARIANTS_STRATEGY.md`.
 
 ## When to use it
 
@@ -271,7 +271,7 @@ Each variant is generated under a Design DNA and **continuity-checked before it'
 
 **Effort awareness:** low/medium → check reference screen; high → full per-variant; xhigh/Ultracode → per-variant critique + post-merge browser visual QA.
 
-Owner skill: `bequite-frontend-design-system`. Spec: `docs/architecture/DESIGN_CONTINUITY_GATE.md`.
+Owner skill: `bequite-frontend-design-system`. Spec: `.claude/bequite/docs/architecture/DESIGN_CONTINUITY_GATE.md`.
 
 ## Tool neutrality (global rule)
 

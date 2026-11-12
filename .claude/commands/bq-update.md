@@ -1,5 +1,5 @@
 ---
-description: Update BeQuite (commands + skills + docs + memory templates) from GitHub or a local source. Safe + non-destructive: backups before changing files; never overwrites project memory; preserves local customization. Modes: check / safe / force / local-source / github-source.
+description: 'Update BeQuite (commands + skills + docs + memory templates) from GitHub or a local source. Safe + non-destructive: backups before changing files; never overwrites project memory; preserves local customization. Modes: check / safe / force / local-source / github-source.'
 ---
 
 # /bq-update — update BeQuite itself

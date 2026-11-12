@@ -1,6 +1,6 @@
 # Frontend Context Summary
 
-**The 1-screen design digest. Read this before every frontend task** (cheapest way to keep the design in context). It links to the full files; escalate to them only when this isn't enough. Keep it under one screen. See `docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md`.
+**The 1-screen design digest. Read this before every frontend task** (cheapest way to keep the design in context). It links to the full files; escalate to them only when this isn't enough. Keep it under one screen. See `.claude/bequite/docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md`.
 
 **Last updated:** `<ISO 8601 UTC | "not yet built">`
 

@@ -59,7 +59,7 @@ Every non-trivial decision gets an ADR:
 (what becomes easier; what becomes harder)
 ```
 
-Save ADRs at `.bequite/decisions/ADR-NNN-<slug>.md` (project-level) or `docs/decisions/` (if the project prefers).
+Save ADRs at `.bequite/decisions/ADR-NNN-<slug>.md` (project-level) or `docs/decisions/` in the project (if it prefers).
 
 ### 3. Stack-matrix-first
 

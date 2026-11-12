@@ -1,6 +1,6 @@
 # Auto Mode Rules (operational card)
 
-Strategy: `docs/architecture/AUTO_MODE_ORCHESTRATION_STRATEGY.md` (+ base `AUTO_MODE_STRATEGY.md` for intents/gates). Auto Mode = orchestrator, never "continue coding".
+Strategy: `.claude/bequite/docs/architecture/AUTO_MODE_ORCHESTRATION_STRATEGY.md` (+ base `AUTO_MODE_STRATEGY.md` for intents/gates). Auto Mode = orchestrator, never "continue coding".
 
 ## The 15-step sequence (no silent skips)
 

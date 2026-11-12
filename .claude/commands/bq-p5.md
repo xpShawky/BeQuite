@@ -1,5 +1,5 @@
 ---
-description: Phase 5 orchestrator — Memory and Handoff. Walks /bq-memory snapshot → optional /bq-handoff. Goal: persist state for the next session or hand off to a second engineer.
+description: 'Phase 5 orchestrator — Memory and Handoff. Walks /bq-memory snapshot → optional /bq-handoff. Goal: persist state for the next session or hand off to a second engineer.'
 ---
 
 # /bq-p5 — Phase 5 orchestrator: Memory and Handoff

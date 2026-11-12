@@ -1,5 +1,5 @@
 # BeQuite hook — PreToolUse (matcher: Write|Edit) — block secret-shaped strings (PowerShell).
-# OPT-IN. Review before enabling. See docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md
+# OPT-IN. Review before enabling. See .claude/bequite/docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md
 # Only HIGH-CONFIDENCE patterns block (near-zero false positives).
 $raw = [Console]::In.ReadToEnd()
 try { $j = $raw | ConvertFrom-Json -ErrorAction Stop } catch { exit 0 }

@@ -4,7 +4,7 @@ description: Starting Path Advisor (C17). Help a user choose HOW to start — pe
 
 # /bq-start — choose the best starting path (C17)
 
-Full spec: `docs/specs/STARTING_PATH_ADVISOR.md`. Follows the 12-step contract. Skills: product-strategist + make-money + job-finder (career) + writing-dna (tone) + researcher (platform behavior) + localization-rtl (MENA). The "I don't know how to start / which path" command — most people fail at starting, not building.
+Full spec: `.claude/bequite/docs/specs/STARTING_PATH_ADVISOR.md`. Follows the 12-step contract. Skills: product-strategist + make-money + job-finder (career) + writing-dna (tone) + researcher (platform behavior) + localization-rtl (MENA). The "I don't know how to start / which path" command — most people fail at starting, not building.
 
 ## Syntax
 

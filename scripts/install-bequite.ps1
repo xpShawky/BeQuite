@@ -70,9 +70,11 @@ function Install-BeQuite([string]$FromLocal, [bool]$Force) {
       if (Test-Path $dst) { Remove-Item $dst -Recurse -Force }
       Copy-Item -Path $_.FullName -Destination $dst -Recurse -Force
     }
+    if (Test-Path ".\.claude\bequite") { Remove-Item ".\.claude\bequite" -Recurse -Force }
+    Copy-Item -Path (Join-Path $Source ".claude\bequite") -Destination ".\.claude\bequite" -Recurse -Force
     $nCmd = (Get-ChildItem ".\.claude\commands" -Filter *.md).Count
     $nSkill = (Get-ChildItem ".\.claude\skills" -Directory -Filter "bequite-*").Count
-    Write-Host "  $nCmd commands, $nSkill skills" -ForegroundColor Green
+    Write-Host "  $nCmd commands, $nSkill skills, reference docs in .claude\bequite\docs" -ForegroundColor Green
 
     $hooks = Join-Path $Source ".claude\hooks"
     if (Test-Path $hooks) {

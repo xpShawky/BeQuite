@@ -94,7 +94,7 @@ When the user types `/bq-auto presentation ...`, `presentation` is the intent (r
 
 ## Files to read
 
-- `.bequite/state/PROJECT_STATE.md`, `CURRENT_MODE.md`, `CURRENT_PHASE.md`, `WORKFLOW_GATES.md`, `LAST_RUN.md`, `DECISIONS.md`, `ASSUMPTIONS.md`, `MISTAKE_MEMORY.md`, `MODE_HISTORY.md` (memory-first; see `docs/architecture/MEMORY_FIRST_BEHAVIOR.md`)
+- `.bequite/state/PROJECT_STATE.md`, `CURRENT_MODE.md`, `CURRENT_PHASE.md`, `WORKFLOW_GATES.md`, `LAST_RUN.md`, `DECISIONS.md`, `ASSUMPTIONS.md`, `MISTAKE_MEMORY.md`, `MODE_HISTORY.md` (memory-first; see `.claude/bequite/docs/architecture/MEMORY_FIRST_BEHAVIOR.md`)
 - Any source material the user passes via `source=`
 - Existing `.bequite/presentations/*` (if a prior presentation run wrote artifacts — reuse content plan + design brief when relevant)
 - Brand assets if user references them (logo / palette / wordmark / mood board)
@@ -130,7 +130,7 @@ If anything critical is missing AND can't be inferred → ask **one** clarifying
 
 ### 2. Memory-first context load
 
-Read core memory files (per `docs/architecture/MEMORY_FIRST_BEHAVIOR.md`). Don't re-research what's already known.
+Read core memory files (per `.claude/bequite/docs/architecture/MEMORY_FIRST_BEHAVIOR.md`). Don't re-research what's already known.
 
 ### 3. Source intake
 
@@ -485,7 +485,7 @@ After completion, if the run surfaced a pattern (e.g. "this codebase needs Arabi
 - Operating modes: `commands.md` §Operating Modes (alpha.12)
 - UX/UI discipline: `.claude/skills/bequite-ux-ui-designer/SKILL.md`
 - Front-end quality (slop detection): `.claude/skills/bequite-frontend-quality/SKILL.md`
-- Memory-first behavior: `docs/architecture/MEMORY_FIRST_BEHAVIOR.md`
+- Memory-first behavior: `.claude/bequite/docs/architecture/MEMORY_FIRST_BEHAVIOR.md`
 
 ## Usual next command
 

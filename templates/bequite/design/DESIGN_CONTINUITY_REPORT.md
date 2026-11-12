@@ -1,6 +1,6 @@
 # Design Continuity Report
 
-Written by the Design Continuity Gate (owner skill: `bequite-frontend-design-system`). One block **per page/route**. Compares every section against the Design DNA and against the strongest section on the page. See `docs/architecture/DESIGN_CONTINUITY_GATE.md`.
+Written by the Design Continuity Gate (owner skill: `bequite-frontend-design-system`). One block **per page/route**. Compares every section against the Design DNA and against the strongest section on the page. See `.claude/bequite/docs/architecture/DESIGN_CONTINUITY_GATE.md`.
 
 **Project:** `<name>`
 **Generated:** `<ISO 8601 UTC | "template — not yet run">`

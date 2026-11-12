@@ -167,7 +167,7 @@ Before doing any work:
 
    Don't proceed when a required gate is missing. Recommend the prerequisite + how to resume.
 
-2. **Memory preflight.** Read these files first (per `docs/architecture/MEMORY_FIRST_BEHAVIOR.md`):
+2. **Memory preflight.** Read these files first (per `.claude/bequite/docs/architecture/MEMORY_FIRST_BEHAVIOR.md`):
 
    - `.bequite/state/PROJECT_STATE.md`
    - `.bequite/state/CURRENT_MODE.md`
@@ -196,7 +196,7 @@ After successful completion:
 
 ## Confidence Forecast (alpha.21)
 
-For each phase / task / feature this command handles, report calibrated confidence per `docs/architecture/CONFIDENCE_CALIBRATION_STRATEGY.md`:
+For each phase / task / feature this command handles, report calibrated confidence per `.claude/bequite/docs/architecture/CONFIDENCE_CALIBRATION_STRATEGY.md`:
 
 ```
 Confidence: NN% (band) — <one-line why>
@@ -209,7 +209,7 @@ Bands: 90–100 routine · 75–89 likely · 50–74 needs exploration · 25–4
 
 ## Per-task Execution Profile (alpha.25)
 
-Each task in `TASK_LIST.md` carries skills-first selection AND an Execution Profile (`docs/architecture/TASK_EXECUTION_PROFILE.md`):
+Each task in `TASK_LIST.md` carries skills-first selection AND an Execution Profile (`.claude/bequite/docs/architecture/TASK_EXECUTION_PROFILE.md`):
 
 ```
 T<n>  <task>   skills: <registry skills> · recommended: <model id> (tier A|B|C) · effort: <quick|standard|high|max> · confidence: <band % + evidence>

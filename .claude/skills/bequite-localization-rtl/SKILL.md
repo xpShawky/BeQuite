@@ -7,7 +7,7 @@ description: Localization + RTL discipline — Arabic-first localization, RTL la
 
 ## Purpose
 
-Make any BeQuite output genuinely usable in Arabic/MENA contexts — not literal translation pasted into an LTR layout. Skill-first by design: there is **no `/bq-localize` command** (optional proposal only, see `docs/specs/LOCALIZATION_RTL.md`); this skill auto-attaches via the Skill Router.
+Make any BeQuite output genuinely usable in Arabic/MENA contexts — not literal translation pasted into an LTR layout. Skill-first by design: there is **no `/bq-localize` command** (optional proposal only, see `.claude/bequite/docs/specs/LOCALIZATION_RTL.md`); this skill auto-attaches via the Skill Router.
 
 ## When this skill activates
 

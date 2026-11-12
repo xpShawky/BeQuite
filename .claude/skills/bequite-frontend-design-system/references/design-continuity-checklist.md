@@ -1,6 +1,6 @@
 # Design Continuity Checklist
 
-The detection logic behind the Design Continuity Gate. Each row = a drift tell + how to detect it (grep heuristic and/or visual check) + the fix. Run on **every** section, not a sample. Gate spec: `docs/architecture/DESIGN_CONTINUITY_GATE.md`.
+The detection logic behind the Design Continuity Gate. Each row = a drift tell + how to detect it (grep heuristic and/or visual check) + the fix. Run on **every** section, not a sample. Gate spec: `.claude/bequite/docs/architecture/DESIGN_CONTINUITY_GATE.md`.
 
 > Grep patterns are heuristics for a quick first pass (great for low/medium effort). They produce candidates, not verdicts — confirm visually. False positives are fine; the goal is to surface middle-section drift early.
 

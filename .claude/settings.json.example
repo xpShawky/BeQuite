@@ -1,5 +1,5 @@
 {
-  "_comment_bequite": "OPT-IN BeQuite hooks (macOS/Linux/WSL, bash). Review the scripts first, then MERGE this 'hooks' block into your real .claude/settings.json (or settings.local.json). Do NOT blindly overwrite an existing settings file. See docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md. Windows users: use settings.windows.json.example instead.",
+  "_comment_bequite": "OPT-IN BeQuite hooks (macOS/Linux/WSL, bash). Review the scripts first, then MERGE this 'hooks' block into your real .claude/settings.json (or settings.local.json). Do NOT blindly overwrite an existing settings file. See .claude/bequite/docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md. Windows users: use settings.windows.json.example instead.",
   "hooks": {
     "PreToolUse": [
       {

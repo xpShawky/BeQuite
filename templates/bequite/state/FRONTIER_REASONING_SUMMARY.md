@@ -1,6 +1,6 @@
 # Frontier Reasoning Summary — the 10 rules
 
-> The minimum operating bar for ANY model working on BeQuite (or a BeQuite-managed project). Short on purpose — this card goes into every delegate task pack and is re-read at session start. Full playbook: `docs/architecture/FRONTIER_MODEL_OPERATING_PLAYBOOK.md`.
+> The minimum operating bar for ANY model working on BeQuite (or a BeQuite-managed project). Short on purpose — this card goes into every delegate task pack and is re-read at session start. Full playbook: `.claude/bequite/docs/architecture/FRONTIER_MODEL_OPERATING_PLAYBOOK.md`.
 
 1. **Recover memory before acting.** CONTEXT_SUMMARY → LAST_RUN → WORKING_NOTES → gates. Never act on a stale picture.
 2. **Verify current reality before modifying anything.** The repo may have moved past the request. Audit before adding; never duplicate existing work under a new name.

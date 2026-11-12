@@ -151,7 +151,7 @@ Before doing any work:
 
    Don't proceed when a required gate is missing. Recommend the prerequisite + how to resume.
 
-2. **Memory preflight.** Read these files first (per `docs/architecture/MEMORY_FIRST_BEHAVIOR.md`):
+2. **Memory preflight.** Read these files first (per `.claude/bequite/docs/architecture/MEMORY_FIRST_BEHAVIOR.md`):
 
    - `.bequite/state/PROJECT_STATE.md`
    - `.bequite/state/CURRENT_MODE.md`
@@ -180,7 +180,7 @@ After successful completion:
 
 ## Confidence Forecast (alpha.21)
 
-For each phase / task / feature this command handles, report calibrated confidence per `docs/architecture/CONFIDENCE_CALIBRATION_STRATEGY.md`:
+For each phase / task / feature this command handles, report calibrated confidence per `.claude/bequite/docs/architecture/CONFIDENCE_CALIBRATION_STRATEGY.md`:
 
 ```
 Confidence: NN% (band) — <one-line why>
@@ -208,4 +208,4 @@ Per contract step 12: Required next = user-run `git push` / `git tag` (gate 17 �
 
 ## Argument: template (alpha.24 — built)
 
-`/bq-release template` — turn a finished project into a reusable starter/template/product (spec `docs/specs/RELEASE_TEMPLATE.md`; outputs `.bequite/templates/`). Produces TEMPLATE_BRIEF · TEMPLATE_SCOPE · CUSTOMIZATION_GUIDE · DEMO_DATA_PLAN · SECURITY_AND_SECRET_SCAN · TENANCY_AND_DATA_ISOLATION · INSTALL_GUIDE · LICENSING_NOTES · SUPPORT_NOTES · RELEASE_CHECKLIST. **Hard rules:** remove secrets (scan) · seed/demo data only (never real client data) · **explicit multi-tenant-vs-single-tenant decision + named, tested data-isolation mechanism** (two clients on one template must never see each other's data) · no hardcoded branding · licensing + support boundaries stated.
+`/bq-release template` — turn a finished project into a reusable starter/template/product (spec `.claude/bequite/docs/specs/RELEASE_TEMPLATE.md`; outputs `.bequite/templates/`). Produces TEMPLATE_BRIEF · TEMPLATE_SCOPE · CUSTOMIZATION_GUIDE · DEMO_DATA_PLAN · SECURITY_AND_SECRET_SCAN · TENANCY_AND_DATA_ISOLATION · INSTALL_GUIDE · LICENSING_NOTES · SUPPORT_NOTES · RELEASE_CHECKLIST. **Hard rules:** remove secrets (scan) · seed/demo data only (never real client data) · **explicit multi-tenant-vs-single-tenant decision + named, tested data-isolation mechanism** (two clients on one template must never see each other's data) · no hardcoded branding · licensing + support boundaries stated.

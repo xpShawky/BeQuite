@@ -10,7 +10,7 @@ Modify a frontend section through prompts while the site is running. The agent m
 
 **Lightweight.** No heavy Studio. No separate app. No Figma clone. Slash command + skill.
 
-Full strategy: `docs/architecture/LIVE_EDIT_STRATEGY.md`.
+Full strategy: `.claude/bequite/docs/architecture/LIVE_EDIT_STRATEGY.md`.
 
 ## When to use it
 
@@ -245,7 +245,7 @@ See `.bequite/state/MISTAKE_MEMORY.md` template.
 - **After editing:** re-check the edited section AND its neighbors against `.claude/skills/bequite-frontend-design-system/references/design-continuity-checklist.md` — confirm the edit didn't introduce all-caps misuse, wide tracking, gray-on-color, overflow, or off-DNA spacing/radius.
 - If structure changed, update `SECTION_MAP.md`. Log any `[fe][design]` lesson to `MISTAKE_MEMORY.md`. Update `FRONTEND_CONTEXT_SUMMARY.md` after the edit.
 
-This is the **section-level half** of the gate; the **full-page** gate runs at `/bq-feature`, `/bq-auto`, and `/bq-verify`. Owner skill: `bequite-frontend-design-system`. Spec: `docs/architecture/DESIGN_CONTINUITY_GATE.md`.
+This is the **section-level half** of the gate; the **full-page** gate runs at `/bq-feature`, `/bq-auto`, and `/bq-verify`. Owner skill: `bequite-frontend-design-system`. Spec: `.claude/bequite/docs/architecture/DESIGN_CONTINUITY_GATE.md`.
 
 ## Tool neutrality (global rule)
 

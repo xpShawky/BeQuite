@@ -7,7 +7,7 @@ description: BeQuite's global orchestration brain — knows all command families
 
 ## Purpose
 
-One skill that holds the map of everything BeQuite can do, so major workflows choose commands and skills from the **Orchestration Map** instead of vibes — and admit it when nothing fits. Source of truth: `.bequite/state/ORCHESTRATION_MAP.md` · model: `docs/architecture/BEQUITE_ORCHESTRATION_MODEL.md`. Markdown only — this is a map + protocol, not a runtime.
+One skill that holds the map of everything BeQuite can do, so major workflows choose commands and skills from the **Orchestration Map** instead of vibes — and admit it when nothing fits. Source of truth: `.bequite/state/ORCHESTRATION_MAP.md` · model: `.claude/bequite/docs/architecture/BEQUITE_ORCHESTRATION_MODEL.md`. Markdown only — this is a map + protocol, not a runtime.
 
 ## When this skill activates
 

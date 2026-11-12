@@ -25,4 +25,4 @@ All use **exit 2 = block** (exit 1 does NOT block). They **fail soft**: if they 
 
 The destructive-block + secret-scan hooks scan the **entire command/content string** - including echo text, labels, comments, and example text. So do NOT write `rm -rf`, `DROP TABLE`, or a secret-shaped string literally even as documentation inside a command you run, or the whole tool call is blocked (exit 2). Refer to dangerous patterns by description, or split the literal. The destructive matcher covers both the **Bash and PowerShell** tools on Windows (widened from the original Bash-only example).
 
-Full protocol + tuning + disable instructions: `docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`.
+Full protocol + tuning + disable instructions: `.claude/bequite/docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`.

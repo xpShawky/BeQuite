@@ -4,7 +4,7 @@ description: Proposal Builder (C8). Turn a job post, client request, RFP, or dis
 
 # /bq-proposal — opportunity → honest tailored proposal (C8)
 
-Full spec: `docs/specs/PROPOSAL_BUILDER.md`. Follows the 12-step execution contract including skill routing, Confidence Forecast, and the step-12 router block.
+Full spec: `.claude/bequite/docs/specs/PROPOSAL_BUILDER.md`. Follows the 12-step execution contract including skill routing, Confidence Forecast, and the step-12 router block.
 
 ## Syntax
 

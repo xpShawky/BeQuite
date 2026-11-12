@@ -16,7 +16,7 @@ Run the requested workflow end-to-end with **minimum interruption, maximum disci
 
 If the task is safe + scoped, continue until verified, tested, and logged.
 
-Full strategy: `docs/architecture/AUTO_MODE_STRATEGY.md`.
+Full strategy: `.claude/bequite/docs/architecture/AUTO_MODE_STRATEGY.md`.
 
 ## When to use it
 
@@ -405,7 +405,7 @@ When `/bq-auto` works on a frontend (intents `uiux` / `frontend` / `live-edit` /
 
 **Variant-winner selection (hard gate #16) still pauses.** The continuity/visual-QA gates are quality gates and never bypass the 17 hard human gates.
 
-Spec: `docs/architecture/DESIGN_CONTINUITY_GATE.md` · `docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md`.
+Spec: `.claude/bequite/docs/architecture/DESIGN_CONTINUITY_GATE.md` · `.claude/bequite/docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md`.
 
 ## Reliability discipline (alpha.18)
 
@@ -450,13 +450,13 @@ Skill Selection:
 
 **The user never has to name skills** — describe the goal; the router picks the disciplines. An explicit user skill choice overrides routing (log the override). At writeback, append the selection + outcome to `.bequite/skills/SKILL_USAGE_LOG.md`.
 
-Strategy: `docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.
+Strategy: `.claude/bequite/docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.
 
 ---
 
 ## Confidence Forecast (alpha.21)
 
-For each phase / task / feature this command handles, report calibrated confidence per `docs/architecture/CONFIDENCE_CALIBRATION_STRATEGY.md`:
+For each phase / task / feature this command handles, report calibrated confidence per `.claude/bequite/docs/architecture/CONFIDENCE_CALIBRATION_STRATEGY.md`:
 
 ```
 Confidence: NN% (band) — <one-line why>
@@ -485,7 +485,7 @@ New intents route to the capability commands when signaled: course/teaching → 
 
 ## Orchestration rules (alpha.22 orchestration update — anti-skip)
 
-Auto Mode is an orchestrator, never "continue coding" (`docs/architecture/AUTO_MODE_ORCHESTRATION_STRATEGY.md` + `.bequite/state/AUTO_MODE_RULES.md`; global brain: `bequite-orchestrator` skill + `.bequite/state/ORCHESTRATION_MAP.md`). Internal sequence per task — **no silent skips**:
+Auto Mode is an orchestrator, never "continue coding" (`.claude/bequite/docs/architecture/AUTO_MODE_ORCHESTRATION_STRATEGY.md` + `.bequite/state/AUTO_MODE_RULES.md`; global brain: `bequite-orchestrator` skill + `.bequite/state/ORCHESTRATION_MAP.md`). Internal sequence per task — **no silent skips**:
 
 1 Memory preflight · 2 Command router check · 3 Skill router check · 4 **System design risk check** (mandatory for payments/inventory/bookings/auth/concurrency/webhooks/etc. — `SYSTEM_DESIGN_REASONING_STANDARD.md`) · 5 File risk classification · 6 Context budget check (compaction thresholds 40/60/75/85% — `CONTEXT_COMPACTION_RULES.md`) · 7 Confidence forecast · 8 Task plan · 9 Implementation · 10 Tests · 11 Guard Pass · 12 Verification · 13 Evidence log · 14 Memory writeback · 15 Next command recommendations
 

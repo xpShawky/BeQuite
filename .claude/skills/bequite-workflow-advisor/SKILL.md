@@ -248,9 +248,9 @@ The advisor produces structured recommendation:
 ## See also
 
 - `commands.md` — full command reference
-- `docs/architecture/AUTO_MODE_STRATEGY.md` — when scoped auto helps
-- `docs/architecture/WORKFLOW_GATES.md` — gate map
-- `docs/specs/COMMAND_CATALOG.md` — terse machine-readable catalog
+- `.claude/bequite/docs/architecture/AUTO_MODE_STRATEGY.md` — when scoped auto helps
+- `.claude/bequite/docs/architecture/WORKFLOW_GATES.md` — gate map
+- `.claude/bequite/docs/specs/COMMAND_CATALOG.md` — terse machine-readable catalog
 
 ---
 

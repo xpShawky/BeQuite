@@ -7,6 +7,8 @@
 | Domain | Primary skill(s) | Usual companions |
 |---|---|---|
 | frontend / UI/UX / visual identity / branding | **frontend-design-system** (coordinates ux-ui-designer + frontend-quality + live-edit) | testing-gate · context-engineer (multi-section) |
+| motion film / video / promo / ad / reel | **motion-director** (via C18 /bq-motion) | kinetic-type · sound-voice · render-pipeline · writing-dna (script) · localization-rtl (Arabic) · presentation-builder (making-of guide) |
+| website motion / scroll animation / 3D web | **frontend-design-system** (`references/web-motion.md`) | frontend-quality · live-edit · ux-ui-designer |
 | presentation | **presentation-builder** | ux-ui-designer · writing-dna (speaker notes) · researcher (sources) · frontend-design-system (HTML decks) |
 | writing / content / brand voice | **writing-dna** | anti-hallucination (strict) · researcher (factual claims) |
 | academic writing | **writing-dna (strict)** + **researcher** | anti-hallucination · EVIDENCE_LOG mandatory |

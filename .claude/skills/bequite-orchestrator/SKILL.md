@@ -18,7 +18,7 @@ One skill that holds the map of everything BeQuite can do, so major workflows ch
 ## Procedure
 
 1. **Read the map first** (`ORCHESTRATION_MAP.md`) — it's a compact index; never load the full corpus to orient.
-2. **Locate the task** in the pipeline: intent → command router → skill router → risk check → confidence → plan → implement → guard → verify → evidence → writeback → next.
+2. **Resolve the work, then locate the task.** Read `.bequite/ACTIVE.md`: does the request belong to the active work or is it new work (`/bq-work new`)? Route media requests by kind: film / video / ad / reel / promo → C18 `/bq-motion`; website scroll / 3D motion → `bequite-frontend-design-system` (`references/web-motion.md`); slides → C1 `/bq-presentation`. Creative work is always plan-first (options → approval → output). Then locate the task in the pipeline: intent → command router → skill router → risk check → confidence → plan → implement → guard → verify → evidence → writeback → next.
 3. **Resolve conflicts by boundary, not preference** — apply the map's near-miss distinctions (audit≠review · scope≠spec≠plan · pain-radar≠make-money · proposal≠offer · verify≠release-readiness). Still ambiguous → ask ONE high-value question.
 4. **Detect missing capability honestly.** Nothing fits ⇒ emit:
 

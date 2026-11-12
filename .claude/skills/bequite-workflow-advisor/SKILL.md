@@ -63,9 +63,11 @@ New Project · Existing Audit · Add Feature · Fix Problem · Research Only · 
 
 `--mode fast` · `--mode deep` · `--mode token-saver` (alias: `lean`) · `--mode delegate` · (no flag — balanced default) — composable
 
-### The 17 intent types (/bq-auto)
+### The 18 intent types (/bq-auto)
 
-`new`, `existing`, `feature`, `fix`, `uiux`, `frontend`, `backend`, `database`, `security`, `testing`, `devops`, `scraping`, `automation`, `deploy`, `live-edit`, `variants`, `release`
+`new`, `existing`, `feature`, `fix`, `uiux`, `frontend`, `backend`, `database`, `security`, `testing`, `devops`, `scraping`, `automation`, `deploy`, `live-edit`, `variants`, `release`, `motion`
+
+Video / ad / reel / launch-film requests → `/bq-auto motion "..."` or `/bq-motion "..."` directly (plan-first: script, style and render plan are approved before anything is built).
 
 ---
 

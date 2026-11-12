@@ -12,6 +12,7 @@ Display-only catalog IDs (Option A — files never renamed). Strategy: `.claude/
 | W0.5 | `/bq-mode` | setup | P0 | select workflow mode | init | per mode | yes | no | WF |
 | W0.6 | `/bq-new` | setup | P0 | start new project | init | W0.3 | yes | no | WF |
 | W0.7 | `/bq-existing` | setup | P0 | start existing-audit | init | W0.3 | yes | no | WF |
+| W0.8 | `/bq-work` | setup | any | work folders: new / list / switch / status / close (converge + archive) | any new work | W1.1 clarify / C18 motion | yes | no | WF (v4) |
 | W1.1 | `/bq-clarify` | framing | P1 | 3–5 high-value questions | doctor | W1.2 research | no (needs user) | no | WF |
 | W1.2 | `/bq-research` | framing | P1 | 11-dim verified evidence | clarify | W1.3 scope | yes | no | WF |
 | W1.3 | `/bq-scope` | framing | P1 | lock in/out/non-goals | research | W1.4 plan | yes | no | WF · ARG `from-interview`, `intake` |
@@ -39,7 +40,7 @@ Display-only catalog IDs (Option A — files never renamed). Strategy: `.claude/
 | N3 | `/bq-explain` | navigation | any | plain-English explainer | any | — | yes | no | NAV |
 | N4 | `/bq-suggest` | navigation | any | **main navigation assistant** (commands + skills + mode + gates + confidence) | any | per advice | yes | no | NAV |
 | O1–O6 | `/bq-p0`…`/bq-p5` | orchestrator | P0–P5 | walk one phase in order | prior phase | next phase | yes (per-phase gates) | no | ORC |
-| O7 | `/bq-auto` | orchestrator | all | scoped autonomous runner (17 intents) | any | per intent | yes (17 hard gates) | no | ORC |
+| O7 | `/bq-auto` | orchestrator | all | scoped autonomous runner (18 intents) | any | per intent | yes (17 hard gates) | no | ORC |
 | C1 | `/bq-presentation` | capability | any | premium PPTX/HTML decks | (content need) | W4.1 if built | yes (variant gate) | no | CAP |
 | C2 | `/bq-writing-dna` | capability | any | reusable writing profile | (writing need) | C1 / C5 / C8 | yes | no | CAP |
 | C3 | `/bq-reference` | capability | any | inspiration → design extraction + clone-safe rebuild blueprint | (visual ref) | W2.5 / W2.3 | yes | no | CAP (alpha.22) |
@@ -57,9 +58,12 @@ Display-only catalog IDs (Option A — files never renamed). Strategy: `.claude/
 | C15 | `/bq-community` | capability | any | course/brand/launch → community plan | C5 / W4.2 / C14 | C2 / C12 | yes | no | CAP (alpha.24) |
 | C16 | `/bq-recording` | capability | any | video/recording → structured knowledge (transcript-first, dedup) | user video/transcript | C4 / C5 / C2 | yes | no | CAP (alpha.24) · tools optional |
 | C17 | `/bq-start` | capability | any | choose how to start (profile/brand/platform/niche/career) | user goal | C14 / C5 / C11 / C9 | yes | no | CAP (alpha.24) |
+| C18 | `/bq-motion` | capability | any | direct a film: references → script → style → render plan → build → sound → QC → recuts + posts | idea / product / references | C1 presentation / C2 posts / W2.3 web | partial (stops at M2-M4 plan, paid credits, final render, posting) | no | CAP (v4) |
 | M1 | `/bq-update` | maintenance | any | self-update from source | (new release) | W0.4 doctor | yes (backup-gated) | no | MNT |
 | M2 | `/bq-skill-audit` | maintenance | any | skill-pack quality audit | (drift sign) | fixes on approval | yes (report-only) | no | MNT |
 | M3 | `/bq-hooks` | maintenance | any | manage opt-in safety hooks (status/enable/disable/test) | (want enforcement) | reload + test | partial (enable/disable = R3 hard gate) | no | MNT (alpha.24) |
 | X1 | ~~`/bq-add-feature`~~ | removed in v4 | — | use W2.3 `/bq-feature` | — | — | — | removed | — |
+| X2 | `/bq-p0` … `/bq-p5` | deprecated alias | — | use O7 `/bq-auto phase=P0..P5` | — | — | — | redirect | alias |
+| X3 | `/bq-now` | deprecated alias | — | use W0.1 `/bequite short` | — | — | — | redirect | alias |
 
 **Proposed only (not built):** `/bq-localize` — localization/RTL is skill-first (`bequite-localization-rtl`, auto-attached); command added only if demand proves it.

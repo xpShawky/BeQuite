@@ -47,7 +47,7 @@ Full strategy: `.claude/bequite/docs/architecture/AUTO_MODE_STRATEGY.md`.
 - `options` (optional) — `key=value` pairs (e.g. `variants=5`, `max-cost-usd=10`, `mode=audit`)
 - `"task description"` — the actual work, in quotes
 
-## The 17 intent types
+## The 18 intent types
 
 | Intent | Scope | Skills activated |
 |---|---|---|
@@ -68,6 +68,7 @@ Full strategy: `.claude/bequite/docs/architecture/AUTO_MODE_STRATEGY.md`.
 | `live-edit` | Dispatch to `/bq-live-edit` | live-edit |
 | `variants` | Dispatch to `/bq-uiux-variants` | ux-ui-designer + frontend-quality |
 | `release` | P4 release flow | release-gate |
+| `motion` | Dispatch to `/bq-motion` (film, promo, ad, reel, explainer, kinetic type) | motion-director + kinetic-type + sound-voice + render-pipeline |
 
 ## Preconditions
 
@@ -133,6 +134,8 @@ Extract:
 
 If intent is ambiguous → ask **one** high-value question, then continue.
 
+**Creative work is plan-first even in auto mode:** for `motion`, `variants`, presentations, courses, brand work and new projects, auto mode researches and drafts, then presents the plan (with options when references allow) and waits for approval before producing the output.
+
 ### 2. Read state + set mode
 
 If `CURRENT_MODE.md` says "Not selected", set it based on intent:
@@ -173,6 +176,9 @@ Dispatch to `/bq-live-edit "<task>"`.
 
 #### `variants`
 Dispatch to `/bq-uiux-variants [count] "<task>"`.
+
+#### `motion`
+Dispatch to `/bq-motion "<task>"` in a `motion` work item. Inferred when the task asks for a video, film, promo, ad, reel, trailer, explainer, animated logo or "something like the Apple / Starbucks / Spotify ad". Auto mode runs M0 brief and M1 reference options, then **always stops at the plan**: script + beats (M2), style lock (M3) and tool + render plan with prices (M4) each wait for a yes. After approval it continues through the animatic and build rounds, stopping again at picture lock, any paid credit, the final render and delivery. Website scroll/3D motion is not this intent: use `uiux` / `frontend` (web-motion layer of `bequite-frontend-design-system`).
 
 #### `release`
 Run `/bq-verify` → `/bq-changelog` → print release commands → wait for user `git push` / `git tag`.

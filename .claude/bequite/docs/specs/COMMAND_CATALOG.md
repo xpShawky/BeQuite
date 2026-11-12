@@ -369,7 +369,7 @@ Exemptions: hotfixes, doc-only changes, and skill additions activated only from 
 ## Autonomous runner
 
 ### `/bq-auto [intent] [options] "task"` (UPDATED in alpha.4 — scoped + $ARGUMENTS)
-- **Purpose:** scoped autonomous workflow runner; parses 17 intent types and runs only the relevant scope
+- **Purpose:** scoped autonomous workflow runner; parses 18 intent types and runs only the relevant scope
 - **Intents:** `new | existing | feature | fix | uiux | frontend | backend | database | security | testing | devops | scraping | automation | deploy | live-edit | variants | release`
 - **Required gates:** `BEQUITE_INITIALIZED`
 - **Behavior:** continues by default; does NOT pause for "approve the plan?" — only at hard human gates

@@ -11,8 +11,8 @@
 - **W4 release:** verify(+regressions,drift) · release(+readiness,announce,proof,demo-video) · changelog
 - **W5 memory:** memory · recover · handoff(+client)
 - **N navigation:** now · help · explain · suggest(MAIN navigation assistant)
-- **O orchestrators:** p0–p5 · auto(17 intents; 15-step sequence)
-- **C capabilities:** presentation · writing-dna · reference · knowledge · course · pain-radar · integrate · proposal · job-finder · make-money · offer(C11) · automation(C12) · local-business(C13) · brand-kit(C14) · community(C15) · recording(C16) · start(C17) — C11-C17 built alpha.23/24, not live-tested
+- **O orchestrators:** auto (18 intents incl. `motion`; `phase=P0..P5` replaces p0–p5; 15-step sequence)
+- **C capabilities:** presentation · writing-dna · reference · knowledge · course · pain-radar · integrate · proposal · job-finder · make-money · offer(C11) · automation(C12) · local-business(C13) · brand-kit(C14) · community(C15) · recording(C16) · start(C17) · motion(C18 v4: film director, plan-first, stops before paid credits/final render/posting) — C3-C18 not yet live-tested
 - **M maintenance:** update · skill-audit · hooks(M3, opt-in safety hooks: status/enable/disable/test) · **X:** add-feature(deprecated→feature)
 
 **Near-miss boundaries (conflict killers):** audit=whole-project vs review=diff · spec=one-pager vs scope=boundaries vs plan=blueprint · now=1-line vs bequite=menu vs suggest=advisor · pain-radar=find problems vs make-money=find earning tracks · proposal=per-client pitch vs offer=standing productized package · verify="does it work" vs release readiness="should it ship".
@@ -41,6 +41,9 @@ No fitting command/skill ⇒ emit `Missing Capability Detected:` block (needed �
 
 ## 13. Next-command recommendation rules
 Contract step 12 (`COMMAND_EXECUTION_CONTRACT.md`); IDs are the shared vocabulary; capability suggestions only on task signals; gates never bypassed, blocked items appear under do-not-run-yet with the gate named.
+
+## 16. Work folders + motion (v4)
+Every piece of work lives in `.bequite/work/NNNN-slug/` (brief · research · spec · plan · tasks · gates · evidence · review · verify · log); `ACTIVE.md` points at it; gates are per work; `/bq-work close` converges, merges spec deltas into `.bequite/specs/` and archives. Spec: `.claude/bequite/docs/architecture/WORK_FOLDERS.md`. Video/film requests route to C18 `/bq-motion` (skills motion-director + kinetic-type + sound-voice + render-pipeline); website motion routes to frontend-design-system `web-motion.md` (PERF_BUDGET_PASS). Creative work is plan-first even in auto mode.
 
 ## 15. Skills-first + execution profile + post-phase verify (alpha.25)
 Every command (workflow + capability + maintenance; trivial reads exempt) announces its `Skill Selection:` block BEFORE acting. `/bq-plan` records skills per phase; `/bq-assign` records per task + an Execution Profile (recommended model+tier · effort · confidence — `.claude/bequite/docs/architecture/TASK_EXECUTION_PROFILE.md`). `/bq-discover`+`/bq-research` may recommend a VERIFIED external skill on a real gap (user-approved install only). After each phase/task: select verification skills + run tests/verify with evidence before advancing (failure → `/bq-fix`). BeQuite recommends models, never switches them.

@@ -36,6 +36,8 @@ FAIL reroutes: verify FAIL → W2.4 fix (with `regressions` note) · review find
 
 **"Monetize a niche"** → 1. C6 `/bq-pain-radar` (verified pain first) → 2. C10 `/bq-make-money` (match to earning tracks) → 3. **C11 `/bq-offer`** (package the standing product) → 4. C8 `/bq-proposal` (pitch it per-client) → 5. C5 `/bq-course` *only if* an education product is viable → 6. W4.2 `/bq-release proof` once something ships. Order matters: evidence → opportunity → offer → pitch → proof.
 
+**"Make a video / ad / reel / launch film about X"** → 1. C18 `/bq-motion "<idea>"` (brief → 2-3 reference options from `motion-library/` → ✋ script, style, render plan) → 2. C2 `/bq-writing-dna` for the script voice if a profile exists → 3. C18 `/bq-motion post` for launch posts + making-of guide → 4. W2.3 `/bq-feature` with the web-motion layer if a matching website is needed. Do not run yet: any paid voice/AI-video credit before `PICTURE_LOCKED`.
+
 **"Create a course"** → 1. C5 `/bq-course` (validation + curriculum first, never slides first) → 2. C4 `/bq-knowledge build` if source docs exist → 3. C1 `/bq-presentation` when slides are needed → 4. C2 `/bq-writing-dna` for scripts/narration voice → 5. localization-rtl skill (or proposed `/bq-localize`) if Arabic/MENA.
 
 **"I like this website style"** → 1. C3 `/bq-reference screenshot|url` (extraction + originality guardrails) → 2. W2.5 `/bq-uiux-variants` if multiple directions wanted → 3. W2.3 `/bq-feature` once a direction is approved → 4. W4.1 `/bq-verify` (visual QA + continuity gate) → 5. W4.2 `/bq-release proof` if it should become a case study.

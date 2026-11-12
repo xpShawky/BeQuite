@@ -25,6 +25,10 @@ Legend — **Cost** (token weight when fully loaded): L < 150 lines · M 150–3
 | `live-edit` | frontend section edits | "make X less crowded", section, spacing, live edit | live-edit, auto live-edit | frontend-design-system (member) | — | M | M | ✓ |
 | `make-money` | earning, business | make money, income, earning, side hustle, hidden gems | make-money | job-finder, product-strategist | — | M | L | ✓ |
 | `multi-model-planning` | planning, second opinion | multi-model, second opinion, ChatGPT compare, debate | multi-plan | project-architect | — | M | L | ~ |
+| `motion-director` | motion films, promos, ads, reels, launch films | video, film, promo, ad, reel, trailer, explainer, motion, "like the Apple/Starbucks/Spotify ad" | motion, auto motion | kinetic-type, sound-voice, render-pipeline, writing-dna, localization-rtl | frontend-design-system (web motion is not film) | **H** | M | ✓ |
+| `kinetic-type` | moving text in films and HTML | kinetic typography, text animation, write-on, captions, Arabic/RTL type motion | motion | motion-director, render-pipeline | — | M | L | ✓ |
+| `sound-voice` | voice-over, music, SFX, mix, master | voice-over, TTS, music, SFX, mix, loudness, robotic voice | motion, recording | motion-director, render-pipeline | — | **H** | M | ✓ |
+| `render-pipeline` | engine choice + render + QC + delivery | After Effects, aerender, Remotion, HyperFrames, Blender, DaVinci Resolve, ffmpeg, render, QC, recut | motion | motion-director, devops-cloud | — | **H** | M | ✓ |
 | `presentation-builder` | presentation, slides | slides, deck, PPTX, keynote, lecture, PDF→slides | presentation, auto presentation | ux-ui-designer, writing-dna (notes), researcher | — | **H** | M | ✓ |
 | `problem-solver` | debugging | bug, broken, error, reproduce, root cause, bisect | fix | testing-gate, domain specialist | — | L | L | ~ |
 | `product-strategist` | product, scope | MVP, persona, JTBD, scope, pricing, differentiation | clarify, scope, plan | project-architect | — | M | L | ✓ |

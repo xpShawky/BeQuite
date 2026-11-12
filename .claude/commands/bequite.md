@@ -55,6 +55,7 @@ Status:
   BeQuite state:   <not installed | fresh | initialized | mid-workflow>
   Current mode:    <New Project | Existing Audit | Add Feature | Fix Problem | Research Only | Release Readiness | not selected>
   Current phase:   <P0 | P1 | P2 | P3 | P4 | P5 | not set>
+  Active work:     <id - title (type) from .bequite/ACTIVE.md, or "none"> · open work items: <count>
   Last run:        <from LAST_RUN.md, or "none">
   Open questions:  <count, or "none">
   Blockers:        <list any [!] from gate ledger, or "none">
@@ -72,7 +73,7 @@ Recommended next 3 commands:
   2. /<command-2>     — <why>
   3. /<command-3>     — <why>
 
-Command map (60 active commands + 1 deprecated alias — catalog IDs per .bequite/commands/COMMAND_ID_MAP.md):
+Command map (55 active commands — catalog IDs per .bequite/commands/COMMAND_ID_MAP.md):
 
   W0 — Setup and Discovery
     W0.1 /bequite       this menu
@@ -82,6 +83,7 @@ Command map (60 active commands + 1 deprecated alias — catalog IDs per .bequit
     W0.5 /bq-mode       select / show the workflow mode
     W0.6 /bq-new        begin a New Project workflow
     W0.7 /bq-existing   begin an Existing Project Audit workflow
+    W0.8 /bq-work       work folders: new / list / switch / status / close
 
   W1 — Product Framing and Research
     W1.1 /bq-clarify    3-5 high-value clarifying questions
@@ -116,14 +118,12 @@ Command map (60 active commands + 1 deprecated alias — catalog IDs per .bequit
     W5.3 /bq-handoff    generate HANDOFF.md (+ client bundle)
 
   N — Navigation
-    N1 /bq-now          one-line status (faster than this menu)
     N2 /bq-help         full command reference (with IDs)
     N3 /bq-explain      plain-English explainer
     N4 /bq-suggest      MAIN NAVIGATION ASSISTANT — commands + skills + mode + gates + confidence
 
   O — Orchestrators
-    O1-O6 /bq-p0../bq-p5  walk one phase in order
-    O7 /bq-auto         scoped autonomous runner (reports "Internal workflow executed: <IDs>")
+    O7 /bq-auto         scoped autonomous runner (18 intents incl. motion; phase=P0..P5 walks one phase)
 
   C — Capability commands
     C1 /bq-presentation premium PPTX or HTML decks (variants, strict/creative, motion)
@@ -143,6 +143,7 @@ Command map (60 active commands + 1 deprecated alias — catalog IDs per .bequit
     C15 /bq-community   course/brand/launch -> community plan
     C16 /bq-recording   video/recording -> structured knowledge (transcript-first)
     C17 /bq-start       choose how to start (profile/brand/platform/niche/career)
+    C18 /bq-motion      direct a film: references → script → style → render plan → build → sound → QC → recuts + posts
 
   M — Maintenance
     M1 /bq-update       update BeQuite itself (safe + non-destructive)
@@ -193,7 +194,7 @@ Pick the 3 commands based on what gates are met. **Never recommend a command who
 ### Case A — Not installed (no `.bequite/`)
 1. `/bq-init` — establish BeQuite memory
 2. `/bq-mode` — pick a mode
-3. `/bq-p0` — run Phase 0 in one pass
+3. `/bq-auto phase=P0` — run Phase 0 in one pass
 
 ### Case B — Fresh install (`.bequite/` exists, but state empty)
 Same as Case A.
@@ -205,23 +206,23 @@ Same as Case A.
 
 ### Case D — Mid-P0 (mode selected, discovery / doctor pending)
 1. Whichever P0 command is `❌ pending` next
-2. `/bq-p0` — run remaining P0 in one pass
+2. `/bq-auto phase=P0` — run remaining P0 in one pass
 3. `/bq-help`
 
 ### Case E — Mid-P1 (P0 complete)
 1. Whichever P1 command is `❌ pending` next (`/bq-clarify`, then `/bq-research`, then `/bq-scope`, then `/bq-plan`)
-2. `/bq-p1` — run remaining P1 in one pass
+2. `/bq-auto phase=P1` — run remaining P1 in one pass
 3. `/bq-multi-plan` if research left a tie
 
 ### Case F — Mid-P2 (P1 complete, build in progress)
 1. `/bq-implement` (for New Project) | `/bq-feature` (for Add Feature) | `/bq-fix` (for Fix Problem)
 2. `/bq-test` after each task
-3. `/bq-p2` to keep looping until task list done
+3. `/bq-auto phase=P2` to keep looping until the task list is done
 
 ### Case G — Mid-P3 (build done, testing in progress)
 1. `/bq-test` if not green
 2. `/bq-review`
-3. `/bq-p3`
+3. `/bq-auto phase=P3`
 
 ### Case H — Mid-P4 (review done, ready to ship)
 1. `/bq-verify` — full gate matrix
@@ -275,7 +276,7 @@ No menu, no tables. For the full menu run `/bequite` without arguments.
 ## Standardized command fields (alpha.6)
 
 **Phase:** Any (read-only meta command)
-**When NOT to use:** you want a one-line answer (use `/bq-now` — faster); you're already mid-flow inside `/bq-auto` (it's already gate-aware).
+**When NOT to use:** you want a one-line answer (use `/bequite short`); you're already mid-flow inside `/bq-auto` (it's already gate-aware).
 **Preconditions:** none (read-only)
 **Required previous gates:** none
 **Quality gate:**

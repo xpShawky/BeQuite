@@ -1,7 +1,7 @@
 # BeQuite Command ID Map (canonical) — alpha.22
 
 Display-only catalog IDs (Option A — files never renamed). Strategy: `.claude/bequite/docs/architecture/COMMAND_NUMBERING_AND_ORDERING_STRATEGY.md`.
-**60 active commands + 1 deprecated alias.** Shapes: WF = workflow · CAP = capability · NAV = navigation · ORC = orchestrator · MNT = maintenance · ARG noted where argument workflows exist.
+**55 active commands + 7 deprecated redirects (v4).** Shapes: WF = workflow · CAP = capability · NAV = navigation · ORC = orchestrator · MNT = maintenance · ARG noted where argument workflows exist.
 
 | ID | Command | Category | Phase | Purpose | Usually follows | Usually next | Auto-run? | Hidden? | Shape |
 |---|---|---|---|---|---|---|---|---|---|
@@ -35,11 +35,9 @@ Display-only catalog IDs (Option A — files never renamed). Strategy: `.claude/
 | W5.1 | `/bq-memory` | memory | P5 | snapshot / inspect memory | release | W5.3 handoff | yes | no | WF |
 | W5.2 | `/bq-recover` | memory | P5 | resume after break | (new session) | per checkpoint | yes | no | WF |
 | W5.3 | `/bq-handoff` | memory | P5 | handoff package | memory | done | yes | no | WF · ARG `client` |
-| N1 | `/bq-now` | navigation | any | one-line status | any | per status | yes | no | NAV |
 | N2 | `/bq-help` | navigation | any | full reference | any | per need | yes | no | NAV |
 | N3 | `/bq-explain` | navigation | any | plain-English explainer | any | — | yes | no | NAV |
 | N4 | `/bq-suggest` | navigation | any | **main navigation assistant** (commands + skills + mode + gates + confidence) | any | per advice | yes | no | NAV |
-| O1–O6 | `/bq-p0`…`/bq-p5` | orchestrator | P0–P5 | walk one phase in order | prior phase | next phase | yes (per-phase gates) | no | ORC |
 | O7 | `/bq-auto` | orchestrator | all | scoped autonomous runner (18 intents) | any | per intent | yes (17 hard gates) | no | ORC |
 | C1 | `/bq-presentation` | capability | any | premium PPTX/HTML decks | (content need) | W4.1 if built | yes (variant gate) | no | CAP |
 | C2 | `/bq-writing-dna` | capability | any | reusable writing profile | (writing need) | C1 / C5 / C8 | yes | no | CAP |

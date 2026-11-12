@@ -1,6 +1,6 @@
 ---
 name: bequite-orchestrator
-description: BeQuite's global orchestration brain — knows all command families, all 30 skills, gates, routers, auto-mode rules, context compaction, and system-design risk rules. Activates on /bequite, /bq-suggest, /bq-discover, /bq-plan, /bq-auto, /bq-implement, /bq-review, /bq-verify, /bq-skill-audit, and whenever there is command/skill conflict, confusion, duplicated workflow, unclear next step, or a task no existing capability covers (missing-capability detection).
+description: BeQuite's global orchestration brain — knows all command families, all 35 skills, work folders, gates, routers, auto-mode rules, context compaction, and system-design risk rules. Activates on /bequite, /bq-suggest, /bq-discover, /bq-plan, /bq-auto, /bq-implement, /bq-review, /bq-verify, /bq-skill-audit, and whenever there is command/skill conflict, confusion, duplicated workflow, unclear next step, or a task no existing capability covers (missing-capability detection).
 ---
 
 # bequite-orchestrator — the global brain

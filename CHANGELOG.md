@@ -34,6 +34,27 @@ Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANG
 - `bq_check.py` gate check: every gate a command names must exist; 8 alias spellings (`RESEARCH_DONE`, `VERIFY_PASS`, ...) normalized to the canonical names.
 - Write-back targets fixed: 26 commands pointed at a dead `.bequite/logs/CHANGELOG.md`; they now use the project's `CHANGELOG.md`.
 
+### Added - T4 motion studio
+- **`/bq-motion` (C18)**: direct a film like a motion director, not "make an animation". Phases M0-M9: brief → reference options from `motion-library/` → script and beats → style lock → tool decision and render plan → animatic → build rounds → voice and sound → render and QC → platform recuts, launch posts (Instagram, TikTok, Facebook, LinkedIn), comment-to-DM plan and a making-of guide. Plan-first with hard stops at script, style, render plan, picture lock, any paid credit, the final render and delivery; the user does all posting.
+- **4 motion skills** (31 → 35), generalized from a real After Effects film project and made tool-neutral: `bequite-motion-director` (process, taste, story, pacing, transition grammar, honesty), `bequite-kinetic-type` (treatment per line, reading time, Arabic/RTL), `bequite-sound-voice` (voice auditions in the mix, music to picture, sparse SFX, −14 LUFS; generic scripts), `bequite-render-pipeline` (engine choice and adapters: After Effects, Remotion/HyperFrames, Blender, DaVinci Resolve, ffmpeg; render plan; QC).
+- Motion work gates per film: `SCRIPT_APPROVED`, `STYLE_LOCKED`, `RENDER_PLAN_APPROVED`, `PICTURE_LOCKED`, `AUDIO_APPROVED`, `FINAL_QC_PASS`, `DELIVERY_APPROVED`.
+
+### Added - T5 web motion
+- `bequite-frontend-design-system/references/web-motion.md`: motion grammar for websites (scroll-scrubbed story, pinned chapters, travelling object, cut-out depth, chapter colour handoff, write-ons, video in type, real 3D), technique order (CSS scroll-driven animations → View Transitions → one coalesced scroll reader → library → WebGL/WebGPU with fallback), a mobile performance budget, 19 checkable rules, and full / lite / static device tiers.
+- New `PERF_BUDGET_PASS` gate required by verify, feature, auto, live-edit and UI variants for pages with motion; Design DNA gains a Motion taste profile; the visual QA report gains a Performance table.
+
+### Changed - T6 modernized commands
+- Live edit and visual QA use today's tools first: built-in browser pane → the user's own browser (e.g. Claude in Chrome) → a scripted browser if already present → computer use → code inspection.
+- `/bq-auto phase=P0..P5` replaces `/bq-p0`…`/bq-p5` (one canonical phase table with real gate names); `/bequite short` replaces `/bq-now`. The old names are 3-line redirects for one release. `/bq-add-feature` removed.
+
+### Changed - T7 routing
+- `/bq-auto` has an 18th intent, `motion`; creative work (films, variants, presentations, courses, brand, new projects) is plan-first even in auto mode.
+- The orchestrator resolves the active work first and routes media by kind (film → `/bq-motion`, website motion → the web-motion layer, slides → `/bq-presentation`). Command ID map, command router, skill registry, skill router and orchestration map updated.
+
+### Changed - T8 docs
+- README, CLAUDE.md, `commands.md`, AGENTS.md (it still described the retired v0.x harness) and the `/bequite` menu rewritten for v4. `/bq-help` now reads `commands.md`, so the two can no longer drift.
+- **Deferred: Claude Code plugin packaging.** A plugin installs into a plugin cache instead of the project, so the paths every command relies on (`.claude/bequite/docs/`, the memory scaffold) would need rewriting and testing first. Not shipped half-working; tracked for a later release.
+
 ### Added - T0/T1
 - `scripts/bq_check.py`: standard-library self-check that turns rules into failing checks: installer encoding and iex safety, frontmatter validity, references to repo files, `/bq-*` commands and `bequite-*` skills that must exist, and doc counts that must match the filesystem.
 - `motion-library/`: a local reference-film library for `/bq-motion` (`inbox/` for films, written breakdowns in `refs/`, `INDEX.md`). Third-party media is gitignored.

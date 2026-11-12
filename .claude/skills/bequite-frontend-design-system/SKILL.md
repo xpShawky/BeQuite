@@ -18,7 +18,7 @@ AI frontends start strong (hero) and **drift in the middle** — generic cards, 
 |---|---|
 | Generate design / palette / type / tokens | `bequite-ux-ui-designer` (owns the 10 principles + token contract) |
 | Detect AI-slop in code | `bequite-frontend-quality` (owns the 15 slop tells + sourcing order) |
-| Edit one section of a running app + browser screenshots | `bequite-live-edit` (owns the 3-tier inspection + rollback) |
+| Edit one section of a running app + browser screenshots | `bequite-live-edit` (owns the browser-tier inspection + rollback) |
 
 Full map: `.bequite/design/FRONTEND_SKILL_MAP.md`. Do not create new scattered FE skills — extend `references/` here instead.
 
@@ -47,7 +47,7 @@ Run it on **every** surface (not a 3-screen sample): hero · every middle sectio
 
 ## Visual QA (render it — don't trust code inspection)
 
-If a frontend exists, render it. Use the highest available browser tier (Playwright MCP → project Playwright → code inspection + user screenshots; Claude Code bundled run/verify if present). **Never auto-install Playwright.** Check: route loads, no console/network errors, buttons clickable, text visible, no overflow, each middle section, mobile view, breakpoints, dark/light contrast, real states. Write `.bequite/audits/VISUAL_QA_REPORT.md` (`VISUAL_QA_DONE`). Checklist: `references/visual-qa-checklist.md`.
+If a frontend exists, render it. Use the highest available browser tier (built-in browser pane → the user's real browser → scripted browser → computer use → code inspection; tiers in `bequite-live-edit` §3). **Never auto-install Playwright.** Check: route loads, no console/network errors, buttons clickable, text visible, no overflow, each middle section, mobile view, breakpoints, dark/light contrast, real states. Write `.bequite/audits/VISUAL_QA_REPORT.md` (`VISUAL_QA_DONE`). Checklist: `references/visual-qa-checklist.md`.
 
 ## Product-type awareness (not everything is a cinematic SaaS landing)
 

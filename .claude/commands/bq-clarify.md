@@ -38,7 +38,7 @@ If `DISCOVERY_REPORT.md` doesn't exist, suggest running `/bq-discover` first.
 
 **Skip these (don't ask them):**
 - Questions whose answers are already in DISCOVERY_REPORT
-- Aesthetic preferences (gradients, animation speed) — those go in `/bq-add-feature` per-feature
+- Aesthetic preferences (gradients, animation speed) — those go in `/bq-feature` per-feature
 - Questions you can decide with a recommended default
 
 For each question, also give a **Recommended default** the user can accept by just saying "yes" or "all defaults".

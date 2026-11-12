@@ -60,6 +60,6 @@ Display-only catalog IDs (Option A — files never renamed). Strategy: `.claude/
 | M1 | `/bq-update` | maintenance | any | self-update from source | (new release) | W0.4 doctor | yes (backup-gated) | no | MNT |
 | M2 | `/bq-skill-audit` | maintenance | any | skill-pack quality audit | (drift sign) | fixes on approval | yes (report-only) | no | MNT |
 | M3 | `/bq-hooks` | maintenance | any | manage opt-in safety hooks (status/enable/disable/test) | (want enforcement) | reload + test | partial (enable/disable = R3 hard gate) | no | MNT (alpha.24) |
-| X1 | `/bq-add-feature` | deprecated | — | alias → W2.3 `/bq-feature` | — | — | — | listed as deprecated | alias |
+| X1 | ~~`/bq-add-feature`~~ | removed in v4 | — | use W2.3 `/bq-feature` | — | — | — | removed | — |
 
 **Proposed only (not built):** `/bq-localize` — localization/RTL is skill-first (`bequite-localization-rtl`, auto-attached); command added only if demand proves it.

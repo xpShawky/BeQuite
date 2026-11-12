@@ -114,7 +114,7 @@ Print this in the chat. Do not run any other action — `/bq-help` is read-only 
 - **Rules:** inspect files first, make minimal safe changes, run relevant tests, stop on blocker
 - **Next:** `/bq-test` (verify what you just built) → `/bq-implement` (next task) → repeat
 
-### /bq-add-feature
+### /bq-feature
 - **When:** safer wrapper for adding a new feature (spec → plan → impl → test atomic).
 - **Reads:** PROJECT_STATE.md
 - **Writes:** spec at `.bequite/work/<id>/spec.md`, then code changes, then tests
@@ -241,7 +241,7 @@ This help output has the original Phase 0-5 names that pre-date alpha.2. The cur
 
 Additional commands not listed above (alpha.2+):
 - `/bq-mode`, `/bq-new`, `/bq-existing` (P0)
-- `/bq-feature` (P2 — supersedes `/bq-add-feature`)
+- `/bq-feature` (P2)
 - `/bq-auto`, `/bq-p0`..`p5` (orchestrators)
 - `/bq-uiux-variants`, `/bq-live-edit` (UI workflow — alpha.4)
 - `/bq-now` (one-line orientation — alpha.5)

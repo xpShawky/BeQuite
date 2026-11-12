@@ -28,7 +28,7 @@ Invoked by `/bq-suggest`.
 | Root | `/bequite`, `/bq-help`, `/bq-now`, `/bq-explain` |
 | P0 Setup | `/bq-init`, `/bq-mode`, `/bq-new`, `/bq-existing`, `/bq-discover`, `/bq-doctor` |
 | P1 Framing | `/bq-clarify`, `/bq-research`, `/bq-scope`, `/bq-spec`, `/bq-plan`, `/bq-multi-plan` |
-| P2 Build | `/bq-assign`, `/bq-implement`, `/bq-feature`, `/bq-fix` (legacy: `/bq-add-feature`) |
+| P2 Build | `/bq-assign`, `/bq-implement`, `/bq-feature`, `/bq-fix` |
 | P3 Quality | `/bq-test`, `/bq-audit`, `/bq-review`, `/bq-red-team` |
 | P4 Release | `/bq-verify`, `/bq-release`, `/bq-changelog` |
 | P5 Memory | `/bq-memory`, `/bq-recover`, `/bq-handoff` |

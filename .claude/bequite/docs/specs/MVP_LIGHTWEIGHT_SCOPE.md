@@ -25,7 +25,7 @@ This spec defines exactly what v3.0.0-alpha.1 ships. Out-of-scope items are defe
 | `.claude/commands/bq-multi-plan.md` | ✅ | Manual-paste multi-model planning |
 | `.claude/commands/bq-assign.md` | ✅ | Plan → atomic TASK_LIST.md |
 | `.claude/commands/bq-implement.md` | ✅ | One task at a time |
-| `.claude/commands/bq-add-feature.md` | ✅ | Mini-cycle for one feature |
+| `.claude/commands/bq-feature.md` | ✅ | Mini-cycle for one feature |
 | `.claude/commands/bq-fix.md` | ✅ | Reproduce → root cause → patch → test |
 | `.claude/commands/bq-test.md` | ✅ | Run + write tests |
 | `.claude/commands/bq-audit.md` | ✅ | Full project audit |

@@ -19,7 +19,7 @@ You are the scraping + automation discipline keeper. **This skill DOES NOT insta
 
 - `/bq-clarify` answer reveals scraping is in scope
 - `/bq-plan` IMPLEMENTATION_PLAN includes scraping steps
-- `/bq-add-feature` adds a scraper
+- `/bq-feature` adds a scraper
 
 If none of the above: this skill stays dormant. Don't install Playwright "just in case."
 

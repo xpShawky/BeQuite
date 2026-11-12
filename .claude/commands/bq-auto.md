@@ -228,6 +228,22 @@ If paused at a hard gate:
   Resume: /bq-auto <same args>
 ```
 
+## Phase mode - `/bq-auto phase=P0..P5` (replaces `/bq-p0` ... `/bq-p5` in v4)
+
+Walk exactly one phase, in order, inside the active work (`.bequite/ACTIVE.md`). The usual hard human gates and the plan-first rule still apply. Gates marked (work) live in `work/<id>/gates.md`.
+
+| Phase | Walk | Branches by mode | Phase is done when |
+|---|---|---|---|
+| **P0 Setup** | `/bq-init` → `/bq-mode` (✋ user picks the mode) → `/bq-discover` → `/bq-doctor` | New Project in an empty folder: skip discover | `BEQUITE_INITIALIZED`, `MODE_SELECTED`, `DISCOVERY_COMPLETE` (or n/a), `DOCTOR_COMPLETE` |
+| **P1 Framing** | `/bq-clarify` (✋ answers) → `/bq-research` → `/bq-scope` (✋ approve) → optional `/bq-multi-plan` (ask) → `/bq-plan` (✋ approve) | Research Only: stop after research | `CLARIFY_ANSWERED`, `RESEARCH_COMPLETE`, `SCOPE_LOCKED`, `PLAN_APPROVED` (work) |
+| **P2 Build** | New Project: `/bq-assign` → `/bq-implement` loop (verify each task) · Add Feature: `/bq-feature` · Fix: `/bq-fix` | Existing Audit / Research Only / Release Readiness: skip P2 | `TASKS_ASSIGNED` + `IMPLEMENTATION_DONE`, or the feature / fix gates (work) |
+| **P3 Quality** | `/bq-test` → `/bq-audit` (Existing Audit, Release Readiness, or asked) → `/bq-review` → optional `/bq-red-team` (ask) | Blocker findings: ✋ fix now (back to P2), defer, or accept with a reason | `TESTS_PASS`, `REVIEW_APPROVED` (+ `RED_TEAM_RESOLVED` if run) (work) |
+| **P4 Release** | `/bq-verify` (FAIL → stop, back to P2/P3) → `/bq-changelog` → `/bq-release` (prints git commands; ✋ the user runs push/tag) | - | `VERIFY_PASSED` + `CONVERGED` (work), `CHANGELOG_UPDATED`, `RELEASE_PREPPED` |
+| **P5 Memory** | `/bq-memory snapshot` → optional `/bq-handoff` (ask) → `/bq-work close` | - | `MEMORY_SNAPSHOT` (+ `HANDOFF_GENERATED`); work archived |
+
+After each phase: set `.bequite/state/CURRENT_PHASE.md` to the next phase and print a short summary (mode, what ran, gates done, reports written, next phase). If a phase's gates are not all done, stop and name the missing gate.
+
+
 ## Operating modes (alpha.12 — 4 modes, composable)
 
 `/bq-auto` accepts mode flags that adjust **depth, speed, token use, or model strategy**. Hard human gates still apply regardless of mode.

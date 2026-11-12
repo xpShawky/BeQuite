@@ -92,40 +92,23 @@ Default URL is usually `http://localhost:3000` (Next.js, Nuxt) or `5173` (Vite, 
 
 ---
 
-## 3. Browser inspection strategy
+## 3. Browser inspection strategy (v4: use the agent's own eyes first)
 
-Inspection has three tiers — use the highest tier available without installing anything:
+Pick the highest tier that is available in this session, without installing anything. Detect by the tools you actually have (tool names below are examples from Claude Code; other agents have equivalents).
 
-### Tier 1: Playwright MCP (preferred when available)
+| Tier | Use it for | How (examples) |
+|---|---|---|
+| **1. Built-in browser pane** | local dev servers and static previews: the default for live edits | start the dev server, open it in the pane, then screenshot, read the page/DOM, click, resize to a phone viewport (375x812), read console and network. In Claude Code Desktop these are the `Claude_Browser` / preview tools. |
+| **2. The user's real browser** (e.g. Claude in Chrome) | deployed, staging or logged-in pages; GIF recordings of scroll motion; the link the client will actually open | navigate, screenshot, read page, console, network, record a GIF of the scroll. The user's sign-ins are theirs: act only on the page the task needs. |
+| **3. Scripted browser** (Playwright MCP, or Playwright already in the project) | repeatable checks, many breakpoints, CI | `page.goto`, `page.screenshot`, `locator.boundingBox()`; only if already available. |
+| **4. Computer use** | native apps and anything a browser tool can't reach (a desktop browser profile, a device mirror, After Effects/Photoshop UI) | screenshots + clicks on the real desktop; slow, so batch actions and prefer tiers 1-3 when they work. |
+| **5. Code inspection + user screenshots** | nothing above is available | read the source, grep the section, ask for a screenshot, write down manual verification steps. |
 
-If Playwright MCP is loaded in the agent host (`mcp__playwright__*` tools available), use it:
-- `page.goto(url)`
-- `page.screenshot({ path: "..." })`
-- `page.locator(selector).boundingBox()`
-- DOM inspection
-
-### Tier 2: Playwright already installed in the project
-
-If the project has `@playwright/test` in `devDependencies`, drive it via a script:
-```ts
-// scripts/inspect.ts
-import { chromium } from "playwright";
-const browser = await chromium.launch();
-const page = await browser.newPage();
-await page.goto("http://localhost:3000");
-await page.screenshot({ path: ".bequite/uiux/screenshots/before-...png" });
-await browser.close();
-```
-
-### Tier 3: Code inspection only
-
-If neither is available:
-- Read source files (Read tool)
-- Grep for the section name
-- Ask the user for a manual screenshot if visual context matters
-- Document the manual verification steps
-
-**Never auto-install Playwright.** If the task genuinely needs it and the project doesn't have it, surface as a recommendation with a decision section.
+Rules:
+- Before/after screenshots of the edited section go to `.bequite/work/<id>/outputs/screenshots/` (or `.bequite/uiux/screenshots/` outside a work item).
+- Always check a phone width as well as desktop; for motion pages also run the performance pass (`../bequite-frontend-design-system/references/web-motion.md`).
+- **Never auto-install** Playwright or any browser tool. If a task genuinely needs one that is missing, recommend it with a decision section.
+- If a tier needs the user (sign-in, allowing a site, showing a hidden pane), ask once and continue with the next tier meanwhile.
 
 ---
 
@@ -151,7 +134,7 @@ The SECTION_MAP.md is the contract between visible UI and source files.
    - Responsive concerns
    - Editable fields
    - Known problems
-4. (Optional) Take section-level screenshots if Playwright is available
+4. Take section-level screenshots with the best available tier (§3)
 
 ### Heuristics for identifying sections
 
@@ -259,7 +242,7 @@ If any test fails after the edit → roll back, log the failure, ask user.
 | Build red after edit | `git stash` to roll back; re-attempt with smaller scope |
 | Visual regression | Roll back; ask user to confirm intent |
 | Test red after edit | `git stash`; re-attempt; if persists, pause |
-| Playwright not available + task needs visual confirmation | Document manual verification steps; ask user for screenshot |
+| No browser tier available (§3 tiers 1-4) + task needs visual confirmation | Document manual verification steps; ask user for screenshot |
 | Multiple files match the section | Edit the most-specific; log decision |
 
 ---

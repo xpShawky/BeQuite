@@ -162,7 +162,7 @@ You: /bq-scope
 
 Forces a commit to IN / OUT / NON-GOALS. The agent drafts the three lists; you confirm or move items.
 
-Writes `.bequite/work/<id>/spec.md`. Critical — every later `/bq-add-feature` checks against this.
+Writes `.bequite/work/<id>/spec.md`. Critical — every later `/bq-feature` checks against this.
 
 ### `/bq-plan` — write the implementation plan
 
@@ -236,10 +236,10 @@ You: /bq-implement T-2.3
 
 Force a specific task ID.
 
-### `/bq-add-feature` — safer mini-cycle
+### `/bq-feature` — safer mini-cycle
 
 ```
-You: /bq-add-feature "CSV export on the bookings page"
+You: /bq-feature "CSV export on the bookings page"
 ```
 
 For features that don't need the full `/bq-plan` → `/bq-assign` cycle. Spec → impl → test atomically.
@@ -375,7 +375,7 @@ The point is **discipline + memory**, not the specific sequence.
 
 If the workflow feels heavy for a small change:
 
-- Skip ahead. Run `/bq-add-feature` directly without `/bq-plan` for tiny features.
+- Skip ahead. Run `/bq-feature` directly without `/bq-plan` for tiny features.
 - Don't run `/bq-verify` for trivial changes. Use `/bq-test` alone.
 - For prototyping / spike work, run `/bequite` once for orientation, then ignore the rest.
 

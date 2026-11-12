@@ -98,18 +98,14 @@ Ask the user:
 
 **Do not auto-start the dev server** without user OK (changes process state).
 
-### 3. (Optional) Browser inspection
+### 3. Browser inspection
 
-If Playwright (or compatible browser automation) is **already** in the project, or if Playwright MCP is available in the agent host:
-- Open the dev URL
-- Take initial screenshot → `.bequite/uiux/screenshots/before-<ts>-<section>.png`
+Use the best available tier (`.claude/skills/bequite-live-edit/SKILL.md` §3 - 1 built-in browser pane (local previews) · 2 the user's real browser, e.g. Claude in Chrome (deployed/staging, GIF of the scroll) · 3 scripted browser already available (Playwright MCP / project Playwright) · 4 computer use (native apps, device mirrors) · 5 code inspection + user screenshots.)
+- Open the dev URL (the built-in browser pane is the default for local servers; ask before starting a dev server).
+- Take the before screenshot of the section (desktop and phone width) → `.bequite/work/<id>/outputs/screenshots/before-<ts>-<section>.png`.
+- No tier available → code inspection, ask the user for a screenshot, and write manual verification steps.
 
-If browser automation is **not** available:
-- Use code inspection (Read + Grep)
-- Ask the user for a screenshot if visual context matters
-- Document manual verification steps
-
-**Do NOT auto-install Playwright.** If the task truly needs it and it's not present, surface as a recommendation with a decision section — don't install.
+**Do NOT auto-install Playwright** or any browser tool.
 
 ### 4. Map sections (build or refresh SECTION_MAP.md)
 
@@ -181,7 +177,7 @@ gap: var(--space-3);
 Section:        <name>
 Files changed:  <list>
 Build:          OK (or specific output)
-Visual check:   <ran via Playwright | manual screenshots requested | code-only>
+Visual check:   <tier used: browser pane | real browser | scripted | computer use | code-only + screenshots requested>
 Screenshots:    <paths if any>
 
 Logged:

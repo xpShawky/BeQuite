@@ -1,6 +1,6 @@
 ---
 name: bequite-testing-gate
-description: Test discipline. Pyramid (unit > integration > e2e). Contract tests. Snapshot rules. Coverage targets. Invoked by /bq-test, /bq-add-feature, /bq-fix.
+description: Test discipline. Pyramid (unit > integration > e2e). Contract tests. Snapshot rules. Coverage targets. Invoked by /bq-test, /bq-feature, /bq-fix.
 allowed-tools: ["Read", "Glob", "Grep", "Bash", "Edit", "Write"]
 ---
 

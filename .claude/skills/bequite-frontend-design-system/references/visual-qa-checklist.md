@@ -8,18 +8,11 @@ Sibling references: `design-dna-template.md` (identity contract), the section-by
 
 ## Browser inspection tiers
 
-Use the highest tier available. NEVER auto-install a browser, Playwright, or any dependency to climb a tier — drop to a lower tier and say so.
+Use the highest tier available this session. NEVER auto-install a browser, Playwright, or any dependency to climb a tier; drop to a lower tier and say so.
 
-| Tier | Tool | Use when | Capability |
-|---|---|---|---|
-| 1 | Playwright MCP (`mcp__playwright__*`) | MCP server is connected | Navigate, click, screenshot, read console + network — full visual pass |
-| 2 | Project Playwright in `devDependencies` | Repo already lists `@playwright/test` / `playwright` | Run existing scripts; screenshot via project config |
-| 3 | Code inspection + ask user for screenshots | No browser tool available | Read source, reason about render; request user screenshots per route |
-| 4 | Claude Code bundled `/run` + `/verify` | Those commands exist this session | Launch app, smoke render, capture what the harness exposes |
+Browser tiers (single home): `.claude/skills/bequite-live-edit/SKILL.md` §3 - 1 built-in browser pane (local previews) · 2 the user's real browser, e.g. Claude in Chrome (deployed/staging, GIF of the scroll) · 3 scripted browser already available (Playwright MCP / project Playwright) · 4 computer use (native apps, device mirrors) · 5 code inspection + user screenshots.
 
-Tier rule: try 1, then 2, then 4; if none, use 3 and request screenshots. Record the tier used in the report.
-
----
+Record the tier used in the report. Always include a phone-width pass.
 
 ## Per-route checklist
 

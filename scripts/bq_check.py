@@ -69,6 +69,16 @@ def commands():
     return sorted(glob.glob(os.path.join(CMD_DIR, "*.md")))
 
 
+def is_deprecated(path):
+    with open(path, encoding="utf-8") as f:
+        head = f.read(400)
+    return re.search(r"^description:\s*['\"]?Deprecated alias", head, re.M) is not None
+
+
+def active_commands():
+    return [p for p in commands() if not is_deprecated(p)]
+
+
 def skills():
     return sorted(d for d in glob.glob(os.path.join(SKILL_DIR, "bequite-*")) if os.path.isdir(d))
 
@@ -133,7 +143,7 @@ def frontmatter_valid():
 
 
 # ---------------------------------------------------------------- references
-NOT_BUILT_RE = re.compile(r"not built|proposed|proposal only|optional proposal|may be added later|rejected|deferred|no `/bq-|parked", re.I)
+NOT_BUILT_RE = re.compile(r"not built|removed in v4|proposed|proposal only|optional proposal|may be added later|rejected|deferred|no `/bq-|parked", re.I)
 REF_RE = re.compile(r"(?<![\w./-])((?:scripts|templates|motion-library|\.claude/bequite|\.claude/commands|\.claude/skills|\.github)/[\w./-]*[\w/])")
 
 
@@ -189,8 +199,9 @@ def counts_match():
     """'N commands' / 'N skills' claims in current docs match the filesystem."""
     errors = []
     n_cmd_files = len(commands())
+    n_active = len(active_commands())
     n_skills = len(skills())
-    allowed_cmd = {n_cmd_files, n_cmd_files - 1}  # active commands may exclude a deprecated alias
+    allowed_cmd = {n_cmd_files, n_active}  # "N commands" may count all files or only active ones
     files = [os.path.join(ROOT, f) for f in ("README.md", "CLAUDE.md", "commands.md")]
     files += glob.glob(os.path.join(ROOT, "docs", "specs", "COMMAND_CATALOG.md"))
     files += glob.glob(os.path.join(ROOT, "templates", "bequite", "**", "*.md"), recursive=True)
@@ -202,12 +213,12 @@ def counts_match():
                 continue
             for m in re.finditer(r"\b(\d{2,3})\s+(?:active\s+)?(?:slash\s+)?commands\b", low):
                 if int(m.group(1)) not in allowed_cmd:
-                    errors.append("%s:%d: says %s commands (actual %d active + alias files)" % (rel(path), n, m.group(1), n_cmd_files))
+                    errors.append("%s:%d: says %s commands (actual %d active, %d files incl. deprecated aliases)" % (rel(path), n, m.group(1), n_active, n_cmd_files))
             for m in re.finditer(r"\b(\d{2,3})\s+(?:specialist\s+|bequite\s+)?skills\b", low):
                 if int(m.group(1)) != n_skills:
                     errors.append("%s:%d: says %s skills (actual %d)" % (rel(path), n, m.group(1), n_skills))
             for m in re.finditer(r"badge/(slash_commands|skills)-(\d+)", line):
-                want = n_cmd_files - 1 if m.group(1) == "slash_commands" else n_skills
+                want = n_active if m.group(1) == "slash_commands" else n_skills
                 if int(m.group(2)) not in (want, n_cmd_files):
                     errors.append("%s:%d: badge says %s=%s (actual %d)" % (rel(path), n, m.group(1), m.group(2), want))
     return errors
@@ -231,7 +242,7 @@ CONTRACT_BLOCK = CONTRACT_OPEN + "\n" + CONTRACT_BODY + CONTRACT_CLOSE
 
 
 def action_commands():
-    return [p for p in commands() if os.path.basename(p)[:-3] not in READ_ONLY]
+    return [p for p in commands() if os.path.basename(p)[:-3] not in READ_ONLY and not is_deprecated(p)]
 
 
 @check

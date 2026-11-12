@@ -259,6 +259,19 @@ Example:
 - Run shell commands
 - Make decisions (the user picks from recommendations)
 
+## `/bequite short` - one-line orientation (replaces `/bq-now` in v4)
+
+Read only. Read `PROJECT_STATE`, `CURRENT_MODE`, `CURRENT_PHASE`, `LAST_RUN`, `WORKFLOW_GATES` and `.bequite/ACTIVE.md` (+ that work's `gates.md`), work out the next command with the Step 4 logic, and print exactly one line:
+
+```
+P2 build · work 0007 launch-film (motion) · last: /bq-motion M5 ✓ · next: /bq-motion M6
+⏸ blocker: PLAN_APPROVED pending (work 0007) · run /bq-plan
+BeQuite not initialized · run /bq-init
+```
+
+No menu, no tables. For the full menu run `/bequite` without arguments.
+
+
 ## Standardized command fields (alpha.6)
 
 **Phase:** Any (read-only meta command)

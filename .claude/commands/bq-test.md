@@ -105,7 +105,7 @@ Next: /bq-review (if some still failing) or /bq-implement (if all green and task
 
 - **Run all tests, not a subset** — unless the test runner is slow + user opted into `--changed` mode.
 - **Failures are not "should be ok".** Either pass or fail; no maybes.
-- **New tests for new code.** Every `/bq-implement` or `/bq-add-feature` that doesn't write a test is incomplete.
+- **New tests for new code.** Every `/bq-implement` or `/bq-feature` that doesn't write a test is incomplete.
 - See `.claude/skills/bequite-testing-gate/SKILL.md` for the deeper test-discipline procedures (test pyramid, contract tests, snapshot rules, etc.).
 
 ## Standardized command fields (alpha.6)

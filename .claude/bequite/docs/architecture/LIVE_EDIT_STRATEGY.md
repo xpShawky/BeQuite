@@ -82,19 +82,11 @@ Ask the user:
 
 **Don't auto-start the dev server** without confirmation — it changes process state.
 
-### Step 3 — (Optional) Browser inspection
+### Step 3 — Browser inspection
 
-If Playwright (or compatible browser automation) is **already** in the project, or if Playwright MCP is available in the agent host:
-- Open the dev URL
-- Take initial screenshot → `.bequite/uiux/screenshots/before-<timestamp>-<section>.png`
-- Inspect the section the user mentioned
+Browser tiers (single home): `.claude/skills/bequite-live-edit/SKILL.md` §3 - 1 built-in browser pane (local previews) · 2 the user's real browser, e.g. Claude in Chrome (deployed/staging, GIF of the scroll) · 3 scripted browser already available (Playwright MCP / project Playwright) · 4 computer use (native apps, device mirrors) · 5 code inspection + user screenshots.
 
-If browser automation is **not** available:
-- Use code inspection (Read + Grep on components)
-- Ask the user to take a screenshot if needed
-- Document manual verification steps
-
-**Never auto-install Playwright.** If it's not present and the task genuinely needs it, surface as a recommendation with a decision section.
+Take before/after screenshots of the section at desktop and phone width into `.bequite/work/<id>/outputs/screenshots/`. Never auto-install a browser tool.
 
 ### Step 4 — Build / update SECTION_MAP.md
 

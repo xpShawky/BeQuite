@@ -21,7 +21,7 @@ Frontend quality discipline. Invoked when the project has UI — Next.js, Nuxt, 
 ## When this skill activates
 
 - `/bq-audit` when the discovered repo has a frontend
-- `/bq-add-feature` when adding a UI feature
+- `/bq-feature` when adding a UI feature
 - `/bq-feature` when the feature is UI-typed (12-type router)
 - `/bq-review` when reviewing a UI PR
 - `/bq-red-team` when adversarial-reviewing a UI
@@ -115,7 +115,7 @@ When `/bq-audit` or `/bq-verify` exercise the frontend:
 6. **Mode chip honesty** — if a UI claims "live data", the data must be live (Article VI)
 7. **Empty / loading / error states** — visit each state by mocking the API; each must render usefully
 
-## Per-feature checklist (drop into /bq-add-feature for UI features)
+## Per-feature checklist (drop into /bq-feature for UI features)
 
 - [ ] Component sourced from priority order above
 - [ ] No hardcoded mock data unless the screen is explicitly "demo"

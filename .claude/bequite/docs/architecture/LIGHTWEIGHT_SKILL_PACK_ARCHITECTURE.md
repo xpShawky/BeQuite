@@ -127,7 +127,7 @@ Commands are grouped by **workflow phase** (the order users actually work in):
 |---|---|---|
 | 0 — Setup & Understanding | `/bequite`, `/bq-help`, `/bq-init`, `/bq-discover`, `/bq-doctor` | Learn what's there |
 | 1 — Problem Framing | `/bq-clarify`, `/bq-research`, `/bq-scope`, `/bq-plan`, `/bq-multi-plan` | Decide what to build |
-| 2 — Build | `/bq-assign`, `/bq-implement`, `/bq-add-feature`, `/bq-fix` | Build it |
+| 2 — Build | `/bq-assign`, `/bq-implement`, `/bq-feature`, `/bq-fix` | Build it |
 | 3 — Quality | `/bq-test`, `/bq-audit`, `/bq-review`, `/bq-red-team` | Confirm it works |
 | 4 — Ship | `/bq-verify`, `/bq-release`, `/bq-changelog` | Release |
 | 5 — Continue Later | `/bq-memory`, `/bq-recover`, `/bq-handoff` | Resume + hand off |
@@ -160,8 +160,8 @@ allowed-tools: ["Read", "Glob", "Grep", ...]
 |---|---|---|
 | `bequite-project-architect` | `/bq-plan`, `/bq-research` | Stack matrix, ADR discipline, scale tiers, file-plan rigor, phase-plan acceptance |
 | `bequite-problem-solver` | `/bq-fix`, `/bq-implement` (when stuck) | Reproduce-first, binary search, git bisect, 5-whys, common root-cause patterns |
-| `bequite-frontend-quality` | `/bq-audit`, `/bq-add-feature` (UI), `/bq-review` (UI) | 10 design principles, 15 AI-slop patterns, component sourcing order, axe-core, tokens.css |
-| `bequite-testing-gate` | `/bq-test`, `/bq-add-feature`, `/bq-fix` | Test pyramid, contract tests, snapshot rules, per-stack starter tests |
+| `bequite-frontend-quality` | `/bq-audit`, `/bq-feature` (UI), `/bq-review` (UI) | 10 design principles, 15 AI-slop patterns, component sourcing order, axe-core, tokens.css |
+| `bequite-testing-gate` | `/bq-test`, `/bq-feature`, `/bq-fix` | Test pyramid, contract tests, snapshot rules, per-stack starter tests |
 | `bequite-release-gate` | `/bq-verify`, `/bq-release`, `/bq-changelog` | Release matrix, CI parity, semver, CHANGELOG hygiene, signing, one-way doors |
 | `bequite-scraping-automation` | `/bq-clarify` (when scraping in scope) | Article VIII discipline, polite-mode default, 2026 tool catalog, watch-and-trigger |
 | `bequite-multi-model-planning` | `/bq-multi-plan` | 5 collaboration modes, prompt templates, merge procedure, tie-break order |
@@ -169,7 +169,7 @@ allowed-tools: ["Read", "Glob", "Grep", ...]
 ### Why skills are separate from commands
 
 - **Progressive disclosure** — the agent loads the skill only when relevant. Saves tokens.
-- **Reusability** — multiple commands can reference the same skill. E.g. both `/bq-add-feature` and `/bq-audit` use `bequite-frontend-quality`.
+- **Reusability** — multiple commands can reference the same skill. E.g. both `/bq-feature` and `/bq-audit` use `bequite-frontend-quality`.
 - **Depth** — commands are entry points (50-150 lines); skills are deep procedures (200+ lines).
 
 ---

@@ -4,6 +4,17 @@ description: Unbiased multi-model planning via manual paste. External-model prom
 
 # /bq-multi-plan — independent multi-model planning
 
+<!-- bq:contract -->
+> **Every run follows the contract** (`.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md`):
+> 1. **Skills first:** announce the `Skill Selection:` block before any plan, edit or tool call for the task.
+> 2. **Resolve the work:** read `.bequite/ACTIVE.md`; use `.bequite/work/<id>/`, or create the next work folder if this is new work (`/bq-work`).
+> 3. **Gates:** project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `work/<id>/gates.md`. Refuse and name the missing gate.
+> 4. **Plan first:** non-trivial work gets a plan the user approves before output. Hard human gates always wait for a yes.
+> 5. **Evidence:** every check goes to `work/<id>/evidence.md` (command + exit code + output) or is marked `UNVERIFIED:`.
+> 6. **Write back:** `work/<id>/log.md`, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, and `.bequite/state/MISTAKE_MEMORY.md` when a lesson surfaced.
+> 7. **Finish** with the Next Command Recommendations block.
+<!-- /bq:contract -->
+
 ## Purpose
 
 Get a genuinely **independent second opinion** on the plan. The external model (ChatGPT / Gemini / other) is given the **same raw briefing** Claude received — and **explicitly NOT told what Claude proposed**. This is the unbiased-merge protocol: each model thinks alone, BeQuite reconciles afterwards.
@@ -25,25 +36,25 @@ ToS-clean — manual paste only, no provider API, costs $0 (uses your subscripti
 
 - `BEQUITE_INITIALIZED ✅`
 - `MODE_SELECTED ✅`
-- `RESEARCH_DONE ✅` (you need verified research to brief external models)
+- `RESEARCH_COMPLETE ✅` (you need verified research to brief external models)
 - `SCOPE_LOCKED ✅`
 
 ## Required previous gates
 
 - `BEQUITE_INITIALIZED`
 - `MODE_SELECTED`
-- `CLARIFY_DONE`
-- `RESEARCH_DONE`
+- `CLARIFY_ANSWERED`
+- `RESEARCH_COMPLETE`
 - `SCOPE_LOCKED`
 
 ## Files to read
 
 - `.bequite/audits/DISCOVERY_REPORT.md`
-- `.bequite/audits/RESEARCH_REPORT.md`
-- `.bequite/plans/SCOPE.md`
+- `.bequite/work/<id>/research.md`
+- `.bequite/work/<id>/spec.md`
 - `.bequite/state/DECISIONS.md`
 - `.bequite/state/OPEN_QUESTIONS.md`
-- `.bequite/plans/IMPLEMENTATION_PLAN.md` (if exists — used internally for comparison ONLY; **not** included in external prompts)
+- `.bequite/work/<id>/plan.md` (if exists — used internally for comparison ONLY; **not** included in external prompts)
 
 ## Files to write
 
@@ -52,8 +63,8 @@ ToS-clean — manual paste only, no provider API, costs $0 (uses your subscripti
 - `.bequite/prompts/model_outputs/RESPONSE_CLAUDE.md` (user pastes Claude.ai response here, or you save it)
 - `.bequite/prompts/model_outputs/RESPONSE_EXTERNAL.md` (user pastes external model response here)
 - `.bequite/plans/MULTI_MODEL_COMPARISON.md`
-- `.bequite/plans/IMPLEMENTATION_PLAN.md` (rewritten — merged version)
-- `.bequite/plans/IMPLEMENTATION_PLAN_PRE_MERGE.md` (the single-model plan, preserved)
+- `.bequite/work/<id>/plan.md` (rewritten — merged version)
+- `.bequite/work/<id>/plan-pre-merge.md` (the single-model plan, preserved)
 - `.bequite/state/WORKFLOW_GATES.md` (`MULTI_PLAN_DONE ✅` once user picks: yes-merged / no-skipped)
 - `.bequite/state/DECISIONS.md`
 - `.bequite/state/LAST_RUN.md`
@@ -207,7 +218,7 @@ For each hard disagreement:
 
 ### 6. Write the merged plan
 
-`.bequite/plans/IMPLEMENTATION_PLAN.md` (overwrites; the single-model version is preserved as `IMPLEMENTATION_PLAN_PRE_MERGE.md`):
+`.bequite/work/<id>/plan.md` (overwrites; the single-model version is preserved as `IMPLEMENTATION_PLAN_PRE_MERGE.md`):
 
 ```markdown
 # Implementation Plan (multi-model merge)
@@ -278,8 +289,8 @@ Hard disagreements:  <count>
 Tie-breaks applied:  <count>
 User picks:          <count>
 
-Final plan:    .bequite/plans/IMPLEMENTATION_PLAN.md
-Pre-merge:     .bequite/plans/IMPLEMENTATION_PLAN_PRE_MERGE.md
+Final plan:    .bequite/work/<id>/plan.md
+Pre-merge:     .bequite/work/<id>/plan-pre-merge.md
 Comparison:    .bequite/plans/MULTI_MODEL_COMPARISON.md
 
 Next: /bq-assign — break the merged plan into actionable tasks

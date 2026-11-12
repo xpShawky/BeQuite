@@ -1,15 +1,26 @@
 ---
-description: Break the implementation plan into atomic tasks with IDs, priorities, dependencies, acceptance criteria. Writes .bequite/tasks/TASK_LIST.md.
+description: Break the implementation plan into atomic tasks with IDs, priorities, dependencies, acceptance criteria. Writes .bequite/work/<id>/tasks.md.
 ---
 
 # /bq-assign — break plan into atomic tasks
 
-You convert `.bequite/plans/IMPLEMENTATION_PLAN.md` into a list of **atomic tasks** the agent can pick off one at a time.
+<!-- bq:contract -->
+> **Every run follows the contract** (`.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md`):
+> 1. **Skills first:** announce the `Skill Selection:` block before any plan, edit or tool call for the task.
+> 2. **Resolve the work:** read `.bequite/ACTIVE.md`; use `.bequite/work/<id>/`, or create the next work folder if this is new work (`/bq-work`).
+> 3. **Gates:** project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `work/<id>/gates.md`. Refuse and name the missing gate.
+> 4. **Plan first:** non-trivial work gets a plan the user approves before output. Hard human gates always wait for a yes.
+> 5. **Evidence:** every check goes to `work/<id>/evidence.md` (command + exit code + output) or is marked `UNVERIFIED:`.
+> 6. **Write back:** `work/<id>/log.md`, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, and `.bequite/state/MISTAKE_MEMORY.md` when a lesson surfaced.
+> 7. **Finish** with the Next Command Recommendations block.
+<!-- /bq:contract -->
+
+You convert `.bequite/work/<id>/plan.md` into a list of **atomic tasks** the agent can pick off one at a time.
 
 ## Step 1 — Read context
 
-- `.bequite/plans/IMPLEMENTATION_PLAN.md`
-- `.bequite/plans/SCOPE.md`
+- `.bequite/work/<id>/plan.md`
+- `.bequite/work/<id>/spec.md`
 - `.bequite/state/DECISIONS.md`
 
 If IMPLEMENTATION_PLAN.md is missing, suggest `/bq-plan` first and exit.
@@ -32,13 +43,13 @@ Good: "T-2.1: Create `lib/auth.ts` exporting `auth` from `better-auth` with emai
 
 ## Step 4 — Write TASK_LIST.md
 
-`.bequite/tasks/TASK_LIST.md`:
+`.bequite/work/<id>/tasks.md`:
 
 ```markdown
 # Task list
 
 **Generated:** <date>
-**From plan:** .bequite/plans/IMPLEMENTATION_PLAN.md
+**From plan:** .bequite/work/<id>/plan.md
 **Total tasks:** <count>
 
 ## Status legend
@@ -106,7 +117,7 @@ Phases:   <count>
 Tasks:    <count> total
 Parallel: <count> tasks marked parallel-safe
 
-Task list: .bequite/tasks/TASK_LIST.md
+Task list: .bequite/work/<id>/tasks.md
 
 Next: /bq-implement — pick off T-1.1
 ```
@@ -117,7 +128,7 @@ Next: /bq-implement — pick off T-1.1
 - **Every task must have an acceptance criterion.**
 - **Mark dependencies explicitly.** "T-2.2 depends on T-2.1" is part of the task entry.
 - **Only mark parallel: true when N > 5 + truly independent.** Otherwise, serial is safer (AkitaOnRails 2026).
-- **Require the File-Responsibility Map first (alpha.18).** Refuse to write tasks if `.bequite/plans/FILE_RESPONSIBILITY_MAP.md` is missing — it defines each file's single responsibility + allowed import direction.
+- **Require the File-Responsibility Map first (alpha.18).** Refuse to write tasks if `.bequite/work/<id>/plan.md` is missing — it defines each file's single responsibility + allowed import direction.
 - **Each task carries an embedded validation command + expected output and ends at a commit (alpha.18).** Reject any task containing "TBD", "implement later", or "similar to Task N" — every step has the content an engineer with zero context needs.
 - **Logic tasks are failing-test-first (alpha.18).** Write + confirm the failing test, then implement until green. Never edit/delete tests to pass.
 
@@ -132,22 +143,22 @@ Next: /bq-implement — pick off T-1.1
 - Every task is ≤5 minutes of focused work
 - Every task has ONE acceptance criterion
 - Tasks are dependency-ordered
-- Marks `ASSIGN_DONE ✅`
+- Marks `TASKS_ASSIGNED ✅`
 **Failure behavior:**
 - Plan is too vague to extract atomic tasks → return to `/bq-plan` for clarification; do not advance
 - Tasks accumulate dependencies (T-2.1 needs T-1.3 needs T-2.7) → flag circular dep; re-order or split
-**Memory updates:** Sets `ASSIGN_DONE ✅`. Writes `TASK_LIST.md`.
+**Memory updates:** Sets `TASKS_ASSIGNED ✅`. Writes `TASK_LIST.md`.
 **Log updates:** `AGENT_LOG.md`.
 
 ## Memory files this command reads
 
-- `.bequite/plans/IMPLEMENTATION_PLAN.md`
-- `.bequite/plans/SCOPE.md`
+- `.bequite/work/<id>/plan.md`
+- `.bequite/work/<id>/spec.md`
 - `.bequite/state/DECISIONS.md`
 
 ## Memory files this command writes
 
-- `.bequite/tasks/TASK_LIST.md` (new)
+- `.bequite/work/<id>/tasks.md` (new)
 - `.bequite/state/CURRENT_PHASE.md`
 - `.bequite/state/LAST_RUN.md`
 - `.bequite/logs/AGENT_LOG.md`
@@ -186,7 +197,7 @@ After successful completion:
 - `.bequite/state/WORKFLOW_GATES.md` — set this command's gate to `✅` if applicable
 - `.bequite/state/CURRENT_PHASE.md` — advance if phase transitioned
 - `.bequite/logs/AGENT_LOG.md` — append entry
-- `.bequite/logs/CHANGELOG.md` `[Unreleased]` — only when material files changed (skip for read-only commands)
+- `CHANGELOG.md` `[Unreleased]` — only when material files changed (skip for read-only commands)
 - `.bequite/state/MISTAKE_MEMORY.md` — append when a project-specific lesson surfaced
 - `.bequite/state/MODE_HISTORY.md` — append mode + outcome (when invoked via `/bq-auto`-style mode)
 
@@ -205,7 +216,7 @@ Lowers it: <factors>      Raises it: <checks that would>
 Unknowns/blockers: <list or none>      Next: <recommended action>
 ```
 
-Bands: 90–100 routine · 75–89 likely · 50–74 needs exploration · 25–49 spike first · 0–24 blocked/insufficient info. **Confidence is not a feeling — it is a report** (evidence, tests, scope clarity, familiarity, dependency risk, verification). It must MOVE as evidence arrives (before-inspection → after-reading → after-implementation → after-verification; recorded per task in `.bequite/tasks/TASK_CONFIDENCE.md`). Never 100% — and ≥95% only with all tests passing + zero unresolved assumptions + EVIDENCE_LOG entry. Apply project modifiers from `.bequite/state/CONFIDENCE_RULES.md`; at verify/release, log forecast-vs-actual to `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`.
+Bands: 90–100 routine · 75–89 likely · 50–74 needs exploration · 25–49 spike first · 0–24 blocked/insufficient info. **Confidence is not a feeling — it is a report** (evidence, tests, scope clarity, familiarity, dependency risk, verification). It must MOVE as evidence arrives (before-inspection → after-reading → after-implementation → after-verification; recorded per task in `.bequite/work/<id>/tasks.md`). Never 100% — and ≥95% only with all tests passing + zero unresolved assumptions + EVIDENCE_LOG entry. Apply project modifiers from `.bequite/state/CONFIDENCE_RULES.md`; at verify/release, log forecast-vs-actual to `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`.
 
 ## Per-task Execution Profile (alpha.25)
 

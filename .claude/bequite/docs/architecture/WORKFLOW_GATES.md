@@ -44,14 +44,14 @@ Both spellings are valid; commands may use either. The shorter `_DONE` form is m
 
 | Canonical (this doc) | Short alias (COMMAND_CATALOG) |
 |---|---|
-| `DISCOVERY_COMPLETE` | `DISCOVERY_DONE` |
-| `RESEARCH_COMPLETE` | `RESEARCH_DONE` |
+| `DISCOVERY_COMPLETE` | `DISCOVERY_COMPLETE` |
+| `RESEARCH_COMPLETE` | `RESEARCH_COMPLETE` |
 | `IMPLEMENTATION_DONE` | `IMPLEMENT_DONE` |
-| `TASKS_ASSIGNED` | `ASSIGN_DONE` |
-| `TESTS_PASS` | `TEST_DONE` |
+| `TASKS_ASSIGNED` | `TASKS_ASSIGNED` |
+| `TESTS_PASS` | `TESTS_PASS` |
 | `AUDIT_COMPLETE` | `AUDIT_DONE` |
-| `REVIEW_APPROVED` | `REVIEW_DONE` |
-| `VERIFY_PASSED` | `VERIFY_PASS` |
+| `REVIEW_APPROVED` | `REVIEW_APPROVED` |
+| `VERIFY_PASSED` | `VERIFY_PASSED` |
 | `RELEASE_PREPPED` | `RELEASE_READY` |
 
 ---
@@ -108,26 +108,26 @@ Per phase:
 ### P0 — Setup and Discovery
 - `BEQUITE_INITIALIZED`
 - `MODE_SELECTED`
-- `DISCOVERY_DONE`
-- `DOCTOR_DONE`
+- `DISCOVERY_COMPLETE`
+- `DOCTOR_COMPLETE`
 
 ### P1 — Product Framing and Research
-- `CLARIFY_DONE`
-- `RESEARCH_DONE`
+- `CLARIFY_ANSWERED`
+- `RESEARCH_COMPLETE`
 - `SCOPE_LOCKED`
 - `PLAN_APPROVED`
 - `MULTI_PLAN_DONE` (optional)
 
 ### P2 — Planning and Build
-- `ASSIGN_DONE`
+- `TASKS_ASSIGNED`
 - `IMPLEMENT_DONE`
 - `FEATURE_DONE` (mode-specific)
 - `FIX_DONE` (mode-specific)
 
 ### P3 — Quality and Review
-- `TEST_DONE`
+- `TESTS_PASS`
 - `AUDIT_DONE` (optional unless Release Readiness mode)
-- `REVIEW_DONE`
+- `REVIEW_APPROVED`
 - `RED_TEAM_DONE` (optional)
 
 ### Frontend Design Continuity (alpha.17 — conditional, only when a frontend exists)
@@ -138,7 +138,7 @@ Per phase:
 These are quality gates owned by `bequite-frontend-design-system`; they apply only to frontend projects, never block non-frontend work, and never bypass the 17 hard human gates. Full spec: [`DESIGN_CONTINUITY_GATE.md`](DESIGN_CONTINUITY_GATE.md); context-engineering rationale: [`FRONTEND_CONTEXT_ENGINEERING.md`](FRONTEND_CONTEXT_ENGINEERING.md).
 
 ### P4 — Release
-- `VERIFY_PASS`
+- `VERIFY_PASSED`
 - `CHANGELOG_READY`
 - `RELEASE_READY`
 

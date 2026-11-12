@@ -4,6 +4,17 @@ description: DEPRECATED ALIAS — use /bq-feature instead. /bq-add-feature is pr
 
 # /bq-add-feature — ⚠ DEPRECATED ALIAS for `/bq-feature`
 
+<!-- bq:contract -->
+> **Every run follows the contract** (`.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md`):
+> 1. **Skills first:** announce the `Skill Selection:` block before any plan, edit or tool call for the task.
+> 2. **Resolve the work:** read `.bequite/ACTIVE.md`; use `.bequite/work/<id>/`, or create the next work folder if this is new work (`/bq-work`).
+> 3. **Gates:** project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `work/<id>/gates.md`. Refuse and name the missing gate.
+> 4. **Plan first:** non-trivial work gets a plan the user approves before output. Hard human gates always wait for a yes.
+> 5. **Evidence:** every check goes to `work/<id>/evidence.md` (command + exit code + output) or is marked `UNVERIFIED:`.
+> 6. **Write back:** `work/<id>/log.md`, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, and `.bequite/state/MISTAKE_MEMORY.md` when a lesson surfaced.
+> 7. **Finish** with the Next Command Recommendations block.
+<!-- /bq:contract -->
+
 > **Status (alpha.14):** This command is a deprecated alias preserved for backwards compatibility. New work should use `/bq-feature` directly.
 >
 > **Why it's deprecated:** `/bq-feature` (alpha.2+) supersedes this. `/bq-feature` has a 12-type router (frontend / backend / database / auth / automation / scraping / cloud / admin / dashboard / cli / integration / security) that activates the right specialist skills automatically. `/bq-add-feature` predates this and lacks the router.
@@ -51,12 +62,12 @@ If they passed an argument like `/bq-add-feature "csv export"`, use that.
 ## Step 2 — Read context
 
 - `.bequite/state/PROJECT_STATE.md` — current stack
-- `.bequite/plans/IMPLEMENTATION_PLAN.md` (if exists) — existing architecture
+- `.bequite/work/<id>/plan.md` (if exists) — existing architecture
 - `.bequite/audits/DISCOVERY_REPORT.md` — to know where things live in the repo
 
 ## Step 3 — Write a mini-spec
 
-Save to `.bequite/plans/feature-<slug>.md`:
+Save to `.bequite/work/<id>/spec.md`:
 
 ```markdown
 # Feature: <one-line title>
@@ -124,10 +135,10 @@ This is essentially `/bq-implement` but scoped to one feature.
 
 ## Step 6 — Update logs + tests
 
-- Append to `.bequite/logs/CHANGELOG.md` under [Unreleased]:
+- Append to `CHANGELOG.md` under [Unreleased]:
   ```
   ### Added
-  - <feature title> (see .bequite/plans/feature-<slug>.md)
+  - <feature title> (see .bequite/work/<id>/spec.md)
   ```
 - Append to `.bequite/logs/AGENT_LOG.md`:
   ```
@@ -140,7 +151,7 @@ This is essentially `/bq-implement` but scoped to one feature.
 ```
 ✓ Feature added — <title>
 
-Spec:           .bequite/plans/feature-<slug>.md
+Spec:           .bequite/work/<id>/spec.md
 Files touched:  <count>
 Tests:          <pass / total>
 Acceptance:     <one-line confirmation>
@@ -170,14 +181,14 @@ Next: /bq-review (review your own changes) or /bq-test (full test sweep)
 ## Memory files this command reads
 
 - `.bequite/state/PROJECT_STATE.md`
-- `.bequite/plans/IMPLEMENTATION_PLAN.md`
+- `.bequite/work/<id>/plan.md`
 - `.bequite/audits/DISCOVERY_REPORT.md`
 
 ## Memory files this command writes
 
-- `.bequite/plans/feature-<slug>.md` (new)
+- `.bequite/work/<id>/spec.md` (new)
 - The feature's source files (new + modified)
-- `.bequite/logs/CHANGELOG.md` (appended)
+- `CHANGELOG.md` (appended)
 - `.bequite/logs/AGENT_LOG.md` (appended)
 - `.bequite/state/LAST_RUN.md` (updated)
 

@@ -1,8 +1,8 @@
-# Command Execution Contract (alpha.20 — 12 steps)
+# Command Execution Contract (12 steps, v4)
 
 > **The single citable contract every BeQuite command follows.** When a command file says "per the execution contract," it means these 12 steps, in this order. Commands may compress steps that don't apply (read-only commands skip 7–9) but may never reorder or silently skip an applicable step.
 
-**Status:** active · **Adopted:** alpha.19; **upgraded alpha.20** — skill selection became automatic (steps 2–4); **upgraded alpha.22** — step 12 became the Command Router multi-recommendation block
+**Status:** active · **Adopted:** alpha.19; **upgraded alpha.20** — skill selection became automatic (steps 2–4); **upgraded alpha.22** — step 12 became the Command Router multi-recommendation block; **v4** — steps 1/5/11 work on per-work folders (`WORK_FOLDERS.md`) and every action command carries the standard contract block, checked by `scripts/bq_check.py`
 **Deep references:** `HARNESS_AND_PROMPT_QUALITY.md` (authoring standard) · `MEMORY_FIRST_BEHAVIOR.md` · `WORKFLOW_GATES.md` · `CONTEXT_ENGINEERING.md` · `AUTO_SKILL_ROUTING_STRATEGY.md` (steps 2–4) · `WORKFLOW_COMMAND_ROUTER.md` (step 12) · `CLAUDE_CODE_HOOKS_STRATEGY.md` (machine layer)
 
 ---
@@ -11,6 +11,8 @@
 
 ### 1. Memory preflight
 Read core state first, focused reads only: `PROJECT_STATE` · `CURRENT_MODE` · `CURRENT_PHASE` · `WORKFLOW_GATES` · `LAST_RUN` · `MISTAKE_MEMORY` (top entries) · `PROJECT_DNA` + `WORKING_NOTES` for multi-step work · `CONTEXT_SUMMARY` when resuming. Domain memory (design/, writing/, presentations/, jobs/, money/, skills/) only when the task touches it. Never load all of `.bequite/`.
+
+**Then resolve the work (v4).** Read `.bequite/ACTIVE.md`. If the request belongs to the active work, use `.bequite/work/<id>/`. If there is no active work, or this is clearly a different piece of work, create the next work folder (`/bq-work new` semantics), switch `ACTIVE.md`, and say so in one line. Read that work's `brief.md`, `spec.md`, `plan.md`, `tasks.md` and `gates.md` as needed. Spec: `WORK_FOLDERS.md`.
 
 ### 2. Skill registry check (alpha.20)
 Load `.bequite/skills/SKILL_REGISTRY.md` — the token-cheap routing index — NOT the skill files. If the registry is missing or drifted from the live skill dirs, rebuild via Glob and flag for `/bq-skill-audit`.
@@ -24,7 +26,7 @@ Select skills per the domain map + cross-cutting auto-attach + mode sizing (fast
 **Skills-first is a GLOBAL hard rule (alpha.25):** this happens BEFORE any real work, for **every** command — workflow commands AND capability commands (course, presentation, reference, offer, automation, brand-kit, …) AND maintenance. The `Skill Selection:` block is the first substantive thing the command emits; you do not write a plan, generate content, edit a file, or call a tool for the task until skills are selected and announced. A command that acts before announcing its skills is a contract violation. (Trivial read-only commands — now/help/explain — are exempt.)
 
 ### 5. Gate check
-Verify this command's required gates are `✅` in the gate ledger. If not: **refuse**, name the missing gate, recommend the prerequisite command, stop. ("You're trying to run X, but Y must be completed first.")
+Verify this command's required gates are done: project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `.bequite/work/<id>/gates.md` (the table in `WORKFLOW_GATES.md` says which is which). If not: **refuse**, name the missing gate, recommend the prerequisite command, stop. ("You're trying to run X, but Y must be completed first.")
 
 ### 6. Scope detection
 Parse the user request. Separate **stated scope** from **inferred scope**. If scope was inferred from assumptions rather than user text: either ask ONE high-value question, or (in auto mode) log the assumption to `ASSUMPTIONS.md` and proceed only if the assumption is low-risk. **Uncertain scope on a risky action is a hard human gate** (AUTO_MODE_STRATEGY).
@@ -42,7 +44,7 @@ Run the relevant checks (build/test/lint/visual per scope). **Evidence over clai
 Lead with outcome. State: what was done · files changed · skill selection (step 4 block) · evidence · remaining issues · verification status (PASS / PARTIAL / FAIL — honestly).
 
 ### 11. Memory writeback
-`LAST_RUN` · `WORKFLOW_GATES` (gate state changes) · `CURRENT_PHASE` (phase changes) · `AGENT_LOG` (always for real actions) · `CHANGELOG [Unreleased]` (when files/behavior changed — **the most-skipped step; do not skip it**) · `MISTAKE_MEMORY` (when a lesson surfaced) · `MODE_HISTORY` (mode runs) · **`SKILL_USAGE_LOG`** (selection + outcome, alpha.20) · `WORKING_NOTES` / `CONTEXT_SUMMARY` (long tasks, at task boundaries).
+**Work first:** an entry in `work/<id>/log.md` (always), evidence in `work/<id>/evidence.md`, gate changes in `work/<id>/gates.md`. **Then project-wide:** `LAST_RUN` · `WORKFLOW_GATES` (project gate changes) · `CURRENT_PHASE` (phase changes) · `AGENT_LOG` (always for real actions) · `CHANGELOG [Unreleased]` (when files/behavior changed — **the most-skipped step; do not skip it**) · `MISTAKE_MEMORY` (when a lesson surfaced) · `MODE_HISTORY` (mode runs) · **`SKILL_USAGE_LOG`** (selection + outcome, alpha.20) · `WORKING_NOTES` / `CONTEXT_SUMMARY` (long tasks, at task boundaries).
 
 ### 12. Next Command Recommendations (Command Router, alpha.22)
 Every non-trivial command ends with the router block — vocabulary = catalog IDs (`.bequite/commands/COMMAND_ID_MAP.md`), routes from `COMMAND_ROUTER.md`:

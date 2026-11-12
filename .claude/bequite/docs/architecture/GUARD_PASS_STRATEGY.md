@@ -1,6 +1,6 @@
 # Guard Pass Strategy (alpha.22)
 
-**What:** reactive second-pass quality gates that catch the failure modes AI-generated work specifically exhibits — run *after* work is produced, *before* it ships. Skill: `bequite-guard-pass`. Report: `.bequite/audits/GUARD_PASS_REPORT.md`.
+**What:** reactive second-pass quality gates that catch the failure modes AI-generated work specifically exhibits — run *after* work is produced, *before* it ships. Skill: `bequite-guard-pass`. Report: `.bequite/work/<id>/review.md`.
 
 ## Provenance — concept adapted, nothing copied
 

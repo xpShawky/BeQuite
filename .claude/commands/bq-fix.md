@@ -4,6 +4,17 @@ description: Fix a broken behavior. 15-type problem router. Reproduce first → 
 
 # /bq-fix — diagnose + repair, with type router
 
+<!-- bq:contract -->
+> **Every run follows the contract** (`.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md`):
+> 1. **Skills first:** announce the `Skill Selection:` block before any plan, edit or tool call for the task.
+> 2. **Resolve the work:** read `.bequite/ACTIVE.md`; use `.bequite/work/<id>/`, or create the next work folder if this is new work (`/bq-work`).
+> 3. **Gates:** project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `work/<id>/gates.md`. Refuse and name the missing gate.
+> 4. **Plan first:** non-trivial work gets a plan the user approves before output. Hard human gates always wait for a yes.
+> 5. **Evidence:** every check goes to `work/<id>/evidence.md` (command + exit code + output) or is marked `UNVERIFIED:`.
+> 6. **Write back:** `work/<id>/log.md`, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, and `.bequite/state/MISTAKE_MEMORY.md` when a lesson surfaced.
+> 7. **Finish** with the Next Command Recommendations block.
+<!-- /bq:contract -->
+
 ## Purpose
 
 Fix **one specific broken behavior**. The command classifies the problem into one of 15 types and activates the matching specialist skills. Reproduce-first discipline. Smallest safe patch. Always a regression test.
@@ -26,7 +37,7 @@ Fix **one specific broken behavior**. The command classifies the problem into on
 
 ## Files to read
 
-- `.bequite/logs/ERROR_LOG.md` (prior entries for context)
+- `.bequite/work/<id>/log.md` (prior entries for context)
 - recent `git log`
 - the failing code + tests
 
@@ -34,10 +45,10 @@ Fix **one specific broken behavior**. The command classifies the problem into on
 
 - The fix (source file)
 - A new or updated regression test
-- `.bequite/logs/ERROR_LOG.md` (appended)
-- `.bequite/logs/CHANGELOG.md` (appended if user-visible)
+- `.bequite/work/<id>/log.md` (appended)
+- `CHANGELOG.md` (appended if user-visible)
 - `.bequite/audits/FIX_<slug>.md` (mini-spec for the fix)
-- `.bequite/tasks/CURRENT_TASK.md`
+- `.bequite/work/<id>/tasks.md`
 - `.bequite/state/WORKFLOW_GATES.md` (`FIX_DONE ✅`)
 - `.bequite/logs/AGENT_LOG.md`
 - `.bequite/state/LAST_RUN.md`
@@ -245,7 +256,7 @@ Fix:          <file:line>
 Test added:   <test name>
 Suite:        <pass> / <total>
 
-Logged: .bequite/logs/ERROR_LOG.md
+Logged: .bequite/work/<id>/log.md
         .bequite/audits/FIX_<slug>.md
 ```
 
@@ -383,7 +394,7 @@ Lowers it: <factors>      Raises it: <checks that would>
 Unknowns/blockers: <list or none>      Next: <recommended action>
 ```
 
-Bands: 90–100 routine · 75–89 likely · 50–74 needs exploration · 25–49 spike first · 0–24 blocked/insufficient info. **Confidence is not a feeling — it is a report** (evidence, tests, scope clarity, familiarity, dependency risk, verification). It must MOVE as evidence arrives (before-inspection → after-reading → after-implementation → after-verification; recorded per task in `.bequite/tasks/TASK_CONFIDENCE.md`). Never 100% — and ≥95% only with all tests passing + zero unresolved assumptions + EVIDENCE_LOG entry. Apply project modifiers from `.bequite/state/CONFIDENCE_RULES.md`; at verify/release, log forecast-vs-actual to `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`.
+Bands: 90–100 routine · 75–89 likely · 50–74 needs exploration · 25–49 spike first · 0–24 blocked/insufficient info. **Confidence is not a feeling — it is a report** (evidence, tests, scope clarity, familiarity, dependency risk, verification). It must MOVE as evidence arrives (before-inspection → after-reading → after-implementation → after-verification; recorded per task in `.bequite/work/<id>/tasks.md`). Never 100% — and ≥95% only with all tests passing + zero unresolved assumptions + EVIDENCE_LOG entry. Apply project modifiers from `.bequite/state/CONFIDENCE_RULES.md`; at verify/release, log forecast-vs-actual to `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`.
 
 ## Regression Ledger writeback (alpha.22)
 

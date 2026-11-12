@@ -4,13 +4,24 @@ description: Update CHANGELOG.md with a new entry. Reads recent commits + open f
 
 # /bq-changelog — update CHANGELOG.md
 
+<!-- bq:contract -->
+> **Every run follows the contract** (`.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md`):
+> 1. **Skills first:** announce the `Skill Selection:` block before any plan, edit or tool call for the task.
+> 2. **Resolve the work:** read `.bequite/ACTIVE.md`; use `.bequite/work/<id>/`, or create the next work folder if this is new work (`/bq-work`).
+> 3. **Gates:** project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `work/<id>/gates.md`. Refuse and name the missing gate.
+> 4. **Plan first:** non-trivial work gets a plan the user approves before output. Hard human gates always wait for a yes.
+> 5. **Evidence:** every check goes to `work/<id>/evidence.md` (command + exit code + output) or is marked `UNVERIFIED:`.
+> 6. **Write back:** `work/<id>/log.md`, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, and `.bequite/state/MISTAKE_MEMORY.md` when a lesson surfaced.
+> 7. **Finish** with the Next Command Recommendations block.
+<!-- /bq:contract -->
+
 You are keeping the project's CHANGELOG sharp. Format: Keep a Changelog v1.1.0 + Semantic Versioning.
 
 ## Step 1 — Detect the existing CHANGELOG
 
 Look for (in order):
 1. `CHANGELOG.md` at repo root
-2. `.bequite/logs/CHANGELOG.md` (BeQuite's project changelog)
+2. `CHANGELOG.md` (BeQuite's project changelog)
 3. `docs/CHANGELOG.md`
 
 If none exists, create one at repo root with the standard header:
@@ -30,7 +41,7 @@ All notable changes to this project are documented here. Format follows [Keep a 
 The user may have invoked this directly OR as part of `/bq-release`. Either way:
 
 - Read all unreleased changes: `git log <last-tag>..HEAD --oneline`
-- Read recently-added feature specs: `.bequite/plans/feature-*.md`
+- Read recently-added feature specs: the `spec.md` of recent work in `.bequite/work/` and `.bequite/archive/`
 - Read `ERROR_LOG.md` (recent fixes)
 - Read `DECISIONS.md` (recent decisions affecting users)
 
@@ -143,8 +154,8 @@ Next: /bq-release  (if you were prepping a release)
 
 - `CHANGELOG.md` (or wherever it lives)
 - `git log <last-tag>..HEAD`
-- `.bequite/plans/feature-*.md`
-- `.bequite/logs/ERROR_LOG.md`
+- the `spec.md` of recent work in `.bequite/work/` and `.bequite/archive/`
+- `.bequite/work/<id>/log.md`
 - `.bequite/state/DECISIONS.md`
 
 ## Memory files this command writes
@@ -188,7 +199,7 @@ After successful completion:
 - `.bequite/state/WORKFLOW_GATES.md` — set this command's gate to `✅` if applicable
 - `.bequite/state/CURRENT_PHASE.md` — advance if phase transitioned
 - `.bequite/logs/AGENT_LOG.md` — append entry
-- `.bequite/logs/CHANGELOG.md` `[Unreleased]` — only when material files changed (skip for read-only commands)
+- `CHANGELOG.md` `[Unreleased]` — only when material files changed (skip for read-only commands)
 - `.bequite/state/MISTAKE_MEMORY.md` — append when a project-specific lesson surfaced
 - `.bequite/state/MODE_HISTORY.md` — append mode + outcome (when invoked via `/bq-auto`-style mode)
 

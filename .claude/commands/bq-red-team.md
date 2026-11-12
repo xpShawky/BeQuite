@@ -4,13 +4,24 @@ description: Adversarial review. Skeptic mode. Try to find what's actually broke
 
 # /bq-red-team — adversarial review (10 attack angles in alpha.15)
 
+<!-- bq:contract -->
+> **Every run follows the contract** (`.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md`):
+> 1. **Skills first:** announce the `Skill Selection:` block before any plan, edit or tool call for the task.
+> 2. **Resolve the work:** read `.bequite/ACTIVE.md`; use `.bequite/work/<id>/`, or create the next work folder if this is new work (`/bq-work`).
+> 3. **Gates:** project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `work/<id>/gates.md`. Refuse and name the missing gate.
+> 4. **Plan first:** non-trivial work gets a plan the user approves before output. Hard human gates always wait for a yes.
+> 5. **Evidence:** every check goes to `work/<id>/evidence.md` (command + exit code + output) or is marked `UNVERIFIED:`.
+> 6. **Write back:** `work/<id>/log.md`, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, and `.bequite/state/MISTAKE_MEMORY.md` when a lesson surfaced.
+> 7. **Finish** with the Next Command Recommendations block.
+<!-- /bq:contract -->
+
 You are the **Skeptic**. Your job is to find what's actually broken or about to break. Not be friendly. Not "approve with comments". Look for the failure modes the implementer missed.
 
 ## Step 1 — Read context
 
 - Current diff or PR (same scope rules as `/bq-review`)
-- `.bequite/plans/IMPLEMENTATION_PLAN.md`
-- `.bequite/audits/RESEARCH_REPORT.md` (any flagged risks)
+- `.bequite/work/<id>/plan.md`
+- `.bequite/work/<id>/research.md` (any flagged risks)
 - `.bequite/state/OPEN_QUESTIONS.md` (unresolved questions)
 - `.bequite/state/MISTAKE_MEMORY.md` — past mistake patterns become attack-angle inputs
 
@@ -218,7 +229,7 @@ Next: /bq-fix <highest-severity-finding>
 **Phase:** P3 — Quality and Review
 **When NOT to use:** code is mid-flight (red-team is for completed work); regulated-context paranoia not warranted (use `/bq-review`).
 **Preconditions:** `BEQUITE_INITIALIZED`
-**Required previous gates:** `BEQUITE_INITIALIZED` (`REVIEW_DONE` recommended — red-team is adversarial follow-up to a normal review)
+**Required previous gates:** `BEQUITE_INITIALIZED` (`REVIEW_APPROVED` recommended — red-team is adversarial follow-up to a normal review)
 **Quality gate:**
 - `RED_TEAM-<timestamp>.md` written
 - All 9 attack angles addressed (security / architecture / testing / deployment / scalability / UX / token-waste / hidden assumptions / tool-choice)
@@ -234,8 +245,8 @@ Next: /bq-fix <highest-severity-finding>
 ## Memory files this command reads
 
 - The current diff
-- `.bequite/plans/IMPLEMENTATION_PLAN.md`
-- `.bequite/audits/RESEARCH_REPORT.md`
+- `.bequite/work/<id>/plan.md`
+- `.bequite/work/<id>/research.md`
 - `.bequite/state/OPEN_QUESTIONS.md`
 
 ## Memory files this command writes
@@ -340,7 +351,7 @@ After successful completion:
 - `.bequite/state/WORKFLOW_GATES.md` — set this command's gate to `✅` if applicable
 - `.bequite/state/CURRENT_PHASE.md` — advance if phase transitioned
 - `.bequite/logs/AGENT_LOG.md` — append entry
-- `.bequite/logs/CHANGELOG.md` `[Unreleased]` — only when material files changed (skip for read-only commands)
+- `CHANGELOG.md` `[Unreleased]` — only when material files changed (skip for read-only commands)
 - `.bequite/state/MISTAKE_MEMORY.md` — append when a project-specific lesson surfaced
 - `.bequite/state/MODE_HISTORY.md` — append mode + outcome (when invoked via `/bq-auto`-style mode)
 

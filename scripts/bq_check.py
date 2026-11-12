@@ -213,7 +213,89 @@ def counts_match():
     return errors
 
 
+# ---------------------------------------------------------------- contract block
+READ_ONLY = {"bequite", "bq-help", "bq-now", "bq-explain"}
+CONTRACT_OPEN = "<!-- bq:contract -->"
+CONTRACT_CLOSE = "<!-- /bq:contract -->"
+CONTRACT_BODY = (
+    "> **Every run follows the contract** (`.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md`):\n"
+    "> 1. **Skills first:** announce the `Skill Selection:` block before any plan, edit or tool call for the task.\n"
+    "> 2. **Resolve the work:** read `.bequite/ACTIVE.md`; use `.bequite/work/<id>/`, or create the next work folder if this is new work (`/bq-work`).\n"
+    "> 3. **Gates:** project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `work/<id>/gates.md`. Refuse and name the missing gate.\n"
+    "> 4. **Plan first:** non-trivial work gets a plan the user approves before output. Hard human gates always wait for a yes.\n"
+    "> 5. **Evidence:** every check goes to `work/<id>/evidence.md` (command + exit code + output) or is marked `UNVERIFIED:`.\n"
+    "> 6. **Write back:** `work/<id>/log.md`, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, and `.bequite/state/MISTAKE_MEMORY.md` when a lesson surfaced.\n"
+    "> 7. **Finish** with the Next Command Recommendations block.\n"
+)
+CONTRACT_BLOCK = CONTRACT_OPEN + "\n" + CONTRACT_BODY + CONTRACT_CLOSE
+
+
+def action_commands():
+    return [p for p in commands() if os.path.basename(p)[:-3] not in READ_ONLY]
+
+
+@check
+def contract_block():
+    """Every action command carries the standard contract block (fix: bq_check.py --fix contract)."""
+    errors = []
+    for path in action_commands():
+        text = read(path)
+        if CONTRACT_BLOCK not in text:
+            errors.append("%s: missing or outdated contract block" % rel(path))
+    return errors
+
+
+def fix_contract():
+    changed = 0
+    for path in action_commands():
+        text = read(path)
+        if CONTRACT_BLOCK in text:
+            continue
+        if CONTRACT_OPEN in text and CONTRACT_CLOSE in text:
+            a = text.index(CONTRACT_OPEN)
+            b = text.index(CONTRACT_CLOSE) + len(CONTRACT_CLOSE)
+            text = text[:a] + CONTRACT_BLOCK + text[b:]
+        else:
+            m = re.search(r"^# .*\n", text, re.M)
+            if not m:
+                print("cannot place block (no H1): " + rel(path))
+                continue
+            text = text[:m.end()] + "\n" + CONTRACT_BLOCK + "\n" + text[m.end():]
+        with open(path, "w", encoding="utf-8", newline="") as f:
+            f.write(text)
+        changed += 1
+    print("contract block written to %d command(s)" % changed)
+
+
+# ---------------------------------------------------------------- gates
+GATE_RE = re.compile(r"`([A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*_(?:DONE|COMPLETE|LOCKED|APPROVED|PASS|PASSED|ASSIGNED|STARTED|ANSWERED|"
+                     r"RESOLVED|SELECTED|INITIALIZED|IDENTIFIED|APPLIED|VERIFIED|IMPLEMENTED|TESTED|PREPPED|UPDATED|"
+                     r"SNAPSHOT|GENERATED|DECISION|OK|REPRODUCED)|CONVERGED)`")
+
+
+@check
+def gates_defined():
+    """Every gate a command or skill names exists in the project ledger or the per-work gates template."""
+    defined = set()
+    for src in (os.path.join(ROOT, "templates", "bequite", "state", "WORKFLOW_GATES.md"),
+                os.path.join(ROOT, "templates", "bequite", "work", "_template", "gates.md")):
+        defined |= set(GATE_RE.findall(read(src)))
+    errors = []
+    files = commands() + glob.glob(os.path.join(SKILL_DIR, "bequite-*", "**", "*.md"), recursive=True)
+    for path in files:
+        for n, line in enumerate(read(path).splitlines(), 1):
+            for g in GATE_RE.findall(line):
+                if g not in defined:
+                    errors.append("%s:%d: gate `%s` is not defined in WORKFLOW_GATES.md or work/_template/gates.md" % (rel(path), n, g))
+    return errors
+
+
 def main(argv):
+    if "--fix" in argv:
+        what = [a for a in argv if not a.startswith("-")]
+        if "contract" in what:
+            fix_contract()
+        return 0
     if "--list" in argv:
         for fn in CHECKS:
             print("%-14s %s" % (fn.__name__, (fn.__doc__ or "").strip()))

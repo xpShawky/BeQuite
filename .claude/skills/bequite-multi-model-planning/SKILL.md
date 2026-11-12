@@ -153,7 +153,7 @@ Capture the tie-breaks in `.bequite/plans/MULTI_MODEL_COMPARISON.md`:
 
 ### Step D — Synthesize the final plan
 
-Write `.bequite/plans/IMPLEMENTATION_PLAN.md` (preserve pre-merge as `IMPLEMENTATION_PLAN_PRE_MERGE.md`).
+Write `.bequite/work/<id>/plan.md` (preserve pre-merge as `IMPLEMENTATION_PLAN_PRE_MERGE.md`).
 
 Combine:
 - The agreement points (always go in the plan as-is)

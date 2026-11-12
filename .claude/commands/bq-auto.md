@@ -4,6 +4,17 @@ description: Scoped autonomous workflow runner. Parses $ARGUMENTS for intent (ne
 
 # /bq-auto — scoped autonomous runner
 
+<!-- bq:contract -->
+> **Every run follows the contract** (`.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md`):
+> 1. **Skills first:** announce the `Skill Selection:` block before any plan, edit or tool call for the task.
+> 2. **Resolve the work:** read `.bequite/ACTIVE.md`; use `.bequite/work/<id>/`, or create the next work folder if this is new work (`/bq-work`).
+> 3. **Gates:** project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `work/<id>/gates.md`. Refuse and name the missing gate.
+> 4. **Plan first:** non-trivial work gets a plan the user approves before output. Hard human gates always wait for a yes.
+> 5. **Evidence:** every check goes to `work/<id>/evidence.md` (command + exit code + output) or is marked `UNVERIFIED:`.
+> 6. **Write back:** `work/<id>/log.md`, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, and `.bequite/state/MISTAKE_MEMORY.md` when a lesson surfaced.
+> 7. **Finish** with the Next Command Recommendations block.
+<!-- /bq:contract -->
+
 ## Purpose
 
 Run the requested workflow end-to-end with **minimum interruption, maximum discipline, scoped to the actual task**. Pauses only at hard human gates (destructive ops, DB migrations, prod / VPS / SSL touches, secret rotations, paid services, scope contradictions, variant winner selection, cost ceilings, repeated failures).
@@ -86,8 +97,8 @@ Full strategy: `.claude/bequite/docs/architecture/AUTO_MODE_STRATEGY.md`.
 - `.bequite/state/CURRENT_PHASE.md` (advances as phases complete)
 - `.bequite/state/LAST_RUN.md` (after every step)
 - `.bequite/logs/AGENT_LOG.md` (entry per step + entry per gate pause)
-- `.bequite/logs/CHANGELOG.md` (`[Unreleased]` per material change)
-- `.bequite/audits/VERIFY_REPORT.md` (when verification runs)
+- `CHANGELOG.md` (`[Unreleased]` per material change)
+- `.bequite/work/<id>/verify.md` (when verification runs)
 
 ## Hard human gates (the only pauses)
 
@@ -203,8 +214,8 @@ State updated:
   .bequite/state/LAST_RUN.md
   .bequite/state/WORKFLOW_GATES.md
   .bequite/logs/AGENT_LOG.md
-  .bequite/logs/CHANGELOG.md
-  .bequite/audits/VERIFY_REPORT.md (if verification ran)
+  CHANGELOG.md
+  .bequite/work/<id>/verify.md (if verification ran)
 
 Next: <suggested command>
 ```
@@ -292,9 +303,9 @@ A two-session workflow where a **strong model architects + reviews** and a **che
 
 Three phases:
 
-1. **Phase 1 — Architect (strong model, this session):** strong model does research + writes a detailed task pack at `.bequite/tasks/DELEGATE_TASKS.md`, `DELEGATE_INSTRUCTIONS.md`, `DELEGATE_ACCEPTANCE_CRITERIA.md`, `DELEGATE_TEST_PLAN.md`
+1. **Phase 1 — Architect (strong model, this session):** strong model does research + writes a detailed task pack at `.bequite/work/<id>/delegate/DELEGATE_TASKS.md`, `DELEGATE_INSTRUCTIONS.md`, `DELEGATE_ACCEPTANCE_CRITERIA.md`, `DELEGATE_TEST_PLAN.md`
 2. **Phase 2 — Implement (cheaper model, separate session):** user switches Claude model (e.g. Opus → Sonnet, or to a different account/host). Cheap model runs `/bq-implement delegate` and executes exactly per the task pack — no architectural decisions, no guessing
-3. **Phase 3 — Review (strong model, back here):** user switches back. Strong model runs `/bq-review delegate`; produces `.bequite/audits/DELEGATE_REVIEW_REPORT.md` with per-task verdicts (✅ approved / ⚠ approved-with-comments / ❌ rejected). Strong model fixes or re-instructs the cheap model
+3. **Phase 3 — Review (strong model, back here):** user switches back. Strong model runs `/bq-review delegate`; produces `.bequite/work/<id>/delegate/DELEGATE_REVIEW_REPORT.md` with per-task verdicts (✅ approved / ⚠ approved-with-comments / ❌ rejected). Strong model fixes or re-instructs the cheap model
 
 Full discipline: `.claude/skills/bequite-delegate-planner/SKILL.md`.
 
@@ -465,7 +476,7 @@ Lowers it: <factors>      Raises it: <checks that would>
 Unknowns/blockers: <list or none>      Next: <recommended action>
 ```
 
-Bands: 90–100 routine · 75–89 likely · 50–74 needs exploration · 25–49 spike first · 0–24 blocked/insufficient info. **Confidence is not a feeling — it is a report** (evidence, tests, scope clarity, familiarity, dependency risk, verification). It must MOVE as evidence arrives (before-inspection → after-reading → after-implementation → after-verification; recorded per task in `.bequite/tasks/TASK_CONFIDENCE.md`). Never 100% — and ≥95% only with all tests passing + zero unresolved assumptions + EVIDENCE_LOG entry. Apply project modifiers from `.bequite/state/CONFIDENCE_RULES.md`; at verify/release, log forecast-vs-actual to `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`.
+Bands: 90–100 routine · 75–89 likely · 50–74 needs exploration · 25–49 spike first · 0–24 blocked/insufficient info. **Confidence is not a feeling — it is a report** (evidence, tests, scope clarity, familiarity, dependency risk, verification). It must MOVE as evidence arrives (before-inspection → after-reading → after-implementation → after-verification; recorded per task in `.bequite/work/<id>/tasks.md`). Never 100% — and ≥95% only with all tests passing + zero unresolved assumptions + EVIDENCE_LOG entry. Apply project modifiers from `.bequite/state/CONFIDENCE_RULES.md`; at verify/release, log forecast-vs-actual to `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`.
 
 ## Internal workflow reporting (alpha.22 — Command Router)
 

@@ -4,6 +4,17 @@ description: 'Phase 2 orchestrator — Planning and Build. Walks /bq-assign → 
 
 # /bq-p2 — Phase 2 orchestrator: Planning and Build
 
+<!-- bq:contract -->
+> **Every run follows the contract** (`.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md`):
+> 1. **Skills first:** announce the `Skill Selection:` block before any plan, edit or tool call for the task.
+> 2. **Resolve the work:** read `.bequite/ACTIVE.md`; use `.bequite/work/<id>/`, or create the next work folder if this is new work (`/bq-work`).
+> 3. **Gates:** project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `work/<id>/gates.md`. Refuse and name the missing gate.
+> 4. **Plan first:** non-trivial work gets a plan the user approves before output. Hard human gates always wait for a yes.
+> 5. **Evidence:** every check goes to `work/<id>/evidence.md` (command + exit code + output) or is marked `UNVERIFIED:`.
+> 6. **Write back:** `work/<id>/log.md`, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, and `.bequite/state/MISTAKE_MEMORY.md` when a lesson surfaced.
+> 7. **Finish** with the Next Command Recommendations block.
+<!-- /bq:contract -->
+
 ## Purpose
 
 Run Phase 2 commands. P2's job is to **build**. The exact command sequence depends on the active mode.
@@ -36,20 +47,20 @@ Per mode:
 ## Files to read
 
 - `.bequite/state/CURRENT_MODE.md`
-- `.bequite/plans/IMPLEMENTATION_PLAN.md` (New Project mode)
-- `.bequite/tasks/TASK_LIST.md` (New Project mode, after /bq-assign)
-- `.bequite/plans/feature-<slug>.md` (Add Feature mode)
+- `.bequite/work/<id>/plan.md` (New Project mode)
+- `.bequite/work/<id>/tasks.md` (New Project mode, after /bq-assign)
+- `.bequite/work/<id>/spec.md` (Add Feature mode)
 
 ## Files to write
 
-- `.bequite/tasks/TASK_LIST.md` (via `/bq-assign`)
-- `.bequite/tasks/CURRENT_TASK.md` (the active task)
-- `.bequite/plans/feature-<slug>.md` (Add Feature mode)
+- `.bequite/work/<id>/tasks.md` (via `/bq-assign`)
+- `.bequite/work/<id>/tasks.md` (the active task)
+- `.bequite/work/<id>/spec.md` (Add Feature mode)
 - `.bequite/audits/FIX_<slug>.md` (Fix Problem mode)
-- `.bequite/logs/ERROR_LOG.md` (Fix Problem mode)
+- `.bequite/work/<id>/log.md` (Fix Problem mode)
 - `.bequite/state/WORKFLOW_GATES.md` (gates ticked)
 - `.bequite/state/CURRENT_PHASE.md` (advances to P3)
-- `.bequite/logs/CHANGELOG.md` (`[Unreleased]` entry per task)
+- `CHANGELOG.md` (`[Unreleased]` entry per task)
 - `.bequite/logs/AGENT_LOG.md`
 - All source files the build touches
 
@@ -61,7 +72,7 @@ Per mode:
 2. **/bq-implement loop** — Pick next `[ ] pending` task, read files, make minimal change, run test, verify acceptance, mark `[x]`. Repeat until TASK_LIST is empty or blocker hit.
 3. Per task → CHANGELOG `[Unreleased]` entry.
 
-Mark `ASSIGN_DONE ✅`, `IMPLEMENT_DONE ✅`.
+Mark `TASKS_ASSIGNED ✅`, `IMPLEMENT_DONE ✅`.
 
 ### Mode = Add Feature
 

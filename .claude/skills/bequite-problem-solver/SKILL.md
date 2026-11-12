@@ -30,7 +30,7 @@ Every bug-hunt starts with **a reproduction the user (and you) can repeat**. If 
 
 ### 2. Capture verbatim
 
-Save the literal error output to `.bequite/logs/ERROR_LOG.md`. Don't paraphrase — paraphrasing loses signal:
+Save the literal error output to `.bequite/work/<id>/log.md`. Don't paraphrase — paraphrasing loses signal:
 
 - Stack traces with line numbers
 - Error messages with exact strings (often searchable verbatim in GitHub issues)
@@ -115,14 +115,14 @@ The test:
 ## Memory hooks
 
 This skill reads:
-- `.bequite/logs/ERROR_LOG.md` (prior bugs for pattern matching)
+- `.bequite/work/<id>/log.md` (prior bugs for pattern matching)
 - Recent git log + commits
 - The failing test output
 
 This skill writes (via /bq-fix):
 - The source fix
 - The new/updated test
-- `.bequite/logs/ERROR_LOG.md` (the bug + root cause + fix)
+- `.bequite/work/<id>/log.md` (the bug + root cause + fix)
 
 ## Output discipline
 

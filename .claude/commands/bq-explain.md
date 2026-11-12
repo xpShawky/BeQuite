@@ -37,7 +37,7 @@ For vibe coders, non-engineer stakeholders, future-you returning to inherited co
 - A function name: `"computeMonthlyTotal in lib/billing.ts"`
 - A concept: `"how auth works in this project"`
 - A decision: `"why we chose Drizzle over Prisma"`
-- A BeQuite artifact: `".bequite/audits/RESEARCH_REPORT.md"` or `"the IMPLEMENTATION_PLAN"`
+- A BeQuite artifact: `".bequite/work/<id>/research.md"` or `"the IMPLEMENTATION_PLAN"`
 - A command output: `"what /bq-auto did in the last run"`
 
 Examples:
@@ -61,7 +61,7 @@ Examples:
 - Related files the target imports / depends on (1-2 hops max)
 - `.bequite/state/DECISIONS.md` (if target is a decision)
 - `.bequite/audits/*.md` (if target is an artifact)
-- `.bequite/plans/IMPLEMENTATION_PLAN.md` (for context)
+- `.bequite/work/<id>/plan.md` (for context)
 
 ## Files to write
 

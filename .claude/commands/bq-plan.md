@@ -4,6 +4,17 @@ description: Write a complete implementation plan — vision, architecture, stac
 
 # /bq-plan — write the definitive plan
 
+<!-- bq:contract -->
+> **Every run follows the contract** (`.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md`):
+> 1. **Skills first:** announce the `Skill Selection:` block before any plan, edit or tool call for the task.
+> 2. **Resolve the work:** read `.bequite/ACTIVE.md`; use `.bequite/work/<id>/`, or create the next work folder if this is new work (`/bq-work`).
+> 3. **Gates:** project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `work/<id>/gates.md`. Refuse and name the missing gate.
+> 4. **Plan first:** non-trivial work gets a plan the user approves before output. Hard human gates always wait for a yes.
+> 5. **Evidence:** every check goes to `work/<id>/evidence.md` (command + exit code + output) or is marked `UNVERIFIED:`.
+> 6. **Write back:** `work/<id>/log.md`, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, and `.bequite/state/MISTAKE_MEMORY.md` when a lesson surfaced.
+> 7. **Finish** with the Next Command Recommendations block.
+<!-- /bq:contract -->
+
 ## Purpose
 
 Write the **definitive implementation plan** that all downstream work hangs from. No code in this command — markdown only. The plan is the contract; tasks (`/bq-assign`) and implementation (`/bq-implement`) execute against it.
@@ -26,16 +37,16 @@ A good plan answers: what are we building, with what stack, in what order, with 
 
 - `BEQUITE_INITIALIZED`
 - `MODE_SELECTED`
-- `CLARIFY_DONE` (recommended)
-- `RESEARCH_DONE` (recommended; for solo prototypes you can skip — write the plan, flag the unverified items)
+- `CLARIFY_ANSWERED` (recommended)
+- `RESEARCH_COMPLETE` (recommended; for solo prototypes you can skip — write the plan, flag the unverified items)
 - `SCOPE_LOCKED` (strongly recommended)
 
 ## Files to read
 
 - `.bequite/audits/DISCOVERY_REPORT.md`
-- `.bequite/audits/RESEARCH_REPORT.md`
+- `.bequite/work/<id>/research.md`
 - `.bequite/audits/DOCTOR_REPORT.md`
-- `.bequite/plans/SCOPE.md`
+- `.bequite/work/<id>/spec.md`
 - `.bequite/state/CURRENT_MODE.md`
 - `.bequite/state/DECISIONS.md`
 - `.bequite/state/OPEN_QUESTIONS.md`
@@ -45,7 +56,7 @@ If any required file is missing, suggest running the prerequisite command and ex
 
 ## Files to write
 
-- `.bequite/plans/IMPLEMENTATION_PLAN.md` (new — 13 sections)
+- `.bequite/work/<id>/plan.md` (new — 13 sections)
 - `.bequite/state/DECISIONS.md` (plan approval appended)
 - `.bequite/state/WORKFLOW_GATES.md` (`PLAN_APPROVED ⚪ pending user`)
 - `.bequite/state/LAST_RUN.md`
@@ -140,7 +151,7 @@ Mark each: NEW / MODIFIED / DELETED.
 
 ### 6b. File-Responsibility Map (alpha.18 — anti-spaghetti)
 
-Before the phase/task plan, emit a **File-Responsibility Map** → `.bequite/plans/FILE_RESPONSIBILITY_MAP.md`: each file → one responsibility + allowed import direction (dependency direction) + covering tests, plus an explicit "out of scope — do NOT touch" list. Name files + interfaces (Anthropic: "the most useful specs name the files and interfaces"; superpowers: "map files before tasks; one responsibility per file"). New code must match `.bequite/state/PROJECT_DNA.md` conventions. `/bq-assign` refuses to write tasks without this map. Owner: `bequite-context-engineer`.
+Before the phase/task plan, emit a **File-Responsibility Map** → `.bequite/work/<id>/plan.md`: each file → one responsibility + allowed import direction (dependency direction) + covering tests, plus an explicit "out of scope — do NOT touch" list. Name files + interfaces (Anthropic: "the most useful specs name the files and interfaces"; superpowers: "map files before tasks; one responsibility per file"). New code must match `.bequite/state/PROJECT_DNA.md` conventions. `/bq-assign` refuses to write tasks without this map. Owner: `bequite-context-engineer`.
 
 ## 7. Phase plan
 
@@ -270,7 +281,7 @@ Tasks:    <count>
 Risks:    <count>
 Open Qs:  <count>
 
-Plan: .bequite/plans/IMPLEMENTATION_PLAN.md
+Plan: .bequite/work/<id>/plan.md
 
 Next: /bq-assign       break plan into actionable tasks
       /bq-multi-plan   get a second opinion before committing
@@ -382,7 +393,7 @@ Lowers it: <factors>      Raises it: <checks that would>
 Unknowns/blockers: <list or none>      Next: <recommended action>
 ```
 
-Bands: 90–100 routine · 75–89 likely · 50–74 needs exploration · 25–49 spike first · 0–24 blocked/insufficient info. **Confidence is not a feeling — it is a report** (evidence, tests, scope clarity, familiarity, dependency risk, verification). It must MOVE as evidence arrives (before-inspection → after-reading → after-implementation → after-verification; recorded per task in `.bequite/tasks/TASK_CONFIDENCE.md`). Never 100% — and ≥95% only with all tests passing + zero unresolved assumptions + EVIDENCE_LOG entry. Apply project modifiers from `.bequite/state/CONFIDENCE_RULES.md`; at verify/release, log forecast-vs-actual to `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`.
+Bands: 90–100 routine · 75–89 likely · 50–74 needs exploration · 25–49 spike first · 0–24 blocked/insufficient info. **Confidence is not a feeling — it is a report** (evidence, tests, scope clarity, familiarity, dependency risk, verification). It must MOVE as evidence arrives (before-inspection → after-reading → after-implementation → after-verification; recorded per task in `.bequite/work/<id>/tasks.md`). Never 100% — and ≥95% only with all tests passing + zero unresolved assumptions + EVIDENCE_LOG entry. Apply project modifiers from `.bequite/state/CONFIDENCE_RULES.md`; at verify/release, log forecast-vs-actual to `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`.
 
 ## Argument workflows (alpha.22)
 

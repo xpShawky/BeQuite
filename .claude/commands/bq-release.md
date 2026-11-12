@@ -4,14 +4,25 @@ description: Final release prep after /bq-verify passed. Updates CHANGELOG, sugg
 
 # /bq-release — release prep
 
+<!-- bq:contract -->
+> **Every run follows the contract** (`.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md`):
+> 1. **Skills first:** announce the `Skill Selection:` block before any plan, edit or tool call for the task.
+> 2. **Resolve the work:** read `.bequite/ACTIVE.md`; use `.bequite/work/<id>/`, or create the next work folder if this is new work (`/bq-work`).
+> 3. **Gates:** project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `work/<id>/gates.md`. Refuse and name the missing gate.
+> 4. **Plan first:** non-trivial work gets a plan the user approves before output. Hard human gates always wait for a yes.
+> 5. **Evidence:** every check goes to `work/<id>/evidence.md` (command + exit code + output) or is marked `UNVERIFIED:`.
+> 6. **Write back:** `work/<id>/log.md`, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, and `.bequite/state/MISTAKE_MEMORY.md` when a lesson surfaced.
+> 7. **Finish** with the Next Command Recommendations block.
+<!-- /bq:contract -->
+
 You are preparing the **ship** step. Verify has passed. Now: update CHANGELOG, propose a tag, hand the user the exact commands to push.
 
 ## Step 1 — Read context
 
-- `.bequite/audits/VERIFY_REPORT.md` (must exist + must say PASS)
-- `.bequite/logs/CHANGELOG.md` (this project's changelog)
-- `.bequite/plans/SCOPE.md`
-- `.bequite/tasks/TASK_LIST.md` (every task `[x] done`?)
+- `.bequite/work/<id>/verify.md` (must exist + must say PASS)
+- `CHANGELOG.md` (this project's changelog)
+- `.bequite/work/<id>/spec.md`
+- `.bequite/work/<id>/tasks.md` (every task `[x] done`?)
 - `package.json` / `pyproject.toml` / `Cargo.toml` (current version)
 
 ## Step 2 — Block if not ready
@@ -65,7 +76,7 @@ Don't run these. Print them for the user to copy:
 ✓ Release prep ready
 
 Version:  v<new>
-Changes:  <summary> (see .bequite/logs/CHANGELOG.md)
+Changes:  <summary> (see CHANGELOG.md)
 
 To finish the release:
 
@@ -104,8 +115,8 @@ See `.claude/skills/bequite-release-gate/SKILL.md` for the deeper procedure (CI 
 
 **Phase:** P4 — Release
 **When NOT to use:** verify hasn't passed yet (run `/bq-verify` first); CHANGELOG `[Unreleased]` is empty (nothing to release).
-**Preconditions:** `BEQUITE_INITIALIZED`, `VERIFY_PASS`, `CHANGELOG_READY`
-**Required previous gates:** `BEQUITE_INITIALIZED`, `VERIFY_PASS`, `CHANGELOG_READY`
+**Preconditions:** `BEQUITE_INITIALIZED`, `VERIFY_PASSED`, `CHANGELOG_READY`
+**Required previous gates:** `BEQUITE_INITIALIZED`, `VERIFY_PASSED`, `CHANGELOG_READY`
 **Quality gate:**
 - Version bumped in manifest (per semver: patch / minor / major matches CHANGELOG content)
 - CHANGELOG `[Unreleased]` moved to `[vX.Y.Z]` with date
@@ -122,15 +133,15 @@ See `.claude/skills/bequite-release-gate/SKILL.md` for the deeper procedure (CI 
 
 ## Memory files this command reads
 
-- `.bequite/audits/VERIFY_REPORT.md`
-- `.bequite/logs/CHANGELOG.md`
-- `.bequite/plans/SCOPE.md`
-- `.bequite/tasks/TASK_LIST.md`
+- `.bequite/work/<id>/verify.md`
+- `CHANGELOG.md`
+- `.bequite/work/<id>/spec.md`
+- `.bequite/work/<id>/tasks.md`
 - All version manifests
 
 ## Memory files this command writes
 
-- `.bequite/logs/CHANGELOG.md` (Unreleased section moved into a versioned section)
+- `CHANGELOG.md` (Unreleased section moved into a versioned section)
 - Version manifests (bumped)
 - `.bequite/state/CURRENT_PHASE.md`
 - `.bequite/state/LAST_RUN.md`
@@ -170,7 +181,7 @@ After successful completion:
 - `.bequite/state/WORKFLOW_GATES.md` — set this command's gate to `✅` if applicable
 - `.bequite/state/CURRENT_PHASE.md` — advance if phase transitioned
 - `.bequite/logs/AGENT_LOG.md` — append entry
-- `.bequite/logs/CHANGELOG.md` `[Unreleased]` — only when material files changed (skip for read-only commands)
+- `CHANGELOG.md` `[Unreleased]` — only when material files changed (skip for read-only commands)
 - `.bequite/state/MISTAKE_MEMORY.md` — append when a project-specific lesson surfaced
 - `.bequite/state/MODE_HISTORY.md` — append mode + outcome (when invoked via `/bq-auto`-style mode)
 
@@ -189,7 +200,7 @@ Lowers it: <factors>      Raises it: <checks that would>
 Unknowns/blockers: <list or none>      Next: <recommended action>
 ```
 
-Bands: 90–100 routine · 75–89 likely · 50–74 needs exploration · 25–49 spike first · 0–24 blocked/insufficient info. **Confidence is not a feeling — it is a report** (evidence, tests, scope clarity, familiarity, dependency risk, verification). It must MOVE as evidence arrives (before-inspection → after-reading → after-implementation → after-verification; recorded per task in `.bequite/tasks/TASK_CONFIDENCE.md`). Never 100% — and ≥95% only with all tests passing + zero unresolved assumptions + EVIDENCE_LOG entry. Apply project modifiers from `.bequite/state/CONFIDENCE_RULES.md`; at verify/release, log forecast-vs-actual to `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`.
+Bands: 90–100 routine · 75–89 likely · 50–74 needs exploration · 25–49 spike first · 0–24 blocked/insufficient info. **Confidence is not a feeling — it is a report** (evidence, tests, scope clarity, familiarity, dependency risk, verification). It must MOVE as evidence arrives (before-inspection → after-reading → after-implementation → after-verification; recorded per task in `.bequite/work/<id>/tasks.md`). Never 100% — and ≥95% only with all tests passing + zero unresolved assumptions + EVIDENCE_LOG entry. Apply project modifiers from `.bequite/state/CONFIDENCE_RULES.md`; at verify/release, log forecast-vs-actual to `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`.
 
 ## Argument workflows (alpha.22 — the launch kit family)
 

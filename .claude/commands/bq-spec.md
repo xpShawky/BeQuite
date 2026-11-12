@@ -1,12 +1,23 @@
 ---
-description: Write a one-page product / feature spec in Spec Kit-compatible format. Lightweight bridge between BeQuite's research + plan + scope and the broader Spec Kit ecosystem. Writes specs/<feature>/spec.md.
+description: 'Write a one-page product or feature spec into the active work (.bequite/work/<id>/spec.md) in a Spec Kit-compatible shape. Optional export=speckit also writes specs/NNN-<slug>/spec.md for teams that use Spec Kit.'
 ---
 
 # /bq-spec — one-page Spec Kit-compatible spec
 
+<!-- bq:contract -->
+> **Every run follows the contract** (`.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md`):
+> 1. **Skills first:** announce the `Skill Selection:` block before any plan, edit or tool call for the task.
+> 2. **Resolve the work:** read `.bequite/ACTIVE.md`; use `.bequite/work/<id>/`, or create the next work folder if this is new work (`/bq-work`).
+> 3. **Gates:** project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `work/<id>/gates.md`. Refuse and name the missing gate.
+> 4. **Plan first:** non-trivial work gets a plan the user approves before output. Hard human gates always wait for a yes.
+> 5. **Evidence:** every check goes to `work/<id>/evidence.md` (command + exit code + output) or is marked `UNVERIFIED:`.
+> 6. **Write back:** `work/<id>/log.md`, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, and `.bequite/state/MISTAKE_MEMORY.md` when a lesson surfaced.
+> 7. **Finish** with the Next Command Recommendations block.
+<!-- /bq:contract -->
+
 ## Purpose
 
-Write a focused one-page specification for a product or feature in **Spec Kit-compatible format** (`specs/<feature>/spec.md`). Bridges BeQuite to the Spec Kit ecosystem so projects can mix both tools without format drift.
+Write a focused one-page specification into the active work's `.bequite/work/<id>/spec.md` (v4 work folders; creates the work if none is active), using the Spec Kit-compatible shape. With `export=speckit` it also writes `specs/NNN-<slug>/spec.md` so projects can mix BeQuite and Spec Kit without format drift. BeQuite itself always reads the work folder.
 
 Lightweight: not a full IMPLEMENTATION_PLAN (use `/bq-plan` for that). Not a feature mini-spec (use `/bq-feature` for that). This is the **technology-agnostic, user-and-outcome-focused spec** that Spec Kit's `/specify` workflow produces.
 
@@ -48,13 +59,13 @@ Examples:
 ## Files to read
 
 - `.bequite/state/PROJECT_STATE.md`
-- `.bequite/plans/SCOPE.md` (if exists)
-- `.bequite/plans/IMPLEMENTATION_PLAN.md` (if exists)
-- `.bequite/audits/RESEARCH_REPORT.md` (if exists; for persona / market context)
+- `.bequite/work/<id>/spec.md` (if exists)
+- `.bequite/work/<id>/plan.md` (if exists)
+- `.bequite/work/<id>/research.md` (if exists; for persona / market context)
 
 ## Files to write
 
-- `specs/<feature-slug>/spec.md` — the spec (Spec Kit-compatible path)
+- `.bequite/work/<id>/spec.md` — the spec (+ `specs/NNN-<slug>/spec.md` when `export=speckit`)
 - `.bequite/plans/spec-<feature-slug>.md` — link / copy in BeQuite memory
 - `.bequite/state/DECISIONS.md` — append "Spec written for <feature>"
 - `.bequite/state/LAST_RUN.md`
@@ -78,11 +89,11 @@ Check if the project already uses Spec Kit:
 - `.specify/` or similar Spec Kit config
 
 If yes → follow Spec Kit's conventions (path, naming).
-If no → still write to `specs/<slug>/spec.md` (this becomes the seed for adopting Spec Kit later if desired).
+If no → write only the work spec; offer `export=speckit` if the team may adopt Spec Kit later.
 
 ### 3. Draft the spec
 
-Write `specs/<slug>/spec.md`:
+Write `.bequite/work/<id>/spec.md` (and, with `export=speckit`, the same content to `specs/NNN-<slug>/spec.md`):
 
 ```markdown
 # Feature: <Name>
@@ -161,14 +172,14 @@ Example: "10% of active users export at least once in the first month."
 
 ## Related
 
-- BeQuite scope: `.bequite/plans/SCOPE.md`
-- BeQuite plan: `.bequite/plans/IMPLEMENTATION_PLAN.md` (if exists)
+- BeQuite scope: `.bequite/work/<id>/spec.md`
+- BeQuite plan: `.bequite/work/<id>/plan.md` (if exists)
 - Related ADRs: <list>
 ```
 
 ### 4. Save the BeQuite memory copy
 
-Write `.bequite/plans/spec-<slug>.md` as a copy / symlink to `specs/<slug>/spec.md`.
+With `export=speckit`, note the exported path in the work's `log.md` (the work spec stays the source of truth).
 
 ### 5. Update state
 
@@ -182,7 +193,7 @@ Write `.bequite/plans/spec-<slug>.md` as a copy / symlink to `specs/<slug>/spec.
 ```
 ✓ Spec written — <feature name>
 
-Path:         specs/<slug>/spec.md
+Path:         .bequite/work/<id>/spec.md  (export: specs/NNN-<slug>/spec.md)
 BeQuite copy: .bequite/plans/spec-<slug>.md
 Status:       Draft
 Open questions: <count>
@@ -200,7 +211,7 @@ Narrate the steps. Print the final report.
 
 ## Quality gate
 
-- `specs/<slug>/spec.md` exists with all required sections
+- `.bequite/work/<id>/spec.md` exists with all required sections
 - "What", "Why", "Who", "Acceptance criteria" are concrete (no weasel words)
 - "Out of scope" is explicit (at least 1 item)
 - Open questions are real (not placeholder "TBD")
@@ -215,7 +226,7 @@ Narrate the steps. Print the final report.
 
 ## Memory updates
 
-- `specs/<slug>/spec.md` (new)
+- `.bequite/work/<id>/spec.md` (new or updated) · `specs/NNN-<slug>/spec.md` (only with `export=speckit`)
 - `.bequite/plans/spec-<slug>.md` (new — BeQuite-side copy)
 - `DECISIONS.md` — append spec record
 - `OPEN_QUESTIONS.md` — append unresolved items

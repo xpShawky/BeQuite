@@ -4,9 +4,20 @@ description: Gather verified evidence across 11 dimensions — stack, product, c
 
 # /bq-research — 11-dimension verified evidence
 
+<!-- bq:contract -->
+> **Every run follows the contract** (`.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md`):
+> 1. **Skills first:** announce the `Skill Selection:` block before any plan, edit or tool call for the task.
+> 2. **Resolve the work:** read `.bequite/ACTIVE.md`; use `.bequite/work/<id>/`, or create the next work folder if this is new work (`/bq-work`).
+> 3. **Gates:** project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `work/<id>/gates.md`. Refuse and name the missing gate.
+> 4. **Plan first:** non-trivial work gets a plan the user approves before output. Hard human gates always wait for a yes.
+> 5. **Evidence:** every check goes to `work/<id>/evidence.md` (command + exit code + output) or is marked `UNVERIFIED:`.
+> 6. **Write back:** `work/<id>/log.md`, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, and `.bequite/state/MISTAKE_MEMORY.md` when a lesson surfaced.
+> 7. **Finish** with the Next Command Recommendations block.
+<!-- /bq:contract -->
+
 ## Purpose
 
-Replace your training-corpus assumptions with **verified, dated, cited 2026 evidence** before you commit to a plan. The output is `.bequite/audits/RESEARCH_REPORT.md` — a structured report across 11 dimensions, each with sources, freshness verdicts, and "use this / reject this" recommendations.
+Replace your training-corpus assumptions with **verified, dated, cited 2026 evidence** before you commit to a plan. The output is `.bequite/work/<id>/research.md` — a structured report across 11 dimensions, each with sources, freshness verdicts, and "use this / reject this" recommendations.
 
 This is the single most important Phase 1 command. A bad plan is usually a plan built on stale research.
 
@@ -25,7 +36,7 @@ This is the single most important Phase 1 command. A bad plan is usually a plan 
 
 - `BEQUITE_INITIALIZED`
 - `MODE_SELECTED`
-- `CLARIFY_DONE` (recommended — research is sharper when questions are crisp)
+- `CLARIFY_ANSWERED` (recommended — research is sharper when questions are crisp)
 
 ## Files to read
 
@@ -33,14 +44,14 @@ This is the single most important Phase 1 command. A bad plan is usually a plan 
 - `.bequite/state/OPEN_QUESTIONS.md`
 - `.bequite/state/DECISIONS.md`
 - `.bequite/audits/DISCOVERY_REPORT.md` (if exists)
-- `.bequite/plans/SCOPE.md` (if exists)
+- `.bequite/work/<id>/spec.md` (if exists)
 
 ## Files to write
 
-- `.bequite/audits/RESEARCH_REPORT.md` (new — 11 dimensions)
+- `.bequite/work/<id>/research.md` (new — 11 dimensions)
 - `.bequite/state/DECISIONS.md` (research conclusions appended)
 - `.bequite/state/OPEN_QUESTIONS.md` (resolved items marked)
-- `.bequite/state/WORKFLOW_GATES.md` (`RESEARCH_DONE ✅`)
+- `.bequite/state/WORKFLOW_GATES.md` (`RESEARCH_COMPLETE ✅`)
 - `.bequite/state/LAST_RUN.md`
 - `.bequite/logs/AGENT_LOG.md`
 
@@ -114,7 +125,7 @@ For each security item:
 
 ### 3. Write the report (structured)
 
-`.bequite/audits/RESEARCH_REPORT.md`:
+`.bequite/work/<id>/research.md`:
 
 ```markdown
 # Research Report — 11 Dimensions
@@ -321,7 +332,7 @@ For each security item:
 
 - Append research conclusions to `DECISIONS.md`
 - Mark resolved items in `OPEN_QUESTIONS.md`
-- Mark `RESEARCH_DONE ✅` in `WORKFLOW_GATES.md`
+- Mark `RESEARCH_COMPLETE ✅` in `WORKFLOW_GATES.md`
 - `LAST_RUN.md` updated
 - `AGENT_LOG.md` appended
 
@@ -336,7 +347,7 @@ Recommendations:      <count>
 Rejected options:     <count>
 Open questions left:  <count>
 
-Full report: .bequite/audits/RESEARCH_REPORT.md
+Full report: .bequite/work/<id>/research.md
 
 Next: /bq-scope (lock IN/OUT) or /bq-plan (write the plan)
 ```

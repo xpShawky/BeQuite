@@ -43,7 +43,7 @@ During initial writing (this is a *reactive* pass, not a style guide); on unchan
 
 ## Output format
 
-`.bequite/audits/GUARD_PASS_REPORT.md` — per finding: guard type · severity · `file:line` quoted evidence (citation-or-strike; no evidence = struck) · suggested fix. Verdict: PASS / FINDINGS (n) / BLOCKED (release-stopping). Report-only by default; fixes applied on user approval or in auto mode when R1-safe.
+`.bequite/work/<id>/review.md` — per finding: guard type · severity · `file:line` quoted evidence (citation-or-strike; no evidence = struck) · suggested fix. Verdict: PASS / FINDINGS (n) / BLOCKED (release-stopping). Report-only by default; fixes applied on user approval or in auto mode when R1-safe.
 
 ## Quality gate
 

@@ -131,8 +131,8 @@ User reviews both, merges manually, then deletes the `.bequite-update.md` siblin
 - `.bequite/state/MISTAKE_MEMORY.md`
 - `.bequite/state/MEMORY_SNAPSHOT_*.md`
 - `.bequite/logs/AGENT_LOG.md`
-- `.bequite/logs/CHANGELOG.md`
-- `.bequite/logs/ERROR_LOG.md`
+- `CHANGELOG.md`
+- `.bequite/work/<id>/log.md`
 - `.bequite/audits/` (real audit reports)
 - `.bequite/plans/` (real plans + features — except templates if user confirms)
 - `.bequite/tasks/` (real TASK_LIST + CURRENT_TASK)

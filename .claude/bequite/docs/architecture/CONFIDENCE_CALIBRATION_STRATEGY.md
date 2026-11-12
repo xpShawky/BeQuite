@@ -4,7 +4,7 @@
 
 **Status:** active · **Adopted:** alpha.21
 **Integrated into:** `/bq-plan` · `/bq-assign` · `/bq-auto` · `/bq-feature` · `/bq-fix` · `/bq-implement` · `/bq-review` · `/bq-verify` · `/bq-release` (no separate `/bq-confidence` command — integration beats clutter; revisit only if demand appears)
-**Rules file (per-project tunable):** `.bequite/state/CONFIDENCE_RULES.md` · **Task fields:** `.bequite/tasks/TASK_CONFIDENCE.md` · **Calibration tracking:** `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`
+**Rules file (per-project tunable):** `.bequite/state/CONFIDENCE_RULES.md` · **Task fields:** `.bequite/work/<id>/tasks.md` · **Calibration tracking:** `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`
 
 ---
 

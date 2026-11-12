@@ -21,6 +21,19 @@ Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANG
 - `.gitattributes` pins line endings (`*.sh` LF so installers run on macOS/Linux).
 - Removed the v2 `LOCAL_DEV.md` runbook (Docker-based).
 
+### Added - T2 work folders
+- **One folder per piece of work** (Spec Kit / OpenSpec style). Every feature, fix, film, course or research question gets `.bequite/work/NNNN-slug/` with `brief`, `research`, `spec` (requirements + acceptance criteria + spec deltas), `plan`, `tasks`, `gates`, `evidence`, `review`, `verify` and `log`. Nothing overwrites another work item's files any more.
+- `.bequite/ACTIVE.md` points at the active work; `.bequite/specs/` holds the living truth that finished work merges into; `.bequite/archive/` keeps closed work by date.
+- **Gates are per work.** Clarify → verify gates (plus fix, feature, web and motion gates) live in `work/<id>/gates.md` and start fresh for each item, so a second feature no longer inherits the first one's approvals. Project gates stay in `WORKFLOW_GATES.md`.
+- **Converge before closing:** acceptance criteria without evidence become new tasks; work cannot close until they are covered.
+- New command **`/bq-work`** (W0.8): `new`, `list`, `switch`, `status`, `close` (converge → merge spec deltas → archive). `/bq-spec` writes the work spec, with optional `export=speckit`.
+- 247 references in 53 files moved from the old flat files (`SCOPE.md`, `IMPLEMENTATION_PLAN.md`, `TASK_LIST.md`, `VERIFY_REPORT.md`, ...) to the work folder. Spec: `.claude/bequite/docs/architecture/WORK_FOLDERS.md`.
+
+### Added - T3 enforcement
+- **Standard contract block in all 58 action commands** (skills first · resolve the work · gates · plan first · evidence · write back · next commands). The rule that existed in only 10 of 61 command files is now in every one, and `bq_check.py` fails if a command drifts (`--fix contract` rewrites it).
+- `bq_check.py` gate check: every gate a command names must exist; 8 alias spellings (`RESEARCH_DONE`, `VERIFY_PASS`, ...) normalized to the canonical names.
+- Write-back targets fixed: 26 commands pointed at a dead `.bequite/logs/CHANGELOG.md`; they now use the project's `CHANGELOG.md`.
+
 ### Added - T0/T1
 - `scripts/bq_check.py`: standard-library self-check that turns rules into failing checks: installer encoding and iex safety, frontmatter validity, references to repo files, `/bq-*` commands and `bequite-*` skills that must exist, and doc counts that must match the filesystem.
 - `motion-library/`: a local reference-film library for `/bq-motion` (`inbox/` for films, written breakdowns in `refs/`, `INDEX.md`). Third-party media is gitignored.

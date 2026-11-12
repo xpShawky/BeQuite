@@ -4,6 +4,17 @@ description: 'Phase 0 orchestrator — Setup and Discovery. Walks /bq-init → /
 
 # /bq-p0 — Phase 0 orchestrator: Setup and Discovery
 
+<!-- bq:contract -->
+> **Every run follows the contract** (`.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md`):
+> 1. **Skills first:** announce the `Skill Selection:` block before any plan, edit or tool call for the task.
+> 2. **Resolve the work:** read `.bequite/ACTIVE.md`; use `.bequite/work/<id>/`, or create the next work folder if this is new work (`/bq-work`).
+> 3. **Gates:** project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `work/<id>/gates.md`. Refuse and name the missing gate.
+> 4. **Plan first:** non-trivial work gets a plan the user approves before output. Hard human gates always wait for a yes.
+> 5. **Evidence:** every check goes to `work/<id>/evidence.md` (command + exit code + output) or is marked `UNVERIFIED:`.
+> 6. **Write back:** `work/<id>/log.md`, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, and `.bequite/state/MISTAKE_MEMORY.md` when a lesson surfaced.
+> 7. **Finish** with the Next Command Recommendations block.
+<!-- /bq:contract -->
+
 ## Purpose
 
 Run all Phase 0 commands in the right order, in one pass. P0's job is to **learn**: what's in this repo, what mode are we in, what's the environment, what risks exist. No decisions about what to build yet.
@@ -59,17 +70,17 @@ Read the codebase (stack detection, entry points, ports, tests, CI, docs, smells
 
 For **New Project** mode in an empty folder: skip discover (nothing to discover).
 
-Mark gate `DISCOVERY_DONE ✅`.
+Mark gate `DISCOVERY_COMPLETE ✅`.
 
 ### 4. /bq-doctor
 
 Probe environment (Node, Python, Docker, ports, PATH). Write `DOCTOR_REPORT.md`.
 
-Mark gate `DOCTOR_DONE ✅`.
+Mark gate `DOCTOR_COMPLETE ✅`.
 
 ### 5. Mark phase complete
 
-If `BEQUITE_INITIALIZED`, `MODE_SELECTED`, `DISCOVERY_DONE` (or N/A for empty new project), `DOCTOR_DONE` are all `✅`:
+If `BEQUITE_INITIALIZED`, `MODE_SELECTED`, `DISCOVERY_COMPLETE` (or N/A for empty new project), `DOCTOR_COMPLETE` are all `✅`:
 - Set `.bequite/state/CURRENT_PHASE.md` → `P1 — Product Framing and Research` (advance)
 
 ### 6. Print summary
@@ -97,8 +108,8 @@ Narrate each step ("Running /bq-init...", "Running /bq-discover...") so the user
 
 - `BEQUITE_INITIALIZED ✅`
 - `MODE_SELECTED ✅`
-- `DISCOVERY_DONE ✅` (or N/A)
-- `DOCTOR_DONE ✅`
+- `DISCOVERY_COMPLETE ✅` (or N/A)
+- `DOCTOR_COMPLETE ✅`
 - `CURRENT_PHASE.md` advanced to P1
 
 ## Failure behavior

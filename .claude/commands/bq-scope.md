@@ -1,15 +1,26 @@
 ---
-description: Lock the problem's boundaries — what's IN, what's OUT, what's a NON-GOAL. Writes .bequite/plans/SCOPE.md.
+description: Lock the problem's boundaries — what's IN, what's OUT, what's a NON-GOAL. Writes .bequite/work/<id>/spec.md.
 ---
 
 # /bq-scope — lock the boundaries
+
+<!-- bq:contract -->
+> **Every run follows the contract** (`.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md`):
+> 1. **Skills first:** announce the `Skill Selection:` block before any plan, edit or tool call for the task.
+> 2. **Resolve the work:** read `.bequite/ACTIVE.md`; use `.bequite/work/<id>/`, or create the next work folder if this is new work (`/bq-work`).
+> 3. **Gates:** project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `work/<id>/gates.md`. Refuse and name the missing gate.
+> 4. **Plan first:** non-trivial work gets a plan the user approves before output. Hard human gates always wait for a yes.
+> 5. **Evidence:** every check goes to `work/<id>/evidence.md` (command + exit code + output) or is marked `UNVERIFIED:`.
+> 6. **Write back:** `work/<id>/log.md`, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, and `.bequite/state/MISTAKE_MEMORY.md` when a lesson surfaced.
+> 7. **Finish** with the Next Command Recommendations block.
+<!-- /bq:contract -->
 
 You are forcing the user to commit to **what's in this version, what's out, and what's a permanent non-goal**. Scoping is the cheapest way to ship faster.
 
 ## Step 1 — Read context
 
 - `.bequite/audits/DISCOVERY_REPORT.md`
-- `.bequite/audits/RESEARCH_REPORT.md` (if exists)
+- `.bequite/work/<id>/research.md` (if exists)
 - `.bequite/state/OPEN_QUESTIONS.md`
 - `.bequite/state/DECISIONS.md`
 
@@ -56,7 +67,7 @@ Iterate once. After the user accepts, write the report.
 
 ## Step 4 — Write SCOPE.md
 
-`.bequite/plans/SCOPE.md`:
+`.bequite/work/<id>/spec.md`:
 
 ```markdown
 # Scope
@@ -109,7 +120,7 @@ IN:        <count> items
 OUT:       <count> items (deferred)
 NON-GOALS: <count> items
 
-Full scope: .bequite/plans/SCOPE.md
+Full scope: .bequite/work/<id>/spec.md
 
 Next: /bq-plan — write the implementation plan from these boundaries
 ```
@@ -125,7 +136,7 @@ Next: /bq-plan — write the implementation plan from these boundaries
 **Phase:** P1 — Product Framing and Research
 **When NOT to use:** scope already locked and stable — use `/bq-feature` to add inside scope, or amend `SCOPE.md` directly + re-`/bq-scope` for scope changes.
 **Preconditions:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`
-**Required previous gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`; `RESEARCH_DONE` (recommended, not required)
+**Required previous gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`; `RESEARCH_COMPLETE` (recommended, not required)
 **Quality gate:**
 - `SCOPE.md` exists with IN / OUT / NON-GOALS clearly written
 - Every IN item has a concrete acceptance signal
@@ -140,13 +151,13 @@ Next: /bq-plan — write the implementation plan from these boundaries
 ## Memory files this command reads
 
 - `.bequite/audits/DISCOVERY_REPORT.md`
-- `.bequite/audits/RESEARCH_REPORT.md`
+- `.bequite/work/<id>/research.md`
 - `.bequite/state/OPEN_QUESTIONS.md`
 - `.bequite/state/DECISIONS.md`
 
 ## Memory files this command writes
 
-- `.bequite/plans/SCOPE.md` (new)
+- `.bequite/work/<id>/spec.md` (new)
 - `.bequite/state/DECISIONS.md` (appended)
 - `.bequite/state/OPEN_QUESTIONS.md` (resolved-items marked)
 - `.bequite/state/LAST_RUN.md`
@@ -186,7 +197,7 @@ After successful completion:
 - `.bequite/state/WORKFLOW_GATES.md` — set this command's gate to `✅` if applicable
 - `.bequite/state/CURRENT_PHASE.md` — advance if phase transitioned
 - `.bequite/logs/AGENT_LOG.md` — append entry
-- `.bequite/logs/CHANGELOG.md` `[Unreleased]` — only when material files changed (skip for read-only commands)
+- `CHANGELOG.md` `[Unreleased]` — only when material files changed (skip for read-only commands)
 - `.bequite/state/MISTAKE_MEMORY.md` — append when a project-specific lesson surfaced
 - `.bequite/state/MODE_HISTORY.md` — append mode + outcome (when invoked via `/bq-auto`-style mode)
 

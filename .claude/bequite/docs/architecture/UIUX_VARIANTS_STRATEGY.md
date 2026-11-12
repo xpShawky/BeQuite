@@ -109,8 +109,8 @@ Add a `UIUX/Variants` category with one story per variant.
 ### Step 1 — Read context
 
 - `.bequite/audits/DISCOVERY_REPORT.md` (frontend stack, existing components)
-- `.bequite/audits/RESEARCH_REPORT.md` (UX research if available)
-- `.bequite/plans/IMPLEMENTATION_PLAN.md` (current plan)
+- `.bequite/work/<id>/research.md` (UX research if available)
+- `.bequite/work/<id>/plan.md` (current plan)
 - `.bequite/state/DECISIONS.md` (locked design decisions)
 - Existing `tokens.css` / theme file (if any)
 - Existing components and their patterns

@@ -70,28 +70,28 @@ Print this in the chat. Do not run any other action — `/bq-help` is read-only 
 ### /bq-research
 - **When:** before stack decisions or library picks — verify freshness, deprecation, CVEs.
 - **Reads:** OPEN_QUESTIONS.md
-- **Writes:** `.bequite/audits/RESEARCH_REPORT.md`
+- **Writes:** `.bequite/work/<id>/research.md`
 - **Output:** Cited findings, library candidates, freshness verdicts.
 - **Next:** `/bq-scope` (if the research expanded the question set) or `/bq-plan`
 
 ### /bq-scope
 - **When:** when the problem is sprawling. Lock what's IN, what's OUT, what's a non-goal.
 - **Reads:** OPEN_QUESTIONS.md, RESEARCH_REPORT.md
-- **Writes:** `.bequite/plans/SCOPE.md`
+- **Writes:** `.bequite/work/<id>/spec.md`
 - **Output:** In / Out / Non-goals lists.
 - **Next:** `/bq-plan`
 
 ### /bq-plan
 - **When:** the main planning command. Writes a complete implementation plan WITHOUT writing code.
 - **Reads:** all of Phase 0–1 outputs
-- **Writes:** `.bequite/plans/IMPLEMENTATION_PLAN.md`
+- **Writes:** `.bequite/work/<id>/plan.md`
 - **Output:** Vision, context, non-goals, architecture, stack decision, file plan, phase plan, task list, test plan, risks, acceptance criteria, rollback plan
 - **Next:** `/bq-assign` (most common) or `/bq-multi-plan` (if planning quality is critical and you want a second opinion)
 
 ### /bq-multi-plan
 - **When:** for high-stakes plans where independent thinking from two models matters.
 - **Reads:** all Phase 0–1 outputs
-- **Writes:** `.bequite/prompts/generated_prompts/PROMPT_CLAUDE.md`, `PROMPT_CHATGPT.md`. Waits for user to paste back two outputs. Then merges into `.bequite/plans/IMPLEMENTATION_PLAN.md` with a comparison report.
+- **Writes:** `.bequite/prompts/generated_prompts/PROMPT_CLAUDE.md`, `PROMPT_CHATGPT.md`. Waits for user to paste back two outputs. Then merges into `.bequite/work/<id>/plan.md` with a comparison report.
 - **Output:** Prompts to paste; wait for paste-back; merged final plan.
 - **Next:** `/bq-assign`
 
@@ -102,7 +102,7 @@ Print this in the chat. Do not run any other action — `/bq-help` is read-only 
 ### /bq-assign
 - **When:** plan is approved, time to break it into atomic tasks.
 - **Reads:** IMPLEMENTATION_PLAN.md
-- **Writes:** `.bequite/tasks/TASK_LIST.md` with task IDs, priorities, dependencies, owners
+- **Writes:** `.bequite/work/<id>/tasks.md` with task IDs, priorities, dependencies, owners
 - **Output:** Numbered task list (T-1.1, T-1.2, etc.) with acceptance criteria each
 - **Next:** `/bq-implement`
 
@@ -117,7 +117,7 @@ Print this in the chat. Do not run any other action — `/bq-help` is read-only 
 ### /bq-add-feature
 - **When:** safer wrapper for adding a new feature (spec → plan → impl → test atomic).
 - **Reads:** PROJECT_STATE.md
-- **Writes:** spec at `.bequite/plans/feature-<slug>.md`, then code changes, then tests
+- **Writes:** spec at `.bequite/work/<id>/spec.md`, then code changes, then tests
 - **Output:** Spec preview + impl plan + diff summary + test results
 - **Next:** `/bq-test` then `/bq-review`
 
@@ -167,7 +167,7 @@ Print this in the chat. Do not run any other action — `/bq-help` is read-only 
 ### /bq-verify
 - **When:** before claiming the project is clean. Runs the full local verification matrix.
 - **Reads:** package manifests
-- **Writes:** `.bequite/audits/VERIFY_REPORT.md`
+- **Writes:** `.bequite/work/<id>/verify.md`
 - **Output:** Each gate (install / lint / typecheck / unit / integration / build / smoke / frontend / api / cli) with status
 - **Next:** `/bq-release` if all green; otherwise `/bq-fix`
 
@@ -341,7 +341,7 @@ No new command. Reliability upgrades (skills 22 → 24):
 - Active mode for current run: `.bequite/state/CURRENT_MODE.md`
 - Mode history + outcomes + cost: `.bequite/state/MODE_HISTORY.md`
 - Full strategy: `.claude/bequite/docs/architecture/AUTO_MODE_STRATEGY.md` §11
-- Delegate task pack: `.bequite/tasks/DELEGATE_*.md` + `.bequite/audits/DELEGATE_REVIEW_REPORT.md`
+- Delegate task pack: `.bequite/work/<id>/delegate/DELEGATE_*.md` + `.bequite/work/<id>/delegate/DELEGATE_REVIEW_REPORT.md`
 
 For the complete picture: [`commands.md`](../../commands.md).
 

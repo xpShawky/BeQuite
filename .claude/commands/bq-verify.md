@@ -4,7 +4,18 @@ description: Full local verification before shipping. Install + lint + typecheck
 
 # /bq-verify — full verification
 
-You are running the full local verification matrix. Output: `.bequite/audits/VERIFY_REPORT.md` with green/red for each gate.
+<!-- bq:contract -->
+> **Every run follows the contract** (`.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md`):
+> 1. **Skills first:** announce the `Skill Selection:` block before any plan, edit or tool call for the task.
+> 2. **Resolve the work:** read `.bequite/ACTIVE.md`; use `.bequite/work/<id>/`, or create the next work folder if this is new work (`/bq-work`).
+> 3. **Gates:** project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `work/<id>/gates.md`. Refuse and name the missing gate.
+> 4. **Plan first:** non-trivial work gets a plan the user approves before output. Hard human gates always wait for a yes.
+> 5. **Evidence:** every check goes to `work/<id>/evidence.md` (command + exit code + output) or is marked `UNVERIFIED:`.
+> 6. **Write back:** `work/<id>/log.md`, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, and `.bequite/state/MISTAKE_MEMORY.md` when a lesson surfaced.
+> 7. **Finish** with the Next Command Recommendations block.
+<!-- /bq:contract -->
+
+You are running the full local verification matrix. Output: `.bequite/work/<id>/verify.md` with green/red for each gate.
 
 ## Step 1 — Read context
 
@@ -105,7 +116,7 @@ Verify: <PASS | FAIL>
 
 Gates: <green-count> ✅  <yellow-count> ⚠️  <red-count> ❌  <skipped-count> ⏸
 
-Report: .bequite/audits/VERIFY_REPORT.md
+Report: .bequite/work/<id>/verify.md
 
 Next: /bq-release  (if PASS)
       /bq-fix <gate>  (if FAIL — start with the first failing gate)
@@ -124,18 +135,18 @@ See `.claude/skills/bequite-release-gate/SKILL.md` for the deeper procedure (CI 
 
 **Phase:** P4 — Release
 **When NOT to use:** trivial change with no user impact (use `/bq-test` for a faster check); verify already ran < 1h ago + no new changes (cached state still valid).
-**Preconditions:** `BEQUITE_INITIALIZED`, `TEST_DONE`, `REVIEW_DONE`
-**Required previous gates:** `BEQUITE_INITIALIZED`, `TEST_DONE`, `REVIEW_DONE`
+**Preconditions:** `BEQUITE_INITIALIZED`, `TESTS_PASS`, `REVIEW_APPROVED`
+**Required previous gates:** `BEQUITE_INITIALIZED`, `TESTS_PASS`, `REVIEW_APPROVED`
 **Quality gate:**
 - All applicable gates green
 - `VERIFY_REPORT.md` written with per-gate status
 - Honest PASS or FAIL (no "probably")
-- Marks `VERIFY_PASS ✅` only on PASS
+- Marks `VERIFY_PASSED ✅` only on PASS
 **Failure behavior:**
-- Any required gate red → verdict = FAIL; do NOT mark `VERIFY_PASS`; recommend `/bq-fix`
+- Any required gate red → verdict = FAIL; do NOT mark `VERIFY_PASSED`; recommend `/bq-fix`
 - Optional gate yellow (warnings) → verdict can still be PASS; note in report
 - CI ≠ local parity discovered → log to `MISTAKE_MEMORY.md`; fix the script that diverged
-**Memory updates:** Sets `VERIFY_PASS ✅` on PASS. Updates `CURRENT_PHASE.md` to "P4 — verified". Appends parity-drift patterns to `MISTAKE_MEMORY.md`.
+**Memory updates:** Sets `VERIFY_PASSED ✅` on PASS. Updates `CURRENT_PHASE.md` to "P4 — verified". Appends parity-drift patterns to `MISTAKE_MEMORY.md`.
 **Log updates:** `AGENT_LOG.md`. `VERIFY_REPORT.md` (overwrites or timestamps).
 
 ## Memory files this command reads
@@ -146,7 +157,7 @@ See `.claude/skills/bequite-release-gate/SKILL.md` for the deeper procedure (CI 
 
 ## Memory files this command writes
 
-- `.bequite/audits/VERIFY_REPORT.md` (new — overwrites; older ones can be preserved as VERIFY-<timestamp>.md if user wants)
+- `.bequite/work/<id>/verify.md` (new — overwrites; older ones can be preserved as VERIFY-<timestamp>.md if user wants)
 - `.bequite/state/LAST_RUN.md`
 - `.bequite/state/CURRENT_PHASE.md`
 - `.bequite/logs/AGENT_LOG.md`
@@ -245,7 +256,7 @@ After successful completion:
 - `.bequite/state/WORKFLOW_GATES.md` — set this command's gate to `✅` if applicable
 - `.bequite/state/CURRENT_PHASE.md` — advance if phase transitioned
 - `.bequite/logs/AGENT_LOG.md` — append entry
-- `.bequite/logs/CHANGELOG.md` `[Unreleased]` — only when material files changed (skip for read-only commands)
+- `CHANGELOG.md` `[Unreleased]` — only when material files changed (skip for read-only commands)
 - `.bequite/state/MISTAKE_MEMORY.md` — append when a project-specific lesson surfaced
 - `.bequite/state/MODE_HISTORY.md` — append mode + outcome (when invoked via `/bq-auto`-style mode)
 
@@ -285,7 +296,7 @@ Lowers it: <factors>      Raises it: <checks that would>
 Unknowns/blockers: <list or none>      Next: <recommended action>
 ```
 
-Bands: 90–100 routine · 75–89 likely · 50–74 needs exploration · 25–49 spike first · 0–24 blocked/insufficient info. **Confidence is not a feeling — it is a report** (evidence, tests, scope clarity, familiarity, dependency risk, verification). It must MOVE as evidence arrives (before-inspection → after-reading → after-implementation → after-verification; recorded per task in `.bequite/tasks/TASK_CONFIDENCE.md`). Never 100% — and ≥95% only with all tests passing + zero unresolved assumptions + EVIDENCE_LOG entry. Apply project modifiers from `.bequite/state/CONFIDENCE_RULES.md`; at verify/release, log forecast-vs-actual to `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`.
+Bands: 90–100 routine · 75–89 likely · 50–74 needs exploration · 25–49 spike first · 0–24 blocked/insufficient info. **Confidence is not a feeling — it is a report** (evidence, tests, scope clarity, familiarity, dependency risk, verification). It must MOVE as evidence arrives (before-inspection → after-reading → after-implementation → after-verification; recorded per task in `.bequite/work/<id>/tasks.md`). Never 100% — and ≥95% only with all tests passing + zero unresolved assumptions + EVIDENCE_LOG entry. Apply project modifiers from `.bequite/state/CONFIDENCE_RULES.md`; at verify/release, log forecast-vs-actual to `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`.
 
 ## Argument workflows (alpha.22 — V1 candidates absorbed)
 

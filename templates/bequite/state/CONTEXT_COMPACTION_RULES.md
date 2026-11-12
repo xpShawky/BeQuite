@@ -5,7 +5,7 @@ Strategy: `.claude/bequite/docs/architecture/CONTEXT_COMPACTION_STRATEGY.md` · 
 | Pressure | Do |
 |---|---|
 | ~40% | write/refresh compact summary → `CONTEXT_SUMMARY.md` |
-| ~60% | externalize: decisions→`DECISIONS.md` · assumptions→`ASSUMPTIONS.md` · file map + active work→`WORKING_NOTES.md` · task→`.bequite/tasks/CURRENT_TASK.md` |
+| ~60% | externalize: decisions→`DECISIONS.md` · assumptions→`ASSUMPTIONS.md` · file map + active work→`WORKING_NOTES.md` · task→`.bequite/work/<id>/tasks.md` |
 | ~75% | stop starting new tasks; finish current writeback |
 | ~85% | write handoff (Context Compact block + LAST_RUN); ask user for fresh session |
 

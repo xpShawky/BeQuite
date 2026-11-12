@@ -50,8 +50,8 @@ This spec defines exactly what v3.0.0-alpha.1 ships. Out-of-scope items are defe
 | `.bequite/state/DECISIONS.md` (template) | ✅ | |
 | `.bequite/state/OPEN_QUESTIONS.md` (template) | ✅ | |
 | `.bequite/logs/AGENT_LOG.md` (template) | ✅ | |
-| `.bequite/logs/CHANGELOG.md` (template) | ✅ | |
-| `.bequite/logs/ERROR_LOG.md` (template) | ✅ | |
+| `CHANGELOG.md` (template) | ✅ | |
+| `.bequite/work/<id>/log.md` (template) | ✅ | |
 | `.bequite/prompts/{user_prompts,generated_prompts,model_outputs}/` | ✅ | |
 | `.bequite/{audits,plans,tasks}/` | ✅ | |
 | `scripts/install-bequite.ps1` | ✅ | Windows installer |

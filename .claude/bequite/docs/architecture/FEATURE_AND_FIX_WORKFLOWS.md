@@ -40,7 +40,7 @@ When you run `/bq-feature "title"`, the agent classifies the feature into one of
 
 1. Get title (from argument or one question)
 2. Classify (show classification + skills + ask "correct?")
-3. Write mini-spec → `.bequite/plans/feature-<slug>.md` (What / Why / In scope / Out / Files / Acceptance / Test plan / Security / DevOps / Impl order)
+3. Write mini-spec → `.bequite/work/<id>/spec.md` (What / Why / In scope / Out / Files / Acceptance / Test plan / Security / DevOps / Impl order)
 4. Present + confirm
 5. Implement per the order
 6. Test + verify
@@ -77,7 +77,7 @@ When you run `/bq-fix "what's broken"`, the agent classifies the problem into on
 1. Get the bug (from argument or question)
 2. Classify (show classification + skills + ask "correct?")
 3. **Reproduce** — no fix without reproduction
-4. Capture exact error → `.bequite/logs/ERROR_LOG.md`
+4. Capture exact error → `.bequite/work/<id>/log.md`
 5. Write fix mini-spec → `.bequite/audits/FIX_<slug>.md`
 6. Find root cause (5-whys; smallest change that removes the symptom)
 7. Apply smallest patch

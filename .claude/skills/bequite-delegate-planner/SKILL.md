@@ -92,7 +92,7 @@ Strong model runs `/bq-review delegate`:
 - Reads `git diff` since Phase 2 start
 - Cross-references with `DELEGATE_INSTRUCTIONS.md` per task
 - Checks: file placement / function design / naming / integration / tests / security / regressions / UX (if relevant) / docs+log updates / weasel words
-- Writes `.bequite/audits/DELEGATE_REVIEW_REPORT.md`:
+- Writes `.bequite/work/<id>/delegate/DELEGATE_REVIEW_REPORT.md`:
   - Per task: ✅ approved / ⚠ approved-with-comments / ❌ rejected
   - Per rejection: specific fix instructions
   - Overall verdict
@@ -210,7 +210,7 @@ Expected: 1 test passed, 0 failed.
 Expected: <output>
 ```
 
-### `.bequite/audits/DELEGATE_REVIEW_REPORT.md` (Phase 3)
+### `.bequite/work/<id>/delegate/DELEGATE_REVIEW_REPORT.md` (Phase 3)
 
 ```markdown
 # Delegate Review Report
@@ -310,11 +310,11 @@ Cheaper model honors the pause. Strong model's review at Phase 3 verifies the ga
 
 ## Memory updates
 
-- `.bequite/tasks/DELEGATE_TASKS.md` (Phase 1)
-- `.bequite/tasks/DELEGATE_INSTRUCTIONS.md` (Phase 1)
-- `.bequite/tasks/DELEGATE_ACCEPTANCE_CRITERIA.md` (Phase 1)
-- `.bequite/tasks/DELEGATE_TEST_PLAN.md` (Phase 1)
-- `.bequite/audits/DELEGATE_REVIEW_REPORT.md` (Phase 3)
+- `.bequite/work/<id>/delegate/DELEGATE_TASKS.md` (Phase 1)
+- `.bequite/work/<id>/delegate/DELEGATE_INSTRUCTIONS.md` (Phase 1)
+- `.bequite/work/<id>/delegate/DELEGATE_ACCEPTANCE_CRITERIA.md` (Phase 1)
+- `.bequite/work/<id>/delegate/DELEGATE_TEST_PLAN.md` (Phase 1)
+- `.bequite/work/<id>/delegate/DELEGATE_REVIEW_REPORT.md` (Phase 3)
 - `.bequite/state/MODE_HISTORY.md` (per-run; tracks what mode was used + outcome)
 - `.bequite/state/LAST_RUN.md` (after each phase)
 - `.bequite/logs/AGENT_LOG.md` (each phase entry)

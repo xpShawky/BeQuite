@@ -4,6 +4,17 @@ description: 'Phase 4 orchestrator — Release. Walks /bq-verify → /bq-changel
 
 # /bq-p4 — Phase 4 orchestrator: Release
 
+<!-- bq:contract -->
+> **Every run follows the contract** (`.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md`):
+> 1. **Skills first:** announce the `Skill Selection:` block before any plan, edit or tool call for the task.
+> 2. **Resolve the work:** read `.bequite/ACTIVE.md`; use `.bequite/work/<id>/`, or create the next work folder if this is new work (`/bq-work`).
+> 3. **Gates:** project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `work/<id>/gates.md`. Refuse and name the missing gate.
+> 4. **Plan first:** non-trivial work gets a plan the user approves before output. Hard human gates always wait for a yes.
+> 5. **Evidence:** every check goes to `work/<id>/evidence.md` (command + exit code + output) or is marked `UNVERIFIED:`.
+> 6. **Write back:** `work/<id>/log.md`, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, and `.bequite/state/MISTAKE_MEMORY.md` when a lesson surfaced.
+> 7. **Finish** with the Next Command Recommendations block.
+<!-- /bq:contract -->
+
 ## Purpose
 
 Run Phase 4 commands. P4's job is to **ship**. Full gate matrix verifies, CHANGELOG sharpened, release commands printed. **Nothing is auto-pushed** — the user runs the git commands themselves.
@@ -24,25 +35,25 @@ Run Phase 4 commands. P4's job is to **ship**. Full gate matrix verifies, CHANGE
 
 | Mode | Required |
 |---|---|
-| New Project | `TEST_DONE ✅`, `REVIEW_DONE ✅` |
-| Add Feature | `TEST_DONE ✅`, `REVIEW_DONE ✅` |
-| Fix Problem | `TEST_DONE ✅`, `REVIEW_DONE ✅` |
-| Release Readiness | `TEST_DONE ✅`, `AUDIT_DONE ✅`, `REVIEW_DONE ✅` |
+| New Project | `TESTS_PASS ✅`, `REVIEW_APPROVED ✅` |
+| Add Feature | `TESTS_PASS ✅`, `REVIEW_APPROVED ✅` |
+| Fix Problem | `TESTS_PASS ✅`, `REVIEW_APPROVED ✅` |
+| Release Readiness | `TESTS_PASS ✅`, `AUDIT_DONE ✅`, `REVIEW_APPROVED ✅` |
 | Existing Audit | (P4 skipped — no release) |
 | Research Only | (P4 skipped) |
 
 ## Files to read
 
-- `.bequite/plans/IMPLEMENTATION_PLAN.md` (acceptance criteria)
+- `.bequite/work/<id>/plan.md` (acceptance criteria)
 - `.bequite/audits/FULL_PROJECT_AUDIT.md` (if exists)
 - `package.json` / `pyproject.toml` / `Cargo.toml` (current version)
-- `.bequite/logs/CHANGELOG.md` (`[Unreleased]` section)
+- `CHANGELOG.md` (`[Unreleased]` section)
 - `git log` (commits since last tag)
 
 ## Files to write
 
-- `.bequite/audits/VERIFY_REPORT.md` (via `/bq-verify`)
-- `.bequite/logs/CHANGELOG.md` (via `/bq-changelog` — moves `[Unreleased]` to `[vX.Y.Z]`)
+- `.bequite/work/<id>/verify.md` (via `/bq-verify`)
+- `CHANGELOG.md` (via `/bq-changelog` — moves `[Unreleased]` to `[vX.Y.Z]`)
 - `.bequite/state/WORKFLOW_GATES.md` (gates ticked)
 - `.bequite/state/CURRENT_PHASE.md` (advances to P5)
 - Version bumped in `package.json` / `pyproject.toml` etc. (via `/bq-release`)
@@ -56,7 +67,7 @@ Run every applicable gate: install / lint / typecheck / unit / integration / bui
 
 If FAIL → **stop here**. Print the failures. Loop back to P2/P3.
 
-If PASS → mark `VERIFY_PASS ✅`.
+If PASS → mark `VERIFY_PASSED ✅`.
 
 ### 2. /bq-changelog
 
@@ -88,7 +99,7 @@ Mark `RELEASE_READY ✅`.
 
 ### 4. Mark phase complete
 
-If `VERIFY_PASS ✅` + `CHANGELOG_READY ✅` + `RELEASE_READY ✅`:
+If `VERIFY_PASSED ✅` + `CHANGELOG_READY ✅` + `RELEASE_READY ✅`:
 - Set `.bequite/state/CURRENT_PHASE.md` → `P5 — Memory and Handoff`
 
 ### 5. Print summary
@@ -111,7 +122,7 @@ Narrate each step. Highlight git commands clearly. At end, print summary.
 
 ## Quality gate
 
-- `VERIFY_PASS ✅`
+- `VERIFY_PASSED ✅`
 - `CHANGELOG_READY ✅`
 - `RELEASE_READY ✅`
 - Version bump matches changelog content (no patch bump for breaking changes)

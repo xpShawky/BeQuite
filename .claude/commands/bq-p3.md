@@ -4,6 +4,17 @@ description: 'Phase 3 orchestrator — Quality and Review. Walks /bq-test → /b
 
 # /bq-p3 — Phase 3 orchestrator: Quality and Review
 
+<!-- bq:contract -->
+> **Every run follows the contract** (`.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md`):
+> 1. **Skills first:** announce the `Skill Selection:` block before any plan, edit or tool call for the task.
+> 2. **Resolve the work:** read `.bequite/ACTIVE.md`; use `.bequite/work/<id>/`, or create the next work folder if this is new work (`/bq-work`).
+> 3. **Gates:** project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `work/<id>/gates.md`. Refuse and name the missing gate.
+> 4. **Plan first:** non-trivial work gets a plan the user approves before output. Hard human gates always wait for a yes.
+> 5. **Evidence:** every check goes to `work/<id>/evidence.md` (command + exit code + output) or is marked `UNVERIFIED:`.
+> 6. **Write back:** `work/<id>/log.md`, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, and `.bequite/state/MISTAKE_MEMORY.md` when a lesson surfaced.
+> 7. **Finish** with the Next Command Recommendations block.
+<!-- /bq:contract -->
+
 ## Purpose
 
 Run Phase 3 commands. P3's job is to **confirm it works**. Tests run, code reviewed, optional adversarial red-team. No release yet.
@@ -27,7 +38,7 @@ Per mode:
 | Mode | Required |
 |---|---|
 | New Project | `IMPLEMENT_DONE ✅` |
-| Existing Audit | `DISCOVERY_DONE ✅` |
+| Existing Audit | `DISCOVERY_COMPLETE ✅` |
 | Add Feature | `FEATURE_DONE ✅` |
 | Fix Problem | `FIX_DONE ✅` |
 | Release Readiness | (no required predecessor; full audit happens here) |
@@ -36,7 +47,7 @@ Per mode:
 ## Files to read
 
 - `.bequite/state/CURRENT_MODE.md`
-- `.bequite/plans/IMPLEMENTATION_PLAN.md` (acceptance criteria reference)
+- `.bequite/work/<id>/plan.md` (acceptance criteria reference)
 - `.bequite/audits/DISCOVERY_REPORT.md`
 - Source code (touched files + recent commits)
 
@@ -56,7 +67,7 @@ Per mode:
 
 Detect framework (vitest / jest / pytest / cargo test). Run them. Identify coverage gaps in recently-changed source files. Offer to write missing tests.
 
-Mark `TEST_DONE ✅` once all tests pass.
+Mark `TESTS_PASS ✅` once all tests pass.
 
 ### 2. /bq-audit (conditional)
 
@@ -73,7 +84,7 @@ Mark `AUDIT_DONE ✅` if ran.
 
 Per-file commentary on uncommitted diff + recent commits. Verdict per change: Approved / Approved-with-comments / Blocked.
 
-Mark `REVIEW_DONE ✅`.
+Mark `REVIEW_APPROVED ✅`.
 
 ### 4. (Optional) /bq-red-team
 
@@ -92,7 +103,7 @@ If `/bq-review` or `/bq-red-team` produced **Blocker** findings:
 
 ### 6. Mark phase complete
 
-If `TEST_DONE ✅` + `REVIEW_DONE ✅` (+ `AUDIT_DONE ✅` if applicable) + no unresolved blockers:
+If `TESTS_PASS ✅` + `REVIEW_APPROVED ✅` (+ `AUDIT_DONE ✅` if applicable) + no unresolved blockers:
 - Set `.bequite/state/CURRENT_PHASE.md` → `P4 — Release`
 
 ### 7. Print summary
@@ -116,8 +127,8 @@ Narrate each step. At the end, print summary.
 
 ## Quality gate
 
-- All tests pass (`TEST_DONE ✅`)
-- Review complete (`REVIEW_DONE ✅`)
+- All tests pass (`TESTS_PASS ✅`)
+- Review complete (`REVIEW_APPROVED ✅`)
 - No unresolved Blocker findings
 - Audit done (if mode requires it)
 

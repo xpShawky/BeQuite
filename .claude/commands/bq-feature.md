@@ -4,6 +4,17 @@ description: Add Feature workflow with type router. Classifies the feature (fron
 
 # /bq-feature — Add Feature workflow
 
+<!-- bq:contract -->
+> **Every run follows the contract** (`.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md`):
+> 1. **Skills first:** announce the `Skill Selection:` block before any plan, edit or tool call for the task.
+> 2. **Resolve the work:** read `.bequite/ACTIVE.md`; use `.bequite/work/<id>/`, or create the next work folder if this is new work (`/bq-work`).
+> 3. **Gates:** project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `work/<id>/gates.md`. Refuse and name the missing gate.
+> 4. **Plan first:** non-trivial work gets a plan the user approves before output. Hard human gates always wait for a yes.
+> 5. **Evidence:** every check goes to `work/<id>/evidence.md` (command + exit code + output) or is marked `UNVERIFIED:`.
+> 6. **Write back:** `work/<id>/log.md`, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, and `.bequite/state/MISTAKE_MEMORY.md` when a lesson surfaced.
+> 7. **Finish** with the Next Command Recommendations block.
+<!-- /bq:contract -->
+
 ## Purpose
 
 Add a new feature to an existing project, safely. **Identifies the feature type** (12 categories) and activates the matching specialist skills.
@@ -26,13 +37,13 @@ Add a new feature to an existing project, safely. **Identifies the feature type*
 
 - `.bequite/state/CURRENT_MODE.md`
 - `.bequite/audits/DISCOVERY_REPORT.md` (if exists; else suggest `/bq-discover` first)
-- `.bequite/plans/IMPLEMENTATION_PLAN.md` (if exists)
+- `.bequite/work/<id>/plan.md` (if exists)
 
 ## Files to write
 
 - `.bequite/state/CURRENT_MODE.md` → "Add Feature" if not already
-- `.bequite/plans/feature-<slug>.md` — feature mini-spec
-- `.bequite/tasks/CURRENT_TASK.md` (the feature becomes the active task)
+- `.bequite/work/<id>/spec.md` — feature mini-spec
+- `.bequite/work/<id>/tasks.md` (the feature becomes the active task)
 - `.bequite/state/OPEN_QUESTIONS.md` (any unresolved)
 - `.bequite/logs/AGENT_LOG.md`
 
@@ -68,7 +79,7 @@ Print the classification + which skills will be active. Ask: "Correct? (y/N + co
 
 ### 3. Write the mini-spec
 
-Save to `.bequite/plans/feature-<slug>.md` (slug from title):
+Save to `.bequite/work/<id>/spec.md` (slug from title):
 
 ```markdown
 # Feature: <title>
@@ -123,7 +134,7 @@ Once confirmed, implement per the order in §3.
 - Read files first
 - Make minimal changes per file
 - Run tests after each material change
-- Update `.bequite/tasks/CURRENT_TASK.md` with progress
+- Update `.bequite/work/<id>/tasks.md` with progress
 
 ### 6. Test + verify
 
@@ -131,7 +142,7 @@ Run the test plan from the spec. Run a quick `/bq-test` subset.
 
 ### 7. Log + changelog
 
-- `.bequite/logs/CHANGELOG.md` `[Unreleased]` `### Added` entry
+- `CHANGELOG.md` `[Unreleased]` `### Added` entry
 - `.bequite/logs/AGENT_LOG.md` entry
 
 ## Output format
@@ -141,7 +152,7 @@ Run the test plan from the spec. Run a quick `/bq-test` subset.
 
 Type:         <classification>
 Active skills:<list>
-Spec:         .bequite/plans/feature-<slug>.md
+Spec:         .bequite/work/<id>/spec.md
 Files:        <count> touched
 Tests:        <pass / total>
 Acceptance:   <one-line confirmation>
@@ -151,7 +162,7 @@ Next: /bq-review (review the change) or /bq-verify (full gates)
 
 ## Quality gate
 
-- Mini-spec exists at `.bequite/plans/feature-<slug>.md`
+- Mini-spec exists at `.bequite/work/<id>/spec.md`
 - User confirmed the spec
 - All implementation files compiled / typechecked
 - New test exists + passes
@@ -260,7 +271,7 @@ Lowers it: <factors>      Raises it: <checks that would>
 Unknowns/blockers: <list or none>      Next: <recommended action>
 ```
 
-Bands: 90–100 routine · 75–89 likely · 50–74 needs exploration · 25–49 spike first · 0–24 blocked/insufficient info. **Confidence is not a feeling — it is a report** (evidence, tests, scope clarity, familiarity, dependency risk, verification). It must MOVE as evidence arrives (before-inspection → after-reading → after-implementation → after-verification; recorded per task in `.bequite/tasks/TASK_CONFIDENCE.md`). Never 100% — and ≥95% only with all tests passing + zero unresolved assumptions + EVIDENCE_LOG entry. Apply project modifiers from `.bequite/state/CONFIDENCE_RULES.md`; at verify/release, log forecast-vs-actual to `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`.
+Bands: 90–100 routine · 75–89 likely · 50–74 needs exploration · 25–49 spike first · 0–24 blocked/insufficient info. **Confidence is not a feeling — it is a report** (evidence, tests, scope clarity, familiarity, dependency risk, verification). It must MOVE as evidence arrives (before-inspection → after-reading → after-implementation → after-verification; recorded per task in `.bequite/work/<id>/tasks.md`). Never 100% — and ≥95% only with all tests passing + zero unresolved assumptions + EVIDENCE_LOG entry. Apply project modifiers from `.bequite/state/CONFIDENCE_RULES.md`; at verify/release, log forecast-vs-actual to `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`.
 
 ## Next Command Recommendations (alpha.22)
 

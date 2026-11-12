@@ -1,213 +1,100 @@
 # Workflow gates
 
-This file is **the gate system**. Every BeQuite command reads it on entry. If a precondition is not met, the command stops with a clear error + next-valid-command hint.
+The gate system. Every BeQuite command checks gates on entry; if a required gate is not done, the command stops, names the missing gate, and recommends the command that satisfies it.
 
-**Don't edit this file by hand.** It's machine-tracked. Commands update it after they complete.
+Gates live in two places (v4):
+- **Project gates** - this file. Things true for the whole project.
+- **Work gates** - `.bequite/work/<id>/gates.md` for the active work (see `.bequite/ACTIVE.md`). Everything from clarify to verify, plus fix / feature / web / motion gates. Each new piece of work starts with fresh gates.
+
+Commands update gates only after their own checks pass, and record the evidence. Never mark a gate done without evidence.
 
 ---
 
 ## Current state
 
-**Mode:** `(none yet — run /bq-mode)`
-**Phase:** P0 — Setup and Discovery
-**Last completed command:** `/bq-init` (this scaffold)
+**Mode:** (none yet - run /bq-mode)
+**Phase:** P0 - Setup and Discovery
+**Active work:** see `.bequite/ACTIVE.md`
+**Last completed command:** `/bq-init` (scaffold)
 **Last completed timestamp:** (not yet - fresh install)
 
 ---
 
-## Gate ledger
-
-Format: `GATE_NAME` — `state` — `evidence`
-
-### Phase 0 — Setup and Discovery
+## Project gates
 
 | Gate | State | Evidence required |
 |---|---|---|
-| `MODE_SELECTED` | ❌ pending | `.bequite/state/CURRENT_MODE.md` has a valid mode |
-| `BEQUITE_INITIALIZED` | ✅ done | `.bequite/state/PROJECT_STATE.md` exists |
-| `DISCOVERY_COMPLETE` | ❌ pending | `.bequite/audits/DISCOVERY_REPORT.md` exists with sections 1-13 filled |
-| `DOCTOR_COMPLETE` | ❌ pending | `.bequite/audits/DOCTOR_REPORT.md` exists; no BLOCKER findings |
+| `BEQUITE_INITIALIZED` | done | `.bequite/state/PROJECT_STATE.md` exists |
+| `MODE_SELECTED` | pending | `.bequite/state/CURRENT_MODE.md` has a valid mode |
+| `DISCOVERY_COMPLETE` | pending | `.bequite/audits/DISCOVERY_REPORT.md` exists with sections 1-13 filled |
+| `DOCTOR_COMPLETE` | pending | `.bequite/audits/DOCTOR_REPORT.md` exists; no BLOCKER findings |
+| `DESIGN_DNA_LOCKED` | conditional (frontend) | `.bequite/design/DESIGN_DNA.md` filled and `Status: locked` before the first UI code |
+| `AUDIT_COMPLETE` | optional | `.bequite/audits/FULL_PROJECT_AUDIT.md` exists; no BLOCKER findings |
+| `RELEASE_PREPPED` | pending | version bumped; CHANGELOG `[Unreleased]` moved to a versioned section |
+| `CHANGELOG_UPDATED` | pending | `CHANGELOG.md` has entries for this release |
+| `MEMORY_SNAPSHOT` | optional | `.bequite/state/SNAPSHOT-<timestamp>.md` exists if requested |
+| `HANDOFF_GENERATED` | optional | `.bequite/handoff/HANDOFF.md` or repo-root `HANDOFF.md` exists if requested |
 
-### Phase 1 — Product Framing and Research
+## Work gates (in `work/<id>/gates.md`)
 
-| Gate | State | Evidence required |
-|---|---|---|
-| `CLARIFY_ANSWERED` | ❌ pending | `.bequite/state/OPEN_QUESTIONS.md` has 3-5 questions with answers |
-| `RESEARCH_COMPLETE` | ❌ pending | `.bequite/research/RESEARCH_REPORT.md` exists with all 11 dimensions |
-| `SCOPE_LOCKED` | ❌ pending | `.bequite/plans/SCOPE.md` exists; user approved |
-| `PLAN_APPROVED` | ❌ pending | `.bequite/plans/IMPLEMENTATION_PLAN.md` exists; user approved |
-| `MULTI_PLAN_DECISION` | ⚪ optional | If user invoked `/bq-multi-plan`, `.bequite/plans/MERGED_IMPLEMENTATION_PLAN.md` exists + user approved |
-
-### Phase 2 — Build
-
-| Gate | State | Evidence required |
-|---|---|---|
-| `TASKS_ASSIGNED` | ❌ pending | `.bequite/tasks/TASKS.md` exists with atomic tasks |
-| `IMPLEMENTATION_STARTED` | ❌ pending | At least one task marked `[~]` or `[x]` |
-| `IMPLEMENTATION_DONE` | ❌ pending | All required tasks marked `[x]`; no `[!]` blocked |
-
-### Phase 3 — Quality
-
-| Gate | State | Evidence required |
-|---|---|---|
-| `TESTS_PASS` | ❌ pending | `/bq-test` reports green; no failing tests |
-| `AUDIT_COMPLETE` | ❌ pending | `.bequite/audits/FULL_PROJECT_AUDIT.md` exists; no BLOCKER findings |
-| `REVIEW_APPROVED` | ❌ pending | Latest `.bequite/audits/REVIEW-*.md` verdict = Approved or Approved-with-comments |
-| `RED_TEAM_RESOLVED` | ⚪ optional | Latest `.bequite/audits/RED_TEAM-*.md` blockers resolved |
-
-### Frontend / Design (alpha.17 — applies ONLY when the project has a frontend)
-
-| Gate | State | Evidence required |
-|---|---|---|
-| `DESIGN_DNA_LOCKED` | ⚪ conditional | `.bequite/design/DESIGN_DNA.md` filled + `Status: locked` before first UI code |
-| `DESIGN_CONTINUITY_PASS` (alias `DESIGN_CONTINUITY_OK`) | ⚪ conditional | `.bequite/design/DESIGN_CONTINUITY_REPORT.md` exists; every section consistent with the DNA; no BLOCKER/HIGH drift open |
-| `VISUAL_QA_DONE` | ⚪ conditional | `.bequite/audits/VISUAL_QA_REPORT.md` exists; browser-tier or honest tier-3 pass; no unresolved BLOCKER |
-
-These are **quality gates that apply when a frontend exists** — they do not block non-frontend projects and never bypass any of the 17 hard human gates. Owner: `bequite-frontend-design-system`. Spec: `.claude/bequite/docs/architecture/DESIGN_CONTINUITY_GATE.md`.
-
-### Phase 4 — Ship
-
-| Gate | State | Evidence required |
-|---|---|---|
-| `VERIFY_PASSED` | ❌ pending | `.bequite/audits/VERIFY_REPORT.md` verdict = PASS within last 24h |
-| `RELEASE_PREPPED` | ❌ pending | Version bumped; CHANGELOG `[Unreleased]` moved to versioned section |
-| `CHANGELOG_UPDATED` | ❌ pending | `CHANGELOG.md` has entries for this release |
-
-### Phase 5 — Continue Later
-
-| Gate | State | Evidence required |
-|---|---|---|
-| `MEMORY_SNAPSHOT` | ⚪ optional | `.bequite/state/SNAPSHOT-<timestamp>.md` exists if requested |
-| `HANDOFF_GENERATED` | ⚪ optional | `.bequite/handoff/HANDOFF.md` or repo-root `HANDOFF.md` exists if requested |
+Core: `CLARIFY_ANSWERED` · `RESEARCH_COMPLETE` · `SCOPE_LOCKED` · `PLAN_APPROVED` · `MULTI_PLAN_DECISION` (optional) · `TASKS_ASSIGNED` · `IMPLEMENTATION_STARTED` · `IMPLEMENTATION_DONE` · `TESTS_PASS` · `REVIEW_APPROVED` · `RED_TEAM_RESOLVED` (optional) · `VERIFY_PASSED` · `CONVERGED`
+Fix: `BUG_REPRODUCED` · `ROOT_CAUSE_IDENTIFIED` · `FIX_APPLIED` · `FIX_VERIFIED`
+Feature: `FEATURE_TYPE_IDENTIFIED` · `FEATURE_SPEC_APPROVED` · `FEATURE_IMPLEMENTED` · `FEATURE_TESTED`
+Web / UI: `DESIGN_CONTINUITY_PASS` (alias `DESIGN_CONTINUITY_OK`) · `VISUAL_QA_DONE` · `PERF_BUDGET_PASS`
+Motion: `SCRIPT_APPROVED` · `STYLE_LOCKED` · `RENDER_PLAN_APPROVED` · `PICTURE_LOCKED` · `AUDIO_APPROVED` · `FINAL_QC_PASS` · `DELIVERY_APPROVED`
 
 ---
 
 ## Required gates by command
 
-Each command has a list of gates that MUST be in state `✅ done` before the command runs. If any required gate is `❌ pending`, the command refuses to run and tells you what to do first.
+`(work)` = checked in the active work's `gates.md`. A command that starts new work creates the work folder first.
 
 | Command | Required gates |
 |---|---|
-| `/bequite` | (none — always runs; it's the menu) |
-| `/bq-help` | (none) |
-| `/bq-init` | (none) |
-| `/bq-mode` | `BEQUITE_INITIALIZED` |
+| `/bequite`, `/bq-help`, `/bq-now`, `/bq-explain`, `/bq-init` | none |
+| `/bq-mode`, `/bq-discover`, `/bq-doctor`, `/bq-memory`, `/bq-recover`, `/bq-work` | `BEQUITE_INITIALIZED` |
 | `/bq-new` | `BEQUITE_INITIALIZED` + `MODE_SELECTED = New Project` |
 | `/bq-existing` | `BEQUITE_INITIALIZED` + `MODE_SELECTED = Existing Project Audit` |
-| `/bq-discover` | `BEQUITE_INITIALIZED` |
-| `/bq-doctor` | `BEQUITE_INITIALIZED` |
-| `/bq-clarify` | `DISCOVERY_COMPLETE` |
-| `/bq-research` | `DISCOVERY_COMPLETE` |
-| `/bq-scope` | `RESEARCH_COMPLETE` |
-| `/bq-plan` | `SCOPE_LOCKED` (or for fast mode, `RESEARCH_COMPLETE`) |
-| `/bq-multi-plan` | `PLAN_APPROVED` (multi-plan is post-plan validation) |
-| `/bq-assign` | `PLAN_APPROVED` (or `MULTI_PLAN_DECISION` if multi-plan was run) |
-| `/bq-implement` | `TASKS_ASSIGNED` |
-| `/bq-feature` | `BEQUITE_INITIALIZED` (feature mode self-contained) |
-| `/bq-fix` | `BEQUITE_INITIALIZED` (fix mode self-contained) |
-| `/bq-test` | `IMPLEMENTATION_STARTED` |
-| `/bq-audit` | `IMPLEMENTATION_DONE` (or anytime for an audit-only mode) |
-| `/bq-review` | `IMPLEMENTATION_DONE` |
-| `/bq-red-team` | `IMPLEMENTATION_DONE` |
-| `/bq-verify` | `TESTS_PASS` + `REVIEW_APPROVED` |
-| `/bq-release` | `VERIFY_PASSED` |
-| `/bq-changelog` | (none — can be run anytime) |
-| `/bq-memory` | `BEQUITE_INITIALIZED` |
-| `/bq-recover` | `BEQUITE_INITIALIZED` |
-| `/bq-handoff` | `VERIFY_PASSED` (handoff implies ship-ready) |
+| `/bq-clarify`, `/bq-research` | `DISCOVERY_COMPLETE` (starts or uses the active work) |
+| `/bq-scope` | `RESEARCH_COMPLETE` (work) |
+| `/bq-plan` | `SCOPE_LOCKED` (work); fast mode: `RESEARCH_COMPLETE` (work) |
+| `/bq-multi-plan` | `PLAN_APPROVED` (work) |
+| `/bq-assign` | `PLAN_APPROVED` (work), or `MULTI_PLAN_DECISION` (work) |
+| `/bq-implement` | `TASKS_ASSIGNED` (work) |
+| `/bq-feature`, `/bq-fix`, `/bq-spec` | `BEQUITE_INITIALIZED` (self-contained; create their own work) |
+| `/bq-motion` | `BEQUITE_INITIALIZED` (creates a `motion` work; its phases are gated by the motion work gates) |
+| `/bq-test` | `IMPLEMENTATION_STARTED` (work) |
+| `/bq-review`, `/bq-red-team` | `IMPLEMENTATION_DONE` (work) |
+| `/bq-audit` | `BEQUITE_INITIALIZED` (project audit; anytime) |
+| `/bq-verify` | `TESTS_PASS` + `REVIEW_APPROVED` (work) |
+| `/bq-release` | `VERIFY_PASSED` + `CONVERGED` (work) |
+| `/bq-handoff` | `VERIFY_PASSED` (work) |
+| `/bq-changelog` | none |
 | `/bq-auto` | `BEQUITE_INITIALIZED` + `MODE_SELECTED` |
-| `/bq-p0` | (none — orchestrates Phase 0) |
-| `/bq-p1` | All P0 gates done |
-| `/bq-p2` | All P1 gates done |
-| `/bq-p3` | All P2 gates done |
-| `/bq-p4` | All P3 gates done |
-| `/bq-p5` | All P4 gates done |
+| `/bq-p0` ... `/bq-p5` | the previous phase's gates |
+| Capability commands (`/bq-presentation`, `/bq-course`, `/bq-offer`, ...) | `BEQUITE_INITIALIZED` (each creates its own work item) |
 
-### Frontend Design Continuity (alpha.17) — conditional, when a frontend exists
+### Frontend design continuity (when a frontend exists)
 
-These commands additionally run the **Design Continuity Gate** (owner: `bequite-frontend-design-system`). The gate is a quality check, not a hard precondition; it applies only when the project has a frontend.
-
-| Command | Design-continuity behavior |
+| Command | Behaviour |
 |---|---|
 | `/bq-feature` (UI types) | requires `DESIGN_DNA_LOCKED`; runs continuity on every section before "done" |
-| `/bq-fix` (visual / cross-browser) | re-runs continuity on the touched page (no new drift) |
-| `/bq-auto` (`uiux`/`frontend`/`live-edit`/`variants`) | completion requires `DESIGN_CONTINUITY_PASS` + `VISUAL_QA_DONE` |
-| `/bq-uiux-variants` | continuity-checks each variant; full-page pass after merge |
-| `/bq-live-edit` | re-checks edited section + neighbors vs the DNA |
-| `/bq-audit` | full section-by-section sweep (replaces "sample 3 screens") |
-| `/bq-review` | adds the design-continuity dimension to UI diffs |
-| `/bq-red-team` | adds the "which section is worse than the hero" angle |
-| `/bq-verify` | a passing continuity + visual-QA report is part of the matrix |
+| `/bq-fix` (visual) | re-runs continuity on the touched page |
+| `/bq-auto` (uiux / frontend / live-edit / variants) | completion requires `DESIGN_CONTINUITY_PASS` + `VISUAL_QA_DONE` + `PERF_BUDGET_PASS` (work) |
+| `/bq-uiux-variants`, `/bq-live-edit` | continuity-check each variant / edited section |
+| `/bq-audit`, `/bq-review`, `/bq-red-team`, `/bq-verify` | include the design-continuity and performance dimensions |
 
 ---
 
-## Next valid commands
+## Mode-specific overrides
 
-Based on current state above, the commands you can run RIGHT NOW are:
+- **Fix Problem** skips `MODE_SELECTED`, `RESEARCH_COMPLETE`, `SCOPE_LOCKED`, `PLAN_APPROVED`; requires the fix gates in the work.
+- **Add Feature** requires the feature gates in the work.
+- **Research Only** stops after `RESEARCH_COMPLETE` (work).
+- **Release Readiness** requires `IMPLEMENTATION_DONE` (work), then runs quality + release only.
 
-1. `/bequite` (always)
-2. `/bq-help`
-3. `/bq-init` (already done; safe to re-run)
-4. `/bq-mode` — select your mode
-5. `/bq-discover` — inspect the repo
-6. `/bq-doctor` — environment health
-7. `/bq-p0` — orchestrate all of Phase 0
+## How commands update gates
 
-Run `/bequite` for an interactive menu that reads this state.
-
----
-
-## How commands update this file
-
-Each command, after successfully completing, does:
-
-1. Set its gate(s) to `✅ done`
-2. Update "Last completed command" + timestamp
-3. Recompute "Next valid commands"
-4. Commit the change (atomic — same operation as the command's main output)
-
-Commands NEVER mark a gate `✅ done` if their quality-gate check failed.
-
----
-
-## Mode-specific gate overrides
-
-Some modes skip gates that don't apply.
-
-### Mode: Fix Problem (`/bq-fix`)
-
-Skips:
-- `MODE_SELECTED` (implicit from `/bq-fix` invocation)
-- `RESEARCH_COMPLETE` (fix doesn't usually need 11-dim research)
-- `SCOPE_LOCKED` (fix scope is "make the bug stop")
-- `PLAN_APPROVED` (the fix is itself a mini-plan)
-
-Requires:
-- `BEQUITE_INITIALIZED`
-- Fix-specific gates: `BUG_REPRODUCED`, `ROOT_CAUSE_IDENTIFIED`, `FIX_APPLIED`, `FIX_VERIFIED`
-
-### Mode: Add Feature (`/bq-feature`)
-
-Skips:
-- `MODE_SELECTED = New Project | Existing Audit` (this is a different mode)
-
-Requires:
-- `BEQUITE_INITIALIZED`
-- Feature-specific gates: `FEATURE_TYPE_IDENTIFIED`, `FEATURE_SPEC_APPROVED`, `FEATURE_IMPLEMENTED`, `FEATURE_TESTED`
-
-### Mode: Research Only
-
-Requires:
-- `BEQUITE_INITIALIZED`
-- `DISCOVERY_COMPLETE`
-- `RESEARCH_COMPLETE`
-
-Stops there. Doesn't proceed to scope/plan/build.
-
-### Mode: Release Readiness
-
-Requires:
-- `BEQUITE_INITIALIZED`
-- `IMPLEMENTATION_DONE` (must already be built)
-
-Then runs P3 + P4 only.
+1. Set their gate(s) to done with the evidence (file or command), in this file or the work's `gates.md`.
+2. Update "Last completed command" and timestamp above.
+3. Never mark a gate done when its own check failed.

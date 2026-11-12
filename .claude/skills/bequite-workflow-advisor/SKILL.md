@@ -44,11 +44,11 @@ researcher, product-strategist, ux-ui-designer, frontend-quality, backend-archit
 
 ### The 23 workflow gates
 
-P0: BEQUITE_INITIALIZED · MODE_SELECTED · DISCOVERY_DONE · DOCTOR_DONE
-P1: CLARIFY_DONE · RESEARCH_DONE · SCOPE_LOCKED · PLAN_APPROVED · MULTI_PLAN_DONE
-P2: ASSIGN_DONE · IMPLEMENT_DONE · FEATURE_DONE · FIX_DONE
-P3: TEST_DONE · AUDIT_DONE · REVIEW_DONE · RED_TEAM_DONE
-P4: VERIFY_PASS · CHANGELOG_READY · RELEASE_READY
+P0: BEQUITE_INITIALIZED · MODE_SELECTED · DISCOVERY_COMPLETE · DOCTOR_COMPLETE
+P1: CLARIFY_ANSWERED · RESEARCH_COMPLETE · SCOPE_LOCKED · PLAN_APPROVED · MULTI_PLAN_DONE
+P2: TASKS_ASSIGNED · IMPLEMENT_DONE · FEATURE_DONE · FIX_DONE
+P3: TESTS_PASS · AUDIT_DONE · REVIEW_APPROVED · RED_TEAM_DONE
+P4: VERIFY_PASSED · CHANGELOG_READY · RELEASE_READY
 P5: MEMORY_SNAPSHOT · HANDOFF_DONE
 
 ### The 6 modes (CURRENT_MODE.md)
@@ -161,7 +161,7 @@ Or single command: `/bq-auto "UX + security audit and fix"` (the intent router h
 Before recommending any command, check `WORKFLOW_GATES.md`:
 
 - If user wants `/bq-implement` but `PLAN_APPROVED ❌` → recommend `/bq-plan` first
-- If user wants `/bq-release` but `VERIFY_PASS ❌` → recommend `/bq-verify` first
+- If user wants `/bq-release` but `VERIFY_PASSED ❌` → recommend `/bq-verify` first
 - If user wants `/bq-assign` but `PLAN_APPROVED ❌` → recommend `/bq-plan` first
 
 Gate-aware = NEVER recommend a command whose required gates aren't met (unless user explicitly accepts skipping; in that case mention the consequence).

@@ -15,7 +15,7 @@ Auto mode checks pressure at every task boundary (orchestration step 6). Manual 
 
 ## 2. The standing laws
 
-Never rely on chat memory alone for critical project facts. Canonical homes: facts → `.bequite/state/CONTEXT_SUMMARY.md` · active work → `WORKING_NOTES.md` · current task → `.bequite/tasks/CURRENT_TASK.md` (created on first use) · decisions → `DECISIONS.md` · unresolved assumptions → `ASSUMPTIONS.md`. A fact that exists only in conversation is one compaction away from gone.
+Never rely on chat memory alone for critical project facts. Canonical homes: facts → `.bequite/state/CONTEXT_SUMMARY.md` · active work → `WORKING_NOTES.md` · current task → `.bequite/work/<id>/tasks.md` (created on first use) · decisions → `DECISIONS.md` · unresolved assumptions → `ASSUMPTIONS.md`. A fact that exists only in conversation is one compaction away from gone.
 
 ## 3. Context Compact output format
 

@@ -152,7 +152,7 @@ For each "X vs Y" question, the agent uses WebFetch to verify:
 - License (flags AGPL / GPL surprises)
 - Pricing (current rates, not from memory)
 
-Writes `.bequite/audits/RESEARCH_REPORT.md` with a verdict per option.
+Writes `.bequite/work/<id>/research.md` with a verdict per option.
 
 ### `/bq-scope` — lock the boundaries
 
@@ -162,7 +162,7 @@ You: /bq-scope
 
 Forces a commit to IN / OUT / NON-GOALS. The agent drafts the three lists; you confirm or move items.
 
-Writes `.bequite/plans/SCOPE.md`. Critical — every later `/bq-add-feature` checks against this.
+Writes `.bequite/work/<id>/spec.md`. Critical — every later `/bq-add-feature` checks against this.
 
 ### `/bq-plan` — write the implementation plan
 
@@ -170,7 +170,7 @@ Writes `.bequite/plans/SCOPE.md`. Critical — every later `/bq-add-feature` che
 You: /bq-plan
 ```
 
-The most important command. Writes `.bequite/plans/IMPLEMENTATION_PLAN.md` with:
+The most important command. Writes `.bequite/work/<id>/plan.md` with:
 
 1. Vision
 2. Current context
@@ -208,7 +208,7 @@ ToS-clean ($0 in API tokens — uses your subscriptions). Use for high-stakes de
 You: /bq-assign
 ```
 
-Reads `IMPLEMENTATION_PLAN.md`, writes `.bequite/tasks/TASK_LIST.md`:
+Reads `IMPLEMENTATION_PLAN.md`, writes `.bequite/work/<id>/tasks.md`:
 
 ```
 - [ ] T-1.1 — Init Next.js 15 app
@@ -258,7 +258,7 @@ The agent asks for the symptom + reproduction. Then:
 4. Adds test
 5. Verifies symptom is gone
 
-Writes the bug + cause + fix to `.bequite/logs/ERROR_LOG.md`.
+Writes the bug + cause + fix to `.bequite/work/<id>/log.md`.
 
 ---
 
@@ -308,7 +308,7 @@ You: /bq-red-team
 You: /bq-verify
 ```
 
-Runs every applicable gate (install / lint / typecheck / unit / integration / build / smoke / e2e). Writes `.bequite/audits/VERIFY_REPORT.md`. Either PASS or FAIL.
+Runs every applicable gate (install / lint / typecheck / unit / integration / build / smoke / e2e). Writes `.bequite/work/<id>/verify.md`. Either PASS or FAIL.
 
 ### `/bq-release` — release prep
 
@@ -510,7 +510,7 @@ Session 1 (strong model — Opus / GPT-5 class):
 /bq-auto deep delegate "Build the e-commerce checkout module"
 ```
 
-Writes `.bequite/tasks/DELEGATE_TASKS.md`, `DELEGATE_INSTRUCTIONS.md`, `DELEGATE_ACCEPTANCE_CRITERIA.md`, `DELEGATE_TEST_PLAN.md`.
+Writes `.bequite/work/<id>/delegate/DELEGATE_TASKS.md`, `DELEGATE_INSTRUCTIONS.md`, `DELEGATE_ACCEPTANCE_CRITERIA.md`, `DELEGATE_TEST_PLAN.md`.
 
 Session 2 (cheap model — Sonnet / smaller, separate Claude Code session):
 
@@ -526,7 +526,7 @@ Session 3 (strong model — back):
 /bq-review delegate
 ```
 
-Writes `.bequite/audits/DELEGATE_REVIEW_REPORT.md` with per-task verdicts (✅ APPROVED / ⚠ APPROVED-WITH-COMMENTS / ❌ REJECTED). Strong model fixes or re-instructs.
+Writes `.bequite/work/<id>/delegate/DELEGATE_REVIEW_REPORT.md` with per-task verdicts (✅ APPROVED / ⚠ APPROVED-WITH-COMMENTS / ❌ REJECTED). Strong model fixes or re-instructs.
 
 Use for large features with clear shape + precise acceptance criteria. Don't use for tiny tasks or exploratory work.
 

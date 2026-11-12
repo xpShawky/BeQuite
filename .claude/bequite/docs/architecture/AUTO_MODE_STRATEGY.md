@@ -251,8 +251,8 @@ The agent enforces mandatory workflow gates **scoped to the task type**. Not eve
 
 | Intent | Required gates |
 |---|---|
-| `new` | BEQUITE_INITIALIZED, MODE_SELECTED, CLARIFY_DONE, RESEARCH_DONE, SCOPE_LOCKED, PLAN_APPROVED, all P2/P3/P4 gates |
-| `existing` | BEQUITE_INITIALIZED, MODE_SELECTED, DISCOVERY_DONE, AUDIT_DONE |
+| `new` | BEQUITE_INITIALIZED, MODE_SELECTED, CLARIFY_ANSWERED, RESEARCH_COMPLETE, SCOPE_LOCKED, PLAN_APPROVED, all P2/P3/P4 gates |
+| `existing` | BEQUITE_INITIALIZED, MODE_SELECTED, DISCOVERY_COMPLETE, AUDIT_DONE |
 | `feature` | BEQUITE_INITIALIZED, MODE_SELECTED, FEATURE_DONE |
 | `fix` | BEQUITE_INITIALIZED, MODE_SELECTED, FIX_DONE |
 | `uiux` | BEQUITE_INITIALIZED, frontend exists; PLAN_APPROVED only if changing design system |
@@ -264,10 +264,10 @@ The agent enforces mandatory workflow gates **scoped to the task type**. Not eve
 | `devops` | BEQUITE_INITIALIZED; **server-change gate** for prod touches |
 | `scraping` | BEQUITE_INITIALIZED; robots.txt + ToS check |
 | `automation` | BEQUITE_INITIALIZED |
-| `deploy` | BEQUITE_INITIALIZED, VERIFY_PASS; **multiple hard gates** during execution |
+| `deploy` | BEQUITE_INITIALIZED, VERIFY_PASSED; **multiple hard gates** during execution |
 | `live-edit` | BEQUITE_INITIALIZED, frontend exists |
 | `variants` | BEQUITE_INITIALIZED, frontend exists |
-| `release` | BEQUITE_INITIALIZED, VERIFY_PASS, CHANGELOG_READY |
+| `release` | BEQUITE_INITIALIZED, VERIFY_PASSED, CHANGELOG_READY |
 
 Scoped gates: e.g. `uiux` fix doesn't force full competitor research; `fix` doesn't restart the project lifecycle; `feature` doesn't require new SCOPE.md unless it expands scope.
 
@@ -320,8 +320,8 @@ State updated:
   .bequite/state/LAST_RUN.md
   .bequite/state/WORKFLOW_GATES.md
   .bequite/logs/AGENT_LOG.md
-  .bequite/logs/CHANGELOG.md
-  .bequite/audits/VERIFY_REPORT.md (if verification ran)
+  CHANGELOG.md
+  .bequite/work/<id>/verify.md (if verification ran)
 
 Next command: <suggestion>
 ```
@@ -450,9 +450,9 @@ Avoid when: greenfield (you genuinely need full discovery).
 Strong model architects + reviews; cheaper model implements. Cost savings 40-70% when task is large enough.
 
 Three phases:
-1. **Phase 1 (strong model):** task pack at `.bequite/tasks/DELEGATE_*.md`
+1. **Phase 1 (strong model):** task pack at `.bequite/work/<id>/delegate/DELEGATE_*.md`
 2. **Phase 2 (cheaper model, separate session):** implements per task pack
-3. **Phase 3 (strong model, back):** review at `.bequite/audits/DELEGATE_REVIEW_REPORT.md`
+3. **Phase 3 (strong model, back):** review at `.bequite/work/<id>/delegate/DELEGATE_REVIEW_REPORT.md`
 
 Full skill: `bequite-delegate-planner`. Use when: large features with clear shape; willing to do two-session handoff.
 

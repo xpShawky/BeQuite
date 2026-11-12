@@ -378,7 +378,7 @@ Goal: decide what to build. No code yet.
 - **Phase:** P1
 - **Purpose:** replace memory-based assumptions with live WebFetch evidence
 - **Required gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`, `CLARIFY_DONE` (recommended)
-- **Writes:** `.bequite/audits/RESEARCH_REPORT.md`, `DECISIONS.md` (appended), resolves items in `OPEN_QUESTIONS.md`
+- **Writes:** `.bequite/work/<id>/research.md`, `DECISIONS.md` (appended), resolves items in `OPEN_QUESTIONS.md`
 - **Quality gate:** sets `RESEARCH_DONE ✅`
 - **Skills activated:** `bequite-researcher`, `bequite-security-reviewer`, `bequite-ux-ui-designer` (if UI)
 - **Next:** `/bq-scope`
@@ -392,7 +392,7 @@ Lock IN / OUT / NON-GOALS.
 - **Phase:** P1
 - **Purpose:** prevent scope creep before the plan; force MVP commitment
 - **Required gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`, `RESEARCH_DONE` (recommended)
-- **Writes:** `.bequite/plans/SCOPE.md`
+- **Writes:** `.bequite/work/<id>/spec.md`
 - **Quality gate:** sets `SCOPE_LOCKED ✅`
 - **Skills activated:** `bequite-product-strategist`
 - **Next:** `/bq-plan` or `/bq-multi-plan`
@@ -406,7 +406,7 @@ Write `IMPLEMENTATION_PLAN.md` (15 sections).
 - **Phase:** P1
 - **Purpose:** vision, architecture, stack, file plan, phase plan, task plan, test plan, risks, security, devops, acceptance, rollback, open questions
 - **Required gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`, `SCOPE_LOCKED` (strongly recommended)
-- **Writes:** `.bequite/plans/IMPLEMENTATION_PLAN.md`
+- **Writes:** `.bequite/work/<id>/plan.md`
 - **Quality gate:** sets `PLAN_APPROVED ✅` (after user confirms)
 - **Skills activated:** project-architect + backend-architect + database-architect + security-reviewer + devops-cloud + ux-ui-designer (if UI) + frontend-quality + testing-gate
 - **Next:** `/bq-assign` or `/bq-multi-plan`
@@ -460,7 +460,7 @@ Break `IMPLEMENTATION_PLAN.md` → atomic `TASK_LIST.md`.
 - **Phase:** P2
 - **Purpose:** ≤5min tasks, dependency-ordered, one acceptance criterion each
 - **Required gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`, `PLAN_APPROVED`
-- **Writes:** `.bequite/tasks/TASK_LIST.md`
+- **Writes:** `.bequite/work/<id>/tasks.md`
 - **Quality gate:** sets `ASSIGN_DONE ✅`
 - **Next:** `/bq-implement`
 - **Example:** `/bq-assign`
@@ -488,7 +488,7 @@ Add Feature workflow with 12-type router.
 - **Purpose:** mini-cycle for one feature; classify into 12 types; activate matching skills
 - **Required gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`
 - **Inputs:** feature title in quotes
-- **Writes:** `.bequite/plans/feature-<slug>.md`, source files, tests
+- **Writes:** `.bequite/work/<id>/spec.md`, source files, tests
 - **Quality gate:** sets `FEATURE_DONE ✅`
 - **Skills activated:** per 12-type router (frontend / backend / database / auth / automation / scraping / cloud / admin / dashboard / cli / integration / security)
 - **Next:** `/bq-review`
@@ -586,7 +586,7 @@ Full local gate matrix — install + lint + typecheck + unit + integration + bui
 - **Phase:** P4
 - **Purpose:** prove ship-readiness with a single command
 - **Required gates:** `TEST_DONE`, `REVIEW_DONE`
-- **Writes:** `.bequite/audits/VERIFY_REPORT.md`, MISTAKE_MEMORY if patterned failure
+- **Writes:** `.bequite/work/<id>/verify.md`, MISTAKE_MEMORY if patterned failure
 - **Quality gate:** sets `VERIFY_PASS ✅`
 - **Skills activated:** `bequite-release-gate`, `bequite-testing-gate`, `bequite-devops-cloud`
 - **Verdict:** PASS / FAIL (no "probably" allowed)
@@ -601,7 +601,7 @@ Categorize commits per Keep a Changelog v1.1 — Added / Changed / Fixed / Depre
 - **Phase:** P4
 - **Purpose:** sharpen entries; no internal-only noise
 - **Required gates:** `BEQUITE_INITIALIZED`
-- **Writes:** `.bequite/logs/CHANGELOG.md`
+- **Writes:** `CHANGELOG.md`
 - **Quality gate:** sets `CHANGELOG_READY ✅`
 - **Skills activated:** `bequite-release-gate`
 - **Next:** `/bq-release`

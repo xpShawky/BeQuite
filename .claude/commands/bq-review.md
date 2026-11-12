@@ -4,6 +4,17 @@ description: 'Review CURRENT changes (uncommitted diff or recent commits) — sp
 
 # /bq-review — review changes
 
+<!-- bq:contract -->
+> **Every run follows the contract** (`.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md`):
+> 1. **Skills first:** announce the `Skill Selection:` block before any plan, edit or tool call for the task.
+> 2. **Resolve the work:** read `.bequite/ACTIVE.md`; use `.bequite/work/<id>/`, or create the next work folder if this is new work (`/bq-work`).
+> 3. **Gates:** project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `work/<id>/gates.md`. Refuse and name the missing gate.
+> 4. **Plan first:** non-trivial work gets a plan the user approves before output. Hard human gates always wait for a yes.
+> 5. **Evidence:** every check goes to `work/<id>/evidence.md` (command + exit code + output) or is marked `UNVERIFIED:`.
+> 6. **Write back:** `work/<id>/log.md`, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, and `.bequite/state/MISTAKE_MEMORY.md` when a lesson surfaced.
+> 7. **Finish** with the Next Command Recommendations block.
+<!-- /bq:contract -->
+
 You are a senior code reviewer. Look at the **current changes** (uncommitted diff + recent commits) and produce a structured review.
 
 ## Step 1 — Get the diff scope
@@ -16,8 +27,8 @@ If user passed an argument (`/bq-review HEAD~3..HEAD` or `/bq-review feature-bra
 
 ## Step 2 — Read context
 
-- `.bequite/plans/IMPLEMENTATION_PLAN.md` (what we're supposed to be building)
-- `.bequite/tasks/TASK_LIST.md` (which task this is)
+- `.bequite/work/<id>/plan.md` (what we're supposed to be building)
+- `.bequite/work/<id>/tasks.md` (which task this is)
 - `.bequite/state/DECISIONS.md` (what's locked)
 
 ## Step 3 — Review each file
@@ -128,19 +139,19 @@ Next: /bq-fix <first-blocker>  (if Blocked)
 - Per-file commentary with correctness / tests / security / style fields
 - Verdict explicit: Approved / Approved-with-comments / Blocked
 - Mistake-memory entries appended for repeat-pattern findings
-- Marks `REVIEW_DONE ✅`
+- Marks `REVIEW_APPROVED ✅`
 **Failure behavior:**
 - No diff to review → exit with hint to run `/bq-implement` first
 - New dep added in the diff without a decision section → BLOCKER (tool neutrality)
 - Banned weasel word in commit message → flag as finding; don't auto-edit history
-**Memory updates:** Sets `REVIEW_DONE ✅`. Appends repeat-pattern entries to `MISTAKE_MEMORY.md`.
+**Memory updates:** Sets `REVIEW_APPROVED ✅`. Appends repeat-pattern entries to `MISTAKE_MEMORY.md`.
 **Log updates:** `AGENT_LOG.md`.
 
 ## Memory files this command reads
 
 - The current diff (via `git diff`, `git log`)
-- `.bequite/plans/IMPLEMENTATION_PLAN.md`
-- `.bequite/tasks/TASK_LIST.md`
+- `.bequite/work/<id>/plan.md`
+- `.bequite/work/<id>/tasks.md`
 - `.bequite/state/DECISIONS.md`
 
 ## Memory files this command writes
@@ -246,7 +257,7 @@ After successful completion:
 - `.bequite/state/WORKFLOW_GATES.md` — set this command's gate to `✅` if applicable
 - `.bequite/state/CURRENT_PHASE.md` — advance if phase transitioned
 - `.bequite/logs/AGENT_LOG.md` — append entry
-- `.bequite/logs/CHANGELOG.md` `[Unreleased]` — only when material files changed (skip for read-only commands)
+- `CHANGELOG.md` `[Unreleased]` — only when material files changed (skip for read-only commands)
 - `.bequite/state/MISTAKE_MEMORY.md` — append when a project-specific lesson surfaced
 - `.bequite/state/MODE_HISTORY.md` — append mode + outcome (when invoked via `/bq-auto`-style mode)
 
@@ -286,7 +297,7 @@ Lowers it: <factors>      Raises it: <checks that would>
 Unknowns/blockers: <list or none>      Next: <recommended action>
 ```
 
-Bands: 90–100 routine · 75–89 likely · 50–74 needs exploration · 25–49 spike first · 0–24 blocked/insufficient info. **Confidence is not a feeling — it is a report** (evidence, tests, scope clarity, familiarity, dependency risk, verification). It must MOVE as evidence arrives (before-inspection → after-reading → after-implementation → after-verification; recorded per task in `.bequite/tasks/TASK_CONFIDENCE.md`). Never 100% — and ≥95% only with all tests passing + zero unresolved assumptions + EVIDENCE_LOG entry. Apply project modifiers from `.bequite/state/CONFIDENCE_RULES.md`; at verify/release, log forecast-vs-actual to `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`.
+Bands: 90–100 routine · 75–89 likely · 50–74 needs exploration · 25–49 spike first · 0–24 blocked/insufficient info. **Confidence is not a feeling — it is a report** (evidence, tests, scope clarity, familiarity, dependency risk, verification). It must MOVE as evidence arrives (before-inspection → after-reading → after-implementation → after-verification; recorded per task in `.bequite/work/<id>/tasks.md`). Never 100% — and ≥95% only with all tests passing + zero unresolved assumptions + EVIDENCE_LOG entry. Apply project modifiers from `.bequite/state/CONFIDENCE_RULES.md`; at verify/release, log forecast-vs-actual to `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`.
 
 ## Guard Pass integration (alpha.22)
 

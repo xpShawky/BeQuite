@@ -4,6 +4,17 @@ description: 'Phase 1 orchestrator — Product Framing and Research. Walks /bq-c
 
 # /bq-p1 — Phase 1 orchestrator: Product Framing and Research
 
+<!-- bq:contract -->
+> **Every run follows the contract** (`.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md`):
+> 1. **Skills first:** announce the `Skill Selection:` block before any plan, edit or tool call for the task.
+> 2. **Resolve the work:** read `.bequite/ACTIVE.md`; use `.bequite/work/<id>/`, or create the next work folder if this is new work (`/bq-work`).
+> 3. **Gates:** project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `work/<id>/gates.md`. Refuse and name the missing gate.
+> 4. **Plan first:** non-trivial work gets a plan the user approves before output. Hard human gates always wait for a yes.
+> 5. **Evidence:** every check goes to `work/<id>/evidence.md` (command + exit code + output) or is marked `UNVERIFIED:`.
+> 6. **Write back:** `work/<id>/log.md`, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, and `.bequite/state/MISTAKE_MEMORY.md` when a lesson surfaced.
+> 7. **Finish** with the Next Command Recommendations block.
+<!-- /bq:contract -->
+
 ## Purpose
 
 Run Phase 1 commands in order, in one pass. P1's job is to **decide what to build**. No code yet. The output is an approved IMPLEMENTATION_PLAN.md.
@@ -25,7 +36,7 @@ Run Phase 1 commands in order, in one pass. P1's job is to **decide what to buil
 
 - `BEQUITE_INITIALIZED`
 - `MODE_SELECTED`
-- `DISCOVERY_DONE` (or N/A for fresh New Project)
+- `DISCOVERY_COMPLETE` (or N/A for fresh New Project)
 
 ## Files to read
 
@@ -38,9 +49,9 @@ Run Phase 1 commands in order, in one pass. P1's job is to **decide what to buil
 ## Files to write
 
 - `.bequite/state/OPEN_QUESTIONS.md` (via `/bq-clarify`)
-- `.bequite/audits/RESEARCH_REPORT.md` (via `/bq-research`)
-- `.bequite/plans/SCOPE.md` (via `/bq-scope`)
-- `.bequite/plans/IMPLEMENTATION_PLAN.md` (via `/bq-plan`)
+- `.bequite/work/<id>/research.md` (via `/bq-research`)
+- `.bequite/work/<id>/spec.md` (via `/bq-scope`)
+- `.bequite/work/<id>/plan.md` (via `/bq-plan`)
 - `.bequite/plans/MULTI_PLAN_MERGED.md` (optional, via `/bq-multi-plan`)
 - `.bequite/state/WORKFLOW_GATES.md` (gates ticked)
 - `.bequite/state/CURRENT_PHASE.md` (advances to P2 at end)
@@ -52,7 +63,7 @@ Run Phase 1 commands in order, in one pass. P1's job is to **decide what to buil
 
 Pause for user to answer 3-5 high-value questions (or accept defaults).
 
-**Hard human gate.** Mark `CLARIFY_DONE ✅` once answered.
+**Hard human gate.** Mark `CLARIFY_ANSWERED ✅` once answered.
 
 If mode = **Research Only**, this is the only question phase.
 
@@ -60,7 +71,7 @@ If mode = **Research Only**, this is the only question phase.
 
 11-dimension verification (stack, product, competitors, failures, success, user journey, UX/UI, security, scalability, deployment, differentiation). WebFetch for live data — no memory-based claims.
 
-Mark `RESEARCH_DONE ✅`.
+Mark `RESEARCH_COMPLETE ✅`.
 
 If mode = **Research Only** → STOP here. Print the research report path. Phase complete.
 
@@ -90,7 +101,7 @@ Mark `PLAN_APPROVED ✅`.
 
 ### 6. Mark phase complete
 
-If `CLARIFY_DONE`, `RESEARCH_DONE`, `SCOPE_LOCKED`, `PLAN_APPROVED` are all `✅`:
+If `CLARIFY_ANSWERED`, `RESEARCH_COMPLETE`, `SCOPE_LOCKED`, `PLAN_APPROVED` are all `✅`:
 - Set `.bequite/state/CURRENT_PHASE.md` → `P2 — Planning and Build`
 
 ### 7. Print summary
@@ -102,7 +113,7 @@ Mode:           <mode>
 Questions:      <answered> / <asked>
 Research:       <count> dimensions covered
 Scope:          IN: <N>, OUT: <N>, NON-GOALS: <N>
-Plan:           .bequite/plans/IMPLEMENTATION_PLAN.md (<line count>)
+Plan:           .bequite/work/<id>/plan.md (<line count>)
 Multi-plan:     <yes/no>
 
 Next phase: P2 — run /bq-p2 or /bq-assign
@@ -114,8 +125,8 @@ Narrate each step. At the end, print the summary above.
 
 ## Quality gate
 
-- `CLARIFY_DONE ✅`
-- `RESEARCH_DONE ✅`
+- `CLARIFY_ANSWERED ✅`
+- `RESEARCH_COMPLETE ✅`
 - `SCOPE_LOCKED ✅`
 - `PLAN_APPROVED ✅`
 - Plan contains all 13 required sections (per `/bq-plan` spec)

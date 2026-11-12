@@ -8,7 +8,7 @@
 **Total skills:** 26 (7 baseline + 7 specialist + 1 live-edit + 3 opportunity + 1 updater + 1 delegate-planner + 1 presentation-builder + 1 frontend-design-system master (alpha.17) + 2 reliability/context (alpha.18) + **writing-dna + skill-auditor (alpha.19)**)
 **Execution contract (alpha.20):** every command follows the **12 steps** in `.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md` — including automatic skill routing (registry check → task classification → auto-selection, steps 2–4 per `AUTO_SKILL_ROUTING_STRATEGY.md`); risky file edits tiered per `.claude/bequite/docs/architecture/FILE_RISK_CLASSIFICATION.md`
 **Skill routing memory (alpha.20):** `.bequite/skills/{SKILL_REGISTRY,SKILL_ROUTER,SKILL_USAGE_LOG}.md` — users describe goals; BeQuite selects skills and explains why
-**Confidence Forecast (alpha.21):** banded calibrated % on every plan/task/feature (no new command — integrated into plan/assign/auto/feature/fix/implement/review/verify/release); rules `.bequite/state/CONFIDENCE_RULES.md`; trajectory `.bequite/tasks/TASK_CONFIDENCE.md`; calibration `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`
+**Confidence Forecast (alpha.21):** banded calibrated % on every plan/task/feature (no new command — integrated into plan/assign/auto/feature/fix/implement/review/verify/release); rules `.bequite/state/CONFIDENCE_RULES.md`; trajectory `.bequite/work/<id>/tasks.md`; calibration `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`
 **Frontier discipline (alpha.21):** skills 26 → **27** (`bequite-frontier-reasoning-coach`); playbook `.claude/bequite/docs/architecture/FRONTIER_MODEL_OPERATING_PLAYBOOK.md`; 10-rule card `.bequite/state/FRONTIER_REASONING_SUMMARY.md` (embedded in delegate packs); **`expert`** documented as composition alias (deep + strict evidence + safety scope + domain checklist), not a 5th mode — see `FEATURE_TYPE_TAXONOMY.md`
 
 ### `/bq-writing-dna` (NEW in alpha.19)
@@ -128,14 +128,14 @@ Exemptions: hotfixes, doc-only changes, and skill additions activated only from 
 - **Purpose:** inspect repo → DISCOVERY_REPORT.md
 - **Required gates:** `BEQUITE_INITIALIZED`
 - **Writes:** `.bequite/audits/DISCOVERY_REPORT.md`
-- **Quality gate sets:** `DISCOVERY_DONE ✅`
+- **Quality gate sets:** `DISCOVERY_COMPLETE ✅`
 - **Next:** `/bq-doctor`
 
 ### `/bq-doctor`
 - **Purpose:** environment health probe
 - **Required gates:** `BEQUITE_INITIALIZED`
 - **Writes:** `.bequite/audits/DOCTOR_REPORT.md`
-- **Quality gate sets:** `DOCTOR_DONE ✅`
+- **Quality gate sets:** `DOCTOR_COMPLETE ✅`
 - **Next:** `/bq-clarify` or `/bq-p1`
 
 ---
@@ -146,21 +146,21 @@ Exemptions: hotfixes, doc-only changes, and skill additions activated only from 
 - **Purpose:** ask 3-5 high-value clarifying questions
 - **Required gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`
 - **Writes:** `.bequite/state/OPEN_QUESTIONS.md` (answers)
-- **Quality gate sets:** `CLARIFY_DONE ✅`
+- **Quality gate sets:** `CLARIFY_ANSWERED ✅`
 - **Next:** `/bq-research`
 
 ### `/bq-research`
 - **Purpose:** 11-dimension verified evidence (stack, product, competitors, failures, success, user journey, UX/UI, security, scalability, deployment, differentiation)
-- **Required gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`, `CLARIFY_DONE` (recommended)
-- **Writes:** `.bequite/audits/RESEARCH_REPORT.md`, DECISIONS.md appended, OPEN_QUESTIONS.md resolved items marked
-- **Quality gate sets:** `RESEARCH_DONE ✅`
+- **Required gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`, `CLARIFY_ANSWERED` (recommended)
+- **Writes:** `.bequite/work/<id>/research.md`, DECISIONS.md appended, OPEN_QUESTIONS.md resolved items marked
+- **Quality gate sets:** `RESEARCH_COMPLETE ✅`
 - **Skills activated:** bequite-researcher, bequite-security-reviewer, bequite-ux-ui-designer (if UI)
 - **Next:** `/bq-scope`
 
 ### `/bq-scope`
 - **Purpose:** lock IN / OUT / NON-GOALS
-- **Required gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`, `RESEARCH_DONE` (recommended)
-- **Writes:** `.bequite/plans/SCOPE.md`
+- **Required gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`, `RESEARCH_COMPLETE` (recommended)
+- **Writes:** `.bequite/work/<id>/spec.md`
 - **Quality gate sets:** `SCOPE_LOCKED ✅`
 - **Skills activated:** bequite-product-strategist
 - **Next:** `/bq-plan` or `/bq-multi-plan`
@@ -168,14 +168,14 @@ Exemptions: hotfixes, doc-only changes, and skill additions activated only from 
 ### `/bq-plan`
 - **Purpose:** write IMPLEMENTATION_PLAN.md (15 sections)
 - **Required gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`, `SCOPE_LOCKED` (strongly recommended)
-- **Writes:** `.bequite/plans/IMPLEMENTATION_PLAN.md`
+- **Writes:** `.bequite/work/<id>/plan.md`
 - **Quality gate sets:** `PLAN_APPROVED ✅` (after user confirms)
 - **Skills activated:** bequite-project-architect, bequite-backend-architect, bequite-database-architect, bequite-security-reviewer, bequite-devops-cloud, bequite-ux-ui-designer (if UI), bequite-frontend-quality (if frontend), bequite-testing-gate
 - **Next:** `/bq-multi-plan` or `/bq-assign`
 
 ### `/bq-multi-plan`
 - **Purpose:** unbiased multi-model planning via manual paste
-- **Required gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`, `CLARIFY_DONE`, `RESEARCH_DONE`, `SCOPE_LOCKED`
+- **Required gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`, `CLARIFY_ANSWERED`, `RESEARCH_COMPLETE`, `SCOPE_LOCKED`
 - **Writes:** `.bequite/prompts/generated_prompts/*`, `.bequite/prompts/model_outputs/*`, `.bequite/plans/MULTI_MODEL_COMPARISON.md`, `IMPLEMENTATION_PLAN.md` (merged), `IMPLEMENTATION_PLAN_PRE_MERGE.md` (preserved)
 - **Quality gate sets:** `MULTI_PLAN_DONE ✅` (optional)
 - **Skills activated:** bequite-multi-model-planning, bequite-project-architect
@@ -188,14 +188,14 @@ Exemptions: hotfixes, doc-only changes, and skill additions activated only from 
 ### `/bq-assign`
 - **Purpose:** break IMPLEMENTATION_PLAN → atomic TASK_LIST.md (≤5min tasks, dep-ordered, one acceptance each)
 - **Required gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`, `PLAN_APPROVED`
-- **Writes:** `.bequite/tasks/TASK_LIST.md`
-- **Quality gate sets:** `ASSIGN_DONE ✅`
+- **Writes:** `.bequite/work/<id>/tasks.md`
+- **Quality gate sets:** `TASKS_ASSIGNED ✅`
 - **Next:** `/bq-implement`
 
 ### `/bq-implement`
 - **Purpose:** implement ONE approved task at a time
-- **Required gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`, `PLAN_APPROVED`, `ASSIGN_DONE`
-- **Writes:** source files, `.bequite/tasks/CURRENT_TASK.md`, `.bequite/tasks/TASK_LIST.md` updated `[x]`, CHANGELOG `[Unreleased]`
+- **Required gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`, `PLAN_APPROVED`, `TASKS_ASSIGNED`
+- **Writes:** source files, `.bequite/work/<id>/tasks.md` updated `[x]`, CHANGELOG `[Unreleased]`
 - **Quality gate sets:** `IMPLEMENT_DONE ✅` when TASK_LIST empty
 - **Skills activated:** depends on task type
 - **Next:** `/bq-implement` (next task) or `/bq-test`
@@ -203,7 +203,7 @@ Exemptions: hotfixes, doc-only changes, and skill additions activated only from 
 ### `/bq-feature "title"`
 - **Purpose:** Add Feature workflow with 12-type router
 - **Required gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`
-- **Writes:** `.bequite/plans/feature-<slug>.md`, source files, tests
+- **Writes:** `.bequite/work/<id>/spec.md`, source files, tests
 - **Quality gate sets:** `FEATURE_DONE ✅`
 - **Skills activated:** per 12-type router (see bq-feature.md)
 - **Next:** `/bq-review`
@@ -228,7 +228,7 @@ Exemptions: hotfixes, doc-only changes, and skill additions activated only from 
 ### `/bq-fix`
 - **Purpose:** Fix workflow with 15-type router; reproduce-first
 - **Required gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`
-- **Writes:** source fix, regression test, `.bequite/logs/ERROR_LOG.md`, `.bequite/audits/FIX_<slug>.md`, CHANGELOG if user-visible
+- **Writes:** source fix, regression test, `.bequite/work/<id>/log.md`, `.bequite/audits/FIX_<slug>.md`, CHANGELOG if user-visible
 - **Quality gate sets:** `FIX_DONE ✅`
 - **Skills activated:** per 15-type router (see bq-fix.md); always plus bequite-problem-solver
 - **Next:** `/bq-test`
@@ -244,7 +244,7 @@ Exemptions: hotfixes, doc-only changes, and skill additions activated only from 
 - **Purpose:** run + write tests; detect framework
 - **Required gates:** `BEQUITE_INITIALIZED`
 - **Writes:** new test files; nothing in state
-- **Quality gate sets:** `TEST_DONE ✅` when all green
+- **Quality gate sets:** `TESTS_PASS ✅` when all green
 - **Skills activated:** bequite-testing-gate
 - **Next:** `/bq-review` or `/bq-implement` (continue loop)
 
@@ -260,7 +260,7 @@ Exemptions: hotfixes, doc-only changes, and skill additions activated only from 
 - **Purpose:** review uncommitted diff + recent commits
 - **Required gates:** `BEQUITE_INITIALIZED`
 - **Writes:** `.bequite/audits/REVIEW_<date>.md`
-- **Quality gate sets:** `REVIEW_DONE ✅`
+- **Quality gate sets:** `REVIEW_APPROVED ✅`
 - **Skills activated:** bequite-security-reviewer, bequite-testing-gate
 - **Next:** `/bq-verify` or `/bq-fix` per verdict
 
@@ -278,23 +278,23 @@ Exemptions: hotfixes, doc-only changes, and skill additions activated only from 
 
 ### `/bq-verify`
 - **Purpose:** full gate matrix — install + lint + typecheck + unit + integration + build + smoke + e2e
-- **Required gates:** `TEST_DONE`, `REVIEW_DONE`
-- **Writes:** `.bequite/audits/VERIFY_REPORT.md`
-- **Quality gate sets:** `VERIFY_PASS ✅`
+- **Required gates:** `TESTS_PASS`, `REVIEW_APPROVED`
+- **Writes:** `.bequite/work/<id>/verify.md`
+- **Quality gate sets:** `VERIFY_PASSED ✅`
 - **Skills activated:** bequite-release-gate, bequite-testing-gate, bequite-devops-cloud
 - **Next:** `/bq-changelog` then `/bq-release`
 
 ### `/bq-changelog`
 - **Purpose:** categorize commits into Added / Changed / Fixed / Deprecated / Removed / Security (Keep a Changelog v1.1)
 - **Required gates:** `BEQUITE_INITIALIZED`
-- **Writes:** `.bequite/logs/CHANGELOG.md`
+- **Writes:** `CHANGELOG.md`
 - **Quality gate sets:** `CHANGELOG_READY ✅`
 - **Skills activated:** bequite-release-gate
 - **Next:** `/bq-release`
 
 ### `/bq-release`
 - **Purpose:** version bump + final CHANGELOG; print git commands (never auto-pushes)
-- **Required gates:** `VERIFY_PASS`, `CHANGELOG_READY`
+- **Required gates:** `VERIFY_PASSED`, `CHANGELOG_READY`
 - **Writes:** version files (package.json etc.), CHANGELOG entry
 - **Quality gate sets:** `RELEASE_READY ✅` (after user runs git commands)
 - **Skills activated:** bequite-release-gate
@@ -550,11 +550,11 @@ New memory files (alpha.10):
 
 - `.bequite/state/CURRENT_MODE.md` — active mode for current run
 - `.bequite/state/MODE_HISTORY.md` — append-only history (which mode for which task; outcome; approx cost; tests pass/total)
-- `.bequite/tasks/DELEGATE_TASKS.md` — task pack with Task ID / Goal / Files to inspect / Files to edit / Do not touch / Exact steps / Edge cases / Test commands / Acceptance criteria / Common mistakes / Rollback notes
-- `.bequite/tasks/DELEGATE_INSTRUCTIONS.md` — strong-model warnings + constraints + common mistakes
-- `.bequite/tasks/DELEGATE_ACCEPTANCE_CRITERIA.md` — concrete pass/fail per task
-- `.bequite/tasks/DELEGATE_TEST_PLAN.md` — test commands cheap model must run
-- `.bequite/audits/DELEGATE_REVIEW_REPORT.md` — Phase-3 strong-model verdict per task
+- `.bequite/work/<id>/delegate/DELEGATE_TASKS.md` — task pack with Task ID / Goal / Files to inspect / Files to edit / Do not touch / Exact steps / Edge cases / Test commands / Acceptance criteria / Common mistakes / Rollback notes
+- `.bequite/work/<id>/delegate/DELEGATE_INSTRUCTIONS.md` — strong-model warnings + constraints + common mistakes
+- `.bequite/work/<id>/delegate/DELEGATE_ACCEPTANCE_CRITERIA.md` — concrete pass/fail per task
+- `.bequite/work/<id>/delegate/DELEGATE_TEST_PLAN.md` — test commands cheap model must run
+- `.bequite/work/<id>/delegate/DELEGATE_REVIEW_REPORT.md` — Phase-3 strong-model verdict per task
 
 ### Phase-3 delegate review (strong-model check)
 

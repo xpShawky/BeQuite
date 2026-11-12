@@ -4,6 +4,17 @@ description: Generate multiple UI/UX design directions in isolation. 1-10 varian
 
 # /bq-uiux-variants — explore N design directions
 
+<!-- bq:contract -->
+> **Every run follows the contract** (`.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md`):
+> 1. **Skills first:** announce the `Skill Selection:` block before any plan, edit or tool call for the task.
+> 2. **Resolve the work:** read `.bequite/ACTIVE.md`; use `.bequite/work/<id>/`, or create the next work folder if this is new work (`/bq-work`).
+> 3. **Gates:** project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `work/<id>/gates.md`. Refuse and name the missing gate.
+> 4. **Plan first:** non-trivial work gets a plan the user approves before output. Hard human gates always wait for a yes.
+> 5. **Evidence:** every check goes to `work/<id>/evidence.md` (command + exit code + output) or is marked `UNVERIFIED:`.
+> 6. **Write back:** `work/<id>/log.md`, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, and `.bequite/state/MISTAKE_MEMORY.md` when a lesson surfaced.
+> 7. **Finish** with the Next Command Recommendations block.
+<!-- /bq:contract -->
+
 ## Purpose
 
 Generate **N isolated UI variants** so the user can choose a design direction before committing. Each variant is a different direction (not a color tweak). Original UI stays intact. After selection, the winner merges into main UI; rejected variants archive.
@@ -62,8 +73,8 @@ Examples:
 ## Files to read
 
 - `.bequite/audits/DISCOVERY_REPORT.md` (frontend stack + components)
-- `.bequite/audits/RESEARCH_REPORT.md` (UX research if available)
-- `.bequite/plans/IMPLEMENTATION_PLAN.md` (if exists)
+- `.bequite/work/<id>/research.md` (UX research if available)
+- `.bequite/work/<id>/plan.md` (if exists)
 - `.bequite/state/DECISIONS.md` (locked design decisions)
 - Existing `tokens.css` / theme file
 - Existing component files

@@ -4,6 +4,17 @@ description: 'Update BeQuite (commands + skills + docs + memory templates) from 
 
 # /bq-update — update BeQuite itself
 
+<!-- bq:contract -->
+> **Every run follows the contract** (`.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md`):
+> 1. **Skills first:** announce the `Skill Selection:` block before any plan, edit or tool call for the task.
+> 2. **Resolve the work:** read `.bequite/ACTIVE.md`; use `.bequite/work/<id>/`, or create the next work folder if this is new work (`/bq-work`).
+> 3. **Gates:** project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `work/<id>/gates.md`. Refuse and name the missing gate.
+> 4. **Plan first:** non-trivial work gets a plan the user approves before output. Hard human gates always wait for a yes.
+> 5. **Evidence:** every check goes to `work/<id>/evidence.md` (command + exit code + output) or is marked `UNVERIFIED:`.
+> 6. **Write back:** `work/<id>/log.md`, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, and `.bequite/state/MISTAKE_MEMORY.md` when a lesson surfaced.
+> 7. **Finish** with the Next Command Recommendations block.
+<!-- /bq:contract -->
+
 ## Purpose
 
 Update BeQuite commands, skills, docs templates, and version metadata **inside an existing project** without re-running the full installer.
@@ -61,7 +72,7 @@ Examples:
 - `.bequite/logs/UPDATE_LOG.md` — append-only log per update
 - `.bequite/backups/<timestamp>/` — backup of pre-update state
 - `.bequite/logs/AGENT_LOG.md`
-- `.bequite/logs/CHANGELOG.md` (only if user-facing behavior shifted)
+- `CHANGELOG.md` (only if user-facing behavior shifted)
 
 ## Steps
 
@@ -175,8 +186,8 @@ These files NEVER get touched by `/bq-update`:
 - `.bequite/state/MISTAKE_MEMORY.md`
 - `.bequite/state/MEMORY_SNAPSHOT_*.md`
 - `.bequite/logs/AGENT_LOG.md`
-- `.bequite/logs/CHANGELOG.md`
-- `.bequite/logs/ERROR_LOG.md`
+- `CHANGELOG.md`
+- `.bequite/work/<id>/log.md`
 - `.bequite/audits/` (your real audit reports)
 - `.bequite/plans/` (your real plans + features — except templates, which prompt)
 - `.bequite/tasks/` (your real TASK_LIST + CURRENT_TASK)
@@ -256,7 +267,7 @@ v3.0.0-alpha.9) to pin to a stable release.
 
 ### 11. Update changelog (only if user-facing behavior shifted)
 
-If the update added / removed commands, changed gate behavior, or added a new mode → append to `.bequite/logs/CHANGELOG.md` under `[Unreleased]`:
+If the update added / removed commands, changed gate behavior, or added a new mode → append to `CHANGELOG.md` under `[Unreleased]`:
 
 ```markdown
 ### Updated

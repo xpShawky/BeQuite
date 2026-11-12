@@ -39,11 +39,11 @@ These are always read at the start of any non-trivial command:
 
 - `.bequite/state/ASSUMPTIONS.md` — `/bq-plan`, `/bq-research`, `/bq-clarify`
 - `.bequite/audits/DISCOVERY_REPORT.md` — `/bq-clarify`, `/bq-research`, `/bq-plan`, `/bq-audit`
-- `.bequite/audits/RESEARCH_REPORT.md` — `/bq-plan`, `/bq-multi-plan`, `/bq-scope`
-- `.bequite/plans/IMPLEMENTATION_PLAN.md` — `/bq-assign`, `/bq-implement`, `/bq-review`
-- `.bequite/plans/SCOPE.md` — `/bq-plan`, `/bq-feature`, `/bq-implement`
-- `.bequite/tasks/TASK_LIST.md` — `/bq-implement`, `/bq-test`, `/bq-review`
-- `.bequite/tasks/CURRENT_TASK.md` — `/bq-implement`
+- `.bequite/work/<id>/research.md` — `/bq-plan`, `/bq-multi-plan`, `/bq-scope`
+- `.bequite/work/<id>/plan.md` — `/bq-assign`, `/bq-implement`, `/bq-review`
+- `.bequite/work/<id>/spec.md` — `/bq-plan`, `/bq-feature`, `/bq-implement`
+- `.bequite/work/<id>/tasks.md` — `/bq-implement`, `/bq-test`, `/bq-review`
+- `.bequite/work/<id>/tasks.md` — `/bq-implement`
 - `.bequite/uiux/SECTION_MAP.md` — `/bq-live-edit`, `/bq-uiux-variants`, frontend `/bq-fix`
 - `.bequite/uiux/LIVE_EDIT_LOG.md` — `/bq-live-edit`
 - `.bequite/uiux/UIUX_VARIANTS_REPORT.md` — `/bq-uiux-variants`

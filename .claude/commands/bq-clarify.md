@@ -4,6 +4,17 @@ description: Ask the user 3-5 high-value clarifying questions. Skips anything ob
 
 # /bq-clarify — high-value questions only
 
+<!-- bq:contract -->
+> **Every run follows the contract** (`.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md`):
+> 1. **Skills first:** announce the `Skill Selection:` block before any plan, edit or tool call for the task.
+> 2. **Resolve the work:** read `.bequite/ACTIVE.md`; use `.bequite/work/<id>/`, or create the next work folder if this is new work (`/bq-work`).
+> 3. **Gates:** project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `work/<id>/gates.md`. Refuse and name the missing gate.
+> 4. **Plan first:** non-trivial work gets a plan the user approves before output. Hard human gates always wait for a yes.
+> 5. **Evidence:** every check goes to `work/<id>/evidence.md` (command + exit code + output) or is marked `UNVERIFIED:`.
+> 6. **Write back:** `work/<id>/log.md`, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, and `.bequite/state/MISTAKE_MEMORY.md` when a lesson surfaced.
+> 7. **Finish** with the Next Command Recommendations block.
+<!-- /bq:contract -->
+
 You are asking the user **exactly 3-5 clarifying questions** that will materially change the implementation. No filler. No "what's your favorite color" trivia.
 
 ## Step 1 — Read context
@@ -121,12 +132,12 @@ Next: /bq-research (if any answer needs evidence) or /bq-plan (write the plan)
 - Each has a recommended default
 - Answers recorded in `OPEN_QUESTIONS.md` + `DECISIONS.md`
 - No questions about info already in DISCOVERY_REPORT
-- Marks `CLARIFY_DONE ✅`
+- Marks `CLARIFY_ANSWERED ✅`
 **Failure behavior:**
 - User says "all defaults" → accept all recommended defaults; mark resolved
 - User skips one → note as "still open"; do not block downstream
 - User refuses entirely → use defaults; log "user-deferred"; advance gate
-**Memory updates:** Sets `CLARIFY_DONE ✅`. Appends to `OPEN_QUESTIONS.md` + `DECISIONS.md`.
+**Memory updates:** Sets `CLARIFY_ANSWERED ✅`. Appends to `OPEN_QUESTIONS.md` + `DECISIONS.md`.
 **Log updates:** `AGENT_LOG.md`.
 
 ## Memory files this command reads
@@ -178,7 +189,7 @@ After successful completion:
 - `.bequite/state/WORKFLOW_GATES.md` — set this command's gate to `✅` if applicable
 - `.bequite/state/CURRENT_PHASE.md` — advance if phase transitioned
 - `.bequite/logs/AGENT_LOG.md` — append entry
-- `.bequite/logs/CHANGELOG.md` `[Unreleased]` — only when material files changed (skip for read-only commands)
+- `CHANGELOG.md` `[Unreleased]` — only when material files changed (skip for read-only commands)
 - `.bequite/state/MISTAKE_MEMORY.md` — append when a project-specific lesson surfaced
 - `.bequite/state/MODE_HISTORY.md` — append mode + outcome (when invoked via `/bq-auto`-style mode)
 

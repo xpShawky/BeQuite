@@ -22,7 +22,7 @@ This repo IS the source of the skill pack. Its `.claude/commands/` + `.claude/sk
 - **31 skills** (alpha.24 adds `bequite-automation-engineer` (merged from legacy skill/); alpha.22 adds `bequite-localization-rtl` + `bequite-guard-pass` + `bequite-orchestrator` (global brain — orchestration update); alpha.21 added `bequite-frontier-reasoning-coach`)
 - **Global Orchestration (alpha.22 orchestration update)** — `bequite-orchestrator` skill + `.bequite/state/ORCHESTRATION_MAP.md` = source of truth on conflict/confusion/missing-capability; auto mode = 15-step anti-skip sequence (`AUTO_MODE_RULES.md`); mandatory System Design Risk Check for risky domains (`SYSTEM_DESIGN_REASONING_STANDARD.md`); context compaction at 40/60/75/85% (`CONTEXT_COMPACTION_RULES.md`); small-model tiers A/B/C (`LOW_COST_MODEL_RULES.md` — gap-narrowing, not magic); per-agent setup `.claude/bequite/docs/runbooks/INSTALL_FOR_OTHER_AGENTS.md`
 - **Command Router (alpha.22)** — second routing layer: Skill Router answers *which skills*; Command Router answers *which command next*. Contract step 12 = multi-command "Next Command Recommendations" (required next + 2–6 set + accelerators + do-not-run-yet); auto mode reports "Internal workflow executed: <IDs>". Files: `.claude/bequite/docs/architecture/WORKFLOW_COMMAND_ROUTER.md` · `.bequite/commands/{COMMAND_ROUTER,COMMAND_ID_MAP,NEXT_COMMAND_LOG}.md`. `/bq-suggest` (N4) is the main navigation assistant.
-- **Guard Pass (alpha.22)** — reactive post-work gates for AI failure modes (code/test/docs guards; guard-skills concept adapted, nothing copied/installed): `bequite-guard-pass` + `.claude/bequite/docs/architecture/GUARD_PASS_STRATEGY.md` + `.bequite/audits/GUARD_PASS_REPORT.md`. Runs after implement/test, before verify/release.
+- **Guard Pass (alpha.22)** — reactive post-work gates for AI failure modes (code/test/docs guards; guard-skills concept adapted, nothing copied/installed): `bequite-guard-pass` + `.claude/bequite/docs/architecture/GUARD_PASS_STRATEGY.md` + `.bequite/work/<id>/review.md`. Runs after implement/test, before verify/release.
 - **Capability memory (alpha.22)** — Course Engine handles scanned/OCR PDFs via the 12-rule Source Intake (`SOURCE_INTAKE_REPORT.md`, COURSE_ENGINE.md §Source Intake); `.bequite/{reference,knowledge,courses,pain-radar,integrations,proposals}/` (files created on first run); specs in `.claude/bequite/docs/specs/{REFERENCE_ENGINE,KNOWLEDGE_ENGINE,COURSE_ENGINE,PAIN_RADAR,INTEGRATION_BLUEPRINT,PROPOSAL_BUILDER,LOCALIZATION_RTL}.md`; shape rulings in `.bequite/plans/APPROVED_CAPABILITY_SHAPE_DECISIONS.md` (incl. the Older-V1-candidate review)
 - **Automatic skill routing (alpha.20)** + **Confidence Forecast / Frontier Playbook / FEATURE_TYPE_TAXONOMY / Discovery V2 (alpha.21)** — registry/router/usage-log at `.bequite/skills/`; banded confidence on every plan/task; `expert` = composition alias, not a 5th mode
 - **26 skills** (`.claude/skills/bequite-*/SKILL.md`) — adds `bequite-writing-dna` + `bequite-skill-auditor` in alpha.19; `bequite-context-engineer` + `bequite-anti-hallucination` in alpha.18; `bequite-frontend-design-system` (master) in alpha.17; `bequite-presentation-builder` in alpha.13; `bequite-delegate-planner` in alpha.12
@@ -53,7 +53,7 @@ This repo IS the source of the skill pack. Its `.claude/commands/` + `.claude/sk
 - **Make money finder** — `/bq-make-money` finds legitimate earning opportunities; 10 tracks + Hidden Gems (alpha.8); deep intelligence with community signals + trending + AI-assisted (alpha.10)
 - **BeQuite self-update** — `/bq-update` safely refreshes commands / skills / docs from GitHub or local source; never overwrites project memory (alpha.10)
 - **Memory-first** — every action command reads core memory before acting (alpha.10; see MEMORY_FIRST_BEHAVIOR.md)
-- **Delegate task pack** — `.bequite/tasks/DELEGATE_*.md` + `.bequite/audits/DELEGATE_REVIEW_REPORT.md`: strong-model writes, cheap-model implements, strong-model reviews (alpha.12)
+- **Delegate task pack** — `.bequite/work/<id>/delegate/DELEGATE_*.md` + `.bequite/work/<id>/delegate/DELEGATE_REVIEW_REPORT.md`: strong-model writes, cheap-model implements, strong-model reviews (alpha.12)
 - **Public command reference** — `commands.md` at repo root
 
 ---
@@ -65,7 +65,7 @@ This repo IS the source of the skill pack. Its `.claude/commands/` + `.claude/sk
 | Slash commands (52 active + 1 alias; IDs in COMMAND_ID_MAP) | `.claude/commands/` |
 | Command Router (alpha.22) | `.bequite/commands/{COMMAND_ID_MAP,COMMAND_ROUTER,NEXT_COMMAND_LOG}.md` · `.claude/bequite/docs/architecture/WORKFLOW_COMMAND_ROUTER.md` |
 | Capability memory (alpha.22) | `.bequite/{reference,knowledge,courses,pain-radar,integrations,proposals}/` |
-| Guard Pass (alpha.22) | `bequite-guard-pass` skill · `.claude/bequite/docs/architecture/GUARD_PASS_STRATEGY.md` · `.bequite/audits/GUARD_PASS_REPORT.md` |
+| Guard Pass (alpha.22) | `bequite-guard-pass` skill · `.claude/bequite/docs/architecture/GUARD_PASS_STRATEGY.md` · `.bequite/work/<id>/review.md` |
 | Cross-agent compatibility | `.claude/bequite/docs/architecture/CROSS_AGENT_COMPATIBILITY_STRATEGY.md` · `.claude/bequite/docs/runbooks/USING_BEQUITE_OUTSIDE_CLAUDE_CODE.md` · `.claude/bequite/docs/specs/AGENT_COMPATIBILITY_MATRIX.md` |
 | Roadmap ledger (done/pending/parked/alpha.23) | `.bequite/tasks/REMAINING_ROADMAP_TASKS.md` · `ALPHA_22_TASK_CHECKLIST.md` |
 | Jobs memory | `.bequite/jobs/` (JOB_PROFILE, JOB_SEARCH_LOG, OPPORTUNITIES, APPLICATION_TRACKER, PITCH_TEMPLATES, HIDDEN_GEMS, COMMUNITY_SIGNALS, AI_ASSISTED_WORK) |
@@ -73,8 +73,8 @@ This repo IS the source of the skill pack. Its `.claude/commands/` + `.claude/sk
 | Version + update tracking | `.bequite/state/BEQUITE_VERSION.md`, `UPDATE_SOURCE.md`; `.bequite/logs/UPDATE_LOG.md`; `.bequite/backups/` |
 | Memory-first doc | `.claude/bequite/docs/architecture/MEMORY_FIRST_BEHAVIOR.md` |
 | Mode history (alpha.12) | `.bequite/state/MODE_HISTORY.md` |
-| Delegate task pack (alpha.12) | `.bequite/tasks/DELEGATE_TASKS.md`, `DELEGATE_INSTRUCTIONS.md`, `DELEGATE_ACCEPTANCE_CRITERIA.md`, `DELEGATE_TEST_PLAN.md` |
-| Delegate review report (alpha.12) | `.bequite/audits/DELEGATE_REVIEW_REPORT.md` |
+| Delegate task pack (alpha.12) | `.bequite/work/<id>/delegate/DELEGATE_TASKS.md`, `DELEGATE_INSTRUCTIONS.md`, `DELEGATE_ACCEPTANCE_CRITERIA.md`, `DELEGATE_TEST_PLAN.md` |
+| Delegate review report (alpha.12) | `.bequite/work/<id>/delegate/DELEGATE_REVIEW_REPORT.md` |
 | Presentation memory (alpha.13) | `.bequite/presentations/` (PRESENTATION_BRIEF, CONTENT_OUTLINE, SLIDE_PLAN, DESIGN_BRIEF, MOTION_PLAN, SPEAKER_NOTES, REFERENCES, PRESENTATION_VARIANTS_REPORT, EXPORT_LOG + assets/ + outputs/) |
 | Skills (30) | `.claude/skills/bequite-*/SKILL.md` |
 | Orchestration (alpha.22 update) | `bequite-orchestrator` · `.bequite/state/{ORCHESTRATION_MAP,AUTO_MODE_RULES,CONTEXT_COMPACTION_RULES,LOW_COST_MODEL_RULES}.md` · `.claude/bequite/docs/architecture/{BEQUITE_ORCHESTRATION_MODEL,AUTO_MODE_ORCHESTRATION_STRATEGY,SYSTEM_DESIGN_REASONING_STANDARD,LOW_COST_MODEL_EXECUTION_STRATEGY,CONTEXT_COMPACTION_STRATEGY}.md` |
@@ -84,7 +84,7 @@ This repo IS the source of the skill pack. Its `.claude/commands/` + `.claude/sk
 | Visual QA report (alpha.17) | `.bequite/audits/VISUAL_QA_REPORT.md` |
 | Design Continuity Gate docs (alpha.17) | `.claude/bequite/docs/architecture/DESIGN_CONTINUITY_GATE.md` · `FRONTEND_CONTEXT_ENGINEERING.md` |
 | Hooks (alpha.18, opt-in) | `.claude/hooks/*.{sh,ps1}` + `.claude/settings.json.example` (+ `.windows.`) ; strategy `.claude/bequite/docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`; decision `.claude/bequite/docs/decisions/ADR-005-*.md` |
-| Context engineering (alpha.18) | `bequite-context-engineer` skill · `.claude/bequite/docs/architecture/CONTEXT_ENGINEERING.md` · `.bequite/state/PROJECT_DNA.md` · `WORKING_NOTES.md` · `.bequite/plans/FILE_RESPONSIBILITY_MAP.md` |
+| Context engineering (alpha.18) | `bequite-context-engineer` skill · `.claude/bequite/docs/architecture/CONTEXT_ENGINEERING.md` · `.bequite/state/PROJECT_DNA.md` · `WORKING_NOTES.md` · `.bequite/work/<id>/plan.md` |
 | Anti-hallucination (alpha.18) | `bequite-anti-hallucination` skill |
 | Harness/prompt authoring standard (alpha.18) | `.claude/bequite/docs/architecture/HARNESS_AND_PROMPT_QUALITY.md` |
 | Game-changer feature report (alpha.18) | `.claude/bequite/docs/specs/GAME_CHANGER_FEATURES.md` (proposal only) |

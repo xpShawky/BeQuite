@@ -39,8 +39,8 @@ Introduce a **mandatory workflow gate system**:
 ### Positive
 
 - **Cannot skip planning.** `/bq-implement` requires `PLAN_APPROVED ✅`. Forces a written plan.
-- **Cannot skip research.** `/bq-plan` strongly recommends `RESEARCH_DONE ✅`. Forces verified evidence.
-- **Cannot skip verification.** `/bq-release` requires `VERIFY_PASS ✅`. Forces a passing gate matrix.
+- **Cannot skip research.** `/bq-plan` strongly recommends `RESEARCH_COMPLETE ✅`. Forces verified evidence.
+- **Cannot skip verification.** `/bq-release` requires `VERIFY_PASSED ✅`. Forces a passing gate matrix.
 - **Mode-aware gates.** Fix mode skips scope/plan (a bug fix doesn't need a SCOPE.md); Feature mode is self-contained (12-type router activates relevant skills); Audit mode produces a report, not code.
 - **Autonomous + safe.** `/bq-auto` runs the entire cycle, but never auto-pushes, never auto-deploys, never `terraform destroy`. Hard human gates protect against runaway loops.
 - **Better resume after breaks.** `/bq-recover` reads `WORKFLOW_GATES.md` and surfaces "next safe step" precisely.
@@ -87,30 +87,30 @@ The gate ledger schema lives in `.bequite/state/WORKFLOW_GATES.md`:
 ## P0 — Setup and Discovery
 - [x] BEQUITE_INITIALIZED      done 2026-05-11
 - [x] MODE_SELECTED            done 2026-05-11
-- [x] DISCOVERY_DONE           done 2026-05-11
-- [x] DOCTOR_DONE              done 2026-05-11
+- [x] DISCOVERY_COMPLETE           done 2026-05-11
+- [x] DOCTOR_COMPLETE              done 2026-05-11
 
 ## P1 — Product Framing and Research
-- [ ] CLARIFY_DONE             pending
-- [ ] RESEARCH_DONE            pending
+- [ ] CLARIFY_ANSWERED             pending
+- [ ] RESEARCH_COMPLETE            pending
 - [ ] SCOPE_LOCKED             pending
 - [ ] PLAN_APPROVED            pending
 - [ ] MULTI_PLAN_DONE          optional
 
 ## P2 — Planning and Build
-- [ ] ASSIGN_DONE              pending
+- [ ] TASKS_ASSIGNED              pending
 - [ ] IMPLEMENT_DONE           pending
 - [ ] FEATURE_DONE             n/a (only for Add Feature mode)
 - [ ] FIX_DONE                 n/a (only for Fix Problem mode)
 
 ## P3 — Quality and Review
-- [ ] TEST_DONE                pending
+- [ ] TESTS_PASS                pending
 - [ ] AUDIT_DONE               optional
-- [ ] REVIEW_DONE              pending
+- [ ] REVIEW_APPROVED              pending
 - [ ] RED_TEAM_DONE            optional
 
 ## P4 — Release
-- [ ] VERIFY_PASS              pending
+- [ ] VERIFY_PASSED              pending
 - [ ] CHANGELOG_READY          pending
 - [ ] RELEASE_READY            pending
 

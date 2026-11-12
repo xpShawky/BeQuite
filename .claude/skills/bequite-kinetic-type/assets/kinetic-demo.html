@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kinetic type demo</title>
+<style>
+  :root { --paper: #F2F2F2; --ink: #1A1A1A; --acc: #2F6BFF; --soft: #6E6E6E; }
+  @media (prefers-color-scheme: dark) { :root { --paper: #141414; --ink: #F2F2F2; --acc: #7FA4FF; --soft: #9A9A9A; } }
+  html, body { margin: 0; background: var(--paper); color: var(--ink);
+    font-family: system-ui, "Segoe UI", "Noto Sans", "Noto Sans Arabic", Tahoma, sans-serif; }
+  main { max-width: 980px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1 { font-size: 15px; font-weight: 600; color: var(--soft); letter-spacing: 0; margin: 0 0 24px; }
+  .row { border-top: 1px solid color-mix(in srgb, var(--ink) 12%, transparent); padding: 28px 0; }
+  .label { font-size: 13px; color: var(--soft); margin-bottom: 12px; }
+  .line { font-size: clamp(30px, 6vw, 64px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.25; }
+  .line[dir="rtl"] { letter-spacing: 0; line-height: 1.6; }          /* never track Arabic */
+  .key { color: var(--acc); }
+  button { font: inherit; font-size: 14px; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--soft);
+    background: transparent; color: var(--ink); cursor: pointer; }
+</style>
+</head>
+<body>
+<main>
+  <h1>bequite-kinetic-type: one treatment per line, chosen by meaning. <button id="replay">Replay</button></h1>
+
+  <div class="row"><div class="label">Headline / turning point: blur-in write-on (by character)</div>
+    <div class="line" id="a">There's a better way.</div></div>
+
+  <div class="row"><div class="label">List / alternatives: swap in place</div>
+    <div class="line">Made for <span class="key" id="slot"></span></div></div>
+
+  <div class="row"><div class="label">One key word: recolour sweep (no letter splitting)</div>
+    <div class="line">It's <span id="rc">your data.</span></div></div>
+
+  <div class="row"><div class="label">Command / search: typing with a caret</div>
+    <div class="line" id="ty" style="font-weight:500"></div></div>
+
+  <div class="row"><div class="label">Arabic headline: write-on by WORD, right to left (letters never split)</div>
+    <div class="line" dir="rtl" lang="ar" id="ar">هناك طريقة أفضل.</div></div>
+
+  <div class="row"><div class="label">Arabic key word: recolour sweeps right to left</div>
+    <div class="line" dir="rtl" lang="ar">إنها <span id="arrc">بياناتك.</span></div></div>
+</main>
+<script src="kinetic.js"></script>
+<script>
+  const originals = {};
+  function reset(id) {
+    const el = document.getElementById(id);
+    if (!(id in originals)) originals[id] = el.textContent;
+    el.__kinetic = null; el.textContent = originals[id]; el.removeAttribute("style");
+    return el;
+  }
+  let typer = null;
+  function run() {
+    Kinetic.writeOn(reset("a"), { dur: 0.6, delay: 0.2 });
+    Kinetic.swapInPlace(document.getElementById("slot"), ["calm.", "focus.", "you."], { every: 1.1, delay: 0.8 });
+    Kinetic.recolour(reset("rc"), { to: getComputedStyle(document.documentElement).getPropertyValue("--acc").trim(), delay: 1.0 });
+    if (typer) typer.cancel();
+    typer = Kinetic.typeOn(document.getElementById("ty"), "make a 30 second launch film", { cps: 20, delay: 0.6 });
+    Kinetic.writeOn(reset("ar"), { dur: 0.7, delay: 0.4 });           // auto -> words for Arabic
+    Kinetic.recolour(reset("arrc"), { to: getComputedStyle(document.documentElement).getPropertyValue("--acc").trim(), delay: 1.2 });
+  }
+  document.getElementById("replay").addEventListener("click", run);
+  run();
+</script>
+</body>
+</html>

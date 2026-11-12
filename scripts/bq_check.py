@@ -224,6 +224,23 @@ def counts_match():
     return errors
 
 
+# ---------------------------------------------------------------- version
+@check
+def version_consistent():
+    """Both installers carry the same version, and it matches the newest released CHANGELOG section."""
+    errors = []
+    ps1 = re.search(r'\$Version = "(v[^"]+)"', read(os.path.join(ROOT, "scripts", "install-bequite.ps1")))
+    sh = re.search(r'BEQUITE_VERSION="(v[^"]+)"', read(os.path.join(ROOT, "scripts", "install-bequite.sh")))
+    if not ps1 or not sh:
+        return ["could not read the version from both installers"]
+    if ps1.group(1) != sh.group(1):
+        errors.append("installer versions differ: ps1 %s vs sh %s" % (ps1.group(1), sh.group(1)))
+    rel_sec = re.search(r"^## \[(\d+\.\d+\.\d+[^\]]*)\]", read(os.path.join(ROOT, "CHANGELOG.md")), re.M)
+    if rel_sec and "v" + rel_sec.group(1) != sh.group(1):
+        errors.append("installers say %s but the newest released CHANGELOG section is [%s]" % (sh.group(1), rel_sec.group(1)))
+    return errors
+
+
 # ---------------------------------------------------------------- contract block
 READ_ONLY = {"bequite", "bq-help", "bq-now", "bq-explain"}
 CONTRACT_OPEN = "<!-- bq:contract -->"

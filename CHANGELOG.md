@@ -4,7 +4,9 @@ Format: [Keep a Changelog v1.1](https://keepachangelog.com/en/1.1.0/) · Version
 
 Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANGELOG-legacy.md`](../legacy/CHANGELOG-legacy.md) after Phase B cleanup.
 
-## [Unreleased] - 4.0.0 "Titan"
+## [4.0.0] - 2026-11-12 - "Titan"
+
+The biggest release since the lightweight rewrite: per-work folders, rules enforced by checks, a motion studio, web motion with a performance budget, clean installs, and a leaner public repo. Breaking changes: `/bq-add-feature` removed; `/bq-p0`-`/bq-p5` and `/bq-now` are redirects; per-work artifacts moved from the flat `.bequite/plans|tasks|audits` files to `.bequite/work/<id>/` (old files are migrated on first use).
 
 ### Changed - T0 safety
 - **Installer no longer leaks BeQuite's own memory into your project.** Both installers used to copy BeQuite's live `MISTAKE_MEMORY`, `EVIDENCE_LOG`, `AGENT_LOG`, `SKILL_USAGE_LOG` and version history into every install. They now copy a clean scaffold from `templates/bequite/`. Existing project memory is never overwritten, even with `--force` (which now only refreshes commands and skills).

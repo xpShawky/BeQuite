@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{GUIDE_TITLE}}</title>
+<!--
+  Making-of guide template (4:5 portrait pages, prints to PDF).
+  1. Copy into the work folder: .bequite/work/<id>/outputs/delivery/making-of/guide.html (+ an img/ folder of frames).
+  2. Replace every {{PLACEHOLDER}}; delete pages you don't need; keep the film's own accent and font.
+  3. Print:  chrome --headless=new --no-pdf-header-footer --print-to-pdf=guide.pdf guide.html
+  4. Render each page to an image and check for overflow before sharing. Public-safe only: no keys, private images, client secrets.
+  Dark by default (reads well on phones). For RTL guides set <html dir="rtl" lang="ar"> and an Arabic-capable font.
+-->
+<style>
+  /* Fonts: load the film's family with @font-face (local files), or rely on the system stack below. */
+  :root {
+    --bg: #0E1014; --surface: #171A21; --surface2: #1E222B; --line: #2B303B;
+    --text: #F3F3F1; --soft: #A6ABB6; --dim: #6F7582;
+    --accent: {{ACCENT_HEX}}; --accent-soft: color-mix(in srgb, var(--accent) 55%, white);
+    --no: #FF6B6B; --yes: #3DDC97;
+    --font: {{FONT_STACK}}, system-ui, "Segoe UI", "Noto Sans", "Noto Sans Arabic", sans-serif;
+    --mono: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace;
+  }
+  @page { size: 216mm 270mm; margin: 0; }
+  * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font); }
+  .page { width: 216mm; height: 270mm; padding: 17mm 16mm 14mm; position: relative; overflow: hidden;
+          page-break-after: always; background: var(--bg); }
+  .page:last-child { page-break-after: auto; }
+  .kicker { font: 500 9.5pt var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--accent-soft); margin-bottom: 5mm; }
+  h1 { font-weight: 700; font-size: 38pt; line-height: 1.05; letter-spacing: -.02em; margin: 0 0 6mm; }
+  h2 { font-weight: 600; font-size: 25pt; line-height: 1.12; letter-spacing: -.015em; margin: 0 0 5mm; }
+  h3 { font-weight: 600; font-size: 13.5pt; margin: 0 0 2mm; }
+  p, li { font-size: 12.5pt; line-height: 1.5; color: var(--soft); margin: 0 0 3mm; }
+  strong { color: var(--text); font-weight: 600; }
+  .lead { font-size: 15pt; line-height: 1.45; }
+  .accent { color: var(--accent-soft); }
+  img.shot { width: 100%; border-radius: 3mm; display: block; border: 1px solid var(--line); object-fit: cover; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 3mm; padding: 4.5mm 5mm; }
+  .stat { font-weight: 700; font-size: 28pt; letter-spacing: -.02em; line-height: 1; }
+  .stat-l { font-size: 10pt; color: var(--soft); margin-top: 2mm; line-height: 1.35; }
+  .step .n { font: 600 9pt var(--mono); color: var(--accent-soft); }
+  .step p { font-size: 10pt; margin: 0; }
+  .prompt { background: var(--surface2); border-inline-start: 3px solid var(--accent); border-radius: 3mm; padding: 5mm 6mm; margin: 6mm 0; }
+  .prompt .label { font: 500 8pt var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--accent-soft); margin-bottom: 1.5mm; }
+  .prompt p { color: var(--text); font-size: 12pt; margin: 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 11pt; }
+  th { text-align: start; font: 500 8pt var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--dim);
+       padding: 0 3mm 2mm 0; border-bottom: 1px solid var(--line); }
+  td { padding: 3mm 3mm 3mm 0; border-bottom: 1px solid var(--line); color: var(--soft); vertical-align: top; line-height: 1.4; }
+  td:first-child { color: var(--text); font-weight: 500; }
+  .no { color: var(--no); } .yes { color: var(--yes); }
+  pre { font-family: var(--mono); background: #0A0C10; border: 1px solid var(--line); border-radius: 3mm; padding: 4mm;
+        font-size: 8.6pt; line-height: 1.5; color: #C9CFDB; white-space: pre-wrap; margin: 3mm 0; }
+  .pill { display: inline-block; background: var(--accent); color: #fff; font-weight: 500; font-size: 10pt;
+          padding: 1.6mm 4mm; border-radius: 10mm; }
+  .foot { position: absolute; inset-inline: 16mm; bottom: 9mm; display: flex; justify-content: space-between;
+          font: 400 8pt var(--mono); color: var(--dim); }
+  .cover .hero { position: absolute; inset-inline: 16mm; bottom: 34mm; }
+  .cover .by { position: absolute; inset-inline-start: 16mm; bottom: 16mm; font: 500 11pt var(--mono); color: var(--soft); }
+</style>
+</head>
+<body>
+
+<!-- 1 COVER -->
+<section class="page cover">
+  <div class="kicker">{{KICKER, e.g. "Prompt → Film"}}</div>
+  <h1>{{HOOK_LINE_1}}<br><span class="accent">{{HOOK_LINE_2}}</span></h1>
+  <p class="lead">{{ONE_PARAGRAPH: what was made, how, and what this guide contains — true and specific}}</p>
+  <div class="hero"><img class="shot" style="height:95mm" src="img/{{HERO_FRAME}}.jpg" alt=""></div>
+  <div class="by">by <strong>{{AUTHOR}}</strong> · {{PROJECT}}</div>
+</section>
+
+<!-- 2 NUMBERS -->
+<section class="page">
+  <div class="kicker">The result</div>
+  <h2>One film, by the numbers</h2>
+  <p class="lead">{{CONTEXT: the product, the goal, the constraint}}</p>
+  <div class="grid3" style="margin-top:8mm">
+    <div class="card"><div class="stat">{{N1}}</div><div class="stat-l">{{LABEL1}}</div></div>
+    <div class="card"><div class="stat">{{N2}}</div><div class="stat-l">{{LABEL2}}</div></div>
+    <div class="card"><div class="stat">{{N3}}</div><div class="stat-l">{{LABEL3}}</div></div>
+    <div class="card"><div class="stat">{{N4}}</div><div class="stat-l">{{LABEL4}}</div></div>
+    <div class="card"><div class="stat">{{N5}}</div><div class="stat-l">{{LABEL5}}</div></div>
+    <div class="card"><div class="stat">{{N6}}</div><div class="stat-l">{{LABEL6}}</div></div>
+  </div>
+  <div style="margin-top:7mm"><img class="shot" style="height:66mm" src="img/{{FRAME_2}}.jpg" alt=""></div>
+  <div class="foot"><span>{{GUIDE_TITLE}}</span><span>02</span></div>
+</section>
+
+<!-- 3 THE LOOP -->
+<section class="page">
+  <div class="kicker">The loop</div>
+  <h2>How it was made</h2>
+  <p>{{ONE_PARAGRAPH on the setup: which tools, who decided what, what the agent did}}</p>
+  <div class="grid3" style="margin:5mm 0">
+    <div class="card step"><div class="n">01</div><h3>Describe</h3><p>The idea, the references, the feeling; later, notes on each version.</p></div>
+    <div class="card step"><div class="n">02</div><h3>Build</h3><p>{{How the film is built: engine + scripts}}</p></div>
+    <div class="card step"><div class="n">03</div><h3>Check</h3><p>Stills and contact sheets reviewed before anyone watches.</p></div>
+    <div class="card step"><div class="n">04</div><h3>Preview</h3><p>A small render watched on a phone, like a viewer would.</p></div>
+    <div class="card step"><div class="n">05</div><h3>Notes</h3><p>"Too fast", "not smooth", "this word in the accent".</p></div>
+    <div class="card step"><div class="n">06</div><h3>Repeat</h3><p>{{N}} versions until the picture was locked.</p></div>
+  </div>
+  <pre>{{SHORT_CODE_OR_COMMAND_TASTE (public-safe, 6-10 lines)}}</pre>
+  <div class="foot"><span>{{GUIDE_TITLE}}</span><span>03</span></div>
+</section>
+
+<!-- 4 ONE PAGE PER PHASE (duplicate for references, story, look, type, demo, voice, music & sound) -->
+<section class="page">
+  <div class="kicker">Phase {{N}} · {{PHASE_NAME}}</div>
+  <h2>{{PHASE_HEADLINE}}</h2>
+  <p>{{WHAT_HAPPENED_AND_WHY, 3-5 sentences}}</p>
+  <div class="grid2"><img class="shot" style="height:58mm" src="img/{{BEFORE}}.jpg" alt=""><img class="shot" style="height:58mm" src="img/{{AFTER}}.jpg" alt=""></div>
+  <div class="prompt"><div class="label">Prompt you can copy</div><p>{{PROMPT_TEXT}}</p></div>
+  <p><strong>Lesson:</strong> {{ONE_LINE_LESSON}}</p>
+  <div class="foot"><span>{{GUIDE_TITLE}}</span><span>{{PAGE}}</span></div>
+</section>
+
+<!-- 5 VERSIONS, HONESTLY -->
+<section class="page">
+  <div class="kicker">Honest log</div>
+  <h2>The versions, honestly</h2>
+  <table>
+    <tr><th>Version</th><th>What it was</th><th>Verdict</th></tr>
+    <tr><td>v1</td><td>{{WHAT}}</td><td class="no">{{REJECTED_BECAUSE}}</td></tr>
+    <tr><td>v{{N}}</td><td>{{WHAT}}</td><td class="yes">{{APPROVED}}</td></tr>
+  </table>
+  <div class="foot"><span>{{GUIDE_TITLE}}</span><span>{{PAGE}}</span></div>
+</section>
+
+<!-- 6 CALL TO ACTION -->
+<section class="page">
+  <div class="kicker">Next</div>
+  <h2>{{CTA_HEADLINE}}</h2>
+  <p class="lead">{{CTA_TEXT}}</p>
+  <p><span class="pill">{{CTA_PILL}}</span></p>
+  <div class="foot"><span>{{GUIDE_TITLE}}</span><span>{{PAGE}}</span></div>
+</section>
+
+</body>
+</html>

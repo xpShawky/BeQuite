@@ -111,3 +111,24 @@ docs/audits/screenshots/_playwright-report/
 # Root-level npm/Node
 node_modules/
 
+
+# Motion reference library: third-party films and frames stay local (copyright + repo size).
+# Only the written breakdowns (*.md) are tracked.
+motion-library/inbox/*
+!motion-library/inbox/.gitkeep
+motion-library/refs/*/frames/
+motion-library/**/*.mp4
+motion-library/**/*.mov
+motion-library/**/*.webm
+motion-library/**/*.mkv
+motion-library/**/*.gif
+motion-library/**/*.png
+motion-library/**/*.jpg
+motion-library/**/*.jpeg
+motion-library/**/*.webp
+motion-library/**/*.wav
+motion-library/**/*.mp3
+motion-library/**/*.pdf
+
+# The repo's own BeQuite working memory stays local (the shipped scaffold lives in templates/bequite/).
+.bequite/

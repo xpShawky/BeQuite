@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
-# Install BeQuite (lightweight skill pack) into the current project.
+# Install BeQuite (lightweight Claude Code workflow pack) into the current project.
 #
-# Usage:
+# Usage (run inside the project you want to enhance):
 #   curl -fsSL https://raw.githubusercontent.com/xpShawky/BeQuite/main/scripts/install-bequite.sh | bash
+# From a local clone:
+#   /path/to/BeQuite/scripts/install-bequite.sh --from-local /path/to/BeQuite [--force]
 #
-# Or from a local clone:
-#   /path/to/BeQuite/scripts/install-bequite.sh --from-local /path/to/BeQuite
+# --force re-installs commands and skills over an existing install.
+# Project memory in .bequite/ is NEVER overwritten (missing files are added).
 
 set -uo pipefail
 
@@ -17,12 +19,9 @@ FORCE=false
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --from-local) FROM_LOCAL="$2"; shift 2 ;;
+    --from-local) FROM_LOCAL="${2:-}"; shift 2 ;;
     --force) FORCE=true; shift ;;
-    -h|--help)
-      head -n 9 "$0" | tail -n 8
-      exit 0
-      ;;
+    -h|--help) sed -n '2,10p' "$0"; exit 0 ;;
     *) echo "unknown arg: $1" >&2; exit 1 ;;
   esac
 done
@@ -30,340 +29,97 @@ done
 yellow() { printf '\033[33m%s\033[0m' "$*"; }
 green()  { printf '\033[32m%s\033[0m' "$*"; }
 red()    { printf '\033[31m%s\033[0m' "$*"; }
-cyan()   { printf '\033[36m%s\033[0m' "$*"; }
 section() { echo; echo "$(yellow "==> $1")"; }
 
 echo
-echo "  $(yellow "BeQuite installer ($BEQUITE_VERSION — lightweight skill pack)")"
+echo "  $(yellow "BeQuite installer ($BEQUITE_VERSION)")"
 echo "  Target: $TARGET"
-echo
 
-# --- 1. Refuse to overwrite without --force ---
-
-EXISTING=()
-[[ -d "./.bequite" ]] && EXISTING+=(".bequite/")
-[[ -f "./.claude/commands/bequite.md" ]] && EXISTING+=(".claude/commands/bequite.md")
-[[ -d "./.claude/skills/bequite-project-architect" ]] && EXISTING+=(".claude/skills/bequite-*")
-
-if [[ ${#EXISTING[@]} -gt 0 && "$FORCE" != true ]]; then
-  echo "$(yellow "BeQuite appears to already be installed here:")"
-  for e in "${EXISTING[@]}"; do echo "  $e"; done
+# --- 1. Existing install? ---------------------------------------------------
+if [[ -f "./.claude/commands/bequite.md" && "$FORCE" != true ]]; then
   echo
-  echo "$(red "Re-running install would overwrite your .bequite/ memory.")"
-  echo "If you want to proceed, re-run with --force."
+  echo "$(yellow "BeQuite is already installed here.")"
+  echo "Re-run with --force to refresh commands and skills. Your .bequite/ memory is never overwritten."
   exit 1
 fi
 
-# --- 2. Source ---
-
-SOURCE=""
+# --- 2. Source ----------------------------------------------------------------
 TMP=""
+cleanup() { [[ -n "$TMP" && -d "$TMP" ]] && rm -rf "$TMP"; }
+trap cleanup EXIT
 
 if [[ -n "$FROM_LOCAL" ]]; then
-  if [[ -d "$FROM_LOCAL" ]]; then
-    SOURCE="$(cd "$FROM_LOCAL" && pwd)"
-    section "Using local BeQuite clone at $SOURCE"
-  else
-    echo "$(red "FATAL:") path '$FROM_LOCAL' doesn't exist." >&2
-    exit 1
-  fi
+  [[ -d "$FROM_LOCAL" ]] || { echo "$(red "FATAL:") '$FROM_LOCAL' does not exist." >&2; exit 1; }
+  SOURCE="$(cd "$FROM_LOCAL" && pwd)"
+  section "Using local BeQuite source at $SOURCE"
 else
+  command -v git >/dev/null 2>&1 || { echo "$(red "FATAL:") git not found. Install git or use --from-local <path>." >&2; exit 1; }
   section "Downloading BeQuite from $REPO_URL"
   TMP="$(mktemp -d -t bequite-installer-XXXXXX)"
-  if ! command -v git >/dev/null 2>&1; then
-    echo "$(red "FATAL:") git not on PATH. Install git or use --from-local <path>." >&2
-    exit 1
-  fi
-  git clone --depth 1 "$REPO_URL" "$TMP"
+  git clone --quiet --depth 1 "$REPO_URL" "$TMP" || { echo "$(red "FATAL:") clone failed." >&2; exit 1; }
   SOURCE="$TMP"
 fi
+[[ -d "$SOURCE/templates/bequite" ]] || { echo "$(red "FATAL:") $SOURCE has no templates/bequite (old or wrong source)." >&2; exit 1; }
 
-# --- 3. .claude/commands/ (37 slash commands) ---
-
-section "Installing .claude/commands/ (60 slash commands)"
-mkdir -p "./.claude/commands"
-cp -r "$SOURCE/.claude/commands/"* "./.claude/commands/"
-count=$(ls -1 ./.claude/commands/*.md 2>/dev/null | wc -l)
-echo "  $(green "$count slash commands installed")"
-
-# --- 4. .claude/skills/bequite-* (31 specialist skills) ---
-
-section "Installing .claude/skills/bequite-* (31 specialist skills)"
-mkdir -p "./.claude/skills"
+# --- 3. Commands, skills, hooks ---------------------------------------------
+section "Installing commands and skills"
+mkdir -p ./.claude/commands ./.claude/skills
+cp -r "$SOURCE/.claude/commands/"*.md ./.claude/commands/
 for skill in "$SOURCE"/.claude/skills/bequite-*/; do
-  if [[ -d "$skill" ]]; then
-    name="$(basename "$skill")"
-    cp -r "$skill" "./.claude/skills/$name"
-    echo "  + $name"
-  fi
+  name="$(basename "$skill")"
+  rm -rf "./.claude/skills/$name"
+  cp -r "$skill" "./.claude/skills/$name"
 done
+echo "  $(green "$(ls -1 ./.claude/commands/*.md | wc -l | tr -d ' ') commands, $(ls -d ./.claude/skills/bequite-*/ | wc -l | tr -d ' ') skills")"
 
-# --- 4b. .claude/hooks/ + settings examples (alpha.18 — OPT-IN; NOT auto-enabled) ---
 if [[ -d "$SOURCE/.claude/hooks" ]]; then
-  mkdir -p "./.claude/hooks"
-  cp -r "$SOURCE/.claude/hooks/"* "./.claude/hooks/" 2>/dev/null || true
-  echo "  + .claude/hooks/ (opt-in — review before enabling)"
+  mkdir -p ./.claude/hooks
+  cp -r "$SOURCE/.claude/hooks/"* ./.claude/hooks/ 2>/dev/null || true
+  for ex in settings.json.example settings.windows.json.example; do
+    [[ -f "$SOURCE/.claude/$ex" ]] && cp "$SOURCE/.claude/$ex" "./.claude/$ex"
+  done
+  echo "  safety hooks copied but NOT active (opt-in: run /bq-hooks status)"
 fi
-for ex in settings.json.example settings.windows.json.example; do
-  [[ -f "$SOURCE/.claude/$ex" ]] && cp "$SOURCE/.claude/$ex" "./.claude/$ex" && echo "  + .claude/$ex"
-done
-echo "  hooks are NOT active by default — merge an example into settings.json to enable (see docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md)"
 
-# --- 5. .bequite/ scaffold (alpha.5: principles + uiux + new state files) ---
-
-section "Scaffolding .bequite/ memory (alpha.5-13: principles, uiux, jobs, money, mistake memory, assumptions, delegate, presentations)"
-mkdir -p ./.bequite/{state,logs,prompts/user_prompts,prompts/generated_prompts,prompts/model_outputs,audits,plans,tasks,principles,decisions,design,uiux/screenshots,uiux/archive,jobs,money,backups,presentations/assets,presentations/outputs,writing,research,skills,commands,reference,knowledge,courses,pain-radar,integrations,proposals,offers,automation,exports,templates,local-business,brand,community,recordings,start}
-echo "  directory scaffold ready"
-
-# Copy alpha.5 templates into target project (preserve existing if present)
-copy_template() {
-  local src_rel="$1"
-  local dst_rel="$2"
-  if [[ -f "$SOURCE/$src_rel" && ! -f "./$dst_rel" ]]; then
-    cp "$SOURCE/$src_rel" "./$dst_rel"
-    echo "  + $dst_rel"
+# --- 4. Memory scaffold (never overwrites) ----------------------------------
+section "Preparing .bequite/ memory"
+added=0
+while IFS= read -r -d '' src; do
+  rel="${src#"$SOURCE/templates/bequite/"}"
+  dst="./.bequite/$rel"
+  if [[ ! -e "$dst" ]]; then
+    mkdir -p "$(dirname "$dst")"
+    sed "s/{{VERSION}}/$BEQUITE_VERSION/g" "$src" > "$dst"
+    added=$((added + 1))
   fi
-}
+done < <(find "$SOURCE/templates/bequite" -type f -print0)
+echo "  $added files added (existing memory left untouched)"
 
-# alpha.3 — tool neutrality
-copy_template ".bequite/principles/TOOL_NEUTRALITY.md" ".bequite/principles/TOOL_NEUTRALITY.md"
+if [[ -f "$SOURCE/commands.md" ]]; then cp "$SOURCE/commands.md" ./commands.md; fi
 
-# alpha.5 — mistake memory + assumptions
-copy_template ".bequite/state/MISTAKE_MEMORY.md"      ".bequite/state/MISTAKE_MEMORY.md"
-copy_template ".bequite/state/ASSUMPTIONS.md"          ".bequite/state/ASSUMPTIONS.md"
-
-# alpha.4 — UI/UX
-copy_template ".bequite/uiux/SECTION_MAP.md"          ".bequite/uiux/SECTION_MAP.md"
-copy_template ".bequite/uiux/LIVE_EDIT_LOG.md"        ".bequite/uiux/LIVE_EDIT_LOG.md"
-copy_template ".bequite/uiux/UIUX_VARIANTS_REPORT.md" ".bequite/uiux/UIUX_VARIANTS_REPORT.md"
-copy_template ".bequite/uiux/selected-variant.md"      ".bequite/uiux/selected-variant.md"
-
-# alpha.8 — jobs
-copy_template ".bequite/jobs/JOB_PROFILE.md"          ".bequite/jobs/JOB_PROFILE.md"
-copy_template ".bequite/jobs/JOB_SEARCH_LOG.md"       ".bequite/jobs/JOB_SEARCH_LOG.md"
-copy_template ".bequite/jobs/OPPORTUNITIES.md"        ".bequite/jobs/OPPORTUNITIES.md"
-copy_template ".bequite/jobs/APPLICATION_TRACKER.md"  ".bequite/jobs/APPLICATION_TRACKER.md"
-copy_template ".bequite/jobs/PITCH_TEMPLATES.md"      ".bequite/jobs/PITCH_TEMPLATES.md"
-
-# alpha.8 — money
-copy_template ".bequite/money/MONEY_PROFILE.md"       ".bequite/money/MONEY_PROFILE.md"
-copy_template ".bequite/money/MONEY_SEARCH_LOG.md"    ".bequite/money/MONEY_SEARCH_LOG.md"
-copy_template ".bequite/money/OPPORTUNITIES.md"       ".bequite/money/OPPORTUNITIES.md"
-copy_template ".bequite/money/TRUST_CHECKS.md"        ".bequite/money/TRUST_CHECKS.md"
-copy_template ".bequite/money/ACTION_PLAN.md"         ".bequite/money/ACTION_PLAN.md"
-
-# alpha.10 — deep-intelligence templates (jobs)
-copy_template ".bequite/jobs/HIDDEN_GEMS.md"          ".bequite/jobs/HIDDEN_GEMS.md"
-copy_template ".bequite/jobs/COMMUNITY_SIGNALS.md"    ".bequite/jobs/COMMUNITY_SIGNALS.md"
-copy_template ".bequite/jobs/AI_ASSISTED_WORK.md"     ".bequite/jobs/AI_ASSISTED_WORK.md"
-
-# alpha.10 — deep-intelligence templates (money)
-copy_template ".bequite/money/HIDDEN_GEMS.md"         ".bequite/money/HIDDEN_GEMS.md"
-copy_template ".bequite/money/COMMUNITY_SIGNALS.md"   ".bequite/money/COMMUNITY_SIGNALS.md"
-copy_template ".bequite/money/AI_ASSISTED_PATHS.md"   ".bequite/money/AI_ASSISTED_PATHS.md"
-
-# alpha.10 — version + update tracking
-copy_template ".bequite/state/BEQUITE_VERSION.md"     ".bequite/state/BEQUITE_VERSION.md"
-copy_template ".bequite/state/UPDATE_SOURCE.md"       ".bequite/state/UPDATE_SOURCE.md"
-copy_template ".bequite/logs/UPDATE_LOG.md"           ".bequite/logs/UPDATE_LOG.md"
-
-# alpha.12 — delegate task pack + mode history
-copy_template ".bequite/state/MODE_HISTORY.md"                  ".bequite/state/MODE_HISTORY.md"
-copy_template ".bequite/tasks/DELEGATE_TASKS.md"                ".bequite/tasks/DELEGATE_TASKS.md"
-copy_template ".bequite/tasks/DELEGATE_INSTRUCTIONS.md"         ".bequite/tasks/DELEGATE_INSTRUCTIONS.md"
-copy_template ".bequite/tasks/DELEGATE_ACCEPTANCE_CRITERIA.md"  ".bequite/tasks/DELEGATE_ACCEPTANCE_CRITERIA.md"
-copy_template ".bequite/tasks/DELEGATE_TEST_PLAN.md"            ".bequite/tasks/DELEGATE_TEST_PLAN.md"
-copy_template ".bequite/audits/DELEGATE_REVIEW_REPORT.md"       ".bequite/audits/DELEGATE_REVIEW_REPORT.md"
-
-# alpha.13 — presentation builder
-copy_template ".bequite/presentations/PRESENTATION_BRIEF.md"            ".bequite/presentations/PRESENTATION_BRIEF.md"
-copy_template ".bequite/presentations/CONTENT_OUTLINE.md"               ".bequite/presentations/CONTENT_OUTLINE.md"
-copy_template ".bequite/presentations/SLIDE_PLAN.md"                    ".bequite/presentations/SLIDE_PLAN.md"
-copy_template ".bequite/presentations/DESIGN_BRIEF.md"                  ".bequite/presentations/DESIGN_BRIEF.md"
-copy_template ".bequite/presentations/MOTION_PLAN.md"                   ".bequite/presentations/MOTION_PLAN.md"
-copy_template ".bequite/presentations/SPEAKER_NOTES.md"                 ".bequite/presentations/SPEAKER_NOTES.md"
-copy_template ".bequite/presentations/REFERENCES.md"                    ".bequite/presentations/REFERENCES.md"
-copy_template ".bequite/presentations/PRESENTATION_VARIANTS_REPORT.md"  ".bequite/presentations/PRESENTATION_VARIANTS_REPORT.md"
-copy_template ".bequite/presentations/EXPORT_LOG.md"                    ".bequite/presentations/EXPORT_LOG.md"
-
-# alpha.17 — frontend design continuity
-copy_template ".bequite/design/DESIGN_DNA.md"                  ".bequite/design/DESIGN_DNA.md"
-copy_template ".bequite/design/FRONTEND_SKILL_MAP.md"          ".bequite/design/FRONTEND_SKILL_MAP.md"
-copy_template ".bequite/design/DESIGN_CONTINUITY_REPORT.md"    ".bequite/design/DESIGN_CONTINUITY_REPORT.md"
-copy_template ".bequite/state/FRONTEND_CONTEXT_SUMMARY.md"     ".bequite/state/FRONTEND_CONTEXT_SUMMARY.md"
-copy_template ".bequite/audits/VISUAL_QA_REPORT.md"            ".bequite/audits/VISUAL_QA_REPORT.md"
-
-# alpha.18 — reliability / context-engineering
-copy_template ".bequite/state/PROJECT_DNA.md"                  ".bequite/state/PROJECT_DNA.md"
-copy_template ".bequite/state/WORKING_NOTES.md"                ".bequite/state/WORKING_NOTES.md"
-copy_template ".bequite/plans/FILE_RESPONSIBILITY_MAP.md"      ".bequite/plans/FILE_RESPONSIBILITY_MAP.md"
-
-# alpha.19 — Fable Strengthening Pass (writing DNA + context summary + evidence log + file-risk rules + game-changer tracker + prompt patterns)
-copy_template ".bequite/writing/WRITING_DNA.md"                ".bequite/writing/WRITING_DNA.md"
-copy_template ".bequite/writing/STYLE_SAMPLES.md"              ".bequite/writing/STYLE_SAMPLES.md"
-copy_template ".bequite/writing/WRITING_RULES.md"              ".bequite/writing/WRITING_RULES.md"
-copy_template ".bequite/writing/FORBIDDEN_PATTERNS.md"         ".bequite/writing/FORBIDDEN_PATTERNS.md"
-copy_template ".bequite/writing/OUTPUT_REVIEW.md"              ".bequite/writing/OUTPUT_REVIEW.md"
-copy_template ".bequite/state/CONTEXT_SUMMARY.md"              ".bequite/state/CONTEXT_SUMMARY.md"
-copy_template ".bequite/state/FILE_RISK_RULES.md"              ".bequite/state/FILE_RISK_RULES.md"
-copy_template ".bequite/research/EVIDENCE_LOG.md"              ".bequite/research/EVIDENCE_LOG.md"
-copy_template ".bequite/prompts/PROMPT_PATTERNS.md"            ".bequite/prompts/PROMPT_PATTERNS.md"
-copy_template ".bequite/plans/GAME_CHANGER_FEATURE_DISCOVERY.md" ".bequite/plans/GAME_CHANGER_FEATURE_DISCOVERY.md"
-
-# alpha.20 — automatic skill routing
-copy_template ".bequite/skills/SKILL_REGISTRY.md"              ".bequite/skills/SKILL_REGISTRY.md"
-copy_template ".bequite/skills/SKILL_ROUTER.md"                ".bequite/skills/SKILL_ROUTER.md"
-copy_template ".bequite/skills/SKILL_USAGE_LOG.md"             ".bequite/skills/SKILL_USAGE_LOG.md"
-
-# alpha.21 — confidence + frontier discipline
-copy_template ".bequite/state/CONFIDENCE_RULES.md"             ".bequite/state/CONFIDENCE_RULES.md"
-copy_template ".bequite/tasks/TASK_CONFIDENCE.md"              ".bequite/tasks/TASK_CONFIDENCE.md"
-copy_template ".bequite/state/FRONTIER_REASONING_SUMMARY.md"   ".bequite/state/FRONTIER_REASONING_SUMMARY.md"
-
-# alpha.22 - command router + catalog IDs (capability memory files are created on first run by C3-C8)
-copy_template ".bequite/commands/COMMAND_ID_MAP.md"            ".bequite/commands/COMMAND_ID_MAP.md"
-copy_template ".bequite/commands/COMMAND_ROUTER.md"            ".bequite/commands/COMMAND_ROUTER.md"
-copy_template ".bequite/commands/NEXT_COMMAND_LOG.md"          ".bequite/commands/NEXT_COMMAND_LOG.md"
-
-# alpha.22 orchestration update
-copy_template ".bequite/state/ORCHESTRATION_MAP.md"            ".bequite/state/ORCHESTRATION_MAP.md"
-copy_template ".bequite/state/AUTO_MODE_RULES.md"              ".bequite/state/AUTO_MODE_RULES.md"
-copy_template ".bequite/state/CONTEXT_COMPACTION_RULES.md"     ".bequite/state/CONTEXT_COMPACTION_RULES.md"
-copy_template ".bequite/state/LOW_COST_MODEL_RULES.md"         ".bequite/state/LOW_COST_MODEL_RULES.md"
-
-# Copy commands.md at repo root (top-level reference)
-if [[ -f "$SOURCE/commands.md" && ! -f "./commands.md" ]]; then
-  cp "$SOURCE/commands.md" "./commands.md"
-  echo "  + commands.md (full command reference at repo root)"
-fi
-
-# --- 6. CLAUDE.md ---
-
+# --- 5. CLAUDE.md -------------------------------------------------------------
 section "Updating CLAUDE.md"
-
-BQ_MARKER="<!-- BEQUITE -->"
-
-if [[ ! -f "./CLAUDE.md" ]]; then
-  cat > ./CLAUDE.md <<EOF
-# CLAUDE.md
-
-This project uses **BeQuite $BEQUITE_VERSION** — a lightweight Claude Code skill pack.
-
-$BQ_MARKER
-
-## How to use BeQuite here
-
-- Run \`/bequite\` to see the gate-aware menu.
-- Run \`/bq-now\` for one-line orientation (faster than \`/bequite\`).
-- Run \`/bq-help\` for the full command reference (or open \`commands.md\`).
-- \`/bq-init\` to formally initialize (creates baseline state files).
-- \`/bq-auto [intent] "task"\` for scoped autonomous mode (17 intents).
-- \`/bq-suggest "<situation>"\` for workflow advice — recommends commands + mode.
-- \`/bq-job-finder\` or \`/bq-make-money\` for opportunity discovery (Claude searches; deep intelligence + \`worldwide_hidden=true\`).
-- \`/bq-update\` to safely refresh BeQuite itself when a new alpha ships.
-- BeQuite memory lives in \`.bequite/\` (state / logs / plans / tasks / audits / principles / uiux / jobs / money / backups).
-- BeQuite commands live in \`.claude/commands/bequite.md\` + \`.claude/commands/bq-*.md\`.
-- BeQuite skills live in \`.claude/skills/bequite-*/\`.
-
-## Core operating rules (BeQuite)
-
-1. **Tool neutrality** — named tools are EXAMPLES, not commands. See \`.bequite/principles/TOOL_NEUTRALITY.md\`.
-2. Never claim a task is "done" unless \`/bq-verify\` passes.
-3. Always update \`.bequite/logs/AGENT_LOG.md\` when you take a real action.
-4. Always update \`.bequite/state/WORKFLOW_GATES.md\` when a gate is met.
-5. Banned weasel words: should, probably, seems to, appears to, I think it works, might, hopefully, in theory.
-6. No out-of-order commands — gate system blocks them.
-7. **Skills-first** — before doing ANY command (workflow or capability: course, presentation, etc.), select + announce the suitable BeQuite skills FIRST, then act. \`/bq-plan\` records skills per phase; \`/bq-assign\` records skills + recommended model + effort + confidence per task; after each phase, run test + verification before moving on.
-
-<!-- /BEQUITE -->
-EOF
+block="$(sed "s/{{VERSION}}/$BEQUITE_VERSION/g" "$SOURCE/templates/CLAUDE.bequite.md")"
+if [[ ! -f ./CLAUDE.md ]]; then
+  printf '# CLAUDE.md\n\n%s\n' "$block" > ./CLAUDE.md
   echo "  created CLAUDE.md"
+elif grep -q "<!-- BEQUITE -->" ./CLAUDE.md; then
+  BQ_BLOCK="$block" awk '
+    /<!-- BEQUITE -->/ {print ENVIRON["BQ_BLOCK"]; skip=1; next}
+    /<!-- \/BEQUITE -->/ {skip=0; next}
+    !skip {print}
+  ' ./CLAUDE.md > ./CLAUDE.md.bqtmp && mv ./CLAUDE.md.bqtmp ./CLAUDE.md
+  echo "  refreshed the BeQuite section"
 else
-  if ! grep -q "$BQ_MARKER" ./CLAUDE.md; then
-    cat >> ./CLAUDE.md <<EOF
-
----
-
-$BQ_MARKER
-
-# BeQuite $BEQUITE_VERSION
-
-This project uses **BeQuite** — a lightweight Claude Code skill pack.
-
-- \`/bequite\` — gate-aware menu
-- \`/bq-now\` — one-line status
-- \`/bq-help\` — full reference (also at \`commands.md\`)
-- \`/bq-auto [intent] "task"\` — scoped autonomous mode
-- \`/bq-suggest "<situation>"\` — workflow advisor
-- \`/bq-job-finder\` / \`/bq-make-money\` — opportunity discovery with deep intelligence + \`worldwide_hidden=true\`
-- \`/bq-update\` — safe BeQuite self-update (backups + non-destructive)
-
-See \`.bequite/\` for memory + state. Named tools are EXAMPLES — see \`.bequite/principles/TOOL_NEUTRALITY.md\`.
-**Skills-first:** before any command (incl. course/presentation/etc.), select + announce suitable skills before acting; \`/bq-assign\` tags each task with skills + recommended model + effort + confidence; verify each phase before the next.
-Memory-first principle: see \`docs/architecture/MEMORY_FIRST_BEHAVIOR.md\`.
-
-<!-- /BEQUITE -->
-EOF
-    echo "  appended BeQuite section"
-  else
-    echo "  BeQuite section already present; skipped"
-  fi
+  printf '\n---\n\n%s\n' "$block" >> ./CLAUDE.md
+  echo "  appended the BeQuite section"
 fi
 
-# --- 7. Cleanup ---
-
-if [[ -n "${TMP:-}" && -d "$TMP" ]]; then
-  rm -rf "$TMP"
-fi
-
-# --- 8. Done ---
-
+# --- 6. Done ------------------------------------------------------------------
 section "BeQuite $BEQUITE_VERSION installed"
 echo
-echo "  $(cyan "Run inside Claude Code:")"
-echo "    /bequite              gate-aware menu + next 3 recommendations"
-echo "    /bq-now               one-line orientation (faster than /bequite)"
-echo "    /bq-help              full command reference"
-echo "    /bq-init              formally initialize this project"
-echo "    /bq-discover          inspect this repo"
-echo "    /bq-doctor            environment health"
-echo
-echo "  $(cyan "Autonomous:")"
-echo "    /bq-auto new \"..\"     full P0->P5 lifecycle"
-echo "    /bq-auto fix \"..\"     scoped fix mini-cycle"
-echo "    /bq-auto uiux variants=5 \"..\"   generate 5 UI directions"
-echo "    /bq-live-edit \"..\"               section-by-section frontend edits"
-echo
-echo "  $(cyan "Opportunity and Workflows (alpha.8 + deep intelligence alpha.10):")"
-echo "    /bq-suggest \"<situation>\"        workflow advisor + mode recommendation"
-echo "    /bq-job-finder                   real work opportunities (Claude searches)"
-echo "    /bq-make-money                   earning opportunities + 10 tracks"
-echo "      worldwide_hidden=true          search beyond famous English platforms"
-echo "      trending_now=true              last-30-days surge"
-echo "      community_discovered=true      Reddit / IH / HN / X / forum signals"
-echo "      AI_assisted=true               surface AI-multiplier work paths"
-echo
-echo "  $(cyan "Maintenance (alpha.10):")"
-echo "    /bq-update                       safe BeQuite self-update (backups + no overwrites)"
-echo "    /bq-update check                 preview what would change"
-echo
-echo "  $(cyan "Operating modes (alpha.12 — composable):")"
-echo "    /bq-auto deep \"..\"               full 11-dim research + red-team for quality-critical work"
-echo "    /bq-auto fast \"..\"               short discovery; still tests + verifies"
-echo "    /bq-auto token-saver \"..\"        (alias: lean) low context cost; reuse cached research"
-echo "    /bq-auto delegate \"..\"           strong model architects + cheap model implements + strong model reviews"
-echo
-echo "  $(cyan "Creative + Content Workflows (alpha.13):")"
-echo "    /bq-presentation Create a lecture about X       natural language; quotes optional"
-echo "    /bq-presentation format=pptx variants=3 ...     PPTX with 3 design directions"
-echo "    /bq-presentation format=html ...                cinematic browser slides"
-echo "    /bq-presentation format=both ...                same content, two renders"
-echo "    /bq-presentation strict=true source=...         preserve source (PDF / Word / scientific)"
-echo "    /bq-presentation creative=true ...              topic-only; add hooks + story"
-echo
-echo "  Memory:        .bequite/ (state / logs / plans / tasks / audits / uiux / jobs / money / presentations / backups)"
-echo "  Commands:      .claude/commands/"
-echo "  Skills:        .claude/skills/"
-echo "  Reference:     commands.md (repo root) — full command catalog"
-echo "  Tool rule:     .bequite/principles/TOOL_NEUTRALITY.md"
+echo "  In Claude Code, start with:"
+echo "    /bequite        menu: project state + next recommended commands"
+echo "    /bq-help        full command reference (also commands.md)"
+echo "    /bq-auto \"..\"   autonomous runner; stops only at hard gates"
 echo

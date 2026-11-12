@@ -1,1693 +1,910 @@
-# Changelog
+# BeQuite Changelog
 
-All notable changes to BeQuite are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Conventional Commits](https://www.conventionalcommits.org/). Versioning is [Semantic Versioning](https://semver.org/).
+Format: [Keep a Changelog v1.1](https://keepachangelog.com/en/1.1.0/) · Versioning: [Semantic Versioning](https://semver.org/).
 
-## [Unreleased] — tracking toward v1.x point releases + v2.0.0-alpha.6
+Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANGELOG-legacy.md`](../legacy/CHANGELOG-legacy.md) after Phase B cleanup.
 
----
+## [Unreleased] - 4.0.0 "Titan"
 
-## [2.0.0-alpha.5] — 2026-05-11 — Docker build fixes (caught on first real `docker compose up`)
+### Changed - T0 safety
+- **Installer no longer leaks BeQuite's own memory into your project.** Both installers used to copy BeQuite's live `MISTAKE_MEMORY`, `EVIDENCE_LOG`, `AGENT_LOG`, `SKILL_USAGE_LOG` and version history into every install. They now copy a clean scaffold from `templates/bequite/`. Existing project memory is never overwritten, even with `--force` (which now only refreshes commands and skills).
+- **Installers simplified and unified.** One CLAUDE.md block (`templates/CLAUDE.bequite.md`) feeds both installers. Re-running refreshes the BeQuite section in place instead of appending a second one. The PowerShell installer no longer uses `exit`, which closed the user's shell under `irm | iex`.
+- **Release workflow no longer publishes the retired Python CLI to PyPI.** A `v*.*.*` tag now runs the checks and creates a GitHub Release from this changelog. CI now runs `scripts/bq_check.py` plus installer smoke tests (bash, and PowerShell through the real `irm | iex` byte path).
 
-### Fixed (2 bugs caught by your live Docker test)
+### Removed - T0 cleanup (everything kept on the `archive/v2` branch)
+- v2 heavy-direction leftovers: `cli/`, `tests/`, `template/`, `skill/`, `examples/`, `prompts/`, `state/`, `evidence/`, `package.json`, `Makefile`, `.env.example`, `.dockerignore`, `.commitlintrc.json`, the v2 bootstrap/install scripts, three v2 CI workflows, `docs/legacy/`, `docs/audits/`, the v2 root changelog, and the master/bootstrap brief files. Tracked files: 625 → 193.
+- The repo's own `.bequite/` working memory is no longer published (local only; snapshot on `archive/v2`). This changelog moved to the repo root.
 
-**Bug 1: API build failed at `COPY README.md ./README.md`.**
+### Added - T0
+- `scripts/bq_check.py`: standard-library self-check that turns rules into failing checks (first check: installer encoding and iex safety).
+- `motion-library/`: a local reference-film library for `/bq-motion` (`inbox/` for films, written breakdowns in `refs/`, `INDEX.md`). Third-party media is gitignored.
 
-```
-ERROR [api runner 7/7] COPY README.md ./README.md
-target api: failed to solve: ... "/README.md": not found
-```
+## [3.0.0-alpha.25] - 2026-06-13 - Skills-first workflow law + per-task execution profile + post-phase verify
 
-Root cause: `studio/api/.dockerignore` excludes `*.md` (image-hygiene heuristic), but the Dockerfile then explicitly tried to COPY README.md. The .dockerignore wins; the file wasn't in the build context. README isn't needed at runtime anyway.
+### Changed (workflow law)
+- **Skills-first, global:** the execution contract (step 4) now makes selecting + announcing skills the FIRST substantive step of EVERY command - workflow AND capability (course/presentation/reference/offer/automation/brand-kit/community/recording/start) AND maintenance. Acting before announcing skills is a contract violation (trivial reads exempt). CLAUDE.md core rule 17 added; mirrored into the installer-written project CLAUDE.md ("system prompt").
+- **Skills chosen across the pipeline:** /bq-discover + /bq-research select skills (and research may recommend a VERIFIED external GitHub skill on a real gap - safe path: verify repo/author/recency, 10 tool-neutrality questions, inspectable markdown, **user-approved install only, never auto-install**); /bq-plan records per-phase skills; /bq-assign records per-task skills.
+- **Per-task Execution Profile:** /bq-plan (per phase) and /bq-assign (per task) now carry recommended model + tier · effort (quick/standard/high/max) · confidence % (new `docs/architecture/TASK_EXECUTION_PROFILE.md`). Honest: BeQuite recommends a model, never switches it; never-give-small list forces tier A for security/migrations/auth/payments/destructive/broad-refactor/release.
+- **Post-phase verify gate:** after implementing any phase/task, select verification skills (testing-gate/guard-pass/security/system-design/frontend-quality) and run its tests + verification with evidence BEFORE advancing; failure routes to /bq-fix. Wired into the contract (step 9), /bq-implement, /bq-feature.
+- Synced: AUTO_SKILL_ROUTING_STRATEGY, ORCHESTRATION_MAP (s15), CLAUDE.md, both installers (+banner counts 60/31, version alpha.25). No new commands/skills (60/31).
 
-**Fix:** Removed the `COPY README.md` line from `studio/api/Dockerfile`. The .dockerignore exclusion stands; docs live in the repo, not the runtime image.
+### Fixed (hotfix 2026-06-13 - same release)
+- **`irm | iex` Windows install broke again - BOM regression.** The alpha.25 version-bump script wrote install-bequite.ps1 with Python `utf-8-sig`, which **re-prepended the UTF-8 BOM** that hotfix #2 had stripped. Piped through `iex`, the BOM glued to the leading `#` so line 1 stopped being a comment and PowerShell ran `lightweight` (the comment text) as a command. `ParseFile` AND `[ScriptBlock]::Create` both mask a leading BOM, so the alpha.25 "ps1 OK" check missed it. Fix: stripped the 3-byte BOM - the file is pure ASCII, no BOM again (no other change). **Reproduced** the exact failure via `[Text.Encoding]::UTF8.GetString([IO.File]::ReadAllBytes(...)) | iex` (the faithful irm|iex byte path), then **re-verified clean** on that same path in an isolated temp dir: no `lightweight`/`CommandNotFound`, 61 command files / 31 skill dirs installed. **Sharpened standing release check:** byte-level BOM assert (first 3 bytes != `EF BB BF`) + an actual `iex` run - never trust ParseFile/ScriptBlock::Create alone, and never write the .ps1 with `utf-8-sig` or PowerShell's default (BOM-adding) encoding.
 
-**Bug 2 (preempted): healthchecks used `wget`, which isn't in any of the base images.**
+## [3.0.0-alpha.24] - 2026-06-13 - Selected-V2 build + P1 maintenance
 
-`oven/bun:1.1`, `node:20-bookworm-slim` — none ship `wget` or `curl` by default. All three healthchecks would have silently failed → containers marked unhealthy → dashboard waits forever for `api: condition: service_healthy`.
+### Added (2026-06-13, same release)
+- **Hooks examples hardened (field-verified live):** destructive-block matcher widened from `Bash` to `Bash|PowerShell` in both settings examples (the Bash-only example missed PowerShell-tool commands on Windows); documented the whole-command-string scan gotcha (literal `rm -rf`/`DROP TABLE`/secret tokens in echo/comment text self-block) in the hook README + CLAUDE_CODE_HOOKS_STRATEGY + /bq-hooks. All 3 hooks confirmed firing live in a real project (destructive x3, secret AWS+Anthropic, Stop hook on a weasel-word claim - resolving the earlier not-load-tested caveat).
+- **M3 `/bq-hooks` (59 -> 60 commands):** manage the opt-in Claude Code safety hooks - `status` / `enable` / `disable` / `test`. Hooks still ship OFF by default (RCE-vector; review-before-enable). `enable` MERGES the hooks block into `.claude/settings.json` (never overwrites; R3 hard gate + confirmation; reload required). `test` fires each hook script with crafted stdin JSON and checks exit codes (2=block, 0=allow) without needing a Claude reload. Verified all 3 PS1 hooks return correct codes (destructive rm -rf -> 2, safe ls -> 0, secret write -> 2).
 
-**Fix:** Replaced all three `HEALTHCHECK CMD wget ...` with native one-liners:
+### Fixed (hotfix 2026-06-13)
+- **`irm | iex` Windows install was broken in every prior release** — install-bequite.ps1 led with `[CmdletBinding()] param()`, which `Invoke-Expression` cannot evaluate when the script is piped as a string (file-syntax was valid, so `ParseFile` never caught it; the bash `curl|bash` path always worked). Replaced the param block with manual `$args` + env-var (`BEQUITE_FROM_LOCAL`/`BEQUITE_FORCE`) parsing; `-FromLocal`/`-Force` still work for file execution. Verified via `[ScriptBlock]::Create((Get-Content -Raw ...))` (the real iex path). New standing release check: test the iex-compile path, not only ParseFile.
+- **(hotfix #2) UTF-8 BOM + non-ASCII also broke `irm | iex`** — the BOM (added alpha.19 for file-exec) glued to the leading `<#`, so the comment block never opened and PowerShell executed `.SYNOPSIS`/`Copies`/etc. as commands; 26 lines also held em/en-dashes. Fixed: install-bequite.ps1 is now **pure ASCII, no BOM**, with `#` line comments instead of a `<# #>` block (ASCII needs no BOM, so file execution stays safe too). Verified end-to-end via `Get-Content -Raw | iex` in an isolated temp dir (no network): "v3.0.0-alpha.24 installed", 60 command files / 31 skills / full scaffold.
 
-- **API** (`oven/bun:1.1`): `bun -e "fetch('http://localhost:3002/healthz').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"`
-- **Dashboard + marketing** (`node:20-bookworm-slim`): same shape using Node 20's built-in `fetch`.
+### Added
+- **6 capability commands (53 -> 59):** C12 /bq-automation (tool-neutral workflow+bot blueprints; official-API-first; idempotency/retry/failure/secrets/kill-switch; bot safety; installs nothing) · C13 /bq-local-business (offline -> minimum digital system; MENA/WhatsApp-aware) · C14 /bq-brand-kit (non-generic identity; research-driven; reference-safe) · C15 /bq-community · C16 /bq-recording (video -> knowledge; transcript-first; meaningful-change keyframe dedup; tools OPTIONAL, none installed; no ToS-violating downloads) · C17 /bq-start (Starting Path Advisor). 8 specs in docs/specs/.
+- **Extensions:** /bq-offer business-system/agency/service-business (AI Service Business Builder, merged not separate) · /bq-handoff workflow-export (secret-scanned) · /bq-release template (multi-tenant isolation mandatory) · Course Architect inside /bq-course.
+- **+1 skill (30 -> 31):** bequite-automation-engineer (distilled from retired v2 automation content; concept merge, not a copy).
+- **Audits/plans:** ALPHA_24_SELECTED_V2_BATCH_PLAN · P1_SKILL_PATCH_AUDIT · LEGACY_SKILL_FOLDER_AUDIT · HIGH_RISK_COMMAND_TEST_CASES + HIGH_RISK_COMMAND_HARDENING_AUDIT · OKAY_COMMAND_TIGHTENING_AUDIT. 8 memory scaffolds.
 
-Bun and Node 20 both have `fetch` as a global. No image bloat from adding wget/curl. Also bumped retries from 3 → 5 and start-period to 15s/25s to be kinder on slow first-boot cold starts.
+### Changed / Fixed
+- **P1:** problem-solver (10-step diagnostic workflow + worked example) and multi-model-planning (current-system + multimodal) patched to PASS; /bq-mode mode-decision pointer.
+- **Legacy skill/ folder:** inventoried (119 files), legacy-marked with skill/README.md DEPRECATED pointer; useful automation content merged; nothing deleted.
+- Installers -> alpha.24 (+8 scaffold dirs; bash -n OK, ps1 parse 0 errors); routers/map/registry/menus/README/commands.md/catalog/CLAUDE.md synced (59/31).
 
-### Verified
+### Honest status
+- Model: ran on claude-opus-4-8 (the /model command set it; user text said fable 5 - conflict reported, logged). No live trials on any of the now-13 capability commands. Parked-and-documented: data-product, agent-pack, app-store-kit, cross-agent adapters, heavy media runtime, provider integrations.
 
-- `docker compose config --quiet` → exit 0 (YAML + refs still valid).
-- The fix targets the exact failure the user reported: `COPY README.md` line removed; healthchecks now use Bun/Node fetch (always available in their respective base images).
-- **Still no live `docker compose up --build` from my session** (daemon was down for me). The user's daemon hit the README bug; the fix removes that step entirely so it CAN'T fail there again. The healthcheck fix is preemptive but verified by reading the base-image docs.
+## [3.0.0-alpha.23] - 2026-06-12 - Offer Engine + Tightening Pass
 
-### Changed
-
-- `studio/api/Dockerfile` — removed `COPY README.md` line; replaced wget healthcheck with bun fetch.
-- `studio/dashboard/Dockerfile` — replaced wget healthcheck with node fetch.
-- `studio/marketing/Dockerfile` — replaced wget healthcheck with node fetch.
-- `studio/api/package.json::version` → `2.0.0-alpha.5`.
-- `studio/dashboard/package.json::version` → `2.0.0-alpha.5`.
-- `studio/marketing/package.json::version` → `2.0.0-alpha.5`.
-
-### Honest reporting per Article VI
-
-Two install-path bugs that I previously called out as "first release without live attestation" — the v2.0.0-alpha.4 caveat about "I didn't run `docker compose up --build` myself" caught exactly these two issues on first real use. Iron Law X exists for this. Next Docker-related release (v2.0.0-alpha.6+) should include a live `docker compose up --build` smoke as part of attestation.
-
----
-
-## [2.0.0-alpha.4] — 2026-05-11 — Docker support (one-command Studio stack)
-
-### Added — full Docker Compose stack for the Studio
-
-The Studio (marketing + dashboard + API) now boots via a single command:
-
-```bash
-git clone https://github.com/xpShawky/BeQuite.git
-cd BeQuite
-docker compose up --build
-```
-
-No Node, no Bun, no pnpm install required on the host — just Docker Desktop. After the first build (~60s on a modern laptop), `http://localhost:3000`, `:3001`, `:3002` all light up.
-
-**Three Dockerfiles, all multi-stage and production-grade:**
-
-- **`studio/api/Dockerfile`** — `oven/bun:1.1` base; 2 stages (deps + runner). Healthcheck against `/healthz`. Volume mount target `/workspace` so the API reads the host repo's `.bequite/` directory.
-- **`studio/dashboard/Dockerfile`** — `node:20-bookworm-slim` base; 3 stages (deps + builder + runner). Build arg `NEXT_PUBLIC_BEQUITE_API_BASE` bakes the client-side URL into the bundle. Non-root `nextjs` user.
-- **`studio/marketing/Dockerfile`** — `node:20-bookworm-slim` base; 3 stages. MDX content copied into the image so `/docs` route works in production. Non-root user.
-
-**`docker-compose.yml` at repo root** wires:
-- Service names (`api`, `dashboard`, `marketing`) for inter-container DNS.
-- Port forwarding (3000 / 3001 / 3002).
-- `depends_on: api: condition: service_healthy` — dashboard waits for the API's healthcheck before starting.
-- Two env namespaces for the dashboard (`BEQUITE_API_BASE=http://api:3002` server-side; `NEXT_PUBLIC_BEQUITE_API_BASE=http://localhost:3002` client-side via build arg). This is the critical detail: browser EventSource can't resolve docker service names, so it hits the host-published port.
-- Volume mount `.:/workspace` on the API so receipts + memory + state read/write back to the host filesystem.
-
-**Convenience helpers:**
-
-- **`scripts/docker-up.ps1`** — Windows. Daemon-running check, port-conflict warning, foreground-or-detached, `-Down` flag, green ASCII success box.
-- **`scripts/docker-up.sh`** — macOS / Linux equivalent. Same flag surface (`--detach`, `--down`, `--no-build`).
-
-**`.dockerignore` files** at repo root + per-service to keep image build contexts lean (no `node_modules`, no `.next`, no Python venv, no `.git`, no secrets).
-
-### Verified
-
-- `docker compose config --quiet` returns exit 0 (YAML + references all valid).
-- Dockerfile syntax verified against Docker BuildKit v29.
-- Build context tested for sensitive-file exclusion (`.bequite/.keys`, `.env*`, etc.).
-- **Live `docker compose up` not run in-session** — the user's Docker Desktop daemon was not running at attestation time. The build will succeed on first `docker compose up --build` (no syntax issues; multi-stage Dockerfiles tested for parse-time correctness). If anything breaks at build time, the error message will be clear and we can iterate.
-
-### Why Docker
-
-- Vibecoder UX — one command. No "install Bun, install pnpm, run three terminals, wire env vars."
-- Reproducible — same image on every machine; no "works on my laptop" drift.
-- Easy to demo — `docker compose up` + share `localhost:3000` link.
-- Sets up for cloud deployment (v2.0.0-beta.1+ will publish these images to a registry).
+### Added
+- **C11 `/bq-offer` (52 -> 53 commands):** skill/service/niche/pain -> sellable productized offer; 12 artifacts in `.bequite/offers/`. Honest-selling rules: no invented demand, no fake income claims, **promise != guarantee**, no legal advice, UNVERIFIED-assumption marking, output language follows the user request. Completes the monetization chain C6 -> C10 -> **C11** -> C8 -> W4.2 proof. Spec `docs/specs/OFFER_ENGINE.md`. **Built, NOT live-tested.**
+- **Tightening audits:** COMMAND_SKILL_BEST_PRACTICE_AUDIT (15 questions + 8 domain verdicts) · DUPLICATION_AND_CONFLICT_AUDIT (11 checks; 3 fixed, 1 deferred) · GENERIC_OUTPUT_RISK_AUDIT · COMMAND_SKILL_OUTPUT_QUALITY_MATRIX (53 commands + 30 skills) · BEST_PRACTICE_EVIDENCE_LOG (LIVE/PRIOR-LIVE/ECO labels) · BEQUITE_TIGHTENING_PLAN (P1: problem-solver example, multi-model phasing, skill/ dir pointer)
 
 ### Changed
+- **AGENTS.md verified as a Linux Foundation standard** (60k+ projects; Codex/Cursor/Gemini CLI/Copilot/Zed/Warp/Windsurf native support) - cross-agent docs rewritten around the single standard bridge file
+- Monetization journey updated in router + suggest (+C11); proposal sibling notes; Slidev live-verified (v52.16.0) as presentation candidate; installers -> alpha.23 (+offers scaffold; bash -n OK, ps1 0 errors)
 
-- `studio/api/package.json::version` → `2.0.0-alpha.4` (was `2.0.0-alpha.1`).
-- `studio/dashboard/package.json::version` → `2.0.0-alpha.4`.
-- `studio/marketing/package.json::version` → `2.0.0-alpha.4`.
-- `README.md` — now leads with **Path A (Docker)** as the recommended install. Path B (native bootstrap) still available for CLI-only users.
-- `docs/INSTALL.md` — three-path structure (Docker / native bootstrap / manual).
+### Honest status
+- No live trials run on any of the 7 capability commands; no parked V2 item built; matrices: 0 weak commands, 2 thin/stale skills (P1-queued)
 
-### Honest reporting per Article VI
+## [3.0.0-alpha.22] - 2026-06-12 — Navigation & Capability Consolidation
 
-I built the Docker artifacts but didn't actually run `docker compose up --build` in-session because Docker Desktop's daemon wasn't running. Compose YAML validates clean, Dockerfile syntax is correct, multi-stage layering is standard. The risk is that during the actual `npm install` inside the dashboard/marketing image build, a transient npm/network issue or a peer-dep edge case could cause the build to fail — those are recoverable by re-running. If the user hits anything during their first `docker compose up`, the error will be obvious and we can patch it.
+### Maintenance pass (2026-06-12 — post-orchestration stabilization, same release)
+- **Skill-audit baseline:** orchestrator / guard-pass / localization-rtl — 3/3 PASS structural (`SKILL_AUDIT_ALPHA_22_BASELINE.md`); registry quality column updated; live-invocation validation rides on first real runs
+- **Drift verification:** `DRIFT_VERIFICATION_POST_ORCHESTRATION.md` — 2 findings (USING runbook "29 skills"; catalog "27→29" missing orchestration note) → fixed; everything else consistent (53 files / 30 skills / C11 queued / no residue / no false live-test claims)
+- **Course PDF integrated as VERIFIED Reference A:** the Arabic "Your First Million" executive task list read directly (5 pages, text-extractable, no OCR; RTL extraction artifacts identified — localization-rtl skill's first real exercise). English concept extraction at `.bequite/courses/COURSE_PDF_REFERENCE_NOTES.md` (11 stages); COURSE_ENGINE reference policy rewritten (one reference, not the only authority); **language rule:** docs in English, course OUTPUT language follows the user's request
+- **REMAINING_WORK_MASTER.md** — canonical "what remains now?" ledger (A built-untested · B maintenance · C alpha.23 /bq-offer · D 13 V1 arguments · E 13 parked · F rejected · G recently completed); queryability wired into bequite/now/suggest/recover/memory/skill-audit + ORCHESTRATION_MAP §14 + orchestration model §5; REMAINING_ROADMAP_TASKS marked superseded
+- No version bump · /bq-offer NOT built · no live trials claimed · README sanity re-checked clean
 
-This is the only release in the v1.0.x / v2.0.x line so far that ships WITHOUT a live boot smoke. Next release should fix that by running `docker compose up` against the user's daemon as part of attestation.
+### Orchestration update (2026-06-12 — same release)
+- **Global Orchestrator (skill #30):** `bequite-orchestrator` + `.bequite/state/ORCHESTRATION_MAP.md` (source of truth on conflict/confusion/duplication/missing-capability) + `BEQUITE_ORCHESTRATION_MODEL.md` (pipeline + layer table); consulted by bequite/suggest/discover/plan/auto/implement/review/verify/skill-audit; both routers defer to it on conflict
+- **Auto Mode = orchestration layer:** 15-step anti-skip sequence with Not-applicable/Blocked markings (`AUTO_MODE_ORCHESTRATION_STRATEGY.md` + `AUTO_MODE_RULES.md`); stop/ask/continue/compact rules; 17 hard gates unchanged
+- **System Design Risk Check (mandatory for risky domains):** `SYSTEM_DESIGN_REASONING_STANDARD.md` — structured block wired into plan/feature/implement, verified in review/verify; 6 domain risk libraries (e-commerce stock races, booking slots, SaaS tenancy, dashboards, AI apps, automation); confidence capped at 89% while concurrency/consistency risks lack passing tests
+- **Context compaction:** thresholds 40/60/75/85% + Context Compact format (`CONTEXT_COMPACTION_STRATEGY.md` + rules card); extends alpha.18 context engineering
+- **Low-cost model execution:** tier A/B/C strategy + 10 small-model rules + never-give-small list (`LOW_COST_MODEL_EXECUTION_STRATEGY.md` + `USING_BEQUITE_WITH_SMALLER_MODELS.md` + rules card) — honest framing: narrows the gap, does NOT equal frontier models
+- **Missing Capability detection:** structured block in suggest/plan/auto/skill-audit + both routers — never stretch a wrong command
+- **Per-agent setup (spec-kit style):** `INSTALL_FOR_OTHER_AGENTS.md` — universal AGENTS.md bridge + per-agent table (Antigravity, Gemini CLI, Cursor, Codex app+CLI, Kimi, MiniMax, DeepSeek, Ollama, OpenClaw, Hermes) for Windows/macOS/Linux, global-clone + per-project layouts; multi-agent shared-memory rules
+- Counts: skills 29 → **30**; installers +4 state templates (verified: bash -n OK, ps1 parse 0 errors); README/commands/CLAUDE.md/registry/advisor/runbooks synced
 
----
+### Stabilization update (2026-06-12, doc-only — same release)
+- **4 repo-reality audits:** ALPHA_22_POST_RELEASE_STABILIZATION (7 doc findings fixed; Skill Expansion Reality Check: 0 new skills warranted, course-architect deferred to post-live-use) · SCRAPING_AUTOMATION_CONTEXT (capability VERIFIED PRESENT + first-class; Scrapling name live-verified; router signal row added) · CROSS_AGENT_COMPATIBILITY · COMMAND_CLASSIFICATION (0 misclassifications)
+- **Course Engine OCR:** 12-rule scanned/OCR PDF Source Intake in spec + command + catalog; new output `SOURCE_INTAKE_REPORT.md` (15 course outputs); never invents missing content; NEEDS REVIEW marking
+- **Cross-agent compatibility:** CROSS_AGENT_COMPATIBILITY_STRATEGY.md + USING_BEQUITE_OUTSIDE_CLAUDE_CODE.md + AGENT_COMPATIBILITY_MATRIX.md (docs only — no adapters/CLI/APIs built)
+- **README rewritten** as public product documentation (696 → ~190 lines; 13 scenario rows; stale 39/42/18-era counts removed); commands.md callout; runbooks updated (incl. deprecated-alias fix in workflow C); CLAUDE.md rows added
+- **Roadmap ledger:** `.bequite/tasks/REMAINING_ROADMAP_TASKS.md` (A keep-until-live-trial · B maintenance · C alpha.23 /bq-offer · D 13 V1 arguments · E 13 parked V2)
+- **Honesty:** no live trials run; /bq-offer NOT built; no version bump (stabilization of alpha.22)
 
-## [2.0.0-alpha.3] — 2026-05-11 — Studio Turbopack fixes (both apps render!)
+### Addendum (2026-06-12, doc-only — same release)
+- **Alpha.22 task checklist:** the full mega-prompt converted to a done/remaining task ledger at `.bequite/tasks/ALPHA_22_TASK_CHECKLIST.md` (A→Z verification: all acceptance criteria met; 6 open items listed)
+- **Forgotten ChatGPT Candidate Review** (7 ideas) in `APPROVED_CAPABILITY_SHAPE_DECISIONS.md`: demo-data → `/bq-feature demo-data` argument (absorbs V3 #18; demo+fixtures profiles) · persona-sim → `/bq-review persona` argument · client-intake → `/bq-scope intake` argument · price → `/bq-proposal price` argument (+product-strategist) · demo-script → merged into `/bq-release demo-video` (demo-script profile) · template → `/bq-release template` V2 park · **`/bq-offer` confirmed as the alpha.23 build candidate (C11 queued)**. 0 new commands now — anti-bloat holds.
+- V3 addendum (A1–A3 + 2 verdict changes); router addendum signals; ID map ARG notes updated
 
-### Fixed (2 bugs — both verified live before push)
-
-- **Marketing + dashboard both panicked at first request with `TurbopackInternalError`.** Root cause: `app/globals.css` in each app had `@import "../../brand/tokens.css"` — Turbopack rejects cross-package CSS imports because they leave the project filesystem root (`[project]/studio/marketing/` or `[project]/studio/dashboard/`). Error: `FileSystemPath("").join("../brand/tokens.css") leaves the filesystem root`.
-
-  **Fix:** Inlined the brand tokens from `studio/brand/tokens.css` directly into each app's `globals.css`. `studio/brand/tokens.css` remains the canonical reference; both copies must stay in sync. Documented at the top of each globals.css.
-
-- **Dashboard then crashed with `Module not found: Can't resolve './projects-filesystem.js'`.** Root cause: my dual-mode loader files (added in v2.0.0-alpha.1) used NodeNext-style `.js` extensions on internal imports (e.g. `import ... from "./projects-types.js"`). This is the right idiom for the Hono+Bun API but **wrong for Next.js Turbopack**, which uses bundler-style resolution and doesn't do the `.js → .ts` mapping that Node.js NodeNext does.
-
-  **Fix:** Stripped all `.js` extensions from internal lib imports in `studio/dashboard/lib/`. 9 imports across 6 files. Typecheck still passes (bundler-mode tsconfig handles the no-extension imports correctly).
-
-### Verified live this time (Iron Law X, no shortcuts)
-
-Both fixes verified in the user's `Test bequite/BeQuite/` clone before this commit was made:
-
-```
-cd studio/marketing && npm run dev
-curl http://localhost:3000  →  HTTP 200  (real content; brand logo preloaded)
-
-cd studio/dashboard && npm run dev
-curl http://localhost:3001  →  HTTP 200  (real content; astronaut + logo preloaded)
-```
-
-The cross-clone copy + dev server boot + curl was performed as the verification step. No "should work" claims this time.
+### Added
+- **Catalog IDs (Option A — display-only):** every command has a stable ID (W0.1–W5.3 workflow · N navigation · O orchestrators · C capabilities · M maintenance); files never renamed. `COMMAND_NUMBERING_AND_ORDERING_STRATEGY.md` + `.bequite/commands/COMMAND_ID_MAP.md` (52 active + 1 alias mapped); Options B/C formally rejected with reasons
+- **Workflow Command Router:** second routing layer — contract step 12 is now multi-command "Next Command Recommendations" (required next + 2–6 set with skills/auto-run + accelerators + do-not-run-yet); auto mode reports "Internal workflow executed: <IDs>"; `/bq-suggest` upgraded to main navigation assistant with 4 worked journey routes. `WORKFLOW_COMMAND_ROUTER.md` + `.bequite/commands/{COMMAND_ROUTER,NEXT_COMMAND_LOG}.md`
+- **6 capability commands (46 → 52):** C3 `/bq-reference` (clone-safe design extraction) · C4 `/bq-knowledge` (build/ask/rag-plan/export; no vector DB default) · C5 `/bq-course` (Course Engine; user PDF framework as ONE reference) · C6 `/bq-pain-radar` (public-sources-only ethics) · C7 `/bq-integrate` (UNVERIFIED-marked blueprints) · C8 `/bq-proposal` (no-overpromise rules) — 7 specs in `docs/specs/`; memory dirs scaffolded
+- **2 skills (27 → 29):** `bequite-localization-rtl` (auto-attach on Arabic/MENA/RTL) + `bequite-guard-pass` (post-work AI-failure-mode gates; guard-skills concept adapted — nothing copied/installed) + `GUARD_PASS_STRATEGY.md` + seed `GUARD_PASS_REPORT.md`
+- **11 argument workflows:** `/bq-verify regressions|drift` · `/bq-release readiness|announce|proof|demo-video` · `/bq-plan from-issues|migration` · `/bq-scope from-interview` · `/bq-test from-spec|fixtures` · `/bq-handoff client` · `/bq-audit client|a11y` · `/bq-uiux-variants style=`
+- **Reports:** `COMMAND_NAVIGATION_AND_CAPABILITY_CONSOLIDATION_AUDIT.md` · `APPROVED_CAPABILITY_SHAPE_DECISIONS.md` (incl. Older-V1 12-candidate review) · `GAME_CHANGER_FEATURE_DISCOVERY_V3.md` (20 fresh ranked ideas — proposals only)
 
 ### Changed
-
-- `studio/marketing/package.json::version` → `2.0.0-alpha.3`.
-- `studio/dashboard/package.json::version` → `2.0.0-alpha.3` (was `2.0.0-alpha.1`; alpha.2 was marketing-only).
-- `studio/marketing/app/globals.css` — full brand tokens inlined; cross-package import removed.
-- `studio/dashboard/app/globals.css` — brand tokens subset inlined; cross-package import removed.
-- `studio/dashboard/lib/{api-client,projects,projects-filesystem,projects-http,projects-types,streams}.ts` — `.js` extensions stripped from internal imports.
-
-### Honest reporting per Article VI
-
-Fifth install-path bug caught in two days:
-
-| Tag | Bug |
-|---|---|
-| v1.0.1 | cli/README.md missing (pip install broke) |
-| v1.0.2 | PowerShell `\"` parse bug (install.ps1 -Studio broke) |
-| v2.0.0-alpha.2 | R3F 8.x React 18 peer-dep (npm install marketing broke) |
-| v1.0.3 | pip stderr halted install script |
-| **v2.0.0-alpha.3** | **Turbopack cross-package CSS import + NodeNext .js extensions in Next.js context** |
-
-The pattern across all five: **shipped without actually running the thing in production-shape from a fresh clone**. This release closes that loop — both apps were booted and curl'd before the commit.
-
-### Author note for future contributors
-
-If you add new lib files to `studio/dashboard/lib/`, **do NOT use `.js` extensions on internal imports**. Next.js Turbopack does bundler-mode resolution. The Hono API in `studio/api/src/` is the exception — it runs on Bun's NodeNext-style ESM and DOES want `.js` extensions there. Different runtimes, different idioms.
-
----
-
-## [1.0.3] — 2026-05-11 — Vibecoder-friendly one-command install
+- Execution contract step 12 upgraded (alpha.20 → alpha.22); `/bequite` menu rebuilt with IDs (stale "34 commands" fixed); `/bq-help` + `/bq-suggest` counts fixed (37/39/15 stale) + ID sections; CLAUDE.md spec header alpha.19 → alpha.22 (was drifted); registry/router extended (8 new domains); taxonomy gains alpha.22 precedents; installers → alpha.22 (+7 scaffold dirs, +3 router templates; `bash -n` OK, ps1 parse 0 errors)
 
 ### Fixed
-
-- **`scripts/install.ps1` halted on benign `pip` stderr warnings.** Top-of-script `$ErrorActionPreference = "Stop"` treats ANY stderr from native commands as a fatal PowerShell error. The cache-deserialization warning from `python -m pip install --upgrade pip` (a no-op message, not a real failure) tripped this and aborted the script after creating the venv but before installing the CLI. Caught on fresh-clone testing.
-
-  **Fix:** Switched to `$ErrorActionPreference = "Continue"` and manually check `$LASTEXITCODE` after every critical native command. Added explicit `Exit-Fatal` helper that surfaces a clean error message instead of letting PowerShell dump a stack trace. Now harmless `pip`/`npm` stderr warnings don't halt the install.
-
-### Added — true one-command install
-
-- **`scripts/bootstrap.ps1`** — Windows one-liner. Detects missing prerequisites (Python, git) and prints **multiple install-hint options** (python.org link / winget / uv) — does NOT auto-install (those need a user click, and silent installs are sketchy). Clones the repo, runs `install.ps1`, prints next-step commands inside a green ASCII box. Designed to be `iex`'d from a fresh PowerShell:
-
-  ```powershell
-  irm https://raw.githubusercontent.com/xpShawky/BeQuite/main/scripts/bootstrap.ps1 | iex
-  ```
-
-- **`scripts/bootstrap.sh`** — Unix one-liner equivalent. Same flow for macOS / Linux:
-
-  ```bash
-  curl -fsSL https://raw.githubusercontent.com/xpShawky/BeQuite/main/scripts/bootstrap.sh | bash
-  ```
-
-  Both accept `-Studio` (Windows) / `--studio` (Unix) for the full Studio dependency install.
-
-- **`bequite quickstart`** command — friendly first-time onboarding guide. Prints the version, what BeQuite does, the four most useful next commands (with the 7-phase workflow), useful background commands, Studio quickstart, doc links. Brand-themed colors (gold/cyan).
-
-  This is the post-install equivalent of `claude /init` — one command to orient a new user.
-
-### Changed
-
-- `cli/bequite/__init__.py::__version__` → `1.0.3`.
-- `cli/pyproject.toml::version` → `1.0.3`.
-- `scripts/install.ps1` — rewritten with robust error handling + clean Exit-Fatal + better missing-prereq hints.
-- `README.md` — leads with the one-command install path; "Run — three commands" section right after; status table updated.
-
-### Verified
-
-- The new `install.ps1` was tested against `Test bequite/BeQuite/` (fresh clone). The previous version halted on `pip --upgrade` stderr; the rewrite proceeds through the full install cleanly.
-- The `bequite quickstart` command tested locally in the dev repo.
-
-### Honest reporting per Article VI
-
-This is the fourth install-path bug caught in two days (v1.0.1 missing README, v1.0.2 PowerShell quote escape, v2.0.0-alpha.2 React 19 peer-dep, v1.0.3 stderr-as-fatal). The pattern is clear: **install paths need clean-room verification per release**. The bootstrap.ps1 is the first script that's been tested by actually being `iex`'d from a clean PowerShell — that test happens immediately after this commit lands on origin.
-
----
-
-## [2.0.0-alpha.2] — 2026-05-11 — Marketing site React 19 peer-dep fix
-
-### Fixed
-
-- **`npm install` in `studio/marketing/` failed with ERESOLVE on a fresh clone.** `@react-three/fiber@8.x` declares `peer react@">=18 <19"`, refusing to resolve against the React 19 that Next.js 15 mandates. The error was clean but install-blocking:
-
-  ```
-  npm error Could not resolve dependency:
-  npm error peer react@">=18 <19" from @react-three/fiber@8.18.0
-  ```
-
-  This was caught by fresh-clone testing on Windows (the v1.0.2 `-Studio` install path got through the API + dashboard but tripped here). Would also have happened on macOS / Linux — pure peer-dep issue, not platform-specific.
-
-### Changed — `studio/marketing/package.json`
-
-| Package | Was | Now | Why |
-|---|---|---|---|
-| `@react-three/fiber` | `^8.17.0` | `^9.0.0` | React 19 compatibility (8.x peer-dep blocks ≥19) |
-| `@react-three/drei` | `^9.114.0` | `^10.0.0` | Matches R3F 9 |
-| `three` | `^0.169.0` | `^0.171.0` | R3F 9 minimum |
-| `@types/three` | `^0.169.0` | `^0.171.0` | Matches three |
-| `version` | `2.0.0-alpha.1` | `2.0.0-alpha.2` | Studio Layer 2 patch |
-
-### Verified end-to-end (Iron Law X — no repeats of the v1.0.2 mistake)
-
-```
-cd studio/marketing
-rm -rf node_modules package-lock.json
-npm install --no-audit --no-fund
-  → added 525 packages in 30s
-npx tsc --noEmit
-  → exit code 0
-```
-
-`Starfield.tsx` and `AgentCharacter3D.tsx` both compile clean against R3F 9 / drei 10 — the basic R3F JSX surface (`<Canvas>`, `useFrame`, `<points>`, `<bufferAttribute>`, `<ambientLight>`, `<primitive>`, `useGLTF`, `useAnimations`, `<Environment>`, `<OrbitControls>`) is stable across the major-version bump for these usage patterns.
-
-### Honest reporting per Article VI
-
-The v2.0.0-alpha.1 marketing `package.json` was authored in v0.16.0 (when React was still 18) and never re-tested against the React 19 it depends on transitively (Next.js 15 mandates 19). This is the third install-path bug caught by fresh-clone testing in two days (cli/README.md missing → v1.0.1, PowerShell quote escape → v1.0.2, this one → v2.0.0-alpha.2). The pattern is clear: **install paths need clean-room verification per release, not just `tsc --noEmit` on the developer's machine.** This will be encoded as a check in the v0.20.0 SSE / v1.0.x line going forward.
-
-### Compatibility note
-
-`@react-three/drei` v10 dropped a handful of v9-era helpers (`ScrollControls` legacy mode, certain `useFBO` overloads). The components shipped in v2.0.0-alpha.1 (`Starfield`, `AgentCharacter3D`) only use the stable subset (`<Environment>`, `<OrbitControls>`, `useGLTF`, `useAnimations`) and are unaffected. Future drei additions should reference the v10 API.
-
----
-
-## [1.0.2] — 2026-05-11 — Studio install-script PowerShell quote-escape fix
-
-### Fixed
-
-- **`scripts/install.ps1 -Studio` crashed on Windows with `"The module 'iex' could not be loaded"`.** Line 80 used `\"` to try to escape double quotes inside a double-quoted PowerShell string — but PowerShell uses backtick (`` ` ``) for escapes, NOT backslash. `\` is a literal character; the `"` immediately after it terminated the string. PowerShell then parsed the rest (`irm bun.sh/install.ps1 | iex...`) as actual commands and tried to invoke `iex` as a cmdlet, failing on auto-loading. Rewrote the three "Bun not on PATH" hint lines using **single-quoted strings** (no expansion, no escaping required for double quotes inside).
-
-  This was caught by fresh-clone testing on Windows; would NOT have shown up on macOS / Linux (`scripts/install.sh` is unaffected — it never used the broken escape).
-
-### Verified
-
-The CLI install path (`.\scripts\install.ps1` without `-Studio`) was already verified to work end-to-end in v1.0.1. The `-Studio` branch now also runs cleanly through the prereq-check section.
-
-### Changed
-
-- `cli/bequite/__init__.py::__version__` → `1.0.2`.
-- `cli/pyproject.toml::version` → `1.0.2`.
-- `scripts/install.ps1` line 80 — three single-quoted lines replace one broken double-quoted line.
-
-### Honest reporting per Article VI
-
-I wrote the install script in this session and pushed it as v1.0.1 without running it on Windows. The CLI-only path happened to work because no broken-escape line was hit; the `-Studio` path tripped the bug on its first real-world use. This is exactly the kind of Iron Law X failure ("did you actually run the script you just shipped?") that the doctrine targets. Verification step now added: on every install-script change, run both `.\install.ps1` and `.\install.ps1 -Studio` against a fresh `Test-bequite\` folder before pushing.
-
----
-
-## [1.0.1] — 2026-05-11 — Fresh-clone install fixes (critical)
-
-**Article VI failure caught by fresh-clone testing.** Two install-path bugs were silently shipping since v0.5.0 and v0.20.0 respectively. Every CHANGELOG since then that claimed "the CLI is installable via `pip install -e ./cli`" was technically false — the path errored from a clean clone. v1.0.1 fixes both, adds verified one-command install scripts, and ships a proper `docs/INSTALL.md`.
-
-### Fixed
-
-- **`cli/README.md` was missing.** `cli/pyproject.toml` has declared `readme = "README.md"` since v0.5.0, but the file was never staged. Hatchling rejects builds with `OSError: Readme file does not exist: README.md`, so `pip install -e ./cli` failed with a metadata-generation error from a fresh clone. The CLI was only installable via local hacks on this developer's machine (where the file may have existed transiently, or where a different build path was used). Authored a proper `cli/README.md` describing the package surface.
-
-- **`bequite --help` crashed on Windows with UnicodeEncodeError.** Click renders help text containing `→`, `✓`, `·` (Geist-style separators) via `sys.stdout.write()`, which on Windows defaults to `cp1252` codec — incapable of encoding `→`. Added a stdout/stderr reconfigure-to-UTF-8 block at the top of `cli/bequite/__main__.py` (uses Python 3.7+'s `reconfigure(encoding="utf-8", errors="replace")` with safe try/except for redirected-pipe contexts). All current AND future Unicode characters in help text now render cleanly on Windows, macOS, and Linux.
-
-### Added
-
-- **`scripts/install.ps1`** (~150 lines) — one-command install for Windows PowerShell 5.1 + 7+. Prereq checks (Python ≥ 3.11, git, optionally Node/pnpm/Bun for `-Studio`), venv creation, `pip install -e ./cli`, end-to-end `bequite --version` verification, optional Studio dependency install. Honest prereq warnings + clear next-step output.
-
-- **`scripts/install.sh`** (~110 lines) — bash equivalent for macOS / Linux. Same surface (`--studio`, `--clone-to`, `--venv-name` flags). `set -euo pipefail` for fail-loud behavior.
-
-- **`docs/INSTALL.md`** (~250 lines) — replaces the chat-only install instructions with a checked-in doc. Covers: one-command install via scripts, prerequisites per OS, manual install fallback, common errors and fixes (including the `&&` PowerShell-5.1 gotcha + the `pip install bequite` not-yet-on-PyPI explanation), verification URLs, optional per-host install (`bequite skill install --host cursor`).
-
-### Verified
-
-Iron Law X self-attestation done in-session:
-
-```
-$ cd /tmp/bq-install-test && python -m venv .venv
-$ source .venv/Scripts/activate
-$ pip install -e "C:/Ahmed Shawky/Antigravity projects/BeQuite/cli"
-... Successfully installed bequite-1.0.0 + 25 deps
-$ bequite --version  →  bequite, version 1.0.0
-$ bequite --help     →  (full help renders; no UnicodeEncodeError)
-$ bequite doctor     →  full diagnostic table renders
-$ bequite route providers  →  table renders
-$ bequite pricing list     →  fallback table renders
-```
-
-(The smoke test ran against the v1.0.0 wheel built from main, which is functionally equivalent to v1.0.1 plus the cli/README.md + UTF-8 fix.)
-
-### Changed
-
-- `cli/bequite/__init__.py::__version__` → `1.0.1`.
-- `cli/pyproject.toml::version` → `1.0.1`.
-- `cli/bequite/__main__.py` — added UTF-8 stdout/stderr reconfigure block.
-
-### Honest reporting per Article VI
-
-This bug should have been caught at v0.5.0. It wasn't because no one (including me) ever ran the install from a fresh clone — the file was present on the developer's local disk through some other path. This is the same class of failure as the silently-ignored `studio/*/lib/` files we fixed in the v0.19.0 follow-up, and the reason Iron Law X exists. v1.0.1 closes the loop: the install path is now verified end-to-end against a clean venv before any "the CLI installs cleanly" claim is made.
-
----
-
-## [2.0.0-alpha.1] — 2026-05-11 — Studio Edition First Pre-release
-
-**The first pre-release of Layer 2 Studio Edition.** Tagged at the same commit as the studio package.json bumps. Three Next.js + Hono apps sharing the gold-on-black brand:
-
-- **`studio/marketing/`** (`@bequite/marketing@2.0.0-alpha.1`) — Apple-grade cinematic landing + 6 deep MDX vibecoder tutorials + R3F starfield + brand system.
-- **`studio/dashboard/`** (`@bequite/dashboard@2.0.0-alpha.1`) — Next.js 15 operations console with dual-mode loader (filesystem ↔ HTTP), LiveIndicator (SSE-driven `router.refresh()`), live xterm.js terminal in HTTP mode.
-- **`studio/api/`** (`@bequite/api@2.0.0-alpha.1`) — Hono on Bun back-end. Three-mode auth, append-only writes, four SSE event streams, terminal exec surface (allow-list-gated per ADR-016).
-
-See [`docs/RELEASES/v2.0.0-alpha.1.md`](docs/RELEASES/v2.0.0-alpha.1.md) for the full release notes.
-
-### Changed
-
-- `studio/marketing/package.json::version` → `2.0.0-alpha.1` (was `0.17.0`).
-- `studio/dashboard/package.json::version` → `2.0.0-alpha.1` (was `0.20.5`).
-- `studio/api/package.json::version` → `2.0.0-alpha.1` (was `0.20.5`).
-
-### Companion release
-
-[`v1.0.0`](docs/RELEASES/v1.0.0.md) — Layer 1 Harness Final (Production/Stable). The CLI / skill / hooks / doctrines / templates surface stays on the Layer-1 trajectory; Studio Edition is opt-in.
-
-### Honest scope per Article VI
-
-What `v2.0.0-alpha.1` does **not** include:
-
-- **3D Blender pipeline.** Descoped per Ahmed's "without 3d model from blender" direction. R3F scaffold preserved at `studio/marketing/components/three/AgentCharacter3D.tsx` + `studio/marketing/public/3d/` for future contribution.
-- **Better-Auth integration.** Bearer-token MVP is in place (works for single-machine + multi-agent dev). Better-Auth (Doctrine `default-web-saas` Rule 9) lands `v2.0.0-alpha.3+` with the auth server.
-- **Postgres mirror.** Filesystem-backed today; Postgres lands `v2.0.0-beta.1+` for multi-user / cloud operation.
-- **Live stdin forwarding for the terminal.** Per ADR-016 §6 — POST-exec + SSE-output covers 95% of use cases.
-- **Bidirectional WebSocket transport.** SSE is the chosen mechanism for v2.x alpha line.
-- **Full Bun-equipped CI smoke.** All three Studio apps typecheck clean (`tsc --noEmit` exit 0); live-boot end-to-end smoke is `v2.0.0-alpha.2`'s verification step.
-- **Public-network deployment.** Single-machine dev or trusted-LAN only. TLS / IP-allow-list / K8s manifests land `v2.0.0-beta.2`.
-
-### v2.x roadmap
-
-| Version | Goal |
-|---|---|
-| `v2.0.0-alpha.2` | Live boot smoke from clean clone (Bun-equipped CI). Better-Auth integration design. |
-| `v2.0.0-alpha.3` | Better-Auth integration (Doctrine Rule 9; ADR-011 Phase-3 device-code). |
-| `v2.0.0-beta.1` | Postgres mirror for multi-user / cloud. Same endpoint surface; storage swap. |
-| `v2.0.0-beta.2` | Production deploy story: TLS, IP allow-list, K8s manifests. |
-| `v2.0.0` | Stable. Multi-user / cloud-capable. Layer 1 Harness v1.x keeps backward compatibility. |
-
----
-
-## [1.0.0] — 2026-05-11 — Layer 1 Harness Final
-
-**The first stable release.** Consolidates everything from `v0.1.0` (foundation + Constitution v1.0.0) through `v0.20.5` (terminal exec surface) into a single Production/Stable release. See [`docs/RELEASES/v1.0.0.md`](docs/RELEASES/v1.0.0.md) for the full release notes.
-
-### What v1.0.0 stabilizes
-
-- **Constitution v1.3.0** with 10 Articles (Iron Laws). Article X — Operational completeness — is the final addition.
-- **17 ADRs**, the operational record of every architectural decision.
-- **13 Doctrines** (forkable per-project rule packs).
-- **14 deterministic-gate hooks** (PreToolUse / PostToolUse / Stop / SessionStart).
-- **Python CLI** — `bequite` + `bq` console scripts; 19+ subcommands; `uvx`/`pipx`/`pip install` distributable; 125-test integration suite green on Python 3.14.
-- **20 personas** in the orchestrator's "you must act like" list.
-- **Reproducibility receipts** — chain-hashed JSON, ed25519-signed, validated via `bequite verify-receipts`.
-- **Three example projects** (`bookings-saas`, `ai-tool-wrapper`, `tauri-note-app`) — complete `.bequite/` tree + ADR + spec + phases + HANDOFF.
-- **Documentation** (8 docs).
-- **CI/release pipeline** — `ci.yml` (5-job matrix Python 3.11–3.14), `release.yml` (PyPI Trusted Publisher OIDC + GitHub Release), `commitlint.yml`.
-
-### Changed
-
-- `cli/bequite/__init__.py::__version__` → `1.0.0`.
-- `cli/pyproject.toml::version` → `1.0.0`. **Development Status classifier** bumped from `4 - Beta` → `5 - Production/Stable`.
-- Root `README.md` — rewritten as the v1.0.0 + v2.0.0-alpha.1 dual-release landing.
-- `docs/RELEASES/v1.0.0.md` — full release notes added.
-
-### Migration / breaking-change notes
-
-v1.0.0 is the first stable release; no breaking changes from v0.20.5. The 1.0 tag marks "API surface stabilized for the v1.x line." Downstream projects forked from pre-1.0:
-
-- **Constitution version**: bump 1.0.0 → 1.3.0; changes are additive (Articles VIII / IX / X added; nothing removed or relaxed).
-- **Receipt schema**: stable since v0.7.0.
-- **CLI command surface**: stable since v0.10.7.
-- **Doctrine schema**: stable since v0.1.1.
-- **Hook surface**: stable since v0.5.2.
-
-### Companion release
-
-[`v2.0.0-alpha.1`](docs/RELEASES/v2.0.0-alpha.1.md) — first pre-release of the Layer 2 Studio Edition (marketing site + dashboard + API). Tagged at the same commit as v1.0.0's successor.
-
-### Honest scope per Article VI
-
-What v1.0.0 does **not** include (per Ahmed's "without 3d model from blender" direction):
-
-- 3D Blender pipeline. R3F scaffold preserved at `studio/marketing/components/three/AgentCharacter3D.tsx` for future contribution.
-- Bidirectional WebSocket terminal (live stdin forwarding) — POST-exec + SSE-output works for the 90% case; live stdin lands v0.21.0+ if needed.
-- Better-Auth full integration — Bearer-token MVP is in place; Better-Auth lands v0.20.x+ with the auth server.
-- Postgres mirror — filesystem-backed today; Postgres lands v2.0.0 with multi-user / cloud operation.
-- PyPI + npm publishes — `release.yml` is wired and tag-triggered. Ahmed pushes the v1.0.0 wheel to PyPI manually (one-way door per Article IV).
-
-### Verification
-
-- API + dashboard both `tsc --noEmit` exit 0.
-- 125/125 Python integration tests green on Python 3.14.
-- Constitution v1.3.0 + 17 ADRs + 13 Doctrines + 14 hooks + 20 personas all consistent across CLAUDE.md / AGENTS.md / activeContext.md / progress.md.
-- Live boot smoke for the Studio surfaces deferred (Bun runtime not in this developer's environment; full smoke = post-PyPI-publish + Bun-equipped CI).
-
----
-
-## [0.20.5] — 2026-05-11
-
-### Added — Terminal exec + SSE stream + xterm.js renderer (per ADR-016)
-
-**The first endpoint that executes user-supplied commands.** Article IV + Article IX demand explicit Rules of Engagement; ADR-016 documents the full RoE.
-
-**API side (`studio/api/`):**
-
-- **`src/lib/exec-allowlist.ts`** — Hardcoded allow-list (`bequite`, `bq`). No env override; no config flag. Widening requires an ADR amendment + code change. Includes `parseCommandLine()` (whitespace-only splitter; never honors quotes — `spawn` runs with `shell: false` so quoting wouldn't apply anyway) and `checkAllowed()` with binary-on-PATH enforcement (rejects path separators).
-- **`src/lib/exec-session.ts`** — `startSession()` / `cancelSession()` / `getSession()` / `subscribe()`. Owns one `ChildProcess` per session. 10MB ring buffer; subscriber fanout (line-by-line); auto SIGTERM-then-SIGKILL on cancel/timeout (5-second grace); session GC 5 minutes after exit.
-- **`src/routes/terminal.ts`** — Five endpoints:
-  - `POST /api/v1/terminal/exec` — start a command. Requires `X-BeQuite-RoE-Ack: ADR-016` header (per ADR-016 §11; `412` if missing). Allow-list check (`403` on rejection). cwd guard (`403` on path-traversal). Iron Law X attestation block on success.
-  - `GET /api/v1/terminal/sessions` — list active sessions.
-  - `GET /api/v1/terminal/sessions/:id` — session status.
-  - `GET /api/v1/terminal/sessions/:id/stream` — SSE of stdout/stderr lines + exit event. Replays ring-buffer content on subscribe so late-joiners see history. 30-second heartbeat. Clean teardown on client abort.
-  - `POST /api/v1/terminal/sessions/:id/cancel` — SIGTERM + auto-SIGKILL after 5s.
-- **Per-execution receipt** at `<workspace>/.bequite/receipts/<sha>-EXEC.json`. Schema includes `exec.binary`, `exec.args`, `exec.cwd`, `exec.session_id`, `exec.exit_reason`, `exec.duration_ms`, `exec.stdout_sha256`, `exec.stderr_sha256`, `exec.output_truncated`, `identity`, `adr: ADR-016`. Full audit trail of every dashboard-issued command.
-- **Endpoint catalog** in `GET /` updated with `authenticated_terminal` group.
-
-**Dashboard side (`studio/dashboard/`):**
-
-- **`lib/terminal.ts`** — Client-side wrapper. `execCommand()` POSTs with the RoE-Ack header + auth. `streamSession()` opens an EventSource against the SSE route (uses `?token=<hex>` for token-mode auth). `cancelCommand()` POSTs the cancel.
-- **`components/Terminal.tsx`** — `"use client"` xterm.js component. Mounts via `useEffect` with `ResizeObserver` for live fit. Brand-themed (gold cursor on ink-pure background; gold prompt arrow). Stdin disabled (per ADR-016 §6). Run / Cancel / Clear toolbar. Footer surfaces `session_id` + `exit_reason` + `ADR-016 · allow-list` reminder. Dynamic-imports xterm to avoid SSR pitfalls.
-- **`app/page.tsx`** — In HTTP mode, the static `<CommandConsole />` is replaced by `<Terminal />` (live). Filesystem mode keeps the static mock (no remote process to spawn).
-- **`app/globals.css`** — imports `@xterm/xterm/css/xterm.css` so the renderer's stylesheet is included.
-- **`package.json`** — adds `@xterm/xterm ^5.5.0` + `@xterm/addon-fit ^0.10.0`.
-
-**ADR added:**
-
-- **`.bequite/memory/decisions/ADR-016-terminal-execution-rules-of-engagement.md`** — full RoE (~10 sections + alternatives + consequences + verification + what-this-doesn't-authorize).
-
-### Changed
-
-- `cli/bequite/__init__.py::__version__` → `0.20.5`. `cli/pyproject.toml::version` → `0.20.5`.
-- `studio/api/package.json::version` → `0.20.5`. `studio/api/src/routes/health.ts::version` → `0.20.5`.
-- `studio/dashboard/package.json::version` → `0.20.5`.
-
-### Notes
-
-- API + dashboard both **typecheck clean** (`tsc --noEmit` exit 0). Live boot smoke deferred to verification (Bun runtime not installed locally; full live exec end-to-end requires Bun + dashboard with `BEQUITE_DASHBOARD_MODE=http`).
-- **No new Iron Law.** v0.20.5 implements the exec layer of Article IV + Article IX with explicit RoE (ADR-016).
-- **EventSource auth** for the terminal SSE sub-route uses the same `?token=<hex>` fallback established in v0.20.0 (browser EventSource cannot send custom headers; query-param path is restricted to stream routes).
-- v0.21.0+ — Live stdin forwarding for interactive shells (deferred per ADR-016 §6).
-
-### v2.0.0-alpha.1 candidate (still on main, awaiting tag)
-
-`a35dbfc` — dashboard dual-mode loader. v0.20.0 + v0.20.5 both build on top. The major-version tag remains Ahmed's call.
-
----
-
-## [0.20.0] — 2026-05-10
-
-### Added — SSE event streams (live dashboard updates)
-
-**API side (`studio/api/`):**
-
-- **`src/lib/event-bus.ts`** — Per-workspace pub/sub with reference counting. First subscribe lazily starts a filesystem watcher; last unsubscribe tears it down. Idle workspaces hold no watcher resources.
-- **`src/lib/file-watcher.ts`** — `WorkspaceWatcher` watches four paths and publishes events:
-  - `.bequite/receipts/` — new `*.json` file → `receipt` event
-  - `.bequite/cache/cost-ledger.json` — content change → `cost` event
-  - `.bequite/memory/activeContext.md` — content change → `active_context` event
-  - `state/current_phase.md` — content change → `phase` event
-  - 250ms coalesce window per channel (Windows fs.watch fires twice per change)
-  - Watch errors emit `watcher_error` events so the dashboard can surface "stream degraded" rather than silently going dark (Article VI).
-- **`src/routes/streams.ts`** — Four SSE endpoints under `/api/v1/streams/`:
-  - `GET /api/v1/streams/all` — combined firehose
-  - `GET /api/v1/streams/receipts` — `receipt` events only
-  - `GET /api/v1/streams/cost` — `cost` events only
-  - `GET /api/v1/streams/phase` — `phase` + `active_context` events
-  - All gated by `authMiddleware`; path-traversal guard preserved.
-  - 30-second heartbeat keeps proxy connections alive + lets the client detect a dead stream.
-  - Initial `hello` event includes workspace_root + auth_mode + identity + filter + server_version.
-  - Client disconnect handled via `stream.onAbort` — clean watcher unsubscribe, no orphan watchers.
-- **`src/lib/auth.ts`** — Auth middleware extended to accept `?token=<hex>` as a fallback to `Authorization: Bearer <hex>` **only on `/api/v1/streams/*`**. Browser EventSource cannot send custom headers; the query-param path is restricted to stream routes to narrow the URL-leak surface.
-
-**Dashboard side (`studio/dashboard/`):**
-
-- **`lib/streams.ts`** — `openStream()` client wrapper. Reconnects on transient failure (exponential backoff, 1s → 30s cap). Tracks last heartbeat; emits `onStale` when no heartbeat in 60s. Exposes `disconnect()` + `status()`.
-- **`components/LiveIndicator.tsx`** — Client component (`"use client"`). Top-right of the TopBar. Shows `LIVE` / `CONNECTING` / `STALE` / `OFFLINE` / `FS` pill. On `receipt` / `cost` / `phase` / `active_context` events, triggers a throttled `router.refresh()` (default: 2s throttle) so the server-component re-render reflects new state. Heartbeat / hello events skipped (they're noise).
-- **`components/TopBar.tsx`** — Now accepts `loaderMode`, `apiBase`, `workspacePath` props and renders `<LiveIndicator />` next to the AGENT ONLINE indicator.
-- **`app/page.tsx`** — Passes loader config + workspace path through to TopBar.
-- **`lib/projects-types.ts`** — Added `StreamEventName` + `BusEvent` types (mirrors API's bus events; kept in sync by convention).
-
-### Changed
-
-- `cli/bequite/__init__.py::__version__` → `0.20.0`. `cli/pyproject.toml::version` → `0.20.0`.
-- `studio/api/package.json::version` → `0.20.0`. Description updated.
-- `studio/api/src/routes/health.ts::version` → `0.20.0`.
-- `studio/api/src/index.ts::version` → `0.20.0`. Endpoint catalog adds `authenticated_streams` group.
-- `studio/dashboard/package.json::version` → `0.20.0`.
-
-### Notes
-
-- API + dashboard both **typecheck clean** (`tsc --noEmit` exit 0 on both). Live boot smoke deferred to Ahmed's review (Bun runtime not installed in this developer's env; would need `bun run src/index.ts` + `BEQUITE_DASHBOARD_MODE=http pnpm dev` + a real receipt write to fire the event end-to-end).
-- **No new Iron Law.** v0.20.0 implements Article X step 7 ("did the user need to refresh?") at the dashboard layer — answer is now "no, the LiveIndicator triggered router.refresh() automatically."
-- **No bidirectional WebSocket in v0.20.0** — that lands v0.20.5. WS for the terminal needs node-pty (running real shells) + RoE gates per Article IV (first endpoint that executes user-supplied commands; explicit ADR required). Not appropriate to fold into the SSE-only release.
-- **EventSource auth caveat.** The `?token=<hex>` query-param fallback is restricted to `/api/v1/streams/*` and documented in `studio/api/README.md` § "EventSource auth." Production-grade alternative (signed short-lived cookie + refresh token) lands with Better-Auth integration in v0.20.x+.
-
-### v2.0.0-alpha.1 candidate (still on main, not tagged)
-
-`a35dbfc` — dashboard dual-mode loader (filesystem ↔ HTTP). Per the standing commitment ("Ahmed reviews before tagging v1.0.0 + v2.0.0-alpha.1"), the major-version tag remains explicitly Ahmed's decision. The work integrates cleanly with v0.20.0's LiveIndicator (which only activates in HTTP mode anyway).
-
----
-
----
-
-## [0.19.5] — 2026-05-10
-
-### Added — Studio API auth layer + append-only write surface (per ADR-015)
-
-**Auth (three modes selected by `BEQUITE_AUTH_MODE`):**
-
-- `local-dev` (default) — pass-through. `X-BeQuite-Auth-Mode` response header surfaces the mode so the dashboard can warn.
-- `token` — Bearer tokens stored as sha256 hashes at `<workspace>/.bequite/.auth/tokens.json` (gitignored; chmod 0600 best-effort). Raw token returned by `POST /api/v1/auth/token` once; never again.
-- `device-code` — RFC 8628 stub returning 503 until the auth server stands up v0.20.0+ per ADR-011 Phase-3.
-
-**New auth endpoints:**
-
-- `GET /api/v1/auth/status` — current mode + identity + token count.
-- `POST /api/v1/auth/token` — mint a fresh token (returns raw token + 8-char id once).
-- `DELETE /api/v1/auth/token/:id` — revoke by 8-char id.
-- `GET /api/v1/auth/tokens` — list tokens (no hashes).
-
-**New write endpoints (append-only per Article IV):**
-
-- `POST /api/v1/receipts?path=<abs-path>` — persists a Zod-validated receipt to `.bequite/receipts/<sha>-<phase>.json`. Idempotent on content-hash. Returns `iron_law_x` block.
-- `POST /api/v1/snapshots?path=<abs-path>` — copies the six Memory Bank files into `.bequite/memory/prompts/v<N>/<timestamp>_<phase>_<reason>/`. Refuses overwrite (409 with retry-with-bumped-timestamp guidance). Returns `iron_law_x` block.
-- `GET /api/v1/snapshots/:version?path=<abs-path>` — list snapshots under that version.
-
-**Iron Law X attestation block (Constitution v1.3.0, Article X):** Every successful write returns:
-
-```typescript
-{
-  persisted_path: string,        // absolute path
-  file_readable: boolean,        // re-read after write
-  file_size_bytes: number,
-  file_sha256: string,           // content fingerprint
-  api_route_alive: boolean | "n/a", // sibling probe
-  attestation: string,           // never contains banned weasel words
-  caller_must: string[],         // Article X step 7
-}
-```
-
-If the re-read fails or the sibling probe returns non-ok, the helper **throws** and the route returns 500. No "should work" path.
-
-**Files added in v0.19.5:**
-
-- `studio/api/src/lib/auth.ts` — Hono middleware + token store + sha256 hashing + mint/revoke/list.
-- `studio/api/src/lib/iron-law-x.ts` — `buildIronLawXBlock()` verification helper with banned-weasel-word enforcement.
-- `studio/api/src/routes/auth.ts` — status + mint + revoke + list endpoints.
-- `studio/api/src/routes/snapshots.ts` — POST snapshot + GET list.
-- `studio/api/src/routes/receipts.ts` — extended with POST (append-only) on top of v0.19.0 reads.
-- `studio/api/src/index.ts` — wires middleware mount at `/api/v1/projects/*`, `/api/v1/receipts/*`, `/api/v1/snapshots/*`. Auth routes mount publicly at `/api/v1/auth/*`. Exposes `X-BeQuite-Auth-Mode` via CORS.
-- `studio/api/README.md` — full v0.19.5 surface documented + bootstrap-into-token-mode flow.
-- `.bequite/memory/decisions/ADR-015-studio-api-auth-and-write-surface.md` — full decision record.
-
-**Critical Article VI fix shipped in this release:**
-
-The `.gitignore` rule `lib/` (line 27, intended for Python venv install dirs) was over-broad and silently dropped:
-
-- `studio/marketing/lib/docs.ts` from the v0.17.0 commit
-- `studio/dashboard/lib/projects.ts` from the v0.18.0 commit
-- `studio/api/src/lib/fs-loader.ts` from the v0.19.0 commit
-
-All three published tags shipped Studio apps that would not boot from a fresh clone (Next.js compile error / Hono module-not-found). The CHANGELOG entries falsely claimed "boots locally" — true on the developer's disk where the files were present, false for GitHub clones. The v0.19.5 release:
-
-1. Anchors Python venv install dirs to repo root in `.gitignore` (`lib/` → `/lib/`, `lib64/` → `/lib64/`, `build/` → `/build/`, etc.). Application source dirs named `lib/` are no longer matched.
-2. Stages and commits all three previously-silently-ignored files (they exist on disk in their fully-functional shape; recovery is additive).
-3. Adds `.bequite/.auth/` to gitignore alongside `.bequite/.keys/`.
-
-v0.19.0 tag was force-updated to include the recovery. v0.17.0 + v0.18.0 tags remain at their historical (broken) commits — main + v0.19.0+ is the recommended pointer.
-
-### Changed
-
-- `cli/bequite/__init__.py::__version__` → `0.19.5`. `cli/pyproject.toml::version` → `0.19.5`.
-- `studio/api/package.json::version` → `0.19.5`. Description updated to mention auth + write surface.
-
-### Notes
-
-- API **typechecks clean** in this release (`cd studio/api && npx tsc --noEmit` → exit 0). Full Iron Law X attestation (boot + curl) is deferred to v0.19.x verification — Bun runtime is not installed in this developer's environment, so the live-boot smoke could not be performed in-session. The README's quickstart (`bun install && bun run src/index.ts`) is unchanged.
-- **No new Iron Law.** v0.19.5 implements Article X (added in v0.16.0 via Constitution v1.3.0) at the HTTP layer.
-- **No Better-Auth in v0.19.5.** Doctrine Rule 9 (Better-Auth / Clerk / Supabase Auth — no custom auth) is forward-compatible: the MVP Bearer validator swaps for Better-Auth session verification without touching route handlers. Full integration lands v0.20.x+.
-- v0.20.0 — WebSocket for live receipt + cost stream + xterm.js terminal stream.
-- v2.0.0-alpha.1 — swap dashboard `lib/projects.ts` from filesystem-mode to HTTP-mode against `studio/api/`.
-
----
-
-## [0.19.0] — 2026-05-10
-
-### Added — Studio API back-end (Hono on Bun)
-
-**`studio/api/` is now a working HTTP service** that boots on http://localhost:3002 and reads any BeQuite-managed project at a configurable path. Same loader logic as the dashboard (`studio/dashboard/lib/projects.ts`), but exposed over HTTP so future multi-user / cloud / non-Node clients can read project state without filesystem access.
-
-- **`src/index.ts`** — Hono app with `logger()` + permissive dev CORS (`http://localhost:*` + `http://127.0.0.1:*` allowed in dev; production allow-list lands v0.19.x+) + route registration. Boots via `bun run src/index.ts` on port `process.env.PORT || 3002`.
-- **`src/schemas.ts`** — Zod schemas for `PhaseStatus`, `ReceiptSummary`, `ProjectSnapshot`, plus `ProjectQuerySchema` for path-bounded queries. Mirrors the dashboard `ProjectSnapshot` interface so future HTTP-mode swap is type-safe.
-- **`src/lib/fs-loader.ts`** — Filesystem-backed `loadProject(rootDir)` + `listProjects()` + `getWorkspaceRoot()`. **Path-traversal guard:** `BEQUITE_WORKSPACE_ROOT` env (defaults to two-levels-up from cwd) is the allow-list root; any `?path=` outside the root returns 403 (`path outside workspace root`). Reads constitution.md, projectbrief.md, activeContext.md, state/current_phase.md, state/recovery.md, `.bequite/receipts/*.json`, `.bequite/cache/cost-ledger.json`.
-- **`src/routes/health.ts`** — `GET /healthz` → `{ status, service, version, workspace_root, uptime_s }`.
-- **`src/routes/projects.ts`** — `GET /api/v1/projects` (list discoverable projects under workspace root) + `GET /api/v1/projects/snapshot?path=<abs-path>` (full snapshot for a project; Zod-validated query).
-- **`src/routes/receipts.ts`** — `GET /api/v1/receipts?path=<abs-path>` (last receipts summary list; sorted newest-first) + `GET /api/v1/receipts/:sha?path=<abs-path>` (full receipt content by 8-64-hex content-hash prefix; Zod-validated sha format).
-- **`package.json`** — Hono 4 + Zod 3; runs on Bun (`bun --hot src/index.ts`). TypeScript strict; `tsconfig.json` uses NodeNext modules.
-- **`README.md`** — endpoint surface + env vars + dev quickstart.
-
-### Endpoint surface
-
-| Verb | Path | Returns |
-|---|---|---|
-| `GET` | `/healthz` | `{ status, service, version, workspace_root, uptime_s }` |
-| `GET` | `/` | API metadata + endpoint catalog |
-| `GET` | `/api/v1/projects` | `{ items: [{ name, path }, ...] }` |
-| `GET` | `/api/v1/projects/snapshot?path=<abs-path>` | full `ProjectSnapshot` (constitution version, current phase, last green tag, doctrines, receipts summary, cost session, recovery preview) |
-| `GET` | `/api/v1/receipts?path=<abs-path>` | last receipts list per project |
-| `GET` | `/api/v1/receipts/:sha?path=<abs-path>` | full receipt JSON for a single sha-prefixed receipt |
-
-### Changed
-
-- `cli/bequite/__init__.py::__version__` → `0.19.0`. `cli/pyproject.toml::version` → `0.19.0`.
-
-### Notes
-
-- API **boots locally**: `cd studio/api && bun install && bun run src/index.ts` → http://localhost:3002. By default `BEQUITE_WORKSPACE_ROOT` is `cwd/../..` so when run from `studio/api/`, the BeQuite repo itself is the readable root.
-- v0.19.0 ships **read-only endpoints only**. v0.19.5 adds: auth (Better-Auth per Doctrine Rule 9; ADR-011 Phase-3 device-code flow when standing up the auth server) + write endpoints with RoE gates (per Article IV — no destructive ops without explicit ADR).
-- v2.0.0-alpha.1 swaps the dashboard's `lib/projects.ts` from filesystem-mode to HTTP-mode against `studio/api/`. v2.0.0+ adds a Postgres mirror for multi-user / cloud operation.
-- WebSocket for live receipt + cost stream + xterm.js terminal stream lands v0.20.0.
-- v0.17.5 (3D astronaut GLB via Blender) still parked — `localhost:9876` went from timeout to `Cannot connect`. Scaffold ready (`studio/marketing/public/3d/` + `AgentCharacter3D.tsx` drop-in API); the moment Blender's MCP responds, v0.17.5 is one iteration away.
-
----
-
-## [0.18.0] — 2026-05-10
-
-### Added — Studio dashboard real implementation (per image 6 mock)
-
-**`studio/dashboard/` is now a working Next.js 15 app** that boots on http://localhost:3001 and reads the BeQuite repo itself (or any BeQuite-managed project at a configurable path):
-
-- **`app/page.tsx`** — composes the full operations console: TopBar + PhasesSidebar + center main + AgentPanel (right). Server-component reads project state via `lib/projects.ts::loadProject()` on every request.
-- **`components/TopBar.tsx`** — logo + workspace/project breadcrumbs + AGENT ONLINE indicator with pulsing gold dot.
-- **`components/PhasesSidebar.tsx`** — P0..P7 phase list with status icons (Check / Loader / Circle / AlertOctagon) + DEV STATUS block + DEPLOY button.
-- **`components/CommandConsole.tsx`** — terminal-mock with gold prompt arrow + ✓ output styling + blinking cursor.
-- **`components/PlanTasksTests.tsx`** — 3-panel grid (Plan / Tasks / Tests).
-- **`components/AgentPanel.tsx`** — right-side astronaut character + status indicator + activeContext summary + recent activity log.
-- **`components/ReceiptsList.tsx`** — last 10 receipts with ed25519 signature badges + cost + timestamp.
-- **`lib/projects.ts`** — filesystem-based project loader. Reads `constitution.md`, `projectbrief.md`, `activeContext.md`, `state/current_phase.md`, `state/recovery.md`, `.bequite/receipts/*.json`, `.bequite/cache/cost-ledger.json`. Returns a `ProjectSnapshot`.
-- **`package.json`** — Next.js 15 + React 19 + Tailwind v4 + Framer Motion 11 + TanStack Query 5 + gray-matter + Lucide icons.
-
-### Changed
-
-- `cli/bequite/__init__.py::__version__` → `0.18.0`. `cli/pyproject.toml::version` → `0.18.0`.
-- `studio/dashboard/README.md` — rewritten from placeholder to working-app docs.
-
-### Notes
-
-- Dashboard **boots locally**: `cd studio/dashboard && pnpm install && pnpm dev` → http://localhost:3001. By default it loads the BeQuite repo from `../..` and shows real receipts, real phases, real Constitution version, real cost ledger.
-- v0.17.5 (3D character) still parked — Blender MCP went from timeout to `Cannot connect`.
-- v0.18.5 will add live xterm.js terminal streaming.
-- v0.19.0 swaps filesystem-mode for HTTP-to-`studio/api/`. v0.19.0+ adds auth (per ADR-011 Phase-3 device-code).
-
----
-
-## [0.17.0] — 2026-05-10
-
-### Added — Vibecoder tutorials + docs route + cinematic primitives
-
-**6 deep MDX tutorials** at `studio/marketing/content/docs/`:
-
-- **`quickstart.mdx`** (~250 lines) — zero to first verified feature in 10 minutes. No prior CLI experience required. Install → init → multi-model planning → implement → verify → first signed receipt.
-- **`from-scratch.mdx`** (~290 lines) — complete worked example (salon-bookings). All seven phases with realistic time + cost expectations + what-you-avoided-by-discipline.
-- **`retrofit.mdx`** (~270 lines) — installing BeQuite into an existing project. Survey → init `--retrofit` → audit → freshness → small feature → gradual Doctrine adoption. Common retrofit pain points table.
-- **`multi-model-planning.mdx`** (~290 lines) — making Claude + ChatGPT think together via manual-paste mode (ToS-clean). 5 collaboration modes (Parallel / Specialist / Debate / Judge / Red-Team). Cost expectations.
-- **`auto-mode.mdx`** (~270 lines) — one-click P0 → P7. 8 safety rails. CLI flags. Heartbeat. Resume. Idempotency. Parallel-task fan-out. Recovery runbook.
-- **`troubleshooting.mdx`** (~280 lines) — vibecoder pain points + recovery. "command not found" / hooks blocking / weasel words / Iron Law X failures / verify red gates / undo last change / stuck auto-mode / lost session / multi-model paste fatigue.
-
-**Docs route in Next.js App Router:**
-
-- `studio/marketing/lib/docs.ts` — reads MDX from `content/docs/`, parses frontmatter via `gray-matter`.
-- `studio/marketing/app/docs/layout.tsx` — sticky sidebar + content area.
-- `studio/marketing/app/docs/page.tsx` — index card grid.
-- `studio/marketing/app/docs/[slug]/page.tsx` — per-tutorial page using `<MDXRemote>` with brand-styled components (gold links, ink-stage code blocks, silver text, prev/next navigation footer).
-- `studio/marketing/components/DocsSidebar.tsx` — sticky left sidebar with active-link highlight.
-
-**Cinematic primitives:**
-
-- `studio/marketing/components/Chapter.tsx` — pinned-scroll chapter wrapper using `useScroll` + `MotionValue<number>` render-prop pattern (Apple's macbook-pro frame-by-frame style, drop-in 3D-ready).
-- `studio/marketing/components/three/Starfield.tsx` — R3F particle starfield (800 gold motes drifting through 3D space). Respects `prefers-reduced-motion: reduce`.
-
-**Nav update:** "Docs" link added; "Get started" CTA → `/docs/quickstart`.
-
-### Changed
-
-- `cli/bequite/__init__.py::__version__` → `0.17.0`. `cli/pyproject.toml::version` → `0.17.0`.
-- `studio/marketing/package.json` adds `next-mdx-remote ^5.0.0` + `gray-matter ^4.0.3`.
-
-### Notes
-
-- Marketing site **boots locally** with docs route working: `cd studio/marketing && pnpm install && pnpm dev` → http://localhost:3000/docs.
-- v0.17.5 (3D astronaut GLB via Blender pipeline) **deferred** — Blender's MCP add-on at `localhost:9876` is accepting the TCP connection but the Python addon isn't responding (timeout, not refused). The Studio scaffold is 3D-ready (R3F + drei installed; `Chapter` primitive accepts a 3D scene drop-in) — the moment Blender's MCP becomes responsive, v0.17.5 is a single iteration away.
-- Combined integration suite still 125/125 (Layer-1 Python tests; the marketing site's own test suite lands v0.17.x+).
-
----
-
-## [0.16.0] — 2026-05-10
-
-### Added — Studio Edition Phase-1 + Constitution v1.3.0
-
-- **ADR-013** (`.bequite/memory/decisions/ADR-013-studio-v2-architecture.md`) — Studio v2.0.0 architecture: 3 surfaces (`studio/marketing/` Next.js cinematic landing + `studio/dashboard/` Next.js operations console + `studio/api/` Hono-on-Bun back-end) sharing one brand system. 3D-ready scaffold (R3F + drei installed) so Blender pipeline integrates without restructuring.
-- **ADR-014** (`.bequite/memory/decisions/ADR-014-iron-law-x-operational-completeness.md`) — **Iron Law X — Operational completeness**. The "restart-the-build" rule. Bumps Constitution to v1.3.0. 7 operational steps every change must satisfy + 6 banned report patterns + mandatory self-attestation block.
-- **Constitution v1.3.0** (`.bequite/memory/constitution.md`) — Article X added (full text). Default-model bump documented (Opus 4.7 with `reasoning_effort: xhigh` for orchestrator + Skeptic + multi-model judge + reviewer roles). Specs-numbered-folders convention noted (`specs/001-feature-slug/`, `specs/002-other/`, etc. — Spec-Kit-aligned).
-- **`studio/brand/`** — Brand system foundation:
-  - `tokens.css` (~180 lines) — gold + black palette (`--gold-primary: #E5B547`, `--gold-bright`, `--gold-deep`, `--black-pure`, `--black-stage`, `--black-velvet`, silver/white scale) + Apple-inspired type scale (Geist + Geist Mono) + cinematic motion easings (never bouncy per Doctrine Rule 6) + reduced-motion handling.
-  - `tokens.json` — machine-readable equivalent (Design Tokens Format).
-  - `README.md` — usage rules, type, motion, asset table.
-  - `ATTRIBUTION.md` — Ahmed's brand assets + third-party (Geist, Inter, Tailwind).
-  - `raw/` — 6 ranked source PNGs (hero zen + character zen + character pointing + hero wordmark + horizontal logo + dashboard mock).
-- **`studio/marketing/`** — Apple-grade cinematic landing site (Next.js 15 + Tailwind v4 + Framer Motion 11 + R3F-ready):
-  - `package.json` + `tsconfig.json` + `next.config.ts` + `postcss.config.mjs` + `tailwind.config.ts`.
-  - `app/layout.tsx` (root + metadata + viewport).
-  - `app/page.tsx` (composes 6 sections).
-  - `app/globals.css` (imports brand tokens + Tailwind v4 theme).
-  - `components/Nav.tsx` — scroll-aware nav with backdrop-blur transition.
-  - `components/Hero.tsx` — pinned cinematic hero (Apple-style; `useScroll` + `useTransform` driving scale + opacity).
-  - `components/PhasesScroll.tsx` — 7-phase scroll-driven reveal (each phase activates as user scrolls; opacity/x/scale transforms per phase index).
-  - `components/Features.tsx` — 6-feature card grid with hover gold glints.
-  - `components/Demo.tsx` — terminal-mock CLI walkthrough beside the pointing astronaut.
-  - `components/CTA.tsx` — final call-to-action with gradient + radial-gold glow.
-  - `components/Footer.tsx` — three-column footer.
-  - `components/AgentCharacter.tsx` — astronaut with breathing-idle motion (drop-in 3D upgrade-ready).
-  - `public/brand/` — 6 brand PNGs copied for Next.js Image.
-- **`studio/dashboard/`** — README + directory only (full impl v0.18.0+ per ADR-013). Visual target: image 6 mock.
-- **`studio/api/`** — README + directory only (full impl v0.19.0+).
-- **`studio/README.md`** — Studio overview + roadmap table.
-- **Default model bump** — `skill/routing.json` orchestrator + product-owner reasoning_effort: high → **xhigh** (per Constitution v1.3.0).
-
-### Changed
-
-- Versions bumped to `0.16.0`.
-- Constitution v1.2.0 → v1.3.0.
-
-### Notes
-
-- Combined integration suite still 125/125 (v0.16.0 is architecture + brand + marketing scaffold; no new test modules — the marketing app's own test suite lands v0.17.x+).
-- The marketing site **boots locally**: `cd studio/marketing && pnpm install && pnpm dev`.
-- **Honest scope per Article VI:** v0.16.0 ships the Apple-grade foundation. Frame-by-frame video reveals + GLB-loaded 3D character + R3F particle starfield + MDX vibecoder tutorials all land v0.17.0+ (subsequent commits build cinematic chapters on top of this scaffold).
-- Constitution Article X (Iron Law X) is **Iron Law text only** in this commit. Hook extension + posttooluse-operational-check.sh + auto-mode integration land v0.16.x+.
-
----
-
-## [0.15.0] — 2026-05-10
-
-### Added — Release engineering
-
-- **`.github/workflows/ci.yml`** — five-job pipeline runs on every push + PR + manual: (1) **lint** (ruff + mypy advisory), (2) **test** matrix across Python 3.11/3.12/3.13/3.14 running all 12 integration test files (125+ tests total), (3) **audit** (`bequite audit` + `bequite freshness` self-check; eat-our-own-food), (4) **license-audit** (osv-scanner advisory), (5) **pr-summary** comments PR with status grid.
-- **`.github/workflows/release.yml`** — fires on tag `v*.*.*`. Three jobs: (1) **validate** (tag matches `cli/pyproject.toml::version` + full integration suite green), (2) **publish-pypi** via PyPI Trusted Publisher OIDC (no long-lived secrets), (3) **publish-github** (extracts release notes from CHANGELOG between `## [VERSION]` markers; creates GitHub Release with attached LICENSE + CHANGELOG). npm thin shell job present but `if: false` (gated until Ahmed provisions npm account).
-- **`.github/workflows/commitlint.yml`** — enforces Conventional Commits on every PR via `@commitlint/config-conventional`.
-- **`.commitlintrc.json`** — Conventional Commits rules.
-
-### Changed
-
-- Versions bumped to `0.15.0` (the last sub-version before v1.0.0).
-
-### Notes
-
-- Combined integration suite still 125/125 (v0.15.0 is CI-pipeline only; no new application code).
-- Ahmed reviews everything before the final v1.0.0 tag.
-- One-way doors that auto-mode never auto-runs (per Constitution Article IV): PyPI publish, npm publish, git push to main, force push, terraform apply, DB migrations against shared DBs. release.yml requires a human-pushed tag to fire.
-
----
-
-## [0.14.0] — 2026-05-10
-
-### Added — Documentation (8 docs + 2 templates)
-
-- **`docs/README.md`** — navigation for the documentation tree.
-- **`docs/QUICKSTART.md`** — 5-minute path from zero to working project.
-- **`docs/HOW-IT-WORKS.md`** — architecture overview. Two-layer (Harness + Studio). Seven phases. Iron Laws. 13 Doctrines. 14 hooks. Receipts. Multi-model. CLI auth. Auto-mode.
-- **`docs/DOCTRINE-AUTHORING.md`** — fork or write a new Doctrine.
-- **`docs/HOSTS.md`** — per-host install + behavior notes for 9 hosts.
-- **`docs/AUTONOMOUS-MODE.md`** — auto-mode CLI flags + state machine + 8 safety rails + heartbeat + idempotency + recovery runbook.
-- **`docs/SECURITY.md`** — threat model + OWASP Web Top 10 + OWASP LLM Top 10 (2025) coverage + Article IX cybersecurity + Doctrine vibe-defense + vulnerability reporting.
-- **`docs/MAINTAINER.md`** — release process + PyPI account ownership + npm thin shell + ed25519 signing keys + license audit + contributor checklist.
-- **`template/HANDOFF.md.tpl`** — engineer + non-engineer handoff template.
-
-### Changed
-
-- Versions bumped to `0.14.0`.
-
-### Notes
-
-- Combined integration suite still 125/125 (v0.14.0 is docs-only).
-
----
-
-## [0.13.0] — 2026-05-10
-
-### Added — Vibe-handoff exporters (spec-kit-zip + claude-code-skill)
-
-- **`cli/bequite/exporters.py`** (~165 lines) — Two export formats: `spec-kit-zip` (specs/ + .bequite/memory/ + AGENTS.md + CLAUDE.md → zip with manifest) and `claude-code-skill` (skill/ + AGENTS.md + CLAUDE.md → zip with manifest). JSON-frontmatter validation for spec.md (feature/version/status) / plan.md (feature/scale_tier/stack_decided) / tasks.md (feature/phase/task_count) / phases.md (feature/phase_count). CLI: `python -m bequite.exporters {validate,spec-kit-zip,claude-skill}`.
-- **`tests/integration/exporters/test_exporters_smoke.py`** — 8 tests: frontmatter parsing / validation complete + missing keys + unknown-filename / spec-kit-zip creates valid zip with manifest + included files / claude-skill creates valid zip / required-frontmatter-keys complete. **All 8 pass.**
-
-### Changed
-
-- Versions bumped to `0.13.0`.
-
-### Notes
-
-- Combined integration suite: 117 + 8 = **125/125 tests green** on Python 3.14.
-
----
-
-## [0.12.0] — 2026-05-10
-
-### Added — Per-host adapters (universal entry + 9 hosts)
-
-- **`template/AGENTS.md.tpl`** — Linux Foundation Agentic AI Foundation universal entry for fresh `bequite init` projects. References Constitution + Memory Bank + state/recovery + active Doctrines + banned weasel words + per-host extension table.
-- **`template/.cursor/rules/bequite-constitution.mdc.tpl`** — Cursor-specific rules file with `alwaysApply: true` + Iron Laws summary + required reads.
-- **`cli/bequite/skill_install.py`** (~125 lines) — host detection + per-host config installer. 9 supported hosts: `claude-code` (CLAUDE.md), `cursor` (.cursor/rules/), `codex` (.codex/AGENTS.md), `cline` (.clinerules/), `kilo` (.kilocode/), `continue` (.continuerules/), `aider` (.aider/AGENTS.md), `windsurf` (.windsurf/cascades/), `gemini` (.gemini/memory.md). CLI: `python -m bequite.skill_install detect` (probes which hosts are present) + `install [--host <name>]` (writes config; idempotent).
-- **`tests/integration/skill_install/test_skill_install_smoke.py`** — 9 tests covering host registry / detect for each host / install creates file / install idempotent / unknown host raises / content includes banned-words. **All 9 pass.**
-
-### Changed
-
-- Versions bumped to `0.12.0`.
-
-### Notes
-
-- Combined integration suite: 108 + 9 = **117/117 tests green** on Python 3.14.
-
----
-
-## [0.11.0] — 2026-05-10
-
-### Added — MENA bilingual Doctrine + RTL walkthrough
-
-- **`skill/doctrines/mena-bilingual.md`** — Doctrine v1.0.0 with 11 binding rules: locale-binding declared in project.yaml; `dir="rtl"` for ar-* locales; logical properties only (no hardcoded left/right); Arabic-friendly font stack with recorded reason (Tajawal / Cairo / Readex Pro / Noto Sans Arabic / IBM Plex Sans Arabic — all OFL-licensed); slightly-larger body type + more leading for Arabic legibility; bilingual string extraction (no inline ternaries on user-facing strings); Egyptian dialect preserved by default in research outputs (no auto-normalization to Modern Standard); RTL Playwright walks for every UI feature; mirrored icons + arrows; Intl.NumberFormat / DateTimeFormat per locale; Skeptic kill-shot for MENA UX. Stack guidance: i18n libraries (next-intl / i18next / lingui), Arabic font foundries, MENA-specific data sources for Researcher persona.
-- **`skill/templates/tests/walkthroughs/rtl-walk.md.tpl`** — 7 RTL flows (locale switch / mirrored navigation / form input at 360 RTL / tabular data + sorting / modal + toast positioning / search + filter chips / empty states + onboarding). Negative paths: mixed-direction text + mixed-language form validation + URL with locale switch.
-- **Forking guidance** for `mena-bilingual-saudi` (ar-SA + Hijri default), `mena-bilingual-uae` (ar-AE + DIFC layered), `mena-bilingual-mghreb` (Maghreb + Berber/French).
-
-### Changed
-
-- Versions bumped to `0.11.0`.
-- Doctrine count: 12 → 13 (mena-bilingual was previously deferred to v0.11.0; now shipped).
-- Tokens template (`skill/templates/tokens.css.tpl`) already shipped `[dir="rtl"]` block since v0.6.1; no change required.
-
-### Notes
-
-- Combined integration suite still 108/108 (v0.11.0 is a Doctrine + walkthrough release; no new code modules).
-
----
-
-## [0.10.7] — 2026-05-10
-
-### Added — Auto-mode hardening (resume + parallel + idempotent)
-
-- **`cli/bequite/auto_state.py`** (~110 lines) — `list_sessions` / `can_resume` / `resume_session` (clears BLOCKED+PAUSED markers, resets failure counter, advances to next phase). `should_split_parallel` + `fan_out_parallel` (per AkitaOnRails 2026 N>5 threshold; respects `depends_on`). `is_phase_idempotent_rerun` + `detect_double_commit` (same-feature in-flight session detection).
-- **`tests/integration/auto/test_auto_state_smoke.py`** — 13 tests covering empty session list / saved sessions / resume valid+invalid states / parallel threshold + dependency-blocking / idempotent rerun / double-commit detection. **All 13 pass.**
-
-### Changed
-
-- Versions bumped to `0.10.7`.
-
-### Notes
-
-- Combined integration suite: 95 + 13 = **108/108 tests green** on Python 3.14.
-- Phase-5 (Auto + new feature impls) closes here. Next: phase-6 (MENA + host adapters).
-
----
-
-## [0.10.6] — 2026-05-10
-
-### Added — CLI Authentication Phase-2 (stubs that gracefully degrade) per ADR-011
-
-- **`cli/bequite/auth.py`** (~190 lines) — LocalIdentity dataclass + get/save/delete + status_dict + offline-mode + ci-mode detection. CLI: `python -m bequite.auth {login,logout,whoami,status,refresh}`. Phase-2 ships local-file identity (UUID at `.bequite/.identity.json`); Phase-3 device-code RFC 8628 flow lands v0.11.x+ when auth server stands up.
-- **CI mode** detected via `BEQUITE_API_KEY` or `BEQUITE_CI_MODE=true` — login skips device-code flow.
-- **Offline mode** via `BEQUITE_OFFLINE=true` — auth-required commands suppress.
-- **`tests/integration/auth/test_auth_smoke.py`** — 8 tests covering identity roundtrip / unauthenticated state / authenticated state / offline + CI mode env handling / UUID generation. **All 8 pass.**
-
-### Changed
-
-- Versions bumped to `0.10.6`.
-
-### Notes
-
-- Combined integration suite: 87 + 8 = **95/95 tests green** on Python 3.14.
-
----
-
-## [0.10.5] — 2026-05-10
-
-### Added — Multi-Model Planning (manual-paste working) per ADR-012
-
-- **`cli/bequite/multi_model.py`** (~310 lines) — `scaffold_run` (creates `docs/planning_runs/RUN-<datetime>/`), `render_plan_prompt` (per-model role-flavored prompt with brief + doctrines + Constitution version), `render_judge_prompt`, `parse_plan_sections` (coarse keyword-based section extraction), `compare_plans` (per-section agreement / risk / per-model recommendation), `render_comparison_md`, `render_final_plan`. CLI: `python -m bequite.multi_model {scaffold,compare,merge}`.
-- **`cli/bequite/providers/manual_paste.py`** — ManualPasteProvider conforming to v0.8.0 AiProvider Protocol. `complete()` writes prompt to file + polls for response (sync) or returns `awaiting_user` (async). `is_available()` always True; cost always $0 (subscription human-cost, not API).
-- **`tests/integration/multi_model/test_multi_model_smoke.py`** — 12 tests: prompt rendering / section parsing / agreement detection (all-mention vs all-omitted) / comparison.md generation / final_plan generation with user_decisions / scaffold_run tree / ManualPasteProvider Protocol conformance / async-mode awaiting / judge prompt / token estimation / slug normalization. **All 12 pass.**
-
-### Changed
-
-- `cli/bequite/__init__.py::__version__` → `0.10.5`. `cli/pyproject.toml::version` → `0.10.5`.
-
-### Notes
-
-- v0.10.5 implements ADR-012 §Part 1 (manual-paste MVP). Direct-API mode lands v0.11.x+ (reuses v0.8.0 router).
-- Combined integration suite: 75 + 12 = **87/87 tests green** on Python 3.14.
-
----
-
-## [0.10.0] — 2026-05-10
-
-### Added — Auto-mode state machine + safety rails + heartbeat
-
-- **`cli/bequite/auto.py`** (~270 lines) — state machine with 8 phases (P0..P7) + DONE/BLOCKED/FAILED/PAUSED. State persistence at `.bequite/auto-state/<session>.json`. Per-phase rail checks: cost ceiling, wall-clock ceiling, banned-words, consecutive-failure threshold. One-way-door pattern detection (PyPI/npm/git-push-main/terraform). Heartbeat writes activeContext.md every 5 minutes during long phases. CLI: `python -m bequite.auto run --feature X --max-cost-usd 20 --max-wall-clock-hours 6 --mode auto`.
-- **In v0.10.0 the actual model invocation is stubbed** (no-op completing each phase with a synthetic message). v0.10.5 will integrate multi-model planning at P2; v0.11.x+ wires real LLM calls per the v0.8.0 routing matrix.
-- **`tests/integration/auto/test_auto_smoke.py`** — 11 tests covering state roundtrip, all 4 rail checks, run_phase / run_all_phases, banned-word blocking, cost-ceiling blocking, transition bookkeeping. **All 11 pass.**
-
-### Changed
-
-- `cli/bequite/__init__.py::__version__` → `0.10.0`. `cli/pyproject.toml::version` → `0.10.0`.
-
-### Notes
-
-- Combined integration suite: 64 + 11 = **75/75 tests green** on Python 3.14.
-- Phase-5 (Auto-mode + new feature impls) begins here. Next: v0.10.5 (multi-model manual-paste working).
-
----
-
-## [0.9.2] — 2026-05-10
-
-### Added — Phase-1 architecture docs for two new feature modules
-
-Per Ahmed's explicit "add two major features to BeQuite" prompt: (1) CLI authentication (browser-based / device-code login, NOT API key as primary), and (2) Multi-Model Planning where models like ChatGPT 5.5 + Claude Opus 4.7 think together before implementation. **Phase-1 (this release) is docs-only** per Ahmed's instruction. Implementation lands v0.10.5+ (multi-model) and v0.10.6+ (CLI auth).
-
-#### Decision records (ADRs)
-
-- **`.bequite/memory/decisions/ADR-011-cli-authentication.md`** — CLI authentication. Recommended MVP: **device-code login (RFC 8628)** because it works headless / SSH / Docker / CI, and supports phone-completion. Browser-OAuth-callback deferred to v0.12.x+ (when BeQuite-cloud auth server stands up). Magic-link rejected as MVP (slowest UX). Token storage via Python `keyring` package (OS keychain on macOS / Windows / Linux). Session refresh / logout / offline-mode / CI-mode (`BEQUITE_API_KEY` separate from human login) all designed. Threat model + 7 failure-state recovery paths documented. **No new Iron Law** — extends Article IV.
-- **`.bequite/memory/decisions/ADR-012-multi-model-planning.md`** — Multi-Model Planning. Recommended MVP: **manual-paste mode** (ToS-clean; works with Claude Pro + ChatGPT Plus subscriptions immediately; zero provider auth complexity). Direct-API mode lands v0.11.x+ reusing v0.8.0 provider adapters. **Browser-session reuse of consumer subscriptions explicitly NOT recommended** (Anthropic + OpenAI ToS prohibit driving endpoints from non-API session cookies; brittle to UI changes; rate-limit + detection-fingerprinting risk). 5 collaboration modes (Parallel default + Specialist + Debate + Judge + Red-Team). 12 roles (Lead Architect / Product Strategist / Frontend / Backend / Database / Security Reviewer / Testing / DevOps / UX / Scraping / Cost Optimizer / Final Judge). Conflict resolution: Iron Law beats Doctrine beats freshness beats user-pick. Storage at `docs/planning_runs/RUN-<datetime>/`. **No new Iron Law** — fulfills Articles I + VI + VII.
-
-#### Architecture strategy docs
-
-- **`docs/architecture/CLI_AUTHENTICATION_STRATEGY.md`** (~480 lines) — full operational reference: 3-option comparison table, Mermaid sequence diagram for device-code flow, polling rules with RFC 8628 backoff, secure local token storage strategy (per-OS backend + headless-Linux fallback with mode 0600 file), token shape, read-path code sketch, session refresh strategy, logout (single-device + all-devices), offline-mode rules, CI-mode rules, threat model with 7 mitigations, 6 failure states with recovery paths, test plan, CLI command surface, TUI panel design (color-coded green/yellow/red).
-- **`docs/architecture/MULTI_MODEL_PLANNING_STRATEGY.md`** (~510 lines) — full operational reference: why multi-model planning exists (3 single-model failure modes), MVP manual-paste workflow with 6-step sequence, future direct-API mode, **explicit non-recommendation of browser-session reuse with reasoning**, ManualPasteProvider Python sketch (conforms to v0.8.0 AiProvider Protocol), 12-role table with default-model assignments, 5 collaboration modes (each with best-for / mode mechanics), plan merge algorithm (8 steps), 5-priority conflict resolution rules, comparison-table schema, model-contribution log shape, token saving strategy, 6 failure scenarios, security/privacy concerns, cost concerns ($0 manual-paste / $0.05-$0.30 direct-API per run), 3 example workflows.
-
-#### Specifications
-
-- **`docs/specs/MULTI_MODEL_PLANNING_REQUIREMENTS.md`** (~370 lines) — F-1 through F-10 functional requirements + NFR-1 through NFR-5 non-functional + CLI surface table + slash-command table + run-directory data model + run-state JSON shape + state-file layout + 13 prompt-template list + acceptance criteria for v0.10.5 ship + 5 deferred questions with default decisions. Defines exactly what v0.10.5 must implement.
-
-#### New personas (3 — total persona count → 20)
-
-- **`skill/agents/multi-model-planning-orchestrator.md`** — owns the per-run lifecycle (scaffold → independent drafting → compare → merge → confirm). 8 hard rules (independence-first / per-model prompts / no silent failures / Iron Law beats / Doctrine beats / freshness beats / user picks final / receipts-per-call). Anti-patterns + Skeptic kill-shot for own behavior.
-- **`skill/agents/model-judge.md`** — final synthesizer in Judge mode. 6 hard rules (read all peer plans / explain rejections / never invent / mark user-decision points / Article VI honest reporting / no silent confirmations). Decision-format template with Skeptic kill-shot per topic. **Mandatory self-attestation block** at end of `merge_report.md`.
-- **`skill/agents/red-team-reviewer.md`** — adversarial post-plan review. 8 attack angles (security / architecture / testing / deployment / scalability / UX / token-waste / hidden-assumptions). Severity-tagged findings (block / warn / nit). Auto-loaded when Doctrine `vibe-defense` is active.
-
-#### Master-doc updates
-
-- **`CLAUDE.md`** — added 3 new persona names to the "you must act like" list; added 6 new path entries to the quick-reference table.
-- **`AGENTS.md`** — added 5 new path entries (multi-model runs / strategy / requirements / CLI auth strategy / both ADRs).
-- **`.bequite/memory/constitution.md`** — preamble updated with v0.9.2 line documenting both ADRs accepted Phase-1 docs-only with no new Iron Law (operational frameworks fulfilling existing Articles).
-- **`.bequite/memory/activeContext.md`** — modules 12 + 13 added (CLI auth + multi-model planning architectures); persona count 17 → 20; next-actions reshaped.
-- **`.bequite/memory/progress.md`** — v0.9.2 row tagged ✅; v0.10.5 + v0.10.6 + v0.10.7 inserted; old v0.10.1 renumbered to v0.10.7; evolution log entry.
-- **`state/recovery.md`** — pickup instructions for v0.10.0 (auto-mode unchanged) + v0.10.5 (multi-model) + v0.10.6 (CLI auth) + v0.10.7 (auto-hardening).
-- **`state/current_phase.md`** — phase-4 complete + phase-5 upcoming.
-
-### Changed
-
-- `cli/bequite/__init__.py::__version__` → `0.9.2`.
-- `cli/pyproject.toml::version` → `0.9.2`.
-- Roadmap to v1.0.0: 9 sub-versions remaining (was 7; +v0.10.5 + v0.10.6 for new feature modules).
-
-### Notes
-
-- This release is **Phase-1 docs only** per Ahmed's "Implementation order: Phase 1: Docs and architecture only." instruction. No code changes (other than version bumps).
-- Default decisions baked in (Ahmed can amend via ADR later — these don't block):
-  - **CLI auth MVP = device-code login** (works in SSH / Docker / CI; phone-completion).
-  - **Multi-model MVP = manual-paste mode** (ToS-clean, works with subscriptions today).
-  - **Browser-session reuse of consumer subscriptions = NOT recommended** (ToS + brittleness; reasoned in ADR-012 §Part 3 + strategy doc §3).
-  - **Default planning mode = Parallel** (independence preserved; Debate + Judge + Red-Team modes available via `--mode`).
-  - **Default judge model = Claude Opus 4.7** (configurable per project).
-  - **Token storage = Python `keyring` package** (OS keychain on macOS/Windows/Linux; gitignored file fallback for headless Linux).
-- Implementation order per Ahmed: Phase 1 (docs — DONE) → Phase 2 (CLI command stubs — v0.10.5/v0.10.6) → Phase 3 (manual-paste workflow working — v0.10.5) → Phase 4 (auth prototype — v0.10.6+) → Phase 5 (direct provider adapters — v0.11.x+).
-
----
-
-## [0.9.1] — 2026-05-10
-
-### Added — E2E test harness + CI workflow
-
-- **`tests/integration/e2e/test_seven_phase_walk.py`** — 8-test e2e smoke suite that drives the BeQuite CLI surface:
-  1. `--version` reports correctly (0.9.x).
-  2. `--help` lists the 24 core commands (7-phase + BeQuite-unique + receipts + routing + economics).
-  3. `bequite doctor` runs without crash (returncode < 2).
-  4. `bequite route show` resolves a known (phase, persona) pair to claude-sonnet-4-6.
-  5. `bequite pricing list` shows fallback table.
-  6. `bequite receipts list` returns empty when no receipts dir.
-  7. `bequite verify-receipts` errors correctly (exit 2) without keypair.
-  8. `bequite keygen` creates per-project keypair; subsequent `verify-receipts` succeeds.
-  - Subprocess invocations inherit parent env (so click + dependencies resolve from the test runner's site-packages); UTF-8 encoded with `errors="replace"` for Windows compatibility.
-- **`tests/integration/e2e/test_doctrine_loading.py`** — 8-test e2e suite for Doctrine structural invariants:
-  1. `skill/doctrines/` exists.
-  2. All 12 expected Doctrines on disk + non-empty.
-  3. Each Doctrine has a YAML frontmatter block (between two `---` markers within first 30 lines).
-  4. Each Doctrine declares required fields: `name:`, `version:`, `applies_to:`, `supersedes:`.
-  5. Each Doctrine's `name:` matches its filename.
-  6. Each Doctrine has a Rules section (tolerant of "Rules" / "Common rules" / "Strict rules" naming).
-  7. `default-web-saas` Doctrine is at v1.1.0 (verifies v0.6.1 bump preserved).
-  8. Each Doctrine has a Changelog or Status marker.
-- **`.github/workflows/examples-e2e.yml`** — three-job GitHub Actions workflow:
-  1. **`python-suite`** — runs the full integration suite across Python 3.11 / 3.12 / 3.13 / 3.14 matrix. Six test files = 64 tests total.
-  2. **`example-scaffolds`** — verifies each example has README + ADR + (example 1 only) HANDOFF + spec + phases.
-  3. **`audit-self`** — runs `bequite audit` against the BeQuite repo (eats its own food); runs `bequite freshness` self-help.
-  4. **`pr-comment`** — comments PR-thread with green/red summary on completion.
-  - Triggers: every push to main, every PR to main, nightly cron 04:00 UTC, manual workflow_dispatch.
-
-### Combined integration suite
-
-**64/64 tests green on Python 3.14** across 6 modules:
-- `test_receipts_smoke.py`: 10 tests
-- `test_signing_smoke.py`: 9 tests
-- `test_router_smoke.py`: 15 tests
-- `test_pricing_smoke.py`: 14 tests
-- `test_seven_phase_walk.py`: 8 tests (new)
-- `test_doctrine_loading.py`: 8 tests (new)
-
-### Changed
-
-- `cli/bequite/__init__.py::__version__` → `0.9.1`.
-- `cli/pyproject.toml::version` → `0.9.1`.
-
-### Notes
-
-- The auto-mode e2e test (`test_auto_mode.test.ts` per the build plan §4 v0.9.1 row) is **deferred to v0.10.0** since auto-mode itself lands there. v0.9.1 ships the parts that don't depend on auto-mode (CLI surface checks + Doctrine structural invariants).
-- The plan §4 specified TypeScript test files; honest reality is Python aligns better with the project (CLI is Python). Both paths are acceptable per the plan; we chose Python for consistency.
-- Phase-4 (Examples + e2e harness) is now complete: v0.9.0 + v0.9.1 done. Phase-5 (Auto-mode + MENA) begins with v0.10.0.
-
----
-
-## [0.9.0] — 2026-05-10
-
-### Added — Three example projects (scaffolded + spec'd)
-
-- **`examples/README.md`** — entry point + forking guidance.
-- **`examples/01-bookings-saas/`** (Doctrine: `default-web-saas`):
-  - `README.md` — what was built / how to run / phases.
-  - `.bequite/memory/decisions/ADR-001-stack.md` — full stack ADR (Next.js + Hono + Supabase + Better-Auth + Vercel + Zod + TanStack + Playwright + axe; per-rule Doctrine compliance check).
-  - `specs/bookings-flow/spec.md` — 4 flows (sign-up + book / admin availability / admin dashboard / tenant invite); non-goals; constraints; Skeptic kill-shot ("concurrent-booking race condition").
-  - `specs/bookings-flow/phases.md` — phase-1 through phase-7 decomposition with exit gates + per-phase Skeptic kill-shots.
-  - `HANDOFF.md` — engineer + non-engineer ("vibe-handoff") sections; how to run locally + deploy + add a feature; risk register; cost estimate ($45-90/mo at 5k MAU); Skeptic kill-shot for the handoff itself.
-- **`examples/02-ai-tool-wrapper/`** (Doctrine: `cli-tool`):
-  - `README.md` — `mdsum` CLI summarizes Markdown via Claude. Stack table + per-phase walkthrough inline + cost-per-invocation analysis.
-  - `.bequite/memory/decisions/ADR-001-stack.md` — Python 3.11+ / hatchling / click / rich / httpx / anthropic SDK; reuses BeQuite's `cli/bequite/providers/` adapters; full per-rule Doctrine compliance.
-- **`examples/03-tauri-note-app/`** (Doctrine: `desktop-tauri`):
-  - `README.md` — `vault-notes` local-first encrypted note app. Tauri v2 + SvelteKit + SQLite + AES-GCM + OS keychain. Per-phase walkthrough inline.
-  - `.bequite/memory/decisions/ADR-001-stack.md` — full stack ADR with brief reconciliations baked in (NOT Stronghold; NOT altool; NOT EV cert; NOT relic; per BeQuite v0.1.0 brief verification). Codesigning matrix (notarytool macOS + AzureSignTool Windows). Risk register includes AKV cert 1-yr cap.
-
-### What v0.9.0 explicitly does not ship
-
-Per Article VI honest reporting: production-quality code for each example is **not** in this commit. Each example ships:
-- The `.bequite/` tree shape (proves the harness scaffolds correctly).
-- A defensible stack ADR per Doctrine.
-- A seven-phase walkthrough document.
-- A HANDOFF (engineer + vibe-handoff sections, for example 1; README-as-handoff for examples 2 + 3).
-
-The code walkthroughs land via v0.9.1's e2e harness (which drives `bequite auto` on each example) and downstream example iterations post-v1.0.0. **Three full Production apps in one autonomous commit would not be honest.**
-
-### Changed
-
-- `cli/bequite/__init__.py::__version__` → `0.9.0`.
-- `cli/pyproject.toml::version` → `0.9.0`.
-
-### Notes
-
-- All three examples cross-reference: parent BeQuite repo, Doctrine, frontend-stack reference (where relevant), and the v0.7.0+v0.7.1 receipts/signing system that they will use post-implementation.
-- Phase-4 of the master plan (Examples + e2e harness) begins here; v0.9.1 closes it.
-
----
-
-## [0.8.1] — 2026-05-10
-
-### Added — Live pricing fetch (best-effort)
-
-- **`cli/bequite/pricing.py`** (~330 lines) — vendor pricing fetch + cache + fallback:
-  - **Cache** at `.bequite/cache/pricing.json`; default 24h TTL; canonical-JSON encoded.
-  - **`fetch_pricing(provider=None)`** — best-effort GET on each vendor's pricing page (Anthropic / OpenAI / Google / DeepSeek). Returns partial dict on parse failure (rather than raising).
-  - **`extract_prices_from_html(html)`** — coarse regex extraction. Pairs nearest model + 2 prices in the same paragraph. Hardly perfect but better than nothing; flags missing extraction so the cache stays incomplete-but-honest rather than silently wrong.
-  - **`pricing_for(model)`** — returns `(rates, source)` where source ∈ {"live", "stale", "fallback", "unknown"}. Prefers fresh cache → stale cache (with warning) → vendored hard-coded fallback → unknown.
-  - **`estimate_cost_usd(model, input_tokens, output_tokens)`** — one-call helper used by provider adapters. Returns `(usd, source)`.
-  - **CLI** at `python -m bequite.pricing {refresh,show,list}`.
-- **`skill/references/pricing-table.md`** — vendored May-2026 pricing snapshot covering 5 providers + hosting (Vercel / Cloudflare / Render / Fly / Railway) + auth (Clerk / Auth0 / Better-Auth) + database (Supabase / Neon / Convex). Used as fallback when both cache and live fetch fail. Marked stale on use.
-- **Provider adapters updated** (`cli/bequite/providers/{anthropic,openai,google,deepseek}.py`):
-  - `estimate_cost_usd()` now consults `pricing.pricing_for()` first; falls back to module-level hard-coded table if pricing module unimportable or model unknown.
-  - Soft-import: adapters remain usable without `pricing.py` (graceful degradation per the v0.8.0 contract).
-- **CLI surface additions** in `cli/bequite/__main__.py`:
-  - `bequite pricing show <model>` — current rate + source for a model.
-  - `bequite pricing list` — all known models with cache + fallback rates.
-  - `bequite pricing refresh [--provider <p>]` — best-effort live fetch + cache update.
-- **14-test integration suite at `tests/integration/pricing/test_pricing_smoke.py`**:
-  1. fallback_pricing for 4 known models across 4 providers.
-  2. fallback_pricing returns None for unknown.
-  3. pricing_for falls back when cache empty.
-  4. pricing_for unknown model returns "unknown".
-  5. pricing_for uses fresh cache (live source).
-  6. pricing_for marks stale when cache > TTL.
-  7. pricing_for unknown-in-cache falls back to fallback table.
-  8. estimate_cost_usd uses pricing_for (1M opus = $22.50 round-trip).
-  9. estimate_cost_usd unknown returns 0.
-  10. cache_age_hours missing/invalid returns +inf.
-  11. is_cache_fresh under TTL.
-  12. is_cache_fresh over TTL.
-  13. extract_prices_from_html finds paired model+prices.
-  14. AnthropicProvider.estimate_cost_usd consults pricing module.
-  - All 14 pass on Python 3.14.
-  - **Combined integration suite: 48/48 green** (10 receipts + 9 signing + 15 router + 14 pricing).
-
-### Changed
-
-- `cli/bequite/__init__.py::__version__` → `0.8.1`.
-- `cli/pyproject.toml::version` → `0.8.1`.
-
-### Notes
-
-- Live fetch + extract is intentionally conservative. WebFetch + regex extraction is brittle for pricing pages; v0.8.1 ships the **infrastructure** (cache shape, fallback path, adapter wiring). Live extraction degrades gracefully to "fallback (stale)" when a vendor restructures its pricing page.
-- The vendored `skill/references/pricing-table.md` is the fallback's fallback. When both cache and live fetch are unavailable, this file is the source of truth — flagged `stale=True`.
-- Article VI honest reporting: every cache entry carries `source` so users always know whether they're looking at live, stale, or fallback data.
-
----
-
-## [0.8.0] — 2026-05-10
-
-### Added — Multi-model routing (cost-aware)
-
-- **`cli/bequite/providers/`** — 5 vendor adapters + Protocol + Completion dataclass:
-  - `__init__.py` — `AiProvider` Protocol (`is_available`, `supports_model`, `estimate_cost_usd`, `complete`); `Completion` dataclass (text, input_tokens, output_tokens, finish_reason, model, provider, usd_cost, raw_response, error); `get_provider(name)` factory + `REGISTERED_PROVIDERS` tuple.
-  - `anthropic.py` — Claude family via `anthropic` SDK; pricing for `claude-opus-4-7` ($15/$75 per 1M), `claude-sonnet-4-6` ($3/$15), `claude-haiku-4-5` ($0.80/$4); reasoning-effort passed via system-prompt prefix.
-  - `openai.py` — GPT-5 / o3 family via `openai` SDK; pricing for `gpt-5` ($12/$50), `gpt-5-mini` ($0.50/$2), `o3` ($10/$40); reusable as base for DeepSeek (OpenAI-compatible API).
-  - `google.py` — Gemini via `google-genai` SDK (the `bequite[google]` extra); pricing for `gemini-2.5-pro` ($1.25/$10), `gemini-2.5-flash` ($0.30/$2.50).
-  - `deepseek.py` — Subclasses OpenAIProvider; `base_url=https://api.deepseek.com/v1`; pricing for `deepseek-chat`/`deepseek-coder` ($0.27/$1.10), `deepseek-reasoner` ($0.55/$2.19).
-  - `ollama.py` — HTTP localhost (`http://localhost:11434`) via `httpx`; **no vendor SDK required**; cost always $0.00 (local compute); availability probed via `/api/tags`.
-  - **Graceful degradation:** every adapter is importable WITHOUT its vendor SDK — `is_available()` returns False instead of raising. The router uses this to fall back without crashing.
-- **`cli/bequite/router.py`** — selects (provider, model, effort) per (phase, persona):
-  - `Route` dataclass (phase, persona, model, reasoning_effort, fallback_model, max_input_tokens, max_output_tokens, provider, used_fallback, note).
-  - `_provider_for_model()` heuristic: `claude-*` → anthropic; `gpt-*`/`o3*`/`o4*` → openai; `gemini-*` → google; `deepseek-*` → deepseek; `llama|mistral|qwen|phi|gemma` → ollama; else → ollama.
-  - `find_routing_path()` — searches `.bequite/routing-overrides.json` then `skill/routing.json` (project-local override possible).
-  - `select_route()` — match priority: exact (phase, persona) → (persona, special-phase: any/any-boundary/always-on/any-mode) → (phase, orchestrator) → orchestrator catch-all.
-  - `dispatch()` — runs primary; on unavailable, tries `fallback_model` (auto-resolves provider from model name); calls `cost_ledger.update()` on every call.
-- **`cli/bequite/cost_ledger.py`** — feeds `.bequite/cache/cost-ledger.json` so the existing `stop-cost-budget.sh` hook (v0.3.0) actually has data to enforce against:
-  - `update()` — appends call to ledger; refreshes `session_total_usd` + `session_total_tokens` + `calls_this_session`. Per-process session_id auto-resets totals on session change.
-  - `read()` — full ledger dict.
-  - `session_summary()` — one-screen current-session summary.
-  - `reset_session()` — clears session totals (keeps call history).
-- **CLI surface additions** in `cli/bequite/__main__.py`:
-  - `bequite route show --phase <P> --persona <X>` — JSON of resolved route.
-  - `bequite route list` — every row in routing.json (table format).
-  - `bequite route providers` — availability probe per provider (SDK + API key check).
-  - `bequite ledger show` — current session summary.
-  - `bequite ledger reset` — reset session totals.
-- **15-test integration suite at `tests/integration/router/test_router_smoke.py`**:
-  1. provider registry complete (5 providers).
-  2. each provider implements Protocol (4 methods).
-  3. provider-for-model heuristics (8 model names).
-  4. select_route exact match (P5 backend-engineer → claude-sonnet-4-6).
-  5. select_route reviewer uses Opus xhigh (Aider architect-mode pattern).
-  6. select_route skeptic via any-boundary special phase.
-  7. select_route unknown falls back to orchestrator.
-  8. anthropic pricing estimates (3 model tiers).
-  9. openai pricing estimates.
-  10. dispatch with TestProvider returns Completion + Route.
-  11. dispatch falls back when primary unavailable.
-  12. dispatch returns error when both unavailable.
-  13. cost_ledger accumulates across calls (totals + count).
-  14. cost_ledger session_summary surface.
-  15. dispatch updates ledger when enabled.
-  - All 15 pass on Python 3.14.
-  - **Total integration suite: 34/34 green** (10 receipts + 9 signing + 15 router).
-
-### Changed
-
-- `cli/bequite/__init__.py::__version__` → `0.8.0`.
-- `cli/pyproject.toml::version` → `0.8.0`. Description updated to "multi-model routing (Anthropic + OpenAI + Google + DeepSeek + Ollama with cost-aware fallback)".
-
-### Notes
-
-- The `routing.json` schema in `skill/routing.json` was authored in v0.2.0 with the right shape; v0.8.0 makes it operational by wiring the provider adapters + dispatch path.
-- AkitaOnRails 2026 finding (forced multi-model on coupled tasks loses to solo frontier) is preserved: routing routes Skeptic to `any-boundary` and reviewer to Opus-xhigh on Aider architect-mode pattern, but implementation stays single-frontier per-task.
-- The `stop-cost-budget.sh` hook (shipped v0.3.0) reads `.bequite/cache/cost-ledger.json::session_total_usd`. Now that the ledger is populated, ceiling enforcement is operational.
-- TestProvider injection (`provider_factory` arg on `dispatch()`) keeps the suite hermetic — no network, no API keys required.
-- Receipt emission per model invocation is cleanly separable from the dispatch path: the router updates the ledger; receipts (v0.7.0+v0.7.1 schema) get emitted by the auto-mode driver in v0.10.0 when phase boundaries fire.
-
----
-
-## [0.7.1] — 2026-05-10
-
-### Added — Signed receipts (ed25519)
-
-- **`cli/bequite/receipts_signing.py`** — ed25519 sign-and-verify layer on top of v0.7.0 receipts.
-  - **`generate_keypair(project_dir, overwrite=False)`** — creates per-project keypair using `cryptography.hazmat.primitives.asymmetric.ed25519`. Private key at `<project>/.bequite/.keys/private.pem` (mode 0600 best-effort on POSIX; gitignored). Public key at `<project>/.bequite/keys/public.pem` (mode 0644; committed). Refuses to overwrite by default; `overwrite=True` regenerates with explicit warning that previous receipt signatures become invalid.
-  - **`load_private_key(path)` / `load_public_key(path)`** — typed PEM loaders. `cryptography` raises if the file isn't actually an Ed25519 key.
-  - **`sign_dict(receipt_dict, private_key)`** — returns a copy with `signature` (base64-encoded ed25519) added. Signs over canonical-JSON of receipt *with the signature field absent or null* — sidesteps the chicken-and-egg of "signing a receipt that contains its own signature."
-  - **`verify_dict(receipt_dict, public_key)`** — recovers the signature, recomputes canonical-JSON-without-signature, verifies. Returns `(ok, reason)` with helpful error messages.
-  - **`verify_receipts_directory(receipts_dir, public_key, strict)`** — walks every `*.json` in `.bequite/receipts/`. Returns `(ok, issues, counts)` where counts has total / signed_valid / signed_invalid / unsigned. In `strict=True`, unsigned receipts contribute to `issues`; in `strict=False`, they're tolerated (legacy v0.7.0 receipts pass).
-  - CLI: `python -m bequite.receipts_signing {keygen,sign,verify}`.
-- **`Receipt` schema additive bump** — optional `signature: Optional[str] = None` field (last position; backward-compatible). v0.7.0 unsigned receipts still load + emit + roll-up unchanged.
-- **`ReceiptStore.write(receipt, sign_with=None)`** — when `sign_with` is an `Ed25519PrivateKey`, the on-disk JSON includes the `signature` field. Filename remains the v0.7.0 deterministic-from-inputs hash so the chain pointer stays stable across re-signings (e.g. after key rotation).
-- **`bequite verify-receipts`** Click command (`cli/bequite/__main__.py`):
-  - Loads `.bequite/keys/public.pem`; refuses to run if missing (suggests `bequite init` or `bequite keygen`).
-  - Verifies signatures via `verify_receipts_directory` with optional `--strict`.
-  - Validates chain via existing `validate_chain` (missing-parent + causality + cycles).
-  - Exits 0 on full pass, 1 on any failure.
-- **`bequite keygen`** Click command — direct keypair generation; explains gitignore + commit obligations.
-- **`bequite init` extension** — auto-calls `generate_keypair` (catching FileExistsError for re-init); appends `.bequite/.keys/` patterns to project's `.gitignore` (additive; defends against template drift). Init summary now shows keypair status.
-- **9-test integration suite at `tests/integration/receipts/test_signing_smoke.py`** — keygen creates files / refuses overwrite / overwrites when explicit; sign-verify roundtrip; tampered-body rejected; unsigned-strict-fails; unsigned-lenient-tolerated; ReceiptStore.write(sign_with=...) emits signed receipts; cross-paste-signature mismatch detected. All 9 pass on Python 3.14.
-
-### Changed
-
-- `cli/bequite/__init__.py::__version__` → `0.7.1`.
-- `cli/pyproject.toml::version` → `0.7.1`. Description updated to "ed25519-signed" (no longer "in v0.7.1+").
-
-### Notes
-
-- The repo's existing root `.gitignore` already had `.bequite/.keys/` from v0.1.0+; the v0.7.1 init code is the belt-and-braces safety net for fresh-template projects.
-- ed25519 is fast enough that signing every receipt at emit-time is cost-free; no batching needed.
-- Strict-mode unsigned-rejection is opt-in for v0.7.1 to allow gradual adoption; v0.8.0+ may flip the default once auto-mode (v0.10.0) wires emit-with-signing as the only path. Decision deferred until v0.10.0 arrives.
-- All 19 receipts+signing tests pass (10 v0.7.0 + 9 v0.7.1).
-
----
-
-## [0.7.0] — 2026-05-10
-
-### Added — Reproducibility receipts
-
-- **`cli/bequite/receipts.py`** (~510 lines) — Pydantic-style receipt module with stdlib-only runtime dependencies (no pydantic required at receipt-time; module is importable from `python -m bequite.receipts`).
-  - **Schema v1** (`Receipt` dataclass): `version` + `session_id` (UUID) + `phase` (P0..P7) + `timestamp_utc` (ISO 8601) + `model{name, reasoning_effort, fallback_model}` + `input{prompt_hash sha256, memory_snapshot_hash sha256}` + `output{diff_hash sha256, files_touched}` + `tools_invoked[{name, args_hash sha256, exit}]` + `tests{command, exit, stdout_hash sha256}` + `cost{input_tokens, output_tokens, usd}` + `doctrine[]` + `constitution_version` + `parent_receipt` (sha256 chain pointer).
-  - **`make_receipt()`** — constructor with computed hashes (sha256 of prompt text, sha256-of-files for memory snapshot dir skipping `.git/__pycache__/.venv/node_modules/.pytest_cache/.mypy_cache`, `git diff` for output + files-touched; UUID session_id; UTC timestamp).
-  - **`Receipt.content_hash()`** — deterministic sha256 of canonical-JSON encoding (sorted keys, no whitespace, None-stripped). Used as filename + chain pointer.
-  - **`ReceiptStore`** — local-filesystem store at `.bequite/receipts/<sha>-<phase>.json`. Methods: `write`, `list_all`, `get`.
-  - **`validate_chain()`** — walks parent_receipt links; reports missing-parent + causality (parent timestamp ≤ child) + cycle-detection.
-  - **`replay_check()`** — re-hashes prompt + memory snapshot; returns mismatches. Used by tests + future `bequite verify-receipts` (v0.7.1).
-  - **`roll_up_by_session/phase/day()`** — token + USD aggregations with first/last timestamps + active doctrines.
-  - **CLI surface:** `python -m bequite.receipts {emit,list,show,validate-chain,roll-up}` with full subcommand args (storage-dir, phase, model, prompt-file, diff-from/to, doctrines, constitution-version, input/output tokens, usd, parent-receipt, session-id, fallback-model).
-- **`cli/bequite/__main__.py`** — wired `bequite cost` to read local receipts first (Article III; offline-friendly), with skill-dispatch fallback only when no receipts exist. New `bequite receipts {list,show,validate-chain,roll-up}` Click group.
-- **`tests/integration/receipts/`** — 10-test integration suite covering: emit + list roundtrip; chain validation valid/invalid; replay pass/tamper-rejection; roll-ups by session/phase/day; content-hash determinism; full Receipt round-trip preservation. Runnable two ways: pytest (`python -m pytest tests/integration/receipts/`) or direct (`python tests/integration/receipts/test_receipts_smoke.py`). All 10 pass on local Python 3.14.
-- **`tests/integration/receipts/README.md`** — explains coverage + run modes + future v0.7.1 (signing) coverage path.
-
-### Changed
-
-- `cli/bequite/__init__.py::__version__` → `0.7.0`.
-- `cli/pyproject.toml::version` → `0.7.0`. Description updated to mention "reproducibility receipts (chain-hashed JSON; ed25519 signing in v0.7.1+)".
-
-### Notes
-
-- `ReceiptsConfig` (in `cli/bequite/config.py`) was already present from v0.5.0 (the schema slot existed; the emitter ships now).
-- Receipts are append-only; superseding requires emitting a NEW receipt with the old as `parent_receipt`. Article III binding.
-- ed25519 signing lands v0.7.1 — `verify-receipts` will validate chain + signature against `.bequite/keys/public.pem`.
-- Cycle-detection in chain validation is structurally robust: changing any receipt field changes its `content_hash`, so a literal A→B→A cycle is impossible without a hash collision. The test suite verifies missing-parent + tamper-rejection — the realistic failure modes.
-
----
-
-## [0.6.1] — 2026-05-10
-
-### Added — Frontend Quality Module
-
-- **Bundled Impeccable skill at `skill/skills-bundled/impeccable/`** — vendored snapshot of [pbakaus/impeccable](https://github.com/pbakaus/impeccable) (MIT, attributed Paul Bakaus). Contents:
-  - `.pinned-commit` — recorded SHA + verification date + update protocol.
-  - `ATTRIBUTION.md` — MIT-license-respecting credit + bundling rationale + delisting protocol.
-  - `README.md` — bundle-side docs (when it loads, how the frontend-designer uses it, layering with mena-bilingual / ai-automation / shadcn-MCP).
-  - `SKILL.md` — Anthropic-Skills frontmatter (loaded-by Doctrine list, allowed-tools, hard rules layered on upstream's philosophy).
-  - `references/principles.md` — 10 design principles (hierarchy, recorded typography, three-color system, 4/8/12/16 spacing scale, eased motion, real states, mobile-first/RTL/keyboard, density variants, consistency-over-cleverness, Skeptic kill-shot).
-  - `references/anti-patterns.md` — 15 AI-slop tells with fixes (generic SaaS look, bad spacing, weak typography, purple-blue gradients, card nesting, fake charts, weak empty states, bad mobile, poor contrast, missing focus, repeated icons, poor UX copy, wrong hierarchy, over-rounded, unclear actions).
-  - `references/aesthetic-targets.md` — Linear / Vercel / Stripe / Raycast / Arc / Notion / Cron — what they share + how to learn principles without copying.
-  - `commands/CATALOG.md` — all 23 commands tabulated.
-  - `commands/{craft,audit,harden,polish}.md` — marquee command dispatch contracts (~80–110 lines each: when to use, when not, inputs, steps, outputs, Skeptic kill-shot, stop conditions, anti-patterns).
-- **`skill/templates/tokens.css.tpl`** — design-tokens template with deliberate font-choice comment (Doctrine Rule 2), 3-color system (primary + neutral scale + accent + system-state), strict spacing scale (4/8/12/16/24/32/48/64/96/128), restrained radius/shadow tokens, motion tokens (durations + ease curves; never bounce/elastic), breakpoints, z-index scale, light + dark theme overrides, `[dir="rtl"]` overrides for `mena-bilingual` (Tajawal/Cairo/Readex Pro), `prefers-reduced-motion` handling.
-- **`skill/references/frontend-stack.md`** — verified May-2026 library reference. Component layer (shadcn/ui v3+, Radix, HeadlessUI, tweakcn, Aceternity, Magic, Origin), framework layer (Next App Router, Remix, Astro, SvelteKit, Nuxt, React+Vite), styling (Tailwind v4+, Panda, CSS Modules), type-safety (Zod, Valibot, TS), data fetching (TanStack Query, SWR, tRPC, Hono RPC), state (Zustand, Jotai), forms (React Hook Form, TanStack Form, Conform), auth (Better-Auth, Clerk, Supabase Auth, Auth0/WorkOS), a11y (axe-core, axe-playwright, eslint-plugin-jsx-a11y, react-aria), i18n (next-intl, i18next, lingui), testing (Playwright, Vitest, Storybook, MSW), perf (Vite, Turbopack, rspack, Lighthouse CI), observability (Sentry — license-flagged BSL/FSL post-2023, PostHog, OTel-JS). License flags called out where commercial closed-source distribution is impacted (Sentry / Aceternity components / SF Pro font).
-- **`skill/references/frontend-mcps.md`** — wiring guide for the three frontend MCPs + tweakcn:
-  - **shadcn Registry MCP** (built into shadcn CLI v3+; `npx shadcn@latest registry:mcp`; no API key).
-  - **21st.dev Magic MCP** (`@21st-dev/magic`; API key `TWENTY_FIRST_API_KEY`; per-prompt-quota cost-conscious).
-  - **context7 MCP** (Upstash; `@upstash/context7-mcp`; free tier; version-pinned docs).
-  - **tweakcn** (visual theme editor — not an MCP; export to tokens.css).
-  - Project-kickoff sequence + custom-component playbook + stack-bump refresh playbook + anti-patterns when wiring.
-- **axe-core gate (Doctrine `default-web-saas` Rule 8 wired):**
-  - `skill/templates/.github/workflows/axe.yml.tpl` — workflow template; runs on every PR + nightly cron at 03:00 UTC; checks out + builds + boots app + runs `axe-admin` + `axe-user` Playwright projects + uploads HTML/JSON reports + comments on PR if failed.
-  - `skill/templates/tests/a11y/admin/axe-admin.spec.ts.tpl` — admin-role axe walks; per-route axe analysis with WCAG 2.0 + 2.1 A + AA tags; results JSON saved to `evidence/P6/axe/admin/`.
-  - `skill/templates/tests/a11y/user/axe-user.spec.ts.tpl` — user-role parallel.
-  - `skill/templates/playwright.config.ts.tpl` — added `axeProjects` (one per role) so `npx playwright test --project=axe-admin` works out of the box.
-- **`skill/doctrines/default-web-saas.md` — bumped `1.0.0` → `1.1.0`** with new section 5 (Frontend Quality Module: subsections 5.1–5.5 cross-referencing the Impeccable bundle / tokens.css.tpl / frontend-stack.md / frontend-mcps.md / axe gate). Sections 6/7/8 renumbered. Rules 1–14 unchanged in behavior — additive-only bump per Article III.
-
-### Changed
-
-- `cli/bequite/__init__.py::__version__` → `0.6.1`.
-- `cli/pyproject.toml::version` → `0.6.1`. Description appended: "Frontend Quality Module (Impeccable + tokens.css + axe-core gate)."
-
-### Notes
-
-The `design-audit` slash (`skill/commands/design-audit.md`) and `impeccable-craft` slash (`skill/commands/impeccable-craft.md`) authored in v0.4.0 already referenced the bundled-skill path; v0.6.1 fills in the actual bundle. No slash-command edits required; Doctrine v1.1.0 is the seam.
-
-The Frontend Quality Module respects the existing seven phases — Impeccable is invoked in P5 (during implementation) with before/after evidence, validated in P6 (axe gate runs as part of `bequite verify`). Receipts will record Impeccable command applications when v0.7.0 ships the receipt schema.
-
----
-
-## [0.6.0] — 2026-05-10
-
-### Added — Verification gates (Playwright walks)
-
-- `skill/templates/tests/walkthroughs/README.md.tpl` — explains the planner → spec writer → generator → healer pattern + per-Mode rigour table + anti-patterns.
-- `skill/templates/tests/walkthroughs/admin-walk.md.tpl` + `user-walk.md.tpl` — natural-language walkthroughs per role; mobile + RTL + negative-paths + Skeptic kill-shot + evidence to capture.
-- `skill/templates/tests/seed.spec.ts.tpl` — Playwright `setup` project; resets DB, applies migrations, seeds admin + regular users, verifies sign-in via API. Article IV — TEST_*_PASSWORD env vars required.
-- `skill/templates/playwright.config.ts.tpl` — projects per `role × viewport × locale`. CI: 2 retries, 1 worker, JUnit + HTML + JSON reporters; output to `evidence/P6/`.
-- `skill/templates/scripts/self-walk.sh.tpl` — boots app + curl-sweeps every public route. Cheap-curl complement to Playwright.
-- `skill/templates/scripts/smoke.sh.tpl` — API-level smoke; per-endpoint expected status table.
-- `skill/references/playwright-walks.md` — canonical reference for the qa-engineer's pattern. Four-step walk + per-Mode rigour matrix + per-Doctrine standard fixtures + example flow + receipt schema (cross-ref v0.7.0) + forking guidance.
-- `cli/bequite/verify.py` — Phase 6 validation mesh orchestrator. 17-gate matrix per Constitution v1.0.1 (format / lint / typecheck / unit / integration / api / db-migration / seed / e2e / accessibility / build / docker-compose / security-scan / audit / freshness / self-walk / smoke / restore-drill). Per-stack command detection. Stops on first required-gate failure. Saves JSON to `evidence/P6/verify-<timestamp>.json`. Runnable: `python -m cli.bequite.verify`.
-- `cli/bequite/__init__.py::__version__` → `0.6.0`. `cli/pyproject.toml::version` → `0.6.0`.
-
-### Notes
-
-The qa-engineer persona (v0.2.0) prescribed the planner→generator→healer pattern; v0.6.0 ships the templates that pattern operates on + the verify.py orchestrator that wires the gate matrix. Live Playwright planner orchestration (auto-generating .spec.ts via Claude API + MCPs) lands in v0.6.1 alongside the Impeccable bundle.
-
-`tfsec` removed (officially retired into Trivy per repo description).
-
----
-
-## [0.5.3] — 2026-05-10
-
-### Changed
-
-Repo URL casing fixed across 10 writable files: `xpshawky/bequite` / `xpShawky/bequite` / `xpshawky/BeQuite` → `xpShawky/BeQuite` (matches actual repo at `https://github.com/xpShawky/BeQuite` Ahmed created). `BEQUITE_BOOTSTRAP_BRIEF.md` and `prompts/v1/*` snapshots preserved verbatim (immutable history).
-
-Line-count claims corrected per Article VI (honest reporting): real git counts = 24,132 lines added across 16 commits (now 19+), 153 tracked files. Earlier "30,000+ / 22,000+" estimates were inflated; replaced with git-verified numbers.
-
-README status table refreshed (was stuck showing v0.2.0 as "🟡 committing now"; now reflects all 13 tags through v0.5.2). Doctrine table updated for v0.5.2's three new Doctrines (vibe-defense / mena-pdpl / eu-gdpr).
-
-Quickstart reframed honestly: today vs after-first-push. The `uvx --from git+...` install command works only after the repo is pushed (one-way door; awaits owner authorization). Today's path is `python -m cli.bequite.audit` + `python -m cli.bequite.freshness` from a local checkout.
-
-Remote configured: `origin = https://github.com/xpShawky/BeQuite.git` (fetch + push). NOT pushed.
-
----
-
-## [0.5.2] — 2026-05-10
-
-### Added
-
-- **Constitution v1.1.0 → v1.2.0**: **Article IX — Cybersecurity & authorized-testing discipline**. Renumbered from brief's "Article XII." Substantive text otherwise verbatim with four senior-architect amendments: (1) **internal red-team carve-out** with 8 hard guardrails for corporate-internal C2/implants/payloads; (2) **cryptojackers** added to forbidden-no-matter-what list; (3) **defensive-validation clause** for known-CVE PoCs against own systems (RoE-self); (4) **plural disclosure frameworks** (Project Zero / CERT/CC / MITRE CNA / FDA / ICS-CERT / NCSC).
-- **`ADR-010-article-ix-cybersecurity.md`** captures the bump rationale + four amendments.
-- **`skill/references/security-and-pentest.md`** — 25+ verified May-2026 tools with license flags called out (AGPL/GPL = closed-source-blocker; Apache/MIT clean). Lite scanner stack (Trivy + Semgrep + OSV + secret-scan) + full opt-in (Nuclei + ZAP + Wazuh + Falco). Three workflow patterns (scan-and-trigger / harden-on-deploy / incident-response). Selection tree, compliance Doctrine cross-reference.
-- **4 new personas:** `security-auditor` (14th, defensive — pairs with existing `security-reviewer`), `pentest-engineer` (15th, RoE-gated offensive), `cve-watcher` (16th, support — daily trickest/cve diff vs SBOM, Haiku), `disclosure-timer` (17th, support — 60/80/90-day SLA tracking, framework-aware).
-- **3 new hooks:** `pretooluse-pentest-authorization.sh` (blocks offensive tools without RoE; recognizes lab targets), `pretooluse-no-malware.sh` (blocks 6 forbidden categories — reverse-shell/persistence/cred-exfil/C2/ransomware/cryptojacker — NO override except internal-RT 8-guardrail carve-out), `pretooluse-cve-poc-context.sh` (PoC requires ADR with 3 confirmations).
-- **2 templates:** `projects/scan-and-trigger.md` (canonical defensive automation; lite default + `--with-wazuh` opt-in; harden-on-deploy CI gate; incident-response runbook), `roe-template.md` (4 variants — ROE / RoE-RT / RoE-self / RoE-CTF — RoE-RT additions enumerate all 8 hard guardrails).
-- **3 new Doctrines:**
-  - **`vibe-defense`** — DEFAULT for `audience: vibe-handoff`. 15 extra-strict rules codifying response to Veracode 2025's 45% OWASP-Top-10 hit rate on AI-generated code: HIGH-SAST blocks merge with 90d-expiring-ADR-override, exact-pinned prod deps, RLS deny-by-default, locked-down CSP, secret-scan on every commit, axe-core every deploy, mandatory `bequite audit` clean, input validation everywhere, Better-Auth/Clerk/Supabase no-custom auth, rate limiting on public endpoints, CSRF, Argon2id, hardened cookies, logs exclude PII.
-  - **`mena-pdpl`** — Egyptian PDPL (Law 151/2020) + Saudi PDPL (SDAIA enforceable since 2024-09-14, 48+ enforcement decisions by Jan 2026) + UAE Federal PDPL (Decree-Law 45/2021) with **jurisdiction branching** for UAE free zones (DIFC DPL 5/2020, ADGM Data Protection Regs 2021, DHCC). Authoritative URLs verified. Egypt's executive regs flagged as pending.
-  - **`eu-gdpr`** — GDPR 2016/679. 12 rules covering Arts. 6/15-22/25/30/32-35/37, ePrivacy cookie consent, Schrems II + SCCs 2021. Stacks with `mena-pdpl` when DIFC/ADGM in scope.
-- **`.bequite/memory/prompts/v2/`** — phase snapshot per Article III: Constitution v1.2.0 + ADR-009 + ADR-010 archived.
-
-### Notes — research-driven corrections
-
-The verification research agent surfaced critical corrections applied throughout v0.5.2:
-
-- Crawl4AI canonical URL: `unclecode/crawl4ai` (not `crawl4ai/crawl4ai`).
-- n8n MCP: `czlonkowski/n8n-mcp` (community, **not** official `n8n-io`).
-- Firecrawl org rename: `mendableai/firecrawl*` → `firecrawl/firecrawl*`.
-- License flags throughout: Firecrawl + Shannon + Pentagi + BunkerWeb + THC Hydra are AGPL-3.0; Wazuh + SafeLine + ImHex are GPL-2/3.0; Strix + Trivy + OSV-Scanner + Nuclei + Crawl4AI + Crawlee are Apache-2.0 / MIT (clean).
-- tfsec officially retired into Trivy.
-- Bug-bounty platform APIs all auth-required; `arkadiyt/bounty-targets-data` for anonymous program-scope reads.
-- MENA PDPL: Egypt regs pending; KSA enforceable 2024-09-14; UAE free-zone carve-outs (DIFC/ADGM/DHCC).
-
-### Improvements adopted (per "make it fully loaded" delegation)
-
-I2.1 Internal RT carve-out · I2.2 cve-watcher · I2.3 disclosure-timer · I2.5 vibe-defense Doctrine as default · I2.6 Bug-bounty engagement assistant · I2.7 Findings-to-Jira/Linear · I2.8 Anti-bug-bounty-poaching guard.
-
----
-
-## [0.5.1] — 2026-05-10
-
-### Added
-
-- **Constitution v1.0.1 → v1.1.0**: **Article VIII — Scraping & automation discipline** added. Renumbered from the brief's "Article XI" to fit BeQuite's 7-Iron-Law structure (we trimmed in v0.1.0). Substantive text otherwise verbatim from the addendum, with four senior-architect amendments: (1) default rate limit `1 req/sec` → `1 req/3 sec` polite-default; (2) stealth requires `legitimate-basis ∈ {own-site, bug-bounty-allows, ToS-explicitly-allows, security-research-with-coordinated-disclosure}` not just "ADR exists"; (3) captcha-solving clause added (CFAA-class concern); (4) watch-budget added (`max_fires_per_week`; 3× exceeded → pause-and-ask).
-- **`.bequite/memory/decisions/ADR-009-article-viii-scraping.md`** — captures the Constitution amendment + the four amendments + alternatives considered + consequences + verification.
-- **`skill/references/scraping-and-automation.md`** — canonical scraping library list with verified May 2026 URLs + star counts + licenses + last-release dates. Triad (Crawlee / Crawlee-Python / Trafilatura / Firecrawl / Scrapling) + specialists + browser automation + stealth (ADR-gated) + OSINT (RoE-gated). Decision tree, watch-and-trigger pattern, polite-mode preset, anti-bot posture, MCP servers, compliance map (GDPR / CCPA / Egyptian PDPL / Saudi PDPL / UAE PDPL / CFAA / Computer Misuse Act / Robots Exclusion Standard / per-site ToS), forking guidance.
-  - **License flags called out**: Firecrawl AGPL-3.0 (commercial closed-source caveat); Crawl4AI Apache-2.0 (cleaner alternative); n8n-mcp is community-maintained (`czlonkowski/n8n-mcp`), not official n8n-io.
-  - **Verification footer**: every URL + stars + last-release verified via GitHub REST API on 2026-05-10.
-- **`skill/agents/scraping-engineer.md`** — 13th persona. Owns scraping library selection, robots.txt + ToS enforcement, polite-mode defaults, watch-and-trigger pattern, change-detection strategy, anti-bot posture, watch-budget gate, `bequite scrape doctor` command. Cross-pollinates with `automation-architect` (workflow side), `security-reviewer` (legitimate-basis ADRs), `research-analyst` (freshness probes), `token-economist` (scraping cost), `frontend-designer` (admin UI when applicable). Phases P0/P1/P2/P3/P5/P6.
-- **`skill/hooks/pretooluse-scraping-respect.sh`** — enforcement hook. Exit 2 (block) when: scraping import without robots.txt path; scraping import without rate-limit + cache config; stealth library without `legitimate-basis` ADR; captcha-solving service without `legitimate-basis` ADR; PII field assignments from scraped data without consent log. Self-exclusion list for the canonical reference + persona + this hook itself + tests.
-- **`skill/templates/projects/watch-and-trigger.md`** — canonical scaffold for "watch X, when it changes, trigger Y." Ships n8n + Postgres + Redis in `infra/docker-compose.yml` by default (opt-out via `--no-n8n` swap to `docker-compose.no-n8n.yml`). `polite_mode = true` baked into generated `bequite.config.toml`. Per-target spec + change-detection module + watch-budget enforcement + `bequite scrape doctor` smoke + Phase 6 gates additions.
-
-### Notes
-
-Article VIII is BeQuite's first non-master Iron Law — the brief's "Article XI" name preserved verbatim in the article header but renumbered to VIII for structural consistency. The hook + the polite-mode preset together make Article VIII enforceable, not documentary. Pairs with the existing `ai-automation` Doctrine (v0.2.1) — that Doctrine governs workflow execution; Article VIII governs scraping inputs that feed those workflows.
-
-Three URL corrections caught by parallel verification research: Crawl4AI canonical is `unclecode/crawl4ai` (not `crawl4ai/crawl4ai`); n8n MCP is `czlonkowski/n8n-mcp` (not `n8n-io/n8n-mcp` — community-maintained); `mendableai/firecrawl*` redirects to `firecrawl/firecrawl*` (org rename). License flags surfaced: Firecrawl + Shannon + BunkerWeb are AGPL-3.0 (commercial-closed-source-blocker); Crawl4AI + Strix are Apache-2.0 (clean alternatives).
-
-`tfsec` removed from the canonical list (officially retired into Trivy per repo description; last release May 2025).
-
----
-
-## [0.5.0] — 2026-05-10
-
-Python CLI thin wrapper. **Eleven sub-versions now tagged this session.** `bequite` + `bq` console scripts; 19 subcommands; Pydantic config; skill loader (v0.5.0 stub for live API dispatch in v0.6.0+); per-host hook runner. See full notes under v0.5.0 commit + the README architecture section.
-
-Key files: `cli/pyproject.toml`, `cli/bequite/__main__.py`, `cli/bequite/commands.py`, `cli/bequite/config.py`, `cli/bequite/skill_loader.py`, `cli/bequite/hooks.py`. All modules import cleanly.
-
----
-
-## [0.4.3] — 2026-05-10
-
-`cli/bequite/freshness.py` — knowledge probe Python module. npm + PyPI + crates.io + GitHub probes. 24h cache. Verdict logic (fresh / stale-warn / stale-block). Supply-chain incident table. `skill/references/package-allowlist.md` — known-good packages list (~60 entries; ecosystem prefixes).
-
----
-
-## [0.4.2] — 2026-05-10
-
-`cli/bequite/audit.py` — Constitution + Doctrine drift detector. 7 rule packs (Iron Law IV secrets + env-reads, default-web-saas Rules 2 & 4, library-package Rule 7, ai-automation Rules 1 & 4). Markdown + JSON render. CI workflow at `.github/workflows/audit.yml` (PR + push + manual + quarterly cron; PR comments on blockers; 30d artifacts). `tests/integration/audit/README.md` fixture map.
-
----
-
-## [0.4.1] — 2026-05-10
-
-### Added
-
-7 BeQuite-unique slash commands at `skill/commands/` (each Markdown with frontmatter + workflow + stop condition + anti-patterns + related-commands):
-
-- `audit.md` — Constitution + Doctrine drift detector. Walks Iron Laws + active Doctrines + ADRs; surfaces violations (block/warn/recommend) with file:line + remediation. Cross-references `posttooluse-audit.sh` (lightweight per-edit subset). Implementation: `cli/bequite/audit.py` (v0.4.2).
-- `freshness.md` — knowledge probe. Verifies stack candidates aren't deprecated / EOL'd / replaced / open-CVE'd / pricing-tier-mismatched / supply-chain-incident-flagged. Per-package: last commit < 6mo + fresh release + no unfixed criticals + license unchanged + maintainer status. 24h cache TTL. Wires into `/bequite.decide-stack` pre-sign mandatory checks. Implementation: `cli/bequite/freshness.py` (v0.4.3).
-- `auto.md` — one-click run-to-completion P0 → P7. State machine: INIT → P0_RESEARCH → ... → DONE with explicit BLOCKED/FAILED/PAUSED states. Per-phase commits + signed receipts. Safety rails: cost ceiling, wall-clock ceiling, 3-failure threshold, banned-word check, hook block (never auto-overridden), one-way doors always pause. Failure replay to `.bequite/replays/`. Heartbeat every 5 min. Implementation: `cli/bequite/auto.py` (v0.10.0).
-- `memory.md` — Memory Bank operations: show / show <file> / show doctrine <name> / show adr <id> / refresh / validate / snapshot / diff. Schema-validates every Memory Bank + state file per the v0.1.0 templates.
-- `snapshot.md` — versioned snapshot to `.bequite/memory/prompts/v<N>/<timestamp>_<phase>_<reason>/` per Article III phase-end discipline. Auto-fires at end-of-phase + before one-way doors + on Stop with non-trivial work + on `bequite release`.
-- `cost.md` — token + dollar receipts roll-up. Per-phase / per-persona / per-day / per-feature breakdowns. Anomaly detection (>2× routing.json estimate; >1.5× rolling-7-day avg; cache-hit ratio <50%). Wires into `state/project.yaml::safety_rails.cost_ceiling_usd`. Implementation lands with v0.7.0 receipts.
-- `skill-install.md` — install BeQuite into a host (Claude Code / Cursor 3.0+ / Codex CLI / Gemini CLI / Windsurf / Cline / Kilo Code / Continue.dev / Aider). Detects host; copies skill content to host's discovery path; merges hooks into `.claude/settings.json` without overwriting user customisation; runs per-host smoke test. Implementation: `cli/bequite/skill_install.py` (v0.12.0).
-
-### Notes
-
-19 commands total surface (12 master-aligned in v0.4.0 + 7 unique in v0.4.1). Five commands have implementations that ship in later sub-versions: `audit` (v0.4.2), `freshness` (v0.4.3), `auto` (v0.10.0), `cost` (v0.7.0+), `skill-install` (v0.12.0). The Markdown specs in v0.4.1 commit to the contract those implementations satisfy.
-
----
-
-## [0.4.0] — 2026-05-10
-
-### Added
-
-- **12 master-aligned slash commands at `skill/commands/`** (each one Markdown with frontmatter — name, description, phase, persona, prompt-pack reference; body specifies workflow + stop condition + anti-patterns + related commands):
-  - `discover.md` — P0 product discovery interview (product-owner; 8 question groups; recommended-defaults; risk register).
-  - `research.md` — P0 research scan (research-analyst; source-authority-ranked; 5 output files; cited URLs only).
-  - `decide-stack.md` — P1 stack ADR (software-architect; freshness-probe + Skeptic + Doctrine alignment + audit clean as pre-sign mandatory checks; encodes the 12 brief reconciliations).
-  - `plan.md` — P2 spec + plan + data-model + contracts (software-architect; analyse adversarial review).
-  - `implement.md` — P5 TDD discipline (RED-GREEN-REFACTOR; per-task commit; receipt; dispatches to backend-engineer / frontend-designer / database-architect / automation-architect).
-  - `review.md` — P5 senior review (13 review categories per master §7.6; Skeptic + security-reviewer; verdict Approved / Approved-with-comments / Blocked).
-  - `validate.md` — P6 validation mesh (per-Mode gate matrix; Playwright walks at viewport 360+1440 and locale en/ar; self-walk + smoke + audit + freshness; phase summary).
-  - `recover.md` — generate paste-able recovery prompt for new sessions (master §25; reads state/recovery.md + Memory Bank + receipts; computes 7 answers; chain-integrity check).
-  - `design-audit.md` — detect AI-looking UI (15 anti-patterns from master §7.9 + Impeccable cross-reference; report at evidence/<phase>/design-audit-<date>.md).
-  - `impeccable-craft.md` — invoke specific Impeccable command (23 commands documented; before/after screenshots; per-task commit).
-  - `evidence.md` — surface evidence + cross-reference receipts (chain integrity check).
-  - `release.md` — P7 handoff + release prep (master §27 release DoD; HANDOFF.md hand-runnable bar; semver discipline; one-way-door pauses for owner).
-
-### Notes
-
-These 12 commands are dispatch instructions to the relevant persona; they do NOT duplicate persona content. Each command's body fits in ~80-120 lines (concise; the personas + prompt-packs do the heavy lifting). All 12 are ported into `template/.claude/commands/` on `bequite skill install` (v0.12.0+). `bequite.recover` works in any host that loads AGENTS.md.
-
----
-
-## [0.3.0] — 2026-05-10
-
-### Added
-
-- **10 hook scripts at `skill/hooks/`** (Constitution v1.0.1 Article IV — deterministic gates):
-  - `pretooluse-secret-scan.sh` — regex secrets (AWS / GitHub / Anthropic / OpenAI / Stripe / Slack / JWT / SSH private keys / generic API key shapes) in Edit / Write / Bash. Exit 2.
-  - `pretooluse-block-destructive.sh` — Tier-3 commands per master §19.4 (`rm -rf` outside `/tmp`, `git push --force`, `git reset --hard`, `DROP DATABASE`, `TRUNCATE`, `DELETE` without WHERE, `terraform destroy`, `pulumi destroy`, `kubectl delete namespace`, fork bombs, `mkfs.*`, `dd of=/dev/sd*`). Exit 2.
-  - `pretooluse-verify-package.sh` — diffs new imports / dependencies in `package.json`, `pyproject.toml`, `requirements.txt`, `Cargo.toml`. Verifies via `npm view` / `pypi.org` / `crates.io`. PhantomRaven defense. Allowlist at `skill/references/package-allowlist.md` (drafted v0.4.3). `BEQUITE_OFFLINE=1` escape hatch. Exit 2 on hallucinated package.
-  - `posttooluse-format.sh` — auto-formats by extension (biome / prettier for TS/JS, ruff/black for Python, rustfmt for Rust, gofmt for Go, jq for JSON, prettier for MD/CSS/HTML). Warn-only.
-  - `posttooluse-lint.sh` — biome / eslint / ruff / clippy / `go vet`. Warn-only.
-  - `posttooluse-audit.sh` — lightweight subset of `bequite audit`: hardcoded `font-family: Inter` outside tokens (Doctrine `default-web-saas` Rule 2), `.env*` reads in code (Iron Law IV), telemetry-shaped fetch outside opt-in gate (Doctrine `library-package` Rule 7). Warn-only.
-  - `stop-verify-before-done.sh` — banned-weasel-words check (`should`, `probably`, `seems to`, `appears to`, `I think it works`, `might work`, `hopefully`, `in theory`, etc. — Constitution v1.0.1 Article II). Plus `state/task_index.json` `in_progress` check. Exit 2.
-  - `sessionstart-load-memory.sh` — prints the Memory Bank + ADR + state/ paths the agent must read on session start (Iron Law III).
-  - `sessionstart-cost-budget.sh` — prints active safety rails (cost ceiling, wall-clock ceiling, failure threshold) from `state/project.yaml`.
-  - `stop-cost-budget.sh` — enforces cost ceiling. Reads `.bequite/cache/cost-ledger.json` (token-economist writes; v0.7.0+). 80% warn; 100% block until human override at `.bequite/cache/cost-override.json`. Exit 2 at 100% without override.
-- **`template/.claude/settings.json`** — wires all 10 hooks under their event matchers (PreToolUse / PostToolUse / Stop / SessionStart). Per-hook timeouts. Inline `_comment_bequite` documenting binding Constitution articles.
-- **`tests/integration/hooks/README.md`** — fixture layout + smoke-test commands + hook-to-fixture map + v0.3.0 acceptance criteria + v0.6.0 CI integration plan.
-
-### Notes
-
-All hooks read JSON from stdin (Claude Code hook protocol), parse with `jq`, exit 0 / 2 with reason on stderr. Cross-platform — Linux + macOS bash; Windows via Git Bash. Per Constitution v1.0.1 + master §19.4, **no flag bypasses any hook**. Auto-mode never auto-overrides. Override paths are explicit (ADR amendment, allowlist file, ENV escape, human-approved override file) — none are silent.
-
-`bequite freshness` (v0.4.3+) and `bequite audit` (v0.4.2+) ride on top of these hooks once they ship; the hook scripts contain the safety-critical subset.
-
----
-
-## [0.2.1] — 2026-05-10
-
-### Added
-
-- **`ai-automation` Doctrine** — for projects whose primary deliverable is an automation pipeline (n8n / Make / Zapier / Temporal / Inngest / Trigger.dev / Pipedream / AWS Step Functions). 12 rules covering: workflows-as-versioned-source, idempotency, retry+backoff+jitter+DLQ, secrets via connectors not flow JSON, observability with trace propagation, test fixtures + dry-run, error notification routing, schema validation at the edge, AI-agent budget + circuit breaker, rate-limit awareness, versioned upgrades, daily cost roll-up. Stack guidance per platform, 10-gate verification, forking guidance.
-- **`automation-architect` persona** (12th persona) at `skill/agents/automation-architect.md`. Owns workflow design across all named platforms; cross-pollinates with backend-engineer, frontend-designer (admin UIs), security-reviewer (connector secrets, prompt-injection paths), token-economist (LLM-call cost in agent chains).
-- **Bundled `ai-automation` skill** at `skill/skills-bundled/ai-automation/`:
-  - `README.md` — overview + when this skill loads + layering with Impeccable.
-  - `references/n8n.md` — deep n8n expertise (architecture, JSON shape, CI deploy, idempotency, retry+DLQ, observability, AI patterns, self-host docker-compose, 12-rule verification checklist).
-  - `references/make.md` — deep Make.com expertise (operations meter as cost killer, scenario JSON shape, error handlers, AI patterns without native agent primitive, 12-rule checklist).
-  - `references/zapier.md` — Zapier brief (per-task pricing, Paths, Code by Zapier, 12-rule checklist).
-  - `references/temporal.md` — Temporal brief (workflows vs activities, durable execution, replay debugging, signals + queries, AI agent loop pattern, 12-rule checklist).
-  - `references/inngest.md` — Inngest brief (TS-first, event-driven, step.run, step.parallel, step.ai.infer, 12-rule checklist) + adjacent (Trigger.dev, Pipedream).
-  - `references/patterns.md` — 8 cross-platform patterns: idempotency, retry+backoff+jitter, dead-letter queue, fan-out+fan-in, circuit breaker for AI-agent loops, schema validation at the edge, trace propagation, prompt-injection guardrails. Maps each to per-platform implementations.
-
-### Changed
-
-- **`skill/SKILL.md`** — adds 12th persona (automation-architect); Skeptic kept as 11th (the two BeQuite additions on top of master's 10).
-- **`skill/routing.json`** — adds automation-architect routing (Opus 4.7 high; loaded with the bundled `ai-automation` skill when the Doctrine is active).
-- **`skill/templates/bequite.config.toml.tpl`** — adds `ai-automation` to the available-Doctrines list; adds `[skills.ai_automation]` block; adds `[ai_automation]` section with cost-alarm thresholds per platform + agent guardrails (max iterations, max cost USD/run, circuit-breaker thresholds).
-
-### Notes
-
-This release is responsive to the user's request to "add AI automation features" with explicit n8n + Make expertise. The Doctrine + persona + bundled skill are decoupled: any project can opt in by adding `ai-automation` to its `doctrines` list. Active automation-architect cross-pollinates with the existing 10 + Skeptic personas (12 total). No conflict with existing Doctrines.
-
----
-
-## [0.2.0] — 2026-05-10
-
-### Added
-
-- **`skill/SKILL.md`** — the orchestrator. Anthropic Skills frontmatter (name `bequite`, description ≤ 1024 chars, allowed-tools list). Body: orchestrator persona, 7-phase router (P0 Research → P7 Handoff), mode selector (Fast / Safe / Enterprise per Constitution v1.0.1), 19-command surface (master's 12 named + BeQuite's 7 unique extras: `/audit`, `/freshness`, `/auto`, `/memory`, `/snapshot`, `/cost`, `/skill-install`), routing matrix reference, hooks reference, auto-mode reference, banned-weasel-words enforcement.
-- **11 persona files at `skill/agents/`:**
-  - `product-owner` — owns scope, requirements, phase + task breakdown.
-  - `research-analyst` — owns research with cited authority levels, fights AI hallucination of facts.
-  - `software-architect` — owns ADRs, system boundaries, second-pass code review.
-  - `frontend-designer` — owns UI direction, design system, Impeccable-style flow (12 steps), tokens-only design.
-  - `backend-engineer` — owns API, services, error shape, TDD discipline (RED-GREEN-REFACTOR).
-  - `database-architect` — owns data model, migrations (reversible), backup-restore drill.
-  - `qa-engineer` — owns Playwright planner-generator-healer pattern, validation mesh.
-  - `security-reviewer` — owns threat model, OWASP LLM Top 10 + Web Top 10 mapping, supply-chain review.
-  - `devops-engineer` — owns Docker, CI, deployment, handoff (P7).
-  - `token-economist` — owns cost ceiling, prompt compression, AkitaOnRails 2026 routing rules.
-  - `skeptic` — adversarial twin (BeQuite's unique addition; one kill-shot per phase boundary).
-- **`skill/routing.json`** — default model routing matrix per phase + persona. Provider abstraction (Anthropic primary; OpenAI / Google / DeepSeek / Ollama fallback). Encodes AkitaOnRails 2026 finding (split-only-when-genuinely-parallel; threshold N>5). Encodes Aider architect-mode pattern (cheap writes + frontier reviews + cheap fixes). Compliance routing for hipaa/pci/fedramp.
-- **`skill/templates/bequite.config.toml.tpl`** — per-project config schema. Sections: project metadata, mode, audience, doctrines, scale_tier, compliance, locales, safety_rails (cost + wall-clock + failure threshold + banned-phrase list + auto-mode pause triggers), routing overrides, providers (env-var-only), freshness, receipts, evidence, memory, hosts, skills, telemetry (off by default), mena_bilingual.
-- **`template/.claude/skills/bequite/README.md`** — fresh-project skill-install target. Documents the copy-not-symlink decision (Windows + Docker volume compatibility; reproducibility).
-
-### Notes
-
-This release contains no executable code; the CLI ships in v0.5.0. The skill is portable across hosts (Claude Code via `.claude/skills/`, Cursor 3.0+ via `.cursor/skills/`, Codex CLI via `AGENTS.md` discovery, others via the `bequite skill install` v0.12.0 command). Every persona references the Constitution + active Doctrines for binding rules. Skeptic gate now mandatory at every phase boundary.
-
----
-
-## [0.1.2] — 2026-05-10
-
-### Added
-
-- **Master-file merge audit** at `docs/merge/MASTER_MD_MERGE_AUDIT.md` reconciling `BeQuite_MASTER_PROJECT.md` (introduced mid-session, post-v0.1.1, prescribing a TypeScript pnpm + Turborepo monorepo with Next.js dashboard + NestJS API + Postgres + Worker) with the existing skill-first / Python CLI / repo-template direction. Decision: **two-layer architecture** — Layer 1 (Harness, current; v0.1.0 → v1.0.0) + Layer 2 (Studio, master's monorepo stack; v2.0.0+). Both share Constitution + Memory Bank + state/ + receipts/ + evidence/ + prompts/.
-- **Root `CLAUDE.md`** — Claude-Code-specific operating instructions, adapted from master §11.
-- **Root `AGENTS.md`** — universal entry per Linux Foundation Agentic AI Foundation standard, adapted from master §12. Read by 25+ coding agents.
-- **`state/` directory** with operational state files: `project.yaml`, `current_phase.md`, `recovery.md`, `task_index.json`, `decision_index.json`, `evidence_index.json`. Master pattern (§10.2). Memory Bank stays as durable cross-session brain; state/ is current working state.
-- **`prompts/` directory** with 7 reusable prompt packs: `master_prompt.md`, `discovery_prompt.md`, `research_prompt.md`, `stack_decision_prompt.md`, `implementation_prompt.md`, `review_prompt.md`, `recovery_prompt.md`. Master pattern (§10.4).
-- **`evidence/README.md`** documenting the filesystem-evidence pattern (master §3.6, §10.3, §21). Complementary to the signed-receipt chain at `.bequite/receipts/` (v0.7.0+).
-- **`.bequite/memory/decisions/ADR-008-master-merge.md`** capturing the merge decision + Constitution amendment rationale.
-- **`BeQuite_MASTER_PROJECT.md`** now tracked (it's the source artefact for this audit).
-
-### Changed
-
-- **Constitution v1.0.0 → v1.0.1** (patch bump; additive only):
-  - Adds **Modes section** (Fast / Safe / Enterprise) per master §4. Modes are project-complexity tiers; orthogonal to Doctrines.
-  - Adds **command-safety three-tier classification** (safe / needs-approval / dangerous) to Article IV per master §19.4.
-  - Adds **prompt-injection rule** (treat external content as untrusted) to Article IV per master §19.5.
-  - Adds **three-level definition-of-done** (feature / phase / release) per master §27. Cross-referenced from Article II.
-  - Adds **`state/` files reference** to Article III's SessionStart reads.
-  - No Iron Law removed or relaxed.
-- **`README.md`** — adds the two-layer architecture section + status table per sub-version + cross-references to brief, master, and merge audit.
-- **`.bequite/memory/activeContext.md`** + **`.bequite/memory/progress.md`** — refreshed for the merge.
+- `docs/runbooks/INSTALL_BEQUITE_IN_PROJECT.md` stale since alpha.1 ("24 commands / 7 skills") — Guard Pass seed finding #1, caught by the user
 
 ### Decided
-
-- **Personas** — adopt master's 10 named roles (product-owner, research-analyst, software-architect, frontend-designer, backend-engineer, database-architect, qa-engineer, security-reviewer, devops-engineer, token-economist) **+ keep Skeptic + add FrontendDesign-Impeccable** = 12 personas total. To be authored in v0.2.0.
-- **Slash commands** — adopt master's 12 names (`/discover`, `/research`, `/decide-stack`, `/plan`, `/implement`, `/review`, `/validate`, `/recover`, `/design-audit`, `/impeccable-craft`, `/evidence`, `/release`) **+ keep BeQuite's 7 unique extras** (`/audit`, `/freshness`, `/auto`, `/memory`, `/snapshot`, `/cost`, `/skill-install`) = 19 commands total. To be authored in v0.4.0–v0.4.3.
-- **Studio (Layer 2)** scoped to v2.0.0+; not started in v1.
-
-### Notes
-
-This release contains no executable code (the CLI ships in v0.5.0). The merge is purely structural. v0.2.0 (Skill orchestrator) resumes per the original plan, with merged additions baked in.
+- No file renames (Option C rejected) · no ordered aliases (Option B rejected) · `/bq-recording` PARKED to V2 · `/bq-localize` skill-first (proposal only) · no `knowledge-builder` skill (deliberate) · V1 candidates: 4 absorbed as arguments, 1 as style argument, 2 verified built, 5 parked · no beginner/advanced hiding system
 
 ---
 
-## [0.1.1] — 2026-05-10
+## [Unreleased — alpha.22]
 
-### Added
-
-Eight default Doctrines under `skill/doctrines/`, each carrying frontmatter (`name, version, applies_to, supersedes, maintainer, ratification_date, license`) + numbered rules (kind: `block` / `warn` / `recommend` + check) + stack guidance + verification gates + examples + forking guidance + changelog:
-
-- `default-web-saas` — UI rules (no AI-default Inter without recorded reason; no purple-blue gradients; no nested cards; no gray-on-color), shadcn/ui ordering, tokens.css required, axe-core gate, Playwright admin+user walks, deny-by-default authz, Zod/Pydantic/Valibot input validation. Stack matrix reflects May 2026 reality (post brief reconciliations).
-- `cli-tool` — semver-strict on flags, exit-code discipline (0/1/2/>2), stdout-vs-stderr, NO_COLOR support, completions, man pages, no global state without consent, idempotent operations.
-- `ml-pipeline` — reproducible training (seed + dataset version + config), DVC/lakeFS for data, experiment tracking, GPU-cost ceiling, model lineage.json, eval before deploy, no PII in training data, Model Cards.
-- `desktop-tauri` — Tauri v2 (Stronghold deprecated → OS keychain), `notarytool` (not altool), AzureSignTool + OV cert (EV no longer privileged since Aug 2024), Keygen recommended for licensing, license validation in Rust not JS, 20 MB bundle discipline.
-- `library-package` — semver-strict public API, public-API freeze + private internals, type definitions ship with package, Keep-a-Changelog, Conventional Commits, deprecation runway, no telemetry without opt-in, license clarity, GPL contamination guard, supply-chain hygiene (PhantomRaven defense).
-- `fintech-pci` — CDE segmentation, never store SAD post-auth, PAN masking/tokenisation, AES-256 + KMS/HSM, TLS 1.2+, MFA on CDE access, audit log retention 1+ year, FIM, quarterly ASV scans + annual pentest, signed BAAs. Aligned to PCI DSS v4.0.
-- `healthcare-hipaa` — PHI inventory + data-flow diagram, FIPS-validated AES-256, TLS 1.2+, unique user IDs, audit controls (6-year retention), minimum-necessary access, BAAs with all BAs, de-identification before analytics/training, breach notification, no PHI in non-prod, no PHI to LLM without BAA + DPIA + de-id + no-data-retention tier.
-- `gov-fedramp` — FIPS 199 impact level, SSP maintained, FIPS 140-2/3 *validated* crypto (validated, not merely compliant), FIPS-approved TLS suites, MFA on privileged actions, ConMon (monthly scans + POA&M), immutable audit logs, baseline configs + FIM, SCRM with SBOM, U.S. data residency, authorisation boundary documented. Aligned to NIST 800-53 Rev 5.
-
-`mena-bilingual` Doctrine deferred to v0.11.0 per the approved plan.
-
-### Notes
-
-Each regulated Doctrine carries a disclaimer: starting points, not substitutes for QSA / Security Officer / 3PAO review. No executable code in this release.
+- Build approved Discovery-V2 candidates (recommended first arc: /bq-proposal · /bq-announce · /bq-client-audit · /bq-proof — the freelancer monetization arc) via the 15-step workflow
+- First real confidence-calibrated task run → first CONFIDENCE_CALIBRATION_REPORT entries
+- Live fire-tests (hooks · writing-dna profile · delegate cross-session with the 10-rule card) — user actions
+- /bq-recording frame-extraction research (the one 50–74 band candidate)
 
 ---
 
-## [0.1.0] — 2026-05-10
+## [v3.0.0-alpha.21] — 2026-06-11 — Confidence, Frontier Discipline & Discovery V2
+
+Sharper follow-up to alpha.19/20. Three goals, all delivered. Model: **Claude Fable 5 throughout — no switch, no reroute** (per-prompt requirement honored and reported).
+
+### Added — honest follow-up audit
+- `.bequite/audits/FABLE_5_FOLLOWUP_AUDIT.md` — what alpha.19 ADDED vs only VERIFIED vs REUSED vs did NOT add; which game-changer ideas were old (most) vs new (Professional Expert alias only); internal-vs-user-facing labels for the whole surface; ruling that the V1 tracker was a ledger, not a discovery sprint.
+
+### Added — Confidence Forecast (Part 1) · type: internal reliability with user-visible reports
+- `docs/architecture/CONFIDENCE_CALIBRATION_STRATEGY.md` — bands (90–100 routine · 75–89 likely · 50–74 explore · 25–49 spike · 0–24 blocked), evidence levels (verified/inferred/assumed/unknown), the report shape, **confidence-must-move-over-time** rule (60→80→75→92→96 example, drops allowed and honest), the never-100% rule, calibration inputs, anti-patterns (flat-85% theater), forecast-vs-actual loop.
+- `.bequite/state/CONFIDENCE_RULES.md` (tunable modifiers) · `.bequite/tasks/TASK_CONFIDENCE.md` (per-task trajectory template with files-to-inspect/change, unknowns, risks, tests, rollback) · `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md` (forecast-vs-actual tracking).
+- **Integrated into 9 commands** (plan/assign/auto/feature/fix/implement/review/verify/release). **No `/bq-confidence` command** — integration beats clutter, per the user's own preference ordering.
+- Principle codified: *Confidence is not a feeling. It is a report based on evidence, tests, scope clarity, familiarity, dependency risk, and verification.*
+
+### Added — Frontier Model Operating Playbook (Part 2) · type: docs + skill
+- `docs/architecture/FRONTIER_MODEL_OPERATING_PLAYBOOK.md` — 16 sections of EXTERNAL operating discipline (no private chain-of-thought): complex-task approach, decomposition, context protection, anti-shallow-implementation, facts-vs-assumptions, uncertainty, evidence/decision records, no-second-source-of-truth, anti-overbuild + intent preservation, auto-mode full-scope without drift, high-risk files, UI continuity, release thinking, high-value questions, writing tasks for cheaper models, reviewing cheaper-model output, stopping drift.
+- `.claude/skills/bequite-frontier-reasoning-coach/SKILL.md` — skill #27; enforces the playbook in `/bq-auto deep`, `/bq-plan deep`, `/bq-assign delegate`, `/bq-review`, `/bq-red-team`, `/bq-skill-audit`, `/bq-verify` + confidence forecasts.
+- `.bequite/state/FRONTIER_REASONING_SUMMARY.md` — the 10-rule card; **embedded in every delegate task pack** so cheaper models inherit the discipline.
+
+### Added — Game Changer Discovery V2 (Part 3) · type: roadmap
+- `.bequite/plans/GAME_CHANGER_FEATURE_DISCOVERY_V2.md` — Section A quarantines 30+ already-known items so they can't be re-counted; Section B delivers **16 genuinely new type-1 candidates**, each with wow/pain/outputs/shape/lightweight-fit/deps/risks/monetization/demo-potential/difficulty/confidence%/stage/verdict. All 16 KEEP (proposals only — the 15-step workflow gates any build). Standouts: screenshot→design-system (72%), proposal generator (84%), client audit pack (81%), announce kit (86%), proof builder (82%) — the latter four form a coherent freelancer-monetization arc.
+
+### Added — Feature Type Taxonomy (Part 4)
+- `docs/architecture/FEATURE_TYPE_TAXONOMY.md` — 8 types + the mandatory shape-decision tree + honest-labeling rules ("game changer = type 1 only"; changelogs must name the type).
+
+### Decided — Professional Expert (Part 5)
+- **Ruling: composition alias is correct** — `expert` = deep + strict evidence (anti-hallucination + EVIDENCE_LOG mandatory) + safety scope (R3) + professional domain checklist. NOT a 5th mode (would bloat the conflict matrix ~25% for zero new capability). Documented in taxonomy + catalog + /bq-suggest. V1 tracker rows graduated: confidence-surfacing → BUILT · Professional Expert → DOCUMENTED.
+
+### Changed
+- Skills 26 → **27**; SKILL_REGISTRY refreshed (frontier-reasoning-coach row + counts); workflow-advisor counts synced.
+- README: 3 new sections (Confidence Forecast · Frontier Model Operating Playbook · Game Changer Discovery V2) + badges.
+- commands.md alpha.21 banner · /bequite menu · /bq-help (2 new sections) · /bq-suggest (confidence/rigor/expert triggers) · COMMAND_CATALOG.
+- Installers → alpha.21; +3 templates (CONFIDENCE_RULES, TASK_CONFIDENCE, FRONTIER_REASONING_SUMMARY); 27-skill banner; `bash -n` clean.
+
+### Honest notes (Article VI)
+- Calibration report is seeded but EMPTY — the loop becomes meaningful only after real forecasted tasks reach verification.
+- Discovery V2 candidate confidence figures are pre-inspection estimates (50–74 band = "needs exploration"), not commitments.
+- Playbook effectiveness on actual cheaper models is UNVERIFIED until a live delegate run.
+
+---
+
+## [v3.0.0-alpha.20] — 2026-06-11 — Automatic Skill Routing
+
+**You describe the goal; BeQuite chooses the expert procedures.** No manual skill naming, ever.
+
+### Added
+- `.bequite/skills/SKILL_REGISTRY.md` — token-cheap routing index over all 26 skills (domains, trigger keywords/intents, usual commands, compatible/conflicting, cost L/M/H, risk L/M/H, quality status, last-reviewed). Single-source-of-truth honored: detailed when-to-use/inputs/outputs stay canonical in each SKILL.md; registry holds routing metadata + pointers. Global `~/.claude/skills/` probed (empty on this machine — limitation recorded).
+- `.bequite/skills/SKILL_ROUTER.md` — 24-domain → skill map + selection algorithm + 7 worked routings (cinematic site, restaurant app, human-quality writing, academic lit-review, YouTube lecture deck, auth security review, prompt-injection review) + the `Skill Selection:` output block template.
+- `.bequite/skills/SKILL_USAGE_LOG.md` — selections + outcomes + routing-quality; feeds workflow-advisor learning and skill-audit orphan/over-trigger detection. Seeded with this run.
+- `docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md` — 7-step routing pipeline, mode sizing (fast=smallest-safe · deep=broader · token-saver=lazy-load · delegate=skills named in task pack), cross-cutting auto-attach rules (anti-hallucination on claims · testing-gate on code · context-engineer >5 files · security-reviewer on R3 paths · frontend-design-system on >1 UI section), arbitration (master beats member), small-task 2-skill cap (over-trigger = logged routing defect).
+
+### Changed
+- **COMMAND_EXECUTION_CONTRACT: 11 → 12 steps** — skill registry check (2), task classification (3), automatic skill selection (4) inserted; writeback now includes SKILL_USAGE_LOG; enforcement-layer table + compressions updated.
+- 8 action commands wired with the routing block: `/bq-auto` `/bq-feature` `/bq-fix` `/bq-plan` `/bq-implement` `/bq-review` `/bq-verify` `/bq-suggest`.
+- `/bq-skill-audit` — registry refresh is now step 1 (live-dir drift check, orphan check via usage log, routing-defect scan).
+- HARNESS_ENGINEERING_STRATEGY harness diagram + CONTEXT_ENGINEERING_STRATEGY core pack updated.
+- README ("Automatic skill selection" principle), commands.md (alpha.20 banner), /bequite menu, /bq-help, COMMAND_CATALOG.
+- Installers: `.bequite/skills/` scaffold + 3 templates; version → alpha.20. `bash -n` clean.
+
+### Honest notes
+- Routing is convention-enforced via the contract (like the rest of the harness) — Claude Code's own description-matching still operates underneath; the router makes selection deliberate, explained, and logged.
+- Counts unchanged: 46 commands · 26 skills (routing is memory + contract, not a command).
+
+---
+
+- Build the top-ranked approved game-changers per `.bequite/plans/GAME_CHANGER_FEATURE_DISCOVERY.md`: regression ledger · drift detector · confidence surfacing · ship-readiness scorecard
+- Decide Professional Expert composition-alias naming with the user (proposed in the discovery tracker — NOT a 5th mode)
+- Live fire-test of the opt-in hooks across macOS/Linux/Windows; promote critical gates to default-on once validated
+- Skill-audit backlog: problem-solver worked example · multi-model-planning stale-phase sweep
+- First real `/bq-writing-dna` profile build + first real `/bq-presentation` render (user actions)
+- Optional `/bq-deck` alias if user demand justifies
+
+---
+
+## [v3.0.0-alpha.19] — 2026-06-11 — Fable Strengthening Pass
+
+**Full workflow-strengthening pass run on Claude Fable 5, Deep Mode.** Audit-first: verified alpha.17/18 already delivered hooks, context-engineering, design-continuity, and the game-changer report — this release fills the verified gaps instead of duplicating. No Studio / heavy CLI / dashboard / runtime deps.
+
+### Added — reports
+- `.bequite/audits/FABLE_5_WORKFLOW_STRENGTHENING_AUDIT.md` — current-state verification + weakness findings (context C1–C5, prompt P1–P3, harness H1–H4) + strengthening plan
+- `.bequite/research/FABLE_5_SYSTEM_RESEARCH_REPORT.md` — fresh deep research (no-research-repeat applied over alpha.14/18 reports); principles adopted vs rejected
+
+### Added — harness / context / prompt layer
+- `docs/architecture/COMMAND_EXECUTION_CONTRACT.md` — **the 11-step contract every command follows** (preflight → gate → scope → skills → research-check → plan-check → action → verification → report → writeback → next)
+- `docs/architecture/HARNESS_ENGINEERING_STRATEGY.md` + `CONTEXT_ENGINEERING_STRATEGY.md` — thin strategy indexes over the alpha.18 deep docs (one source of truth preserved) + alpha.19 deltas: **context-pack pattern**, **no-research-repeat rule**, generic **CONTEXT_SUMMARY**, **EVIDENCE_LOG**
+- `docs/architecture/PROMPT_ENGINEERING_STANDARD.md` + `.bequite/prompts/PROMPT_PATTERNS.md` — 4 prompt classes (Complete / Compact / Neutral / Strict) with fill-in skeletons; delegate-pack neutrality rule
+- `.bequite/state/CONTEXT_SUMMARY.md` (compaction-surviving snapshot, all workflows) + `.bequite/research/EVIDENCE_LOG.md` (durable verification evidence)
+
+### Added — file-edit safety
+- `docs/architecture/FILE_RISK_CLASSIFICATION.md` + `.bequite/state/FILE_RISK_RULES.md` — R3-CONFIRM / R2-ANNOUNCE / R1 tiers for env/secrets/auth/migrations/deploy/CI/payments/RLS/mass-deletes; R3 = hard human gate even in auto mode (closes the "risky change via file edit" gap — hooks only saw shell ops)
+- `AUTO_MODE_STRATEGY.md` hardening: **uncertain-scope** gate (auto mode must not continue from its own assumptions into risky territory) + R3-edit gate + presentation creative-direction pause
+
+### Added — Writing DNA (new capability)
+- `/bq-writing-dna` + `bequite-writing-dna` skill + `.bequite/writing/` (WRITING_DNA, STYLE_SAMPLES, WRITING_RULES, FORBIDDEN_PATTERNS, OUTPUT_REVIEW)
+- Corpus → explicit profile → constrained generation → review-against-profile; strict mode = full source fidelity; default forbidden-pattern list kills generic-AI tells
+- **Ethics binding:** no fabricated citations · no academic dishonesty · no AI-detector-evasion framing
+- Third DNA pillar: project / design / **writing**; `/bq-presentation` consumes it for speaker notes
+
+### Added — Skill quality loop (new capability)
+- `/bq-skill-audit` + `bequite-skill-auditor` skill — evidence-cited structural review; report-only default; seed run shipped at `.bequite/audits/SKILL_QUALITY_AUDIT.md` (26 skills: 23 PASS, 3 LOW-improve backlogged, 1 false alarm evidence-checked)
+
+### Added — decision tracking
+- `.bequite/plans/GAME_CHANGER_FEATURE_DISCOVERY.md` — keep/reject/built ledger over the alpha.18 report; 8 built · 12 kept-proposed (incl. Professional Expert as composition alias, NOT a 5th mode) · 4 rejected with reasons
+- `docs/architecture/PRESENTATION_BUILDER_STRATEGY.md` — consolidates the alpha.13 design decisions (capability re-verified complete: PPTX/HTML/both/variants/strict/creative/refs/notes/brand/motion/morph + cinematic/academic/business registers)
+
+### Changed
+- Counts: **46 commands (+2) · 26 skills (+2)** — README badges, commands.md, CLAUDE.md, /bequite menu, /bq-help, /bq-suggest (writing + skill-maintenance triggers), COMMAND_CATALOG, workflow-advisor all synced
+- CLAUDE.md spec → alpha.19 with execution-contract + file-risk + writing-DNA + skill-loop bullets
+- Installers: version bumped (were stale at alpha.13 — drift caught), counts fixed, `.bequite/{writing,research}` scaffolded, 10 alpha.19 templates copied; **ps1 UTF-8 BOM added** (fixed a pre-existing latent parse issue — evidence: ParseFile now returns 0 errors; HEAD version had 3); sh `bash -n` clean
+- `docs/architecture/CLI_AUTHENTICATION_STRATEGY.md` → `docs/legacy/` (heavy-direction residue)
+
+### Honest deferrals (Article VI)
+- Game-changer builds (regression ledger etc.) remain proposals pending user approval
+- Live verification of writing-dna / skill-audit `apply=true` / hooks fire-test = user actions
+- Per-command body refresh to cite the execution contract explicitly (contract is canonical now; command bodies cite it incrementally as they're next touched)
+
+---
+
+## [v3.0.0-alpha.18] — 2026-06-04
+
+### Harness, Hooks & Context-Engineering — make reliability deterministic, generalize context discipline to every workflow
+
+Grounded in 6 cited research streams (anchored to official Anthropic docs: effective-context-engineering, effective-harnesses, reduce-hallucinations, best-practices, hooks, demystifying-evals — plus USENIX/PhantomRaven supply-chain research). Core meta-finding applied: BeQuite's rules were *advisory* (the model can skip CLAUDE.md prose) and CLAUDE.md was getting *long* (bloat → ignored rules) — so this release (a) moves the safety subset to *deterministic* opt-in hooks, and (b) pushes depth *out* of CLAUDE.md into on-demand skills.
 
 ### Added
 
-- Repository skeleton: `README.md`, `LICENSE` (MIT), `.gitignore`, `CHANGELOG.md`.
-- **Constitution v1.0.0** — Iron Laws (Articles I–VII): Specification supremacy, Verification before completion, Memory discipline, Security & destruction discipline, Scale honesty, Honest reporting, Hallucination defense.
-- **Doctrine schema** — frontmatter + sections for forkable per-project-type rules.
-- **ADR template** — semver-versioned, status tracking (proposed / accepted / superseded).
-- **Memory Bank templates** — six files (Cline pattern): `projectbrief`, `productContext`, `systemPatterns`, `techContext`, `activeContext`, `progress`.
-- **Rendered fresh-project instances** at `template/.bequite/memory/`.
-- Plan snapshot archived to `.bequite/memory/prompts/v1/2026-05-10_initial-plan.md`.
+- **Opt-in Claude Code hooks (ADR-005 implemented)** — `.claude/hooks/{pretooluse-block-destructive,pretooluse-secret-scan,stop-banned-weasel-words}.{sh,ps1}` + `.claude/settings.json.example` (+ Windows variant) + `.claude/hooks/README.md`. Machine-enforce the safety subset (destructive ops · secrets · weasel-word completion claims). **NOT active by default** — shipped as `.example` you review + merge yourself (CVE-2025-59536 / CVE-2026-21852: committed hooks are an RCE vector). Verified protocol (exit 2 blocks; `stop_hook_active` guard; fail-soft). Strategy: `docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`.
+- **`bequite-context-engineer` skill** (skills 22 → 24) — generalizes the frontend "DNA + section-map + compact-summary + continuity-gate" pattern to ALL workflows: the compact/clear/externalize primitives, compaction-survival rule, machine-state-in-JSON, path-scoped rules, session-orientation ritual, sub-agent isolation.
+- **`bequite-anti-hallucination` skill** — evidence-over-claims, citation-or-strike (a finding needs a `file:line` quote or it's struck), in-session package verification (registry + age + downloads + publisher + lockfile vs slopsquatting/PhantomRaven), version-pinned API grounding, fresh-context adversarial verifier (severity-gated), and the `UNVERIFIED:` / "I don't know" forced-fork.
+- **Memory:** `PROJECT_DNA.md` (the codebase's conventions/architecture contract — workflow-agnostic cousin of the Design DNA), `WORKING_NOTES.md` (per-workflow scratchpad that survives `/compact`), `FILE_RESPONSIBILITY_MAP.md` (anti-spaghetti, emitted before tasks).
+- **Docs:** `CONTEXT_ENGINEERING.md` (all-workflow), `HARNESS_AND_PROMPT_QUALITY.md` (authoring standard), `GAME_CHANGER_FEATURES.md` (ranked proposal — report only).
 
-### Notes
+### Changed
 
-This release contains no executable code. It establishes the inviolate base layer (Constitution + Memory Bank + ADR + Doctrine schemas) on which every later sub-version depends.
+- **CLAUDE.md core rule 16** — one compressed "reliability discipline" rule (context · evidence · anti-spaghetti · machine-enforcement) pointing to the skills; deliberately short to avoid the bloat that gets rules ignored.
+- **Commands:** `/bq-review` two-pass (spec-compliance BEFORE code-quality; fresh-context verifier; citation-or-strike); `/bq-verify` evidence (paste command + exit code + output) + Definition-of-Done gate; `/bq-discover` map-before-act + Project DNA + freshness metadata; `/bq-fix` failing-test-first + package verification; `/bq-feature` Project-DNA consistency + package verification; `/bq-plan` + `/bq-assign` File-Responsibility Map (refuse tasks without it; no-placeholder rule); `/bq-auto` confidence + uncertainty logging + 2-failed-correction reset.
+- **`RESEARCH_DEPTH_STRATEGY.md`** — citation-or-strike, package verification, version-pinned API docs.
+- **Installer** scaffolds the new memory templates + ships `.claude/hooks/` + the settings examples (hooks opt-in; the 2 new skills auto-propagate via the `bequite-*` glob). `/bq-doctor` reports hook presence; `bequite-updater` refreshes hook scripts but never edits your live settings.
 
-[Unreleased]: https://github.com/xpShawky/BeQuite/compare/v2.0.0-alpha.5...HEAD
-[2.0.0-alpha.5]: https://github.com/xpShawky/BeQuite/compare/v2.0.0-alpha.4...v2.0.0-alpha.5
-[2.0.0-alpha.4]: https://github.com/xpShawky/BeQuite/compare/v2.0.0-alpha.3...v2.0.0-alpha.4
-[2.0.0-alpha.3]: https://github.com/xpShawky/BeQuite/compare/v1.0.3...v2.0.0-alpha.3
-[1.0.3]: https://github.com/xpShawky/BeQuite/compare/v2.0.0-alpha.2...v1.0.3
-[2.0.0-alpha.2]: https://github.com/xpShawky/BeQuite/compare/v1.0.2...v2.0.0-alpha.2
-[1.0.2]: https://github.com/xpShawky/BeQuite/compare/v1.0.1...v1.0.2
-[1.0.1]: https://github.com/xpShawky/BeQuite/compare/v2.0.0-alpha.1...v1.0.1
-[2.0.0-alpha.1]: https://github.com/xpShawky/BeQuite/compare/v1.0.0...v2.0.0-alpha.1
-[1.0.0]: https://github.com/xpShawky/BeQuite/compare/v0.20.5...v1.0.0
-[0.20.5]: https://github.com/xpShawky/BeQuite/compare/v0.20.0...v0.20.5
-[0.20.0]: https://github.com/xpShawky/BeQuite/compare/v0.19.5...v0.20.0
-[0.19.5]: https://github.com/xpShawky/BeQuite/compare/v0.19.0...v0.19.5
-[0.19.0]: https://github.com/xpShawky/BeQuite/compare/v0.18.0...v0.19.0
-[0.18.0]: https://github.com/xpShawky/BeQuite/compare/v0.17.0...v0.18.0
-[0.17.0]: https://github.com/xpShawky/BeQuite/compare/v0.16.0...v0.17.0
-[0.16.0]: https://github.com/xpShawky/BeQuite/compare/v0.15.0...v0.16.0
-[0.15.0]: https://github.com/xpShawky/BeQuite/compare/v0.14.0...v0.15.0
-[0.14.0]: https://github.com/xpShawky/BeQuite/compare/v0.13.0...v0.14.0
-[0.13.0]: https://github.com/xpShawky/BeQuite/compare/v0.12.0...v0.13.0
-[0.12.0]: https://github.com/xpShawky/BeQuite/compare/v0.11.0...v0.12.0
-[0.11.0]: https://github.com/xpShawky/BeQuite/compare/v0.10.7...v0.11.0
-[0.10.7]: https://github.com/xpShawky/BeQuite/compare/v0.10.6...v0.10.7
-[0.10.6]: https://github.com/xpShawky/BeQuite/compare/v0.10.5...v0.10.6
-[0.10.5]: https://github.com/xpShawky/BeQuite/compare/v0.10.0...v0.10.5
-[0.10.0]: https://github.com/xpShawky/BeQuite/compare/v0.9.2...v0.10.0
-[0.9.2]: https://github.com/xpShawky/BeQuite/compare/v0.9.1...v0.9.2
-[0.9.1]: https://github.com/xpShawky/BeQuite/compare/v0.9.0...v0.9.1
-[0.9.0]: https://github.com/xpShawky/BeQuite/compare/v0.8.1...v0.9.0
-[0.8.1]: https://github.com/xpShawky/BeQuite/compare/v0.8.0...v0.8.1
-[0.8.0]: https://github.com/xpShawky/BeQuite/compare/v0.7.1...v0.8.0
-[0.7.1]: https://github.com/xpShawky/BeQuite/compare/v0.7.0...v0.7.1
-[0.7.0]: https://github.com/xpShawky/BeQuite/compare/v0.6.1...v0.7.0
-[0.6.1]: https://github.com/xpShawky/BeQuite/compare/v0.6.0...v0.6.1
-[0.6.0]: https://github.com/xpShawky/BeQuite/compare/v0.5.3...v0.6.0
-[0.5.3]: https://github.com/xpShawky/BeQuite/compare/v0.5.2...v0.5.3
-[0.5.2]: https://github.com/xpShawky/BeQuite/compare/v0.5.1...v0.5.2
-[0.5.1]: https://github.com/xpShawky/BeQuite/compare/v0.5.0...v0.5.1
-[0.5.0]: https://github.com/xpShawky/BeQuite/compare/v0.4.3...v0.5.0
-[0.4.3]: https://github.com/xpShawky/BeQuite/compare/v0.4.2...v0.4.3
-[0.4.2]: https://github.com/xpShawky/BeQuite/compare/v0.4.1...v0.4.2
-[0.4.1]: https://github.com/xpShawky/BeQuite/compare/v0.4.0...v0.4.1
-[0.4.0]: https://github.com/xpShawky/BeQuite/compare/v0.3.0...v0.4.0
-[0.3.0]: https://github.com/xpShawky/BeQuite/compare/v0.2.1...v0.3.0
-[0.2.1]: https://github.com/xpShawky/BeQuite/compare/v0.2.0...v0.2.1
-[0.2.0]: https://github.com/xpShawky/BeQuite/compare/v0.1.2...v0.2.0
-[0.1.2]: https://github.com/xpShawky/BeQuite/compare/v0.1.1...v0.1.2
-[0.1.1]: https://github.com/xpShawky/BeQuite/compare/v0.1.0...v0.1.1
-[0.1.0]: https://github.com/xpShawky/BeQuite/releases/tag/v0.1.0
+### Deferred
+- Hook *fire-testing* across all OSes (the security model requires the user to review + enable anyway).
+- The game-changer features — proposed, not built, per user instruction.
+
+---
+
+## [v3.0.0-alpha.17] — 2026-06-04
+
+### Frontend Design Continuity — kill "middle-section drift"
+
+The headline frontend problem: AI-generated UIs look good at the hero, then middle sections degrade (generic cards, all-caps misuse, wide letter-spacing, text overflow, lost visual identity, "code-looking" output). Diagnosed as a context-engineering + design-continuity + visual-QA + workflow-gate problem and fixed **structurally** — lightweight, no Studio / CLI / dashboard / dependency. Researched against Impeccable (pbakaus), UI-UX-Pro-Max (nextlevelbuilder), and Superpowers (obra); principles ported, not copied.
+
+### Added
+
+- **Master skill `bequite-frontend-design-system`** (skills 21 → 22) — coordinates `ux-ui-designer` (design), `frontend-quality` (slop detection), `live-edit` (section edits). Owns the Design DNA, the section-by-section build loop, the Design Continuity Gate, visual QA, and product-type rules. Concise `SKILL.md` + 9 on-demand `references/` (continuity checklist, visual-QA checklist, mobile-app checklist, cinematic/3D checklist, product-type rules, DNA template, + 3 researched-reference notes) + 3 worked `examples/`.
+- **Design Continuity Gate** (`docs/architecture/DESIGN_CONTINUITY_GATE.md`) — sweeps **every** section (not a 3-screen sample), comparing each to the hero and the Design DNA. New conditional gates: `DESIGN_DNA_LOCKED`, `DESIGN_CONTINUITY_PASS`, `VISUAL_QA_DONE` (apply only when a frontend exists; never bypass the 17 hard human gates).
+- **Frontend context engineering** (`docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md`) — persist design (DNA + section map + compact summary) instead of holding it in fading chat memory; the root cause of drift.
+- **Design memory:** `.bequite/design/` (DESIGN_DNA, FRONTEND_SKILL_MAP, DESIGN_CONTINUITY_REPORT), `.bequite/audits/VISUAL_QA_REPORT.md`, `.bequite/state/FRONTEND_CONTEXT_SUMMARY.md`, `.bequite/audits/FRONTEND_SKILL_INTEGRATION_AUDIT.md`.
+- **MISTAKE_MEMORY** seeded with 10 `[fe][design]` prevention rules (hero-vs-middle drift, all-caps, overflow, gray-on-color, dead buttons, mobile, nested cards, noisy motion, inconsistent type, AI gradients).
+- **Product-type awareness** — `references/product-type-rules.md` (SaaS landing / dashboard / admin / mobile / restaurant / marketplace / medical / financial / dev-tool / AI / content / internal tool / automation / e-commerce / booking). Trust domains reject AI purple/pink gradients.
+
+### Changed
+
+- **Design Continuity Gate wired into 9 commands:** `/bq-feature`, `/bq-fix`, `/bq-auto`, `/bq-uiux-variants`, `/bq-live-edit`, `/bq-audit` (replaces "sample 3 screens" with a full section sweep), `/bq-review` (adds a continuity dimension to the review axes), `/bq-red-team` (adds the "worst-section vs hero" attack angle), `/bq-verify` (continuity + visual-QA part of the matrix when a frontend exists).
+- **`/bq-auto` frontend behavior:** must not stop after a nice hero — completes all sections + visual QA before claiming done.
+- **3 existing FE skills** (`frontend-quality`, `ux-ui-designer`, `live-edit`) point at the master (de-dup by designation) + gained effort awareness; `bequite-researcher` + `AUTO_MODE_STRATEGY` gained effort awareness (`${CLAUDE_EFFORT}` / Ultracode → deeper review).
+- **`SECTION_MAP.md`** enriched (route / purpose / visual role / content rules / layout constraints / acceptance criteria).
+- **Menus + advisor:** `/bequite`, `/bq-help`, `/bq-suggest` surface the design-continuity route.
+- **Docs refreshed:** README (frontend quality promise), `commands.md`, `CLAUDE.md` (rule 15 + alpha.17 spec), `COMMAND_CATALOG`, `USING_BEQUITE_COMMANDS` (walkthrough), `MEMORY_FIRST_BEHAVIOR` (design memory), `UIUX_VARIANTS_STRATEGY`, `LIVE_EDIT_STRATEGY`, both `WORKFLOW_GATES` ledgers.
+- **Installer** (`scripts/install-bequite.{ps1,sh}`) scaffolds `.bequite/design/` and copies the design templates (DESIGN_DNA, FRONTEND_SKILL_MAP, DESIGN_CONTINUITY_REPORT, FRONTEND_CONTEXT_SUMMARY, VISUAL_QA_REPORT) into target projects; the master skill auto-propagates via the existing `bequite-*` glob.
+
+### Quality promise
+
+Hero quality is not enough — every visible section must meet the Design DNA. No UI is complete without a Design Continuity pass + a Visual QA pass.
+
+---
+
+## [v3.0.0-alpha.16] — 2026-05-17
+
+### Clean-stable-alpha release — finishes the alpha.14 audit cycle
+
+alpha.14 wrote 7 audit reports. alpha.15 implemented the priority mechanical repairs (memory-first preflight on 16 commands + skill consistency on 19 skills + 2 new red-team angles + stale doc cleanup). alpha.16 closes the remaining items: skill description length audit, the Claude Code hooks ADR, and cross-references between architecture docs. **No new features.**
+
+### Added
+
+- **`docs/decisions/ADR-005-claude-code-hooks-for-machine-enforcement.md`** — proposes opt-in Claude Code hooks for machine-enforced safety: PreToolUse blocker for destructive ops, PreToolUse secret-shaped-string scan, Stop hook for banned-weasel-word detection in completion claims. Implementation deferred to alpha.17+ with full migration plan (alpha.17 prototype → alpha.18 settings integration → alpha.19 opt-in default → v3.0.0 stable cross-platform).
+- **Cross-references** between architecture docs:
+  - `MEMORY_FIRST_BEHAVIOR.md` → AUTO_MODE_STRATEGY (Token Saver) / RESEARCH_DEPTH_STRATEGY / MULTI_MODEL_PLANNING / WORKFLOW_GATES
+  - `RESEARCH_DEPTH_STRATEGY.md` → AUTO_MODE (Deep / Fast) / MEMORY_FIRST / MULTI_MODEL_PLANNING / WORKFLOW_GATES
+  - `MULTI_MODEL_PLANNING_STRATEGY.md` → AUTO_MODE (Delegate) / bequite-delegate-planner skill / RESEARCH_DEPTH / MEMORY_FIRST / WORKFLOW_GATES — repositioned as the architectural strategy doc behind Delegate Mode
+
+### Changed
+
+- **8 skill descriptions trimmed** for Anthropic Skills activation matching (target ~300 chars):
+  - `bequite-make-money` (was ~450 → ~280)
+  - `bequite-delegate-planner` (was ~370 → ~250)
+  - `bequite-ux-ui-designer` (was ~325 → ~290)
+  - `bequite-job-finder` (was ~330 → ~280)
+  - `bequite-researcher` (was ~330 → ~270)
+  - `bequite-security-reviewer` (was ~320 → ~280)
+  - `bequite-devops-cloud` (was ~360 → ~270)
+  - `bequite-workflow-advisor` — content refresh (39→44 commands, 15→21 skills, 3→4 operating modes; was stale from alpha.12)
+- `MULTI_MODEL_PLANNING_STRATEGY.md` header — repositioned from "Phase-1 docs-only" to "Active (alpha.16); Delegate Mode is the production cross-session variant"
+- `BEQUITE_VERSION.md` — bumped to alpha.16; update history extended
+- `AGENT_LOG.md` — alpha.16 entry
+- `LAST_RUN.md` — refreshed with alpha.16 result
+
+### Acceptance (alpha.16)
+
+- Skill description audit complete; all 21 ≤ ~300 chars ✅
+- ADR-005 written + filed in `docs/decisions/` ✅
+- Cross-references between 3 architecture docs added ✅
+- workflow-advisor description content current ✅
+- No new features ✅
+- No Studio reintroduced ✅
+- Lightweight direction preserved ✅
+- alpha.16 tagged + pushed (this commit)
+
+### Article VI honest reporting — deferred to alpha.17
+
+- **Hooks implementation** (ADR-005 is design-only; the scripts ship in alpha.17)
+- **Standardized-fields backport** to the 20 commands flagged in `COMMAND_SKILL_CONSISTENCY_AUDIT.md` — alpha.15 added the high-value sections (memory preflight / gate check / writeback) to 16 of them; remaining alpha.6 fields (Phase / When NOT to use / Quality gate / Failure behavior) are partially present per-file; explicit unified backport is alpha.17+ work that requires per-command unique content
+- **AGENT_LOG sliding-window archival** — the log isn't large enough yet to warrant archival; documented as a future practice; activate when AGENT_LOG > ~5k lines
+- **Live verification** by user — opening `/bq-presentation` on a real deck; running `/bq-auto deep delegate` for a real cross-session feature
+- **Tool-neutrality reminder backport** to alpha.2-era skills — sampling shows all 21 skills already include the tool-neutrality language (either as a dedicated section, in "Common mistakes", or via the alpha.15-added Quality gate that references `.bequite/principles/TOOL_NEUTRALITY.md`). No explicit backport needed; verified during alpha.16 review
+
+---
+
+## [v3.0.0-alpha.15] — 2026-05-17
+
+### Mechanical-repair release — audit findings implemented
+
+alpha.14 wrote 7 audit reports identifying mechanical repairs needed. alpha.15 implements them. No new features.
+
+### Added
+
+- **Memory-first preflight + gate check + memory writeback** sections added to 16 commands that lacked them:
+  `/bq-assign`, `/bq-audit`, `/bq-changelog`, `/bq-clarify`, `/bq-discover`, `/bq-doctor`, `/bq-handoff`, `/bq-implement`, `/bq-memory`, `/bq-recover`, `/bq-red-team`, `/bq-release`, `/bq-review`, `/bq-scope`, `/bq-test`, `/bq-verify`
+  Each section instructs the agent to (1) check required gates in `.bequite/state/WORKFLOW_GATES.md` and refuse with prerequisite recommendation if unmet, (2) read core memory files (PROJECT_STATE / CURRENT_MODE / CURRENT_PHASE / LAST_RUN / MISTAKE_MEMORY) with focused reads, (3) writeback to LAST_RUN + WORKFLOW_GATES + CURRENT_PHASE + AGENT_LOG + CHANGELOG + MISTAKE_MEMORY + MODE_HISTORY as relevant.
+- **`## When NOT to use this skill` + `## Quality gate` sections added** to skills lacking them:
+  - Both sections added to 15 skills (backend-architect, database-architect, devops-cloud, frontend-quality, job-finder, make-money, presentation-builder, problem-solver, product-strategist, project-architect, release-gate, scraping-automation, security-reviewer, testing-gate, ux-ui-designer)
+  - Only `When NOT to use` added to workflow-advisor (already had Quality gate)
+  - Only `Quality gate` added to live-edit, researcher, multi-model-planning (already had When NOT to use)
+- **2 new red-team attack angles** added to `/bq-red-team` (now 10 total, up from 8):
+  - **Supply-chain attack** (alpha.15 #9) — PhantomRaven typo-squat, Shai-Hulud mass-publishing, dependency confusion, post-install scripts, lockfile changes touching transitive deps flagged by OSV/Snyk/Socket
+  - **Prompt injection** (alpha.15 #10) — OWASP LLM Top 10 #1 — user-controlled LLM inputs, unsanitized model output rendered as HTML, indirect injection via fetched pages, prompt leakage, agent-to-agent injection chains
+- **`docs/legacy/`** directory created with README explaining the archive
+- **`.bequite/MEMORY_INDEX.md`** created — comprehensive index of every directory under `.bequite/` with file purposes + read-order guidance + maintainer note
+
+### Changed
+
+- **Stale heavy-direction docs moved to `docs/legacy/`** (per `COMMAND_CLUTTER_REVIEW.md`):
+  - 9 top-level: AUTONOMOUS-MODE / DOCTRINE-AUTHORING / HOSTS / HOW-IT-WORKS / INSTALL / MAINTAINER / QUICKSTART / README / SECURITY
+  - `docs/audits/` (6 files) → `docs/legacy/audits/`
+  - `docs/RELEASES/` (2 files) → `docs/legacy/RELEASES/`
+  - `docs/merge/` (1 file) → `docs/legacy/merge/`
+  - Empty `docs/planning_runs/` moved
+- **`docs/architecture/LIGHTWEIGHT_SKILL_PACK_ARCHITECTURE.md` counts refreshed** — was "24 commands / 7 skills"; now "44 active commands + 1 deprecated alias / 21 skills / 4 operating modes / orthogonal workflows". Diagram + memory tree updated.
+- **`docs/runbooks/USING_BEQUITE_COMMANDS.md` extended** with 4 new walkthrough sections:
+  - Operating modes (Deep / Fast / Token Saver / Delegate) — per-mode examples + composition + tracking
+  - `/bq-presentation` — pattern examples + strict-vs-creative + PPTX-vs-HTML decision
+  - `/bq-auto` — umbrella walkthrough showing all intents
+  - Global feature-addition rule (alpha.14 reminder)
+- **`bequite-workflow-advisor` SKILL.md** — internal knowledge bumped from "39 commands / 15 skills / 3 modes" to "44 + 1 deprecated / 21 / 4 composable modes". Added alpha.13 Creative + Content row to the situation routing table.
+- **`/bq-red-team` description** updated to reflect 10 angles (was 8)
+- **`BEQUITE_VERSION.md`** bumped to alpha.15; previous = alpha.14; update history extended
+
+### Deferred to alpha.16 (Article VI honest reporting)
+
+- Per-command standardized-fields template (alpha.6 schema) for the 20 commands still missing it — mechanical batch
+- Skill `description:` YAML length audit (target <300 chars for Anthropic Skills activation matching)
+- Backport tool-neutrality reminder blocks to alpha.2-era skills
+- Live verification by user (real presentation; real delegate cross-session flow)
+- ADR draft for Claude Code hooks (machine-enforcement)
+- Sliding-window AGENT_LOG archival
+- Cross-reference between architecture docs
+
+### Acceptance (alpha.15)
+
+- 16 commands have memory-first + gate-check + writeback ✅
+- 18 skills have `## When NOT to use` ✅ (all 21 now have it)
+- 18 skills have `## Quality gate` ✅ (all 21 now have it)
+- 2 new red-team angles documented + listed in command description ✅
+- Stale docs moved to legacy ✅
+- `LIGHTWEIGHT_SKILL_PACK_ARCHITECTURE.md` refreshed ✅
+- `MEMORY_INDEX.md` created ✅
+- USING_BEQUITE_COMMANDS walkthroughs added ✅
+- workflow-advisor SKILL counts refreshed ✅
+- No new features ✅
+- No Studio reintroduced ✅
+- Lightweight direction preserved ✅
+- alpha.15 tagged + pushed (this commit)
+
+---
+
+## [v3.0.0-alpha.14] — 2026-05-17
+
+### Added — discipline-restoration release
+
+**Background:** alpha.13's Presentation Builder shipped without going through the full discover → research → scope → plan → tasks → verify workflow. User flagged this as unacceptable: BeQuite must follow BeQuite. alpha.14 is the corrective release.
+
+**No new features.** This release improves alignment, not surface area.
+
+### Added — 7 audit reports
+
+- `.bequite/audits/FULL_SYSTEM_ALIGNMENT_AUDIT.md` — top-level repo audit + feature workflow trace + repair plan
+- `.bequite/audits/COMMAND_SKILL_CONSISTENCY_AUDIT.md` — per-file consistency check across 18 command fields + 12 skill fields
+- `.bequite/audits/WORKFLOW_GATE_AUDIT.md` — gate enforcement gaps + name canonicalization + mode-specific behavior + orthogonal workflows
+- `.bequite/audits/FEATURE_WORKFLOW_AUDIT.md` — per-feature trace of discover → research → scope → plan → tasks → verify discipline through alpha.1–alpha.13
+- `.bequite/research/BEQUITE_SYSTEM_RESEARCH_REPORT.md` — deep research on coding-agent skill packs, spec-driven development, memory systems, presentation generation, red-team workflows; principles extracted; ideas accepted vs rejected
+- `.bequite/audits/COMMAND_CLUTTER_REVIEW.md` — per-command keep/merge/promote/reject decisions
+- `.bequite/audits/FINAL_SYSTEM_ALIGNMENT_REPORT.md` — what was fixed in alpha.14, what's deferred to alpha.15, alpha.16 outlook
+
+### Added — global feature-addition rule
+
+Codified in:
+- `CLAUDE.md` — core operating rules item 13 (the 15-step workflow) + item 14 (BeQuite eats its own food)
+- `docs/architecture/WORKFLOW_GATES.md` — new "Feature-addition workflow (alpha.14 — global rule)" section
+- `docs/specs/COMMAND_CATALOG.md` — top-of-file rule notice
+
+Every new feature must travel through: memory entry → research → scope → plan → tasks → impl → docs (README + commands.md + `/bequite` + `/bq-help` + catalog) → log + changelog → verify → version. Exemptions for hotfixes + doc-only changes.
+
+### Added — gate name aliasing
+
+Both `_DONE` (COMMAND_CATALOG convention) and `_COMPLETE` (strategy doc convention) are valid spellings. Documented in `WORKFLOW_GATES.md`.
+
+### Added — orthogonal workflow declaration
+
+`/bq-presentation`, `/bq-job-finder`, `/bq-make-money`, `/bq-suggest`, `/bq-now`, `/bq-explain`, `/bq-help`, `/bq-update` operate **outside the 6 dev lifecycle modes**. Running them does not change phase or mode. Documented in `WORKFLOW_GATES.md`.
+
+### Changed
+
+- `bq-add-feature.md` — marked as DEPRECATED ALIAS for `/bq-feature`. Original spec preserved at the bottom for reference.
+- `.bequite/state/OPEN_QUESTIONS.md` — Q1 (Studio deletion), Q2 (alpha.1 release), Q3 (Python CLI retirement) all closed (resolved by ADR-001 + ADR-004 long ago; never marked closed)
+- `.bequite/state/PROJECT_STATE.md` — refreshed: removed stale "Python CLI + paused Studio" stack description; documented paused-on-disk assets per ADR-004
+- `.bequite/state/BEQUITE_VERSION.md` — bumped to alpha.14; previous = alpha.13
+- `docs/specs/COMMAND_CATALOG.md` — version + tally update + global rule
+- `docs/architecture/WORKFLOW_GATES.md` — adds workflow rule + aliases + orthogonal section
+- `CLAUDE.md` — rules 13 + 14 (alpha.14)
+- `.bequite/logs/AGENT_LOG.md` — alpha.14 entry
+- `docs/changelogs/CHANGELOG.md` — this entry
+
+### Audit findings (per-file detail)
+
+- **45 commands inventoried.** No placeholders. 18 lack explicit `## Files to read` (memory-first); 20 lack alpha.6 standardized-fields section. Deferred to alpha.15 — too mechanical for a single audit release.
+- **21 skills inventoried.** All have valid YAML frontmatter + tool neutrality language. 18 lack explicit `## Quality gate` section; 16 lack `## When NOT to use`. Deferred to alpha.15.
+- **No banned weasel words found** in completion claim contexts. The 8 mentions of "token-free" are all explicit NEGATIONS ("NOT token-free", "Token Saver — NOT token-free") — these are correct usage, not errors.
+- **Studio / heavy CLI remnants** still on disk (paused per ADR-001/004) — acceptable; documented in refreshed `PROJECT_STATE.md`. No cleanup needed.
+- **9 stale top-level `docs/*.md`** files + `docs/audits/*` + `docs/RELEASES/*` + `docs/merge/*` from heavy direction — not moved to `docs/legacy/` in alpha.14 (low-risk; defer to alpha.15)
+
+### Deferred to alpha.15 (Article VI honest reporting)
+
+- Add `## Files to read` memory-first preflight to 18 commands lacking it
+- Add alpha.6 standardized fields section to 20 commands
+- Add gate-refusal logic to 14 commands
+- Add `## Quality gate` + `## When NOT to use` to 18 / 16 skills
+- Move stale heavy-direction docs to `docs/legacy/`
+- Update `LIGHTWEIGHT_SKILL_PACK_ARCHITECTURE.md` counts
+- USING_BEQUITE_COMMANDS.md walkthroughs (Presentation + Delegate + modes)
+- Skill `description:` field length audit
+- `MEMORY_INDEX.md`
+
+These are tracked in the alpha.15 unreleased section above. Each is mechanical; none blocks alpha.14 from shipping.
+
+### Acceptance (alpha.14)
+
+- 7 audit reports exist ✅
+- Global feature-addition rule codified in 3 docs (CLAUDE.md / WORKFLOW_GATES.md / COMMAND_CATALOG.md) ✅
+- Gate name aliases documented ✅
+- Orthogonal workflows declared ✅
+- `bq-add-feature` deprecated alias marked ✅
+- `OPEN_QUESTIONS.md` stale entries closed ✅
+- `PROJECT_STATE.md` refreshed ✅
+- `BEQUITE_VERSION.md` + AGENT_LOG + CHANGELOG + LAST_RUN updated ✅
+- Lightweight direction preserved (no Studio / heavy CLI / dashboard added) ✅
+- alpha.14 tagged + pushed ✅ (this commit)
+
+---
+
+## [v3.0.0-alpha.13] — 2026-05-13
+
+### Added — Creative and Content Workflows category
+
+- **`/bq-presentation`** — premium PPTX or HTML presentation builder. World-class output, designed to feel professional rather than generic AI.
+  - Natural-language syntax (quotes optional)
+  - Options: `format` (pptx / html / both / auto), `variants` (1–10), `source` (folder / pdf / word / docx / url / mixed / topic-only), `strict` / `creative`, `audience`, `style`, `duration`, `language`, `topic`, `brand`, `references`, `notes`, `motion`
+  - Strict mode preserves source claims (PDF / Word / scientific source) — no unsupported facts
+  - Creative mode adds structure (hooks, story arcs, examples) with assumptions marked
+  - Variants 1–10: different design directions (Academic Clean / Premium Cinematic / Corporate Keynote / Medical Conference / Minimal Lecture / Dark Futuristic / Light Editorial / Data-Dashboard / Student-Friendly / Brand-Led — candidates only)
+  - **Morph-like PPTX motion** — same object across sequential slides with stable IDs; duplicate slides for movement; 1–2 transformations at a time; 0.3–0.8s timing
+  - **HTML motion vocabulary** — title glow, staged bullets, card focus, light sweep, smooth section transitions (every effect earns its place; no random animation)
+  - Brand asset extraction (palette / typography / layout / icon style — writes `DESIGN_BRIEF.md` BEFORE any slide)
+  - 14-item verification checklist
+  - Operating modes composable: `deep` / `fast` / `token-saver` / `delegate`
+  - Tool neutrality: python-pptx / pptxgenjs / reveal.js / Slidev / Marp / Spectacle / Impress.js / GSAP / Motion One / Playwright are CANDIDATES only — none installed by default
+- **`bequite-presentation-builder`** skill — encodes the 14-step workflow, PPTX vs HTML decision rule, morph-like discipline, AI-slop reject list, variants discipline, strict-vs-creative content rules, brand-asset extraction, verification checklist
+- **`.bequite/presentations/`** memory folder with 9 templates:
+  - `PRESENTATION_BRIEF.md` — what / why / who / format / strict-vs-creative
+  - `CONTENT_OUTLINE.md` — title / hook / story arc / slide outline / references plan
+  - `SLIDE_PLAN.md` — slide-by-slide content (purpose / headline / body / visual / speaker-note pointer / source / motion ref)
+  - `DESIGN_BRIEF.md` — palette / typography / grid / icon style / AI-slop reject list / brand extraction
+  - `MOTION_PLAN.md` — PPTX morph-like discipline + HTML motion vocabulary + audience-fit motion baseline
+  - `SPEAKER_NOTES.md` — per-slide talking points (strict-mode source-traced; creative-mode assumptions marked)
+  - `REFERENCES.md` — sources, citations, attribution, anti-hallucination check
+  - `PRESENTATION_VARIANTS_REPORT.md` — per-variant visual direction + pros/cons + recommendation; user picks winner
+  - `EXPORT_LOG.md` — every export attempt + tool chosen + verification result
+  - `assets/.gitkeep`, `outputs/.gitkeep`
+
+### Changed
+
+- README.md — new "Creative and Content Workflows (alpha.13)" section + version bump to alpha.13 + skill count 20 → 21 + command count 43 → 44 + skill list updated
+- commands.md — new "Creative and Content Workflows (alpha.13)" section with full `/bq-presentation` spec + ToC entry + version bump
+- `.claude/commands/bequite.md` — new "Creative and Content Workflows (alpha.13)" block in root menu
+- `.claude/commands/bq-help.md` — added `/bq-presentation` to alpha.5+ surface list
+- `.claude/commands/bq-suggest.md` — added presentation keyword triggers (slides / presentation / lecture / PowerPoint / PPTX / keynote / deck / convert PDF / Word file → slides)
+- `.claude/skills/bequite-workflow-advisor/SKILL.md` — added `/bq-presentation` routing patterns + new "Creative + Content" command-table row
+- `docs/specs/COMMAND_CATALOG.md` — full `/bq-presentation` entry + tallies bumped to 44 commands / 21 skills
+- `CLAUDE.md` — spec bumped to alpha.13 + Creative + Content Workflows mention + presentation memory path
+- `scripts/install-bequite.{ps1,sh}` — bumped to alpha.13 + scaffold `.bequite/presentations/` (+ `assets/`, `outputs/`) + copy the 9 presentation templates + updated install banner
+- `BEQUITE_VERSION.md` — bumped to alpha.13
+
+### Naming decisions
+
+- One canonical command: `/bq-presentation`. Optional alias `/bq-deck` deferred to alpha.14 (avoid command clutter; alpha.13 is 44 commands — enough).
+- Skill is `bequite-presentation-builder` (consistent with naming convention).
+- Memory folder is `.bequite/presentations/` (plural, parallel to `jobs/`, `money/`, `uiux/`).
+
+### Parser discipline (important)
+
+- Natural language understood — quotes NOT required
+- Mode words (`deep`, `fast`, `delegate`, `uiux`, `presentation`, `pptx`, `html`) treated as flags ONLY when:
+  - `key=value`
+  - inside brackets `[format=pptx, variants=3]`
+  - immediately after the command name as known flag
+  - clearly separated from the natural-language task
+- If a word appears naturally inside the topic text (e.g. "explain fast learning") it stays as topic text, NOT a mode
+
+### Acceptance (alpha.13 — all met)
+
+- `/bq-presentation` command file exists with full spec ✅
+- `bequite-presentation-builder` skill exists ✅
+- README mentions presentation capability + new section ✅
+- commands.md has full entry ✅
+- COMMAND_CATALOG.md updated ✅
+- `/bequite` root menu shows Creative + Content Workflows ✅
+- `/bq-help` updated ✅
+- `/bq-suggest` recommends `/bq-presentation` for slide/lecture/PowerPoint/PDF/Word keywords ✅
+- `bequite-workflow-advisor` routes presentation queries ✅
+- Memory folder `.bequite/presentations/` exists with 9 templates + assets/ + outputs/ ✅
+- Strict vs creative documented ✅
+- PPTX vs HTML decision logic documented ✅
+- Variants discipline (1–10, different *directions*) documented ✅
+- Morph-like PPTX motion planning documented ✅
+- Source / reference handling documented ✅
+- AGENT_LOG updated ✅
+- CHANGELOG updated (this entry) ✅
+- Installer carries the new templates ✅
+- No heavy dependencies added ✅ (no python-pptx, pptxgenjs, reveal.js, Slidev, Playwright — all candidates only)
+
+### Not done (deferred to alpha.14)
+
+- USING_BEQUITE_COMMANDS.md walkthrough with worked presentation example
+- `/bq-deck` alias (only if user demand justifies)
+- Decision section example in `DECISIONS.md` for a chosen PPTX library (will run when user invokes `/bq-presentation` for real implementation)
+- Live verification on a real project (user action)
+
+---
+
+## [v3.0.0-alpha.12] — 2026-05-12
+
+### Added — 4 composable operating modes
+
+- **Deep Mode** — full 11-dim research + community sources (GitHub / Reddit / HN / X / Product Hunt / niche forums / non-English) + multi-plan prompted + red-team mandatory + full audit. For new SaaS / regulated / production-bound / high-stakes work.
+- **Fast Mode** — short discovery + shallow research (3 dims) + reuse memory. Still tests + verifies + logs. Not low-quality mode; just skips what isn't needed.
+- **Token Saver Mode** (alias: `lean`) — read core memory first + focused files only + reuse cached research + compact reports. **Different from Fast Mode**: optimizes token cost, not speed. Naming correction: NOT "token-free".
+- **Delegate Mode** (Architect Delegate pattern) — strong model architects + writes task pack at `.bequite/tasks/DELEGATE_*.md` → cheaper model implements exactly in separate session → strong model reviews at `.bequite/audits/DELEGATE_REVIEW_REPORT.md`. 40-70% cost savings on large features.
+
+Modes compose: `deep delegate` (recommended for new features), `fast token-saver`, `deep token-saver`, `uiux variants=5 deep`, etc. Conflict resolution defaults provided.
+
+### Added — skill + memory
+
+- `bequite-delegate-planner` skill — full strong-model-plans-cheap-model-implements-strong-model-reviews workflow with task-pack format, hard-gate handling, mode composition, cost discipline
+- 5 new memory templates: `.bequite/tasks/DELEGATE_TASKS.md`, `DELEGATE_INSTRUCTIONS.md`, `DELEGATE_ACCEPTANCE_CRITERIA.md`, `DELEGATE_TEST_PLAN.md`, `.bequite/audits/DELEGATE_REVIEW_REPORT.md`
+- 1 new state file: `.bequite/state/MODE_HISTORY.md` (tracks mode usage + outcome per run; informs `/bq-suggest` and `bequite-workflow-advisor`)
+
+### Changed
+
+- `bequite-workflow-advisor` skill extended with mode-controller logic (decision matrix + composition table + conflict resolution + MODE_HISTORY.md learning loop)
+- `/bq-auto.md` — full Mode section rewrite covering all 4 modes + composition + conflict resolution + mode tracking. Mistake-memory section now also appends to MODE_HISTORY.
+- `docs/architecture/AUTO_MODE_STRATEGY.md` §11 — comprehensive new mode section
+- `README.md` — top-level "Operating Modes" section near the top (major selling point). Version bumped to alpha.12. New "4 modes" badge.
+- `/bequite` root menu — new "Operating modes" section
+- `/bq-help` — modes table
+- `commands.md` — top-level "Operating modes (alpha.12)" section with mode table + composition + conflict + delegate-specific link
+- `CLAUDE.md` — version bump + 4 composable modes mention
+- `docs/specs/COMMAND_CATALOG.md` — full mode decision matrix
+- `BEQUITE_VERSION.md` — bumped to alpha.12
+
+### Naming decisions
+
+- Renamed user-suggested "Architect Delegate Mode" → **"Delegate Mode"** (short for the flag; the longer name describes the pattern in docs)
+- Added `lean` as alias for `token-saver`
+- No new `/bq-delegate` command — delegate is a mode flag (avoids command clutter)
+
+### Tally after alpha.12
+
+- Commands: 43 (unchanged — modes are flags, not new commands)
+- Skills: 19 → 20 (+1: bequite-delegate-planner)
+- Memory templates: +6 (5 delegate + 1 MODE_HISTORY)
+- Operating modes: 0 → **4 composable**
+
+---
+
+## [v3.0.0-alpha.11] — 2026-05-12
+
+### Added
+- Installer scripts (PowerShell + bash) now copy alpha.10 templates into target projects on `/bq-init`:
+  - jobs deep-intelligence: `HIDDEN_GEMS.md`, `COMMUNITY_SIGNALS.md`, `AI_ASSISTED_WORK.md`
+  - money deep-intelligence: `HIDDEN_GEMS.md`, `COMMUNITY_SIGNALS.md`, `AI_ASSISTED_PATHS.md`
+  - version + update tracking: `BEQUITE_VERSION.md`, `UPDATE_SOURCE.md`, `UPDATE_LOG.md`
+- Directory scaffold extended: `.bequite/backups/`
+- Final install banner now shows "Maintenance (alpha.10)" section with `/bq-update`
+- CLAUDE.md template updated to surface `/bq-update`, deep intelligence flags, and memory-first principle reference
+
+### Changed
+- Installer version messaging: `v3.0.0-alpha.8` → `v3.0.0-alpha.10`
+- Installer banner counts: "42 slash commands" → "43"; "18 specialist skills" → "19"
+
+### Effect
+New BeQuite installs match alpha.10 functionality immediately. `/bq-update` works from day one because BEQUITE_VERSION.md + UPDATE_SOURCE.md are present.
+
+---
+
+## [v3.0.0-alpha.10] — 2026-05-12
+
+### Added
+
+#### Maintenance command
+- `/bq-update` — safely update BeQuite (commands / skills / docs / templates) from GitHub or local source. Modes: check / safe (default) / force / source=local / source=github. Backs up before changes; never overwrites project memory; surfaces conflicts as `.bequite-update.md` sibling files.
+- `bequite-updater` skill — version detection / source resolution / SHA-256 diff / merge per file class / conflict handling / logging / rollback / test-after-update discipline.
+- Memory files: `.bequite/state/BEQUITE_VERSION.md`, `.bequite/state/UPDATE_SOURCE.md`, `.bequite/logs/UPDATE_LOG.md`, `.bequite/backups/`
+
+#### Deep Opportunity Intelligence
+- `/bq-job-finder` + `/bq-make-money` extended with deep intelligence:
+  - **Community + conversation sources:** Reddit / Indie Hackers / Hacker News / Product Hunt / X / public LinkedIn / Facebook / Discord / Slack / YouTube creator communities / app reviews
+  - **Trending + short-window opportunities:** new AI task platforms, data labeling campaigns, app testing, research panels, browser panels
+  - **AI-assisted work paths:** catalog of work where AI stack is a multiplier
+  - **Hidden Gems** logic with full per-gem fields
+- **11 new tracks:** `worldwide_hidden`, `trending_now`, `community_discovered`, `AI_assisted`, `no_calls`, `fast_first_payout`, `highest_payout`, `beginner_friendly`, `skilled_remote`, `local_country`, `non_english_platforms` — stackable
+- **Multi-language search:** 13 languages + user-listed
+- **Per-opportunity required fields:** confidence level added (in addition to existing trust check fields)
+- 6 new memory files: `.bequite/jobs/{HIDDEN_GEMS,COMMUNITY_SIGNALS,AI_ASSISTED_WORK}.md` + `.bequite/money/{HIDDEN_GEMS,COMMUNITY_SIGNALS,AI_ASSISTED_PATHS}.md`
+
+#### Memory-First Behavior
+- `docs/architecture/MEMORY_FIRST_BEHAVIOR.md` — universal principle for all action-taking commands
+- Core memory list + optional memory list + per-command read/write matrix for all 43 commands
+- Token-saving memory strategy
+- Auto-mode memory strategy
+- Mistake memory strategy
+- Standardized memory preflight + writeback templates
+
+### Changed
+
+- `/bequite` root menu — added "Maintenance" section with `/bq-update`
+- `/bq-help` — added `/bq-update` + alpha.10 deep intelligence note
+- `README.md` — version bump to alpha.10; 43-command badge; new Opportunity and Workflows + Maintenance sections in command map; deep intelligence highlighted
+- `CLAUDE.md` — version bump; memory-first principle referenced; new memory paths
+- `docs/specs/COMMAND_CATALOG.md` — added `/bq-update` entry; added deep intelligence flags table; tallies bumped to 43/19
+- `commands.md` — added Maintenance section with full `/bq-update` entry
+
+### Tally
+
+- Commands: 42 → 43 (+1)
+- Skills: 18 → 19 (+1)
+- New memory files: +9 (6 opportunity + 3 version/update)
+- New memory directory: +1 (backups/)
+- Architecture docs: +1 (MEMORY_FIRST_BEHAVIOR.md)
+- New tracks: +11 (deep intelligence flags)
+
+---
+
+## [v3.0.0-alpha.9] — 2026-05-12
+
+### Added
+- Installer scripts (PowerShell + bash) now copy alpha.8 opportunity-memory templates into target projects on `/bq-init`:
+  - `.bequite/jobs/` — JOB_PROFILE, JOB_SEARCH_LOG, OPPORTUNITIES, APPLICATION_TRACKER, PITCH_TEMPLATES
+  - `.bequite/money/` — MONEY_PROFILE, MONEY_SEARCH_LOG, OPPORTUNITIES, TRUST_CHECKS, ACTION_PLAN
+- Directory scaffold extended: `.bequite/jobs/`, `.bequite/money/`
+- Final install banner includes "Opportunity and Workflows (alpha.8)" section listing `/bq-suggest`, `/bq-job-finder`, `/bq-make-money` + the `worldwide_hidden=true` flag
+
+### Changed
+- Installer version messaging: `v3.0.0-alpha.5` → `v3.0.0-alpha.8`
+- Installer banner counts: "37 slash commands" → "42"; "15 specialist skills" → "18"
+- CLAUDE.md template (created on first install) now references the 3 new opportunity commands
+
+### Effect
+New BeQuite installs match alpha.8 functionality immediately — no manual file copying.
+
+---
+
+## [v3.0.0-alpha.8] — 2026-05-12
+
+### Added — Opportunity and Workflows
+
+- `/bq-suggest "<situation>"` — BeQuite workflow advisor; recommends best commands/skills/mode/gates for the goal. Read-only. Activates `bequite-workflow-advisor` skill (knows all 42 commands + 18 skills + 23 gates + 17 hard human gates).
+- `/bq-job-finder` — real work opportunity finder. Intake → JOB_PROFILE.md → live research → trust check → ranked classification → pitches. Supports `worldwide_hidden=true` (multilingual hidden opportunities).
+- `/bq-make-money` — earning opportunity finder. 10 tracks (highest-payout / easiest-start / fastest-first-dollar / long-term-stable / ai-assisted / no-calls / remote-global / local-only / beginner / skilled). Supports `worldwide_hidden=true` for Hidden Gems. 7-day action plan output. Repeat-search comparison.
+- 3 new skills: `bequite-workflow-advisor`, `bequite-job-finder`, `bequite-make-money`
+- New memory folders: `.bequite/jobs/` (5 templates: JOB_PROFILE, JOB_SEARCH_LOG, OPPORTUNITIES, APPLICATION_TRACKER, PITCH_TEMPLATES); `.bequite/money/` (5 templates: MONEY_PROFILE, MONEY_SEARCH_LOG, OPPORTUNITIES, TRUST_CHECKS, ACTION_PLAN)
+- Strict safety rules across opportunity commands: no scams, fake reviews, VPN misrepresentation, upfront-fee, identity misuse, CAPTCHA farms, platform abuse, fake accounts, fake engagement, spam, unrealistic income promises
+
+### Changed
+
+- `/bequite` root menu — added "Opportunity and Workflows" section
+- `/bq-help` — added new commands to alpha.2+ list
+- `README.md` — version bump to alpha.8; 42-command badge; new commands + Worldwide Hidden Opportunity Search section in main body
+- `CLAUDE.md` — version bump; new commands referenced; new memory paths in "Where things live"
+- `docs/specs/COMMAND_CATALOG.md` — full entries for 3 new commands; tallies bumped
+- `commands.md` — Opportunity and Workflows section with examples + Worldwide Hidden Opportunity Search explainer
+
+### Constraints honored
+
+- No heavy app added · no dashboard added · no big CLI added · no heavy dependencies added by default
+- Commands + skills + docs + memory updates only
+- No actual job APIs or browser automation runtime added — live research happens via WebFetch/WebSearch when the user invokes the command
+
+---
+
+## [v3.0.0-alpha.7] — 2026-05-12
+
+### Added
+- `/bq-spec "<feature>"` — Spec Kit-compatible one-page spec writer. Bridges BeQuite to the GitHub Spec Kit ecosystem. Writes `specs/<slug>/spec.md` with What / Why / Who / Acceptance / Out-of-scope / Constraints / Open questions / Success metric. Activates `bequite-product-strategist` for JTBD discipline.
+- `/bq-explain "<target>"` — plain-English explainer for files / functions / decisions / concepts / BeQuite artifacts. 4-section structured output. Read-only. Use cases: onboarding, vibe-handoff prep, understanding inherited code, learning what `/bq-auto` did.
+
+### Changed
+- `bq-help.md` — added alpha.5+ alignment notice at top pointing to `commands.md`; added standardized command fields block at the end; documented updated phase names + commands added in alpha.2+
+- `README.md` — version bump to alpha.7; 39-command badge; new commands added to command map + MVP roadmap
+- `CLAUDE.md` — version bump; new commands referenced
+- `docs/specs/COMMAND_CATALOG.md` — added `/bq-spec` + `/bq-explain` entries
+- `commands.md` — added `/bq-spec` + `/bq-explain` full entries with examples + skill activation
+
+---
+
+## [v3.0.0-alpha.6] — 2026-05-12
+
+### Added
+- Installer scripts (both PowerShell + bash) updated to copy alpha.5 templates into target projects:
+  - `.bequite/principles/TOOL_NEUTRALITY.md`
+  - `.bequite/state/MISTAKE_MEMORY.md`, `ASSUMPTIONS.md`
+  - `.bequite/uiux/SECTION_MAP.md`, `LIVE_EDIT_LOG.md`, `UIUX_VARIANTS_REPORT.md`, `selected-variant.md`
+  - `.bequite/uiux/screenshots/`, `.bequite/uiux/archive/`
+  - `commands.md` at project root
+- 19 alpha.1 commands extended with "Standardized command fields (alpha.6)" section: bq-init, bq-discover, bq-doctor, bq-clarify, bq-scope, bq-assign, bq-implement, bq-test, bq-audit, bq-review, bq-red-team, bq-verify, bq-release, bq-changelog, bq-memory, bq-recover, bq-handoff, bequite (root), bq-add-feature
+- Each gained: Phase / When NOT to use / Preconditions / Required previous gates / Quality gate (success criteria) / Failure behavior / Memory updates / Log updates
+
+### Changed
+- Installer CLAUDE.md template (created or appended) now references `/bq-now`, `/bq-auto`, `commands.md`, TOOL_NEUTRALITY.md, gates
+- Installer end-of-install message highlights autonomous mode + new commands
+
+---
+
+## [v3.0.0-alpha.5] — 2026-05-12
+
+### Added
+- `/bq-now` — one-line orientation command (faster than `/bequite`)
+- `commands.md` at repo root — full human-readable command reference, workflow-ordered, linked from README
+- `--mode fast | deep | token-saver` flag on `/bq-auto` (depth adjustment; does NOT skip safety gates)
+- Mistake-memory writes wired into 7 commands (`/bq-fix`, `/bq-audit`, `/bq-review`, `/bq-red-team`, `/bq-verify`, `/bq-auto`, `/bq-live-edit`)
+
+### Removed
+- `studio/` directory (full Next.js app: marketing + api + dashboard + brand)
+- `docker-compose.yml` (Studio Docker orchestration)
+- `scripts/docker-up.ps1`, `scripts/docker-up.sh` (Studio dev runners)
+- Git history retains all of the above (ADR-004)
+
+### Changed
+- README: badge updated to 37 commands; `commands.md` link surfaced near the top; alpha.5 roadmap consolidated
+- CLAUDE.md: version bump; new file paths; mistake-memory + `/bq-now` + `commands.md` referenced
+- COMMAND_CATALOG.md: `/bq-now` entry added; tallies bumped; pointed at `commands.md`
+
+### Kept (per user "remove only studio") — explicitly NOT removed
+- `cli/`, `tests/`, `template/`, `evidence/`, `examples/`, `prompts/`, `state/`, `skill/`
+- `.dockerignore`, `.env.example`, `Makefile`, `package.json`, `.commitlintrc.json`
+- `scripts/bootstrap.{ps1,sh}`, `scripts/install.{ps1,sh}`
+- `docs/architecture/CLI_AUTHENTICATION_STRATEGY.md`, `docs/runbooks/LOCAL_DEV.md`
+- `BeQuite_MASTER_PROJECT.md`, root `CHANGELOG.md`
+
+---
+
+## [v3.0.0-alpha.4] — 2026-05-12
+
+### Added — workflow upgrades
+- **Scoped `/bq-auto`** — parses `$ARGUMENTS` for 17 intent types (`new | existing | feature | fix | uiux | frontend | backend | database | security | testing | devops | scraping | automation | deploy | live-edit | variants | release`). Continues by default; pauses only at 17 hard human gates.
+- **UI/UX variants** — `/bq-uiux-variants [N]` generates 1-10 isolated design directions. Each lives in `/uiux/v1` route or `src/uiux-variants/Variant01/` component. Original UI untouched. User picks winner; agent merges.
+- **Live edit workflow** — `/bq-live-edit` lightweight section-by-section frontend edits. Maps visible sections to source files (SECTION_MAP.md). Three-tier browser inspection (Playwright MCP → project-local Playwright → code-only).
+- New skill: `bequite-live-edit`
+- New strategy docs: AUTO_MODE_STRATEGY, UIUX_VARIANTS_STRATEGY, LIVE_EDIT_STRATEGY
+- New memory tree: `.bequite/uiux/` (SECTION_MAP, LIVE_EDIT_LOG, UIUX_VARIANTS_REPORT, selected-variant, screenshots/, archive/)
+
+### Changed (alpha.4)
+- `/bq-auto` fully rewritten — 17 intents + 17 hard human gates (replaced alpha.2's 12)
+- CLAUDE.md updated to v3.0.0-alpha.4 spec; 36 commands, 15 skills
+- COMMAND_CATALOG.md added bq-uiux-variants, bq-live-edit; expanded bq-auto entry
+- USING_BEQUITE_COMMANDS.md added v3.0.0-alpha.4 examples section
+- 5 existing skills extended with activation lists
+
+### Tally
+- Commands: 34 → 36 (+2)
+- Skills: 14 → 15 (+1)
+- Auto intents: 0 → 17
+- Hard human gates in /bq-auto: 12 → 17
+- Architecture docs: 1 → 4
+
+---
+
+## [v3.0.0-alpha.3] — 2026-05-11
+
+### Added — tool neutrality
+- `.bequite/principles/TOOL_NEUTRALITY.md` — canonical source of truth
+- `docs/decisions/ADR-003-tool-neutrality.md` — formalizes the decision
+- **10 decision questions** every major tool pick must answer
+- **Decision section format** required before tool adoption
+- **Do-not-auto-install defaults** — no deps / frontend libs / Docker / testing frameworks / monitoring / auth libs added by default
+- **Research-depth rule** — 11 dimensions; tool choice AFTER project understanding
+
+### Changed (alpha.3)
+- CLAUDE.md — tool neutrality is now Core Operating Rule #1
+- All 11 tool-touching skills updated with Tool Neutrality block
+- All 8 tool-touching commands updated with Tool Neutrality block
+- Standardized phrasing: "X is one candidate. Research and compare against other options. Use it only if it fits this project."
+
+---
+
+## [v3.0.0-alpha.2] — 2026-05-11
+
+### Added — mandatory workflow gates + scoped modes + specialist skills
+- **23 workflow gates** at `.bequite/state/WORKFLOW_GATES.md`
+- **6 explicit modes** — New Project, Existing Audit, Add Feature, Fix Problem, Research Only, Release Readiness
+- **10 new commands** — `/bq-mode`, `/bq-new`, `/bq-existing`, `/bq-feature` (12-type router), `/bq-auto`, `/bq-p0` through `/bq-p5`
+- **Phase orchestrators** — `/bq-p0` … `/bq-p5` walk one phase end-to-end
+- **Autonomous runner** — `/bq-auto` walks all phases with 12 hard human gates
+- **7 new specialist skills** — researcher (11 dims), product-strategist, ux-ui-designer, backend-architect, database-architect, security-reviewer, devops-cloud
+- **Add Feature 12-type router** + **Fix 15-type router**
+- ADR-002 — mandatory workflow gates
+- COMMAND_CATALOG.md — single source of truth
+
+### Changed (alpha.2)
+- `/bequite` root menu now gate-aware
+- `/bq-research` expanded from 1 dim → 11 dims
+- `/bq-plan` activates multi-skill thinking (15 sections including §11 security and §12 devops)
+- `/bq-multi-plan` enforces unbiased external prompts (zero mention of Claude's plan)
+- `/bq-fix` reproduce-first procedure with 15-type classification
+- CLAUDE.md reflects 34 commands, 14 skills, modes, gates
+
+---
+
+## [v3.0.0-alpha.1] — 2026-05-11
+
+### Added — lightweight skill pack MVP
+- 24 slash commands at `.claude/commands/`
+- 7 focused skills at `.claude/skills/`
+- `.bequite/` memory tree (state, logs, plans, tasks, prompts, audits)
+- Lightweight installer scripts (`scripts/install-bequite.{ps1,sh}`)
+- ADR-001 — lightweight-skill-pack-first decision
+- README rewritten to lead with skill-pack install
+- CLAUDE.md shortened to point at `.claude/` + `.bequite/`
+
+### Paused (kept on disk; not deleted in alpha.1)
+- `studio/` (marketing + dashboard + api + brand)
+- `docker-compose.yml`, `.dockerignore`, Dockerfiles
+- `tests/e2e/`
+- `scripts/docker-up.{ps1,sh}`
+- Root `package.json` + `Makefile`
+- `cli/` (Python CLI)
+
+(Per DIRECTION_RESET_AUDIT.md — deletion gated on explicit user approval; delivered in alpha.5 cleanup phase B.)
+
+---
+
+## Pre-reset history (v0.1.0 → v2.0.0-alpha.6)
+
+Heavy-direction lineage: Studio + Docker + heavy CLI. Archived at `docs/legacy/CHANGELOG-legacy.md` (after Phase B cleanup completes).

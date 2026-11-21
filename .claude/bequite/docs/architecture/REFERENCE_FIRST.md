@@ -33,7 +33,7 @@ All sites below answered on 2026-11-21 (several refuse scripts and need the brow
 | Components and product UI | 21st.dev, mobbin.com, refero.design, figma.com/community | Screenshots of the flow; component source where it is open | States, density, radii, shadows, empty and error states |
 | Mood and art direction | pinterest.com, savee.it, cosmos.so, are.na, behance.net, dribbble.com | Board of 10 to 20 images | Palette, texture, composition, lighting |
 | Type | fontsinuse.com, typewolf.com | Screenshots | Pairings, sizes, tracking, where each family is used |
-| Films, ads, title design | `motion-library/` (58 studied films), vimeo.com/channels/staffpicks, motionographer.com, stashmedia.tv, artofthetitle.com | The video ladder (`bequite-video-intel`) | Cut rate, sync to the beat, type size and placement, camera moves, palette, sound arc |
+| Films, ads, title design | `.claude/skills/bequite-motion-director/references/film-index.md` (69 studied films; full studies in the BeQuite repo's motion library), vimeo.com/channels/staffpicks, motionographer.com, stashmedia.tv, artofthetitle.com | The video ladder (`bequite-video-intel`) | Cut rate, sync to the beat, type size and placement, camera moves, palette, sound arc |
 | Kinetic type | A reference the owner or the agent picks | Frames at 6 fps for the showcase part | Word-by-word timing, how words push, camera travel, blur, zoom range |
 | Short video in a niche | TikTok Creative Center (by region), YouTube, the niche's top accounts | Ladder L0 to L3 | First 3 seconds, cut rate, captions, structure, length, sound |
 | A voice (page, account, the owner) | The real page in the owner's browser | 30 to 50 posts copied as text with date and reactions; private, never shipped | Section 4 |

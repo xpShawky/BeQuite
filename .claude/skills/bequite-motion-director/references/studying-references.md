@@ -4,9 +4,9 @@ Most important first: **never trust memory of a film.** Study it from frames you
 
 ## 1. Library first (M1)
 
-1. Read `motion-library/INDEX.md` (one row per studied film: category, story in one line, signature technique, when to use).
+1. Read `references/film-index.md` (one row per studied film: category, story in one line, signature technique, when to use; in the BeQuite repo the same table is `motion-library/INDEX.md`).
 2. Pick 2–3 rows that fit the brief and offer them as options with a reason each: "Like A (one guide element ties several features together) or like B (whips with heavy blur; 'easy' is the message)."
-3. Open the chosen `refs/<slug>/breakdown.md` for beats and timestamps. If the row says "redo" or the breakdown is missing, study the film again before relying on it.
+3. Open the chosen `refs/<slug>/breakdown.md` for beats and timestamps (BeQuite repo only; elsewhere, study the film with the video ladder or the scripts here). If the row says "redo" or the breakdown is missing, study the film again before relying on it.
 4. Nothing fits → ask the user for references, or research (web, studio case studies, breakdown videos), then study what they supply. Add every new study to the library (`motion-library/README.md` explains the layout and the copyright rule: media stays local, only breakdowns are tracked).
 
 ## 2. Frame study

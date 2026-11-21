@@ -1,352 +1,76 @@
 ---
 name: bequite-ux-ui-designer
-description: UX/UI design procedures — 10 design principles, 15 AI-slop anti-patterns, design tokens, hierarchy, typography, color, WCAG 2.1 AA, responsive baseline, micro-interactions. Pairs with bequite-frontend-quality. Loaded by /bq-plan, /bq-feature, /bq-audit for UI projects.
-allowed-tools: Read, Glob, Grep, WebFetch
+description: Use when a screen, section, component or design variant needs design decisions, such as type scale, colours, spacing, radii, hierarchy, states, motion or layout, or when tokens are created or changed. Derives every token from measured references and the Design DNA instead of defaults, writes them once in tokens, and designs real states and phone layouts first.
+last_verified: 2026-11-21
+sources:
+  - https://tailwindcss.com/docs/theme (read 2026-11-21) v4.3 @theme variables, OKLCH default palette
+  - https://www.w3.org/TR/WCAG22/ (read 2026-11-21) contrast and target-size floors
+  - https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion (read 2026-11-21) reduce motion, widely available
+  - https://ui.shadcn.com/docs/mcp (read 2026-11-21) registry and MCP server for components
+  - https://github.com/pbakaus/impeccable (read 2026-11-21) design vocabulary and anti-patterns
+  - https://linear.app, https://stripe.com, https://www.apple.com/airpods-pro/ (measured 2026-11-21) type, weight, radius, colour values
+allowed-tools: Read, Glob, Grep, Edit, Write, WebFetch
 ---
 
-# bequite-ux-ui-designer — make it not look AI-generated
+# bequite-ux-ui-designer
 
-## Why this skill exists
+Generated interfaces look alike because they are built from the same defaults: one bold weight, one radius, one gradient, grey on everything. This skill replaces each default with a value taken from a measured reference or the project's DNA, and writes the reason next to the token.
 
-AI-generated UIs have a tell. Purple-to-blue gradients. Inter for everything. Bunch of nested cards with shadows. Three Lucide icons in a row. Lorem ipsum that looks "professional" but says nothing.
+## When to use
 
-This skill encodes the 10 principles + 15 anti-patterns + token discipline that makes a UI **not look like every other AI demo**.
+- Called by `bequite-frontend-design-system` for each section; by `/bq-feature` for a new screen; by `/bq-uiux-variants` for directions; whenever `tokens.css` or the theme changes.
 
-Pairs with `bequite-frontend-quality` (which detects AI-slop in shipped code).
+Not for: checking a finished page (`bequite-frontend-quality`), editing a running app (`bequite-live-edit`), brand strategy or illustration.
 
-> **Master coordination (alpha.17):** This skill is the **design + token generation** specialist (the canonical 10 design principles + token contract live here). The master skill `bequite-frontend-design-system` orchestrates the whole frontend (Design DNA, section-by-section loop, Design Continuity Gate, visual QA, product-type rules) and *calls* this skill to design each section. Don't restate the master's continuity logic here. For product-type-specific design rules use `bequite-frontend-design-system/references/product-type-rules.md`. Map: `.bequite/design/FRONTEND_SKILL_MAP.md`.
->
-> **Effort awareness:** `${CLAUDE_EFFORT}` scales depth — low/medium: compact (tokens + the chosen screen); high: full design + states + responsive; xhigh/max/Ultracode: deep design reasoning, section-by-section, product-type-aware. Infer from operating mode if unset.
+## Procedure
 
----
+1. **Read the DNA and the references.** `.bequite/design/DESIGN_DNA.md` and the measured reference table. No DNA yet: run step 1 of `bequite-frontend-design-system` first. Never design from memory of "what modern sites do".
+2. **Type.** Families, weights and tracking come from the references (for example display tracking near -2% at 48-64 px, medium weights 500-600, body 400). Set a size scale with a fluid clamp for display sizes; body text at least 16 px on phones; line length 50-75 characters.
+3. **Colour.** One brand colour used only for primary actions, active states and key data; a neutral ramp of 4-7 steps with a job per step; status colours. Write colours in OKLCH or hex, check every text and background pair for 4.5:1 (3:1 for large text and UI parts) before saving.
+4. **Space and shape.** A spacing scale (4 or 8 based); radius by component size (controls small, cards one value, pills full), shadows only where elevation means something.
+5. **Tokens once** (`references/tokens.md`): every value above becomes a token with a one-line source ("from Linear h1 tracking"). Components use tokens only.
+6. **Hierarchy per screen.** One primary action; one h1; secondary actions visibly quieter.
+7. **Phone first.** Design the 375 px layout, then widen. Targets at least 24 x 24 CSS px (larger for primary touch actions), no horizontal scroll.
+8. **States.** Empty, loading, error, success and the 10x-data case for every view; real-looking content in the product's language (Arabic and RTL when the product needs it, with `bequite-localization-rtl`).
+9. **Motion with a job.** Durations and easing from the references or `../bequite-frontend-design-system/references/web-motion.md`; every animation respects `prefers-reduced-motion: reduce`.
+10. **Hand to the check.** The section goes to `bequite-frontend-quality` for the sweep in the browser; fixes come back here.
 
-## The 10 design principles
+### Variants (`/bq-uiux-variants`)
 
-1. **Hierarchy first.** One primary action per screen. Secondary actions are clearly de-emphasized. Tertiary actions live in menus or hover states.
+Each direction starts from a different reference set (not a colour swap), lives in its own route or folder, meets the same checks, and is compared side by side at desktop and phone width in `UIUX_VARIANTS_REPORT.md`. The user picks the winner (hard human gate); the others are archived.
 
-2. **Density is a feature.** Empty space communicates importance. But too much empty space looks like "I don't know what to put here."
+## Worked example (real run, 2026-11-21)
 
-3. **Type carries meaning.** Use exactly 2 fonts: one for body, one for display. Or use 1 with weight variation. Sans-serif default. Serif for editorial. NEVER Inter as a fallback for "I don't know what to pick."
-
-4. **Color is signal, not decoration.** Brand color appears in:
-   - Primary CTA
-   - Active state of nav
-   - Important data (alerts, links)
-   Everywhere else: grayscale or muted tones.
-
-5. **Whitespace > borders.** Group with space, separate with hairline rules. Cards with heavy borders + shadows = AI-slop.
-
-6. **Motion has purpose.** Easing curves matter — `ease-out` for entry, `ease-in` for exit. Duration: 150-250ms for hover, 250-400ms for layout shifts. NO bounce effects unless playful brand.
-
-7. **Real content, not Lorem ipsum.** Mock data should look like real data. Names, emails, times that make sense.
-
-8. **Empty states aren't optional.** Every list-view has an empty state with: icon (one, simple), one-line headline, one-line subhead, ONE CTA.
-
-9. **Error states aren't optional.** Every form field has error states. Every API call has loading, empty, error, success states.
-
-10. **Mobile-first decisions.** Design for smallest viewport first. Desktop is the easy adaptation.
-
----
-
-## The 15 AI-slop anti-patterns
-
-When you see these in a UI, it's AI-generated:
-
-1. **Purple-to-blue gradient** — banned. Use a single brand color or neutral.
-2. **Three Lucide icons in a row** — banned. Use icons sparingly; never as a substitute for a label.
-3. **Inter as default** — banned without explicit reasoning. Pick a deliberate font.
-4. **Nested cards with shadows** — banned. One card depth max.
-5. **"Powered by AI" badges** — banned in 2026. Users assume it. Don't brag.
-6. **Lorem ipsum in screenshots** — banned. Use realistic placeholder data.
-7. **Five-column feature grids on landing** — banned. Pick THE feature.
-8. **Generic "trusted by" logos with no proof** — banned. If you don't have logos, say what you're working toward.
-9. **Sparkle/star icons everywhere** — banned. Save sparkles for actual magic moments.
-10. **Auto-generated SVG illustrations of "diverse teams"** — banned. They all look the same.
-11. **Three-line headlines that say nothing** — banned. One line, concrete benefit.
-12. **Hero CTAs that say "Get started" with no specificity** — banned. "Sign up free" or "Try it on your data" is better.
-13. **Pricing tiers with checkmarks for "✓ AI-powered insights"** — banned. State what the feature DOES.
-14. **Gray text on colored backgrounds (contrast fail)** — banned. WCAG 2.1 AA at minimum.
-15. **"Open source" badge with no link to repo** — banned. If you're open source, link the repo.
-
----
-
-## Design tokens (the contract)
-
-Every project ships with `tokens.css`:
+Tokens written for the clinic-booking test page from the measured references, then checked in the browser:
 
 ```css
 :root {
-  /* Color: deliberate palette, no AI-defaults */
-  --color-bg: #fafaf9;            /* warm white, not pure */
-  --color-fg: #1c1917;            /* warm dark, not pure black */
-  --color-accent: #c2410c;        /* one brand color, picked deliberately */
-  --color-muted: #78716c;
-  --color-border: #e7e5e4;
-  --color-success: #16a34a;
-  --color-warning: #ca8a04;
-  --color-danger: #dc2626;
-
-  /* Type */
-  --font-body: "Inter Tight", system-ui, sans-serif;  /* deliberate, not generic Inter */
-  --font-display: "Spectral", Georgia, serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
-
-  /* Type scale */
-  --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
-  --text-base: 1rem;
-  --text-lg: 1.125rem;
-  --text-xl: 1.5rem;
-  --text-2xl: 2rem;
-  --text-3xl: 3rem;
-
-  /* Spacing */
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-6: 1.5rem;
-  --space-8: 2rem;
-  --space-12: 3rem;
-  --space-16: 4rem;
-
-  /* Radius */
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 12px;
-
-  /* Motion */
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --duration-fast: 150ms;
-  --duration-base: 250ms;
+  --font-sans: Inter, system-ui, sans-serif;     /* Linear runs Inter Variable at 400/510/590 */
+  --display: clamp(36px, 7vw, 64px);             /* Linear h1 64 px; 36 px keeps the phone h1 to 4 lines */
+  --display-weight: 560;                         /* between Linear 510 and Apple 600 */
+  --display-tracking: -0.022em;                  /* Linear -1.408 px at 64 px = -2.2% */
+  --body-weight: 400;                            /* Linear and Apple body 400 */
+  --radius-card: 12px;                           /* Linear cards 12 px; controls 4-8 px */
+  --surface: #14141c; --line: #23232e;           /* solid surface + 1 px line instead of glass */
 }
 ```
 
-Rules:
-- Never inline color values in components — use tokens
-- Never `font-family: Inter` outside `tokens.css` (or whichever font you picked)
-- Never `border-radius: 8px` outside tokens
+Measured result at 375 x 812: h1 36 px, -0.792 px, 4 lines, no horizontal scroll; at 1024 px: 64 px, -1.408 px, 2 lines. The tell sweep went from 5 hits to 1 justified hit.
 
----
+## Quality gate
 
-## Hierarchy enforcement
+- Every token has a source line (a reference measurement or a DNA rule).
+- Every text and background pair used meets 4.5:1 (or 3:1 where WCAG allows), measured.
+- The phone layout was designed and seen at 375 px before the desktop one was finished.
+- All states exist for every view; no lorem ipsum.
+- No value outside the tokens in component code (grep for raw hex, px radii and font names).
 
-Per screen:
-- ONE primary action (filled button, brand color)
-- 0-2 secondary actions (outline buttons)
-- Many tertiary actions (text buttons, icon buttons in toolbars)
+## Boundaries
 
-Per page:
-- ONE H1
-- 1-3 H2s
-- H3s only where they nest meaningfully
+- Learn from references; never copy another site's assets, copy or exact palette as the brand.
+- Fonts, kits and generators are candidates; licences checked; nothing installed without the user's yes.
+- Generated images are a last resort after a real photo, a product screenshot or a drawing in code.
 
-Per text block:
-- Body text: 16px+ (don't go below)
-- Line-height: 1.5-1.7 for body
-- Line-length: 50-75 characters (constrains paragraph width)
+## References (load on demand)
 
----
-
-## Color discipline
-
-**Brand color usage:**
-- Primary CTA buttons
-- Active state of navigation
-- Links in body text
-- Important data points (badges, indicators)
-
-**NOT for:**
-- Decorative gradients
-- Background washes
-- Random accent stripes
-- Card hover states
-
-**Neutral palette:**
-- One warm or one cool base
-- 5-7 steps from background → text
-- Use Tailwind's stone / zinc / slate / neutral — not "gray" (too cold)
-
-**Accessibility:**
-- Contrast: WCAG 2.1 AA = 4.5:1 for body, 3:1 for large text
-- Test with axe-core in CI
-- Test in grayscale (does the UI still work?)
-
----
-
-## Component patterns (shadcn/ui first)
-
-Default to shadcn/ui components — copy-paste into your repo, own them. Why:
-- Accessible by default (built on Radix UI primitives)
-- Tailwind-native styling
-- No version-lock to a UI lib
-
-Customize per your tokens. Don't ship default shadcn — that's also AI-slop.
-
-For 2026:
-- shadcn v3+ has built-in registry MCP — use it via `shadcn registry:add`
-- 21st.dev Magic MCP for AI-assisted component generation (paid)
-- tweakcn.com for visual theme editing → export CSS variables
-
----
-
-## Accessibility baseline
-
-Every shipping UI passes:
-
-- **axe-core** — zero serious or critical issues
-- **Keyboard navigation** — every interactive element reachable via tab, activatable via enter/space
-- **Focus indicators** — visible, 2px ring or outline; never `outline: none` without replacement
-- **Color contrast** — WCAG 2.1 AA
-- **Screen reader** — semantic HTML, ARIA only where HTML can't do it
-- **Reduced motion** — respect `prefers-reduced-motion`
-- **Touch targets** — min 44×44px for primary actions
-
----
-
-## Responsive baseline
-
-Three breakpoints minimum:
-- Mobile: < 768px (design for this FIRST)
-- Tablet: 768-1024px
-- Desktop: > 1024px
-
-Don't ship desktop-only. Even B2B users have phones.
-
----
-
-## Micro-interactions
-
-Add these sparingly:
-- Button hover → subtle color shift + 1px transform
-- Form field focus → 2px ring in brand color
-- Toast notifications → slide in from top, 3-5s auto-dismiss, swipe to dismiss
-- Loading states → skeleton screens (not spinners) for content; spinners only for actions
-- Empty list → fade in, no animation
-
-Avoid:
-- Cursor trails
-- Confetti without intent
-- Page-load animations longer than 400ms
-- Anything that delays user interaction
-
----
-
-## When activated by /bq-feature (UI feature)
-
-For a new UI feature:
-1. Read existing tokens.css — match the language
-2. Define what's on this screen (data + actions)
-3. Pick the ONE primary action
-4. Write empty / loading / error / success states
-5. Run axe-core on the change
-6. Test keyboard nav
-7. Check on 375px viewport
-
----
-
-## When activated by /bq-uiux-variants
-
-For UI variant generation:
-1. Read project context + research + existing tokens.css
-2. Identify target users + brand emotion
-3. Pick **N different directions** (1-10), each genuinely distinct (not a color tweak)
-4. Generate each variant in isolation (`/uiux/v1` route or `src/uiux-variants/Variant01/` component)
-5. Apply variant acceptance criteria (no AI-slop, responsive, real states, axe-core green)
-6. Compare variants in `UIUX_VARIANTS_REPORT.md`
-7. Recommend winner with reasoning
-8. Pause for user selection (hard human gate)
-9. After selection, merge winner; archive rejected
-
-Strategy: `.claude/bequite/docs/architecture/UIUX_VARIANTS_STRATEGY.md`.
-
-## When activated by /bq-live-edit
-
-For section-by-section edits:
-1. Defer to `bequite-live-edit` skill for the section mapping + source file resolution
-2. Apply design discipline (token usage, hierarchy, contrast, motion) to the targeted edit
-3. Verify the edit doesn't trigger any of the 15 AI-slop patterns
-4. Confirm responsive + accessibility hold post-edit
-
-Strategy: `.claude/bequite/docs/architecture/LIVE_EDIT_STRATEGY.md`.
-
-## When activated by /bq-audit (UI audit)
-
-For an existing UI:
-1. Scan for the 15 AI-slop patterns
-2. Verify tokens.css exists + is the source of truth
-3. Run axe-core baseline
-4. Sample 3 screens for hierarchy violations
-5. Test mobile viewport
-6. Note findings in FULL_PROJECT_AUDIT.md UI section
-
----
-
-## When activated by /bq-fix (UI bug)
-
-For UI bugs:
-- Visual bug → check token usage, browser-specific CSS
-- State bug → check React state lifting, stale closures, key prop on lists
-- Accessibility bug → run axe-core, check the specific element
-
----
-
-## What this skill does NOT do
-
-- Generate art / illustrations (use design plugin or hire an illustrator)
-- Pick a brand color from scratch (use a designer or be deliberate yourself)
-- Write marketing copy (use brand-voice plugin)
-- Replace usability testing with real users (irreplaceable)
-
----
-
-## Tool neutrality (global rule)
-
-⚠ **Every tool, library, framework, design system, or workflow named in this file (Inter Tight, Spectral, JetBrains Mono, shadcn/ui, Radix, tweakcn, Magic, Mobbin, Dribbble, axe-core, Pa11y, etc.) is an EXAMPLE, not a mandatory default.**
-
-The 10 design principles + 15 AI-slop anti-patterns + token discipline are **universal rules**. Specific font / library picks are candidates per project.
-
-**Do not say:** "Use Inter Tight."
-**Say:** "Inter Tight is one candidate for the body font. Compare against alternatives that fit the brand's voice and audience. Use it only if it fits — and record the reason in tokens.css."
-
-The 10 decision questions:
-1. What is the project type?
-2. What is the actual problem?
-3. What scale is expected?
-4. What constraints exist?
-5. What stack already exists?
-6. What user experience is required?
-7. What failure risks exist?
-8. What tools are proven for this case?
-9. What tools are overkill?
-10. What tool gives the best output with the least complexity?
-
-Write a decision section before adopting (Problem / Options / Sources / Best option / Why it fits / Why others rejected / Risk / Cost / Test plan / Rollback plan).
-
-See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.
-
----
-
-## When NOT to use this skill (alpha.15)
-
-- The task at hand doesn't touch this skill's domain — defer to the right specialist skill
-- A faster / simpler skill covers the same need — pick the simpler one and document why
-- The skill's core invariants don't apply to the current project (e.g. regulated-mode rules on a prototype)
-- The command that would activate this skill is already running with another specialist that fits better
-
-If unsure, surface the trade-off in the command's output and let the user decide.
-
-## Quality gate (alpha.15)
-
-Before claiming this skill's work complete:
-
-- [ ] Artifacts produced match the skill's expected outputs
-- [ ] All discipline rules in this skill were respected (not just glanced at)
-- [ ] No banned weasel words in any completion claim — `should`, `probably`, `seems to`, `appears to`, `might`, `hopefully`, `in theory`
-- [ ] Any tool / library / framework added during this run has a decision section per `.bequite/principles/TOOL_NEUTRALITY.md`
-- [ ] Acceptance criteria for the invoking command's task are met (or honestly reported as PARTIAL / FAIL)
-- [ ] `.bequite/state/MISTAKE_MEMORY.md` updated when a project-specific lesson surfaced
-- [ ] `.bequite/logs/AGENT_LOG.md` entry appended for the run
-- [ ] Memory state files (LAST_RUN, WORKFLOW_GATES, CURRENT_PHASE) updated when gate state changed
-
-If any item fails, do not claim done — report PARTIAL with the specific gap.
+- `references/tokens.md`: token contract template with source lines, colour and contrast steps, component rules.

@@ -1,365 +1,76 @@
 ---
 name: bequite-database-architect
-description: Database design procedures — schema design, indexing strategy, forward-only migrations, ORM patterns, transaction isolation, N+1 detection, connection pooling, soft vs hard deletes, read replicas, sharding triggers, backup + recovery. Loaded by /bq-plan, /bq-feature, /bq-fix for DB work.
+description: Use when a task adds or changes tables, columns, indexes, constraints, migrations, queries, transactions, connection pooling or backups, or when a query is slow, data is wrong, or a deploy needs a schema change. Gives zero-downtime migration steps, index and N+1 checks with measured before and after, and isolation and retry rules.
+last_verified: 2026-11-21
+sources:
+  - https://www.postgresql.org/docs/current/ (read 2026-11-21) current major is 19
+  - https://www.postgresql.org/docs/current/functions-uuid.html (read 2026-11-21) uuidv7() since 18
+  - https://www.postgresql.org/docs/current/sql-createindex.html (read 2026-11-21) CONCURRENTLY rules and caveats
+  - https://www.postgresql.org/docs/current/sql-altertable.html (read 2026-11-21) NOT VALID then VALIDATE, lock level
+  - https://www.postgresql.org/docs/current/transaction-iso.html (read 2026-11-21) isolation levels, SQLSTATE 40001 retry
+  - https://github.com/ankane/strong_migrations (read 2026-11-21) unsafe operations and safe alternatives, timeouts
 allowed-tools: Read, Glob, Grep, Bash
 ---
 
-# bequite-database-architect — data discipline
+# bequite-database-architect
 
-## Why this skill exists
+A bad schema costs years, a missing index costs uptime, and a locking migration costs a Friday night. This skill keeps changes forward-only, measured and reversible by design. Examples use PostgreSQL because most projects use it. The rules carry over to other engines; check that engine's own docs for each lock.
 
-A bad schema costs years. A missing index costs uptime. A destructive migration costs trust. This skill encodes the patterns that keep your data sane through v1 → v10.
+## When to use
 
-Default to Postgres for v1. Reasons:
-- Best ORM support (Drizzle, Prisma, Kysely, sqlx)
-- JSONB for flexible fields
-- Strong typing
-- Excellent extension ecosystem (pg_cron, pg_vector, etc.)
-- Managed options that scale: Supabase, Neon, RDS, Postgres on Fly
+- `/bq-plan`: the data model, index list, migration strategy, pooling and backup lines of the plan.
+- `/bq-feature`: any migration, new query path or ORM model change.
+- `/bq-fix`: slow queries, deadlocks, serialization errors, wrong or duplicated data.
 
-SQLite is fine for: solo CLI tools, desktop apps, single-server projects < 1K users.
-MySQL: only if mandated.
-MongoDB / DynamoDB / Firestore: avoid for v1 unless schemaless is a hard requirement.
+Not for: API shape (`bequite-backend-architect`), DB hosting and credentials (`bequite-devops-cloud`), running migrations on shared or production databases (hard human gate: the agent prepares, the user runs).
 
----
+## Procedure
 
-## Schema design principles
+1. **Read what exists.** Schema files or migrations, the ORM models, row counts of the touched tables (`SELECT relname, n_live_tup FROM pg_stat_user_tables`), and the engine's major version. Pick the engine with the ten questions when there is none yet; SQLite is a valid candidate for single-server and local-first apps.
+2. **Model.** Explicit types, `NOT NULL` unless absence means something, `timestamptz` for times, database constraints (`CHECK`, `UNIQUE`, foreign keys with a chosen `ON DELETE`). Primary keys: identity integers internally; `uuidv7()` (PostgreSQL 18+) when IDs are public or generated off the DB, since time-ordered keys index better than random v4.
+3. **Index from the queries, not the columns.** For each new query: the `WHERE` and `ORDER BY` columns become one composite index in that order; index every foreign key used in joins or deletes (PostgreSQL does not create them). Measure with `EXPLAIN (ANALYZE, BUFFERS)` before and after on realistic row counts. Paste both plans.
+4. **Write the migration forward-only and lock-aware** (`references/safe-migrations.md`). Set `lock_timeout` (for example 10 s) so a blocked DDL fails fast instead of queuing every query behind it. Large-table changes use the expand and contract sequence; indexes use `CONCURRENTLY` outside a transaction; new constraints go in `NOT VALID`, then `VALIDATE` in a second migration.
+5. **Deploy order.** Code that tolerates both schemas ships before the schema change; the old column is dropped only after no deployed code reads it. Write the order into the plan.
+6. **Queries in code.** No query inside a loop over results (N+1): count queries per request in a test. Transactions are short; never hold one across a network call.
+7. **Isolation.** Read Committed by default. Use Serializable (or row locks with `SELECT ... FOR UPDATE`) for money, stock and counters; retry the whole transaction on SQLSTATE `40001` with backoff.
+8. **Pooling.** Serverless and many workers need a pooler. Transaction-mode pooling breaks session features (session `SET`, advisory locks held across statements, `LISTEN`); set timeouts on the role, not the session.
+9. **Backups.** Know the host's point-in-time recovery window from its current docs and practise one restore into a scratch database. Record the time it took.
+10. **Evidence.** Migration up on a fresh DB, the app's tests against a real database (container or local), plans before and after, query count per request.
 
-### 1. UUIDs as primary keys
+## Worked example (real run, 2026-11-21)
+
+Task: "the bookings page is slow for customers with history". Measured with `db_demo.py` (SQLite 3.50.4, 100,000 bookings, 5,000 customers), query `SELECT id, starts_at FROM bookings WHERE customer_id = ? ORDER BY starts_at DESC LIMIT 20`, 500 runs:
+
+```
+no index                  1.541 ms/query   plan: SCAN bookings | USE TEMP B-TREE FOR ORDER BY
+(customer_id, starts_at)  0.007 ms/query   plan: SEARCH bookings USING COVERING INDEX bookings_customer_starts (customer_id=?)
+N+1 loop queries: 51      (50 bookings, then one customer lookup each)
+join queries:     1
+```
+
+Decision: one composite index in filter-then-sort order (a 220x drop here; the ratio on a real server will differ, so measure there too), and the list endpoint switched to the join. In PostgreSQL the migration is:
 
 ```sql
-id uuid PRIMARY KEY DEFAULT gen_random_uuid()
+SET lock_timeout = '10s';
+CREATE INDEX CONCURRENTLY IF NOT EXISTS bookings_customer_starts ON bookings (customer_id, starts_at DESC);
+-- not inside a transaction block; if it fails, DROP INDEX CONCURRENTLY the INVALID index and retry
 ```
 
-Why:
-- Don't leak row counts in URLs
-- Generate client-side without round-trip
-- Easier to merge data across databases
+## Quality gate
 
-Sequential IDs are fine for internal foreign keys (smaller, faster joins) but never expose them in URLs.
+- Every new query has a plan pasted before and after (or a reason it needs no index).
+- Every migration names its lock level and has `lock_timeout`; no table rewrite on a large table without the expand and contract steps.
+- No destructive statement (`DROP`, `TRUNCATE`, `DELETE` without `WHERE`, type change) in the same release as the code that stopped using it.
+- A test runs against a real database engine, not a mock of the ORM.
+- Shared or production migrations were printed for the user, not run.
 
-### 2. Created/updated timestamps everywhere
+## Boundaries
 
-```sql
-created_at timestamptz NOT NULL DEFAULT now()
-updated_at timestamptz NOT NULL DEFAULT now()
-```
+- Destructive changes and production migrations are hard human gates. Prepare, test on a copy, print the commands.
+- ORMs, migration tools, poolers and hosts are candidates; compare with the ten questions and check each in its registry this session.
+- Lock behaviour differs by engine and version: cite the current docs page for the claim, or mark it `UNVERIFIED:`.
 
-Always `timestamptz`, never `timestamp without time zone`. The former stores UTC and converts on read; the latter creates time-zone bugs forever.
+## References (load on demand)
 
-### 3. Soft deletes for user-facing data
-
-```sql
-deleted_at timestamptz
-```
-
-Then:
-```sql
-CREATE VIEW active_bookings AS
-SELECT * FROM bookings WHERE deleted_at IS NULL;
-```
-
-Why: GDPR + audit + accidental deletion recovery.
-
-Exceptions: ephemeral data (session tokens, cache entries) — hard delete.
-
-### 4. Foreign keys + ON DELETE strategy
-
-Every relation has explicit ON DELETE:
-- `CASCADE` — only when child rows are meaningless without parent (e.g. user_settings on user delete)
-- `SET NULL` — when child rows can survive (e.g. booking on agent delete)
-- `RESTRICT` — when you want to force explicit deletion (e.g. invoice on customer)
-- `NO ACTION` (default) — sometimes correct, but ambiguous; prefer explicit
-
-### 5. NOT NULL by default
-
-Make every column `NOT NULL` unless absence is a meaningful business state. Cleaner queries, fewer bugs.
-
-### 6. Constraints + checks
-
-Use database-level constraints:
-```sql
-CHECK (price >= 0)
-CHECK (email ~* '^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$')
-UNIQUE (org_id, slug)
-```
-
-App-level validation is UX; DB-level constraints are the truth.
-
-### 7. JSON / JSONB for flexible fields
-
-Use JSONB for:
-- User preferences
-- Feature flags
-- Webhook payloads (audit log)
-- Tags / labels with arbitrary structure
-
-Don't use JSONB for:
-- Things you'll query / filter on (use proper columns)
-- Things with strict schemas (use proper columns)
-- Foreign-key relationships (you'll regret it)
-
----
-
-## Indexing strategy
-
-### What to index
-
-- Every foreign key (Postgres doesn't auto-index FKs)
-- Every column in WHERE clauses of high-traffic queries
-- Every column in ORDER BY of paginated lists
-- Composite indexes for (frequently-filtered, then-ordered) pairs
-
-### What NOT to index
-
-- Columns that get written more than read (each write maintains the index)
-- Low-cardinality columns alone (e.g. `status` with 3 values — composite with another col)
-- Large text columns (use full-text search index separately)
-
-### Detect missing indexes
-
-Postgres:
-```sql
-SELECT
-  schemaname,
-  tablename,
-  seq_scan,
-  seq_tup_read,
-  idx_scan,
-  seq_tup_read / NULLIF(seq_scan, 0) AS avg_seq_read
-FROM pg_stat_user_tables
-WHERE seq_scan > idx_scan AND seq_tup_read > 10000
-ORDER BY seq_tup_read DESC;
-```
-
-High seq_scan with high avg_seq_read = missing index.
-
-### Detect unused indexes
-
-```sql
-SELECT
-  schemaname, tablename, indexname, idx_scan
-FROM pg_stat_user_indexes
-WHERE idx_scan = 0 AND indexname NOT LIKE '%pkey'
-ORDER BY pg_relation_size(indexrelid) DESC;
-```
-
-Drop unused indexes (they cost write performance + disk).
-
----
-
-## Forward-only migrations
-
-**Never write a destructive migration.** Iron Law.
-
-Rules:
-1. Adding a column: `NULL` default; backfill in a separate migration; THEN `NOT NULL` once all rows have values
-2. Removing a column: leave it for one release cycle; remove only after code stops writing to it
-3. Renaming a column: add the new column, dual-write, copy data, switch reads, drop old (4-step process)
-4. Changing a type: same pattern as rename
-5. Adding an index: use `CREATE INDEX CONCURRENTLY` in Postgres (doesn't lock the table)
-
-Tooling for 2026:
-- **Drizzle Kit** — TypeScript-native, good for solo / small teams
-- **Atlas** — declarative + strong online migration support
-- **Liquibase / Flyway** — Java ecosystems
-- **Supabase migrations** — wraps psql; good for Supabase users
-- **Prisma Migrate** — fine, but slower iteration than Drizzle
-
-NEVER:
-- `DROP COLUMN` in the same migration as code that stopped reading it (deploy-skew bugs)
-- `ALTER COLUMN ... TYPE ...` without a safety plan
-- `DELETE FROM <table>` in a migration
-
----
-
-## Transaction isolation
-
-Postgres default: `READ COMMITTED` (good for most cases).
-
-Use stricter when:
-- **Repeatable read** — for reports that need consistent snapshots
-- **Serializable** — for financial logic, race-prone counters, double-spend prevention
-
-Pattern:
-```sql
-BEGIN ISOLATION LEVEL SERIALIZABLE;
--- logic
-COMMIT;
-```
-
-Be ready to retry on serialization failures (rare in low-traffic apps, common at scale).
-
----
-
-## ORM patterns
-
-### Drizzle (recommended for TS in 2026)
-
-```ts
-import { pgTable, uuid, text, timestamp } from "drizzle-orm/pg-core";
-
-export const bookings = pgTable("bookings", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  customerId: uuid("customer_id").notNull().references(() => customers.id, { onDelete: "cascade" }),
-  startsAt: timestamp("starts_at", { withTimezone: true }).notNull(),
-  notes: text("notes"),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  deletedAt: timestamp("deleted_at", { withTimezone: true }),
-});
-```
-
-Why Drizzle over Prisma in 2026:
-- Faster iteration (no codegen step on every change)
-- Better query performance (no abstraction tax)
-- Better edge-runtime compatibility
-- TypeScript-first (Prisma is JS-first with TS types added)
-
-Prisma is fine if you're already on it; don't migrate without reason.
-
-### N+1 detection
-
-The killer pattern:
-```ts
-const bookings = await db.select().from(bookingsTable);
-for (const b of bookings) {
-  const customer = await db.select().from(customersTable).where(eq(customersTable.id, b.customerId));
-  // 100 bookings = 101 queries
-}
-```
-
-Fix:
-```ts
-const result = await db
-  .select()
-  .from(bookingsTable)
-  .leftJoin(customersTable, eq(bookingsTable.customerId, customersTable.id));
-// 1 query
-```
-
-Detect in CI:
-- Drizzle: log query count per request; alert if > 10 for non-list endpoints
-- Prisma: built-in query logging
-- Manual: add a per-request query counter via OpenTelemetry
-
----
-
-## Connection pooling
-
-Serverless + DB = connection-exhaustion bug waiting to happen.
-
-For Postgres in 2026:
-- **Supabase**: use Supavisor (transaction mode) — built in
-- **Neon**: serverless-native, automatic pooling
-- **RDS / Postgres elsewhere**: PgBouncer in transaction mode
-- **Vercel Functions + Postgres**: must use a pooler; direct connections will exhaust limits
-
-Transaction-mode pooling has limitations:
-- No `LISTEN/NOTIFY` (use a different pool for those)
-- No `PREPARE` statements (workaround: query strings each time)
-- No session-level settings (set per query)
-
----
-
-## Backup + recovery
-
-Per managed DB:
-- **Supabase Pro**: 14 days point-in-time recovery
-- **Neon**: 7 days PITR on free tier, 30+ on paid
-- **RDS**: 35 days PITR
-- **Self-hosted**: pg_dump nightly + WAL archiving for PITR
-
-Test the restore once before you need it. Bookmark the runbook.
-
----
-
-## When activated by /bq-plan
-
-Write the data section:
-- Schema diagram (entities + relationships)
-- Index list (every FK + every high-traffic WHERE/ORDER BY column)
-- Migration strategy (forward-only commitment)
-- Pooler choice (per host)
-- Backup tier
-- Soft-delete policy per table
-
----
-
-## When activated by /bq-feature
-
-For features touching DB:
-- Add migration (forward-only)
-- Add indexes for new query patterns
-- Verify no N+1 in the new code path
-- Write a test that hits the actual DB (or test-container DB), not a mock
-
----
-
-## When activated by /bq-fix
-
-DB bug types (per the 15-type router):
-- **Database bug (query/data)** → EXPLAIN ANALYZE the query; check for missing index, bad join, type mismatch
-- **Performance regression** with DB cause → check `pg_stat_statements` for slow queries
-- **Data corruption** → check constraint coverage; consider this the worst-case fix and pair with backups
-
----
-
-## What this skill does NOT do
-
-- Pick the DB host (use `bequite-devops-cloud`)
-- Design the API around the DB (use `bequite-backend-architect`)
-- Run query optimization beyond EXPLAIN ANALYZE (use a DBA for serious tuning)
-- Sharding strategy (out of scope until 50K+ users)
-
----
-
-## Tool neutrality (global rule)
-
-⚠ **Every tool, library, framework, design system, or workflow named in this file (Postgres, MySQL, SQLite, MongoDB, DynamoDB, Firestore, Drizzle, Prisma, Kysely, sqlx, Supabase, Neon, RDS, PgBouncer, Supavisor, Atlas, Liquibase, Flyway, etc.) is an EXAMPLE, not a mandatory default.**
-
-The patterns (UUIDs, timestamps, soft deletes, forward-only migrations, indexing strategy, transaction isolation) are **universal database discipline**. Specific DB engine + ORM + migration tool picks are candidates per project.
-
-**Do not say:** "Use Postgres."
-**Say:** "Postgres is one candidate. Compare against SQLite (for solo / single-server projects), MongoDB (only when data is truly document-shaped), or managed alternatives based on this project's data shape, scale, query patterns, and team expertise. Use it only if it fits."
-
-The 10 decision questions:
-1. What is the project type?
-2. What is the actual problem?
-3. What scale is expected?
-4. What constraints exist?
-5. What stack already exists?
-6. What user experience is required?
-7. What failure risks exist?
-8. What tools are proven for this case?
-9. What tools are overkill?
-10. What tool gives the best output with the least complexity?
-
-Write a decision section before adopting (Problem / Options / Sources / Best option / Why it fits / Why others rejected / Risk / Cost / Test plan / Rollback plan).
-
-See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.
-
----
-
-## When NOT to use this skill (alpha.15)
-
-- The task at hand doesn't touch this skill's domain — defer to the right specialist skill
-- A faster / simpler skill covers the same need — pick the simpler one and document why
-- The skill's core invariants don't apply to the current project (e.g. regulated-mode rules on a prototype)
-- The command that would activate this skill is already running with another specialist that fits better
-
-If unsure, surface the trade-off in the command's output and let the user decide.
-
-## Quality gate (alpha.15)
-
-Before claiming this skill's work complete:
-
-- [ ] Artifacts produced match the skill's expected outputs
-- [ ] All discipline rules in this skill were respected (not just glanced at)
-- [ ] No banned weasel words in any completion claim — `should`, `probably`, `seems to`, `appears to`, `might`, `hopefully`, `in theory`
-- [ ] Any tool / library / framework added during this run has a decision section per `.bequite/principles/TOOL_NEUTRALITY.md`
-- [ ] Acceptance criteria for the invoking command's task are met (or honestly reported as PARTIAL / FAIL)
-- [ ] `.bequite/state/MISTAKE_MEMORY.md` updated when a project-specific lesson surfaced
-- [ ] `.bequite/logs/AGENT_LOG.md` entry appended for the run
-- [ ] Memory state files (LAST_RUN, WORKFLOW_GATES, CURRENT_PHASE) updated when gate state changed
-
-If any item fails, do not claim done — report PARTIAL with the specific gap.
+- `references/safe-migrations.md`: operation-by-operation safe sequences, lock levels, timeouts, deploy order.
+- `references/query-checks.md`: SQL to find missing and unused indexes, slow statements, N+1 detection, isolation retry loop.

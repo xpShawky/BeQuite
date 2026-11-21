@@ -1,324 +1,76 @@
 ---
 name: bequite-backend-architect
-description: Backend design procedures — API patterns (REST/RPC/GraphQL pick), error handling, input validation, async + queues + background jobs, caching layers, rate limiting, idempotency, observability. Pairs with bequite-database-architect for data. Loaded by /bq-plan, /bq-feature, /bq-fix for backend work.
+description: Use when designing, building or fixing server code, such as an API route, error responses, input validation, retries and timeouts, background jobs, caching, rate limits, idempotent writes, webhooks or tracing. Gives standards-based defaults (RFC 9457 errors, Idempotency-Key, deadlines, jittered backoff) and a check per pattern. Pairs with database-architect for data.
+last_verified: 2026-11-21
+sources:
+  - https://www.rfc-editor.org/rfc/rfc9457 (read 2026-11-21) problem details error shape
+  - https://www.rfc-editor.org/rfc/rfc9110#section-9.2.2 (read 2026-11-21) safe and idempotent methods
+  - https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/ (read 2026-11-21) draft-09 key rules, 400/409/422
+  - https://datatracker.ietf.org/doc/draft-ietf-httpapi-ratelimit-headers/ (read 2026-11-21) draft-12 RateLimit fields
+  - https://builder.aws.com/content/3EumjoZascWd1oZiEgL8ORlv3qE/timeouts-retries-and-backoff-with-jitter (read 2026-11-21) retries, jitter, timeouts
+  - https://sre.google/sre-book/addressing-cascading-failures/ (read 2026-11-21) retry budgets, deadline propagation
+  - https://opentelemetry.io/docs/specs/semconv/http/http-spans/ (read 2026-11-21) stable HTTP span attributes
+  - https://docs.stripe.com/api/idempotent_requests (read 2026-11-21) a production key policy
 allowed-tools: Read, Glob, Grep, Bash
 ---
 
-# bequite-backend-architect — server-side discipline
+# bequite-backend-architect
 
-## Why this skill exists
+The backend bugs that cost a week are usually plain: a write that ran twice on retry, a retry storm, a timeout longer than the caller's, an error body that leaks a stack trace. This skill gives one default per pattern, taken from the standard, plus the test that proves it.
 
-The backend bugs that take a week to debug are usually the simple ones — missing await, wrong env var, sync I/O in a hot path, no rate limit on a public endpoint. This skill encodes the patterns that prevent them.
+## When to use
 
-Pairs with:
-- `bequite-database-architect` for schema + queries
-- `bequite-security-reviewer` for auth + input validation
-- `bequite-devops-cloud` for deployment + monitoring
+- `/bq-plan`: the API, jobs, caching and observability parts of the plan.
+- `/bq-feature`: any new route, handler, job, webhook receiver or outbound call.
+- `/bq-fix`: backend, race, timeout or performance bugs (with `bequite-problem-solver`).
 
----
+Not for: schema, indexes and migrations (`bequite-database-architect`), auth and threat review (`bequite-security-reviewer`), hosting and CI (`bequite-devops-cloud`), UI.
 
-## API style: which to pick
+## Procedure
 
-Three reasonable defaults for 2026:
+1. **Inventory.** List each endpoint or job the work touches: method, caller, side effects, external calls, expected rate. Read the existing handlers first; match the project's style before adding a new one.
+2. **Pick the API style** with the ten questions (`references/api-patterns.md`): plain HTTP+JSON is the default; RPC when one typed client owns both sides; GraphQL only when many clients need different shapes. Write one line on why.
+3. **Errors.** One shape for every error: RFC 9457 problem details (`application/problem+json`, `type`, `title`, `status`, `detail`, `instance`, plus a `request_id` extension). Never a 200 with `ok: false`; never a stack trace to the client.
+4. **Validate** every body, query, path and header the handler reads, on the server, against a schema. Bound numbers and lengths.
+5. **Idempotent writes.** RFC 9110 makes POST and PATCH non-idempotent. Any POST or PATCH that a client, proxy or queue may retry (payments, orders, emails, webhook receivers) takes an `Idempotency-Key`: 400 when missing, 422 when reused with a different payload, 409 while the first request is still running, the stored response on a true retry. Publish the expiry (24 h is a common policy).
+6. **Timeouts and retries** (`references/reliability.md`): a timeout on every outbound call, chosen from the dependency's latency percentile; pass the remaining deadline downstream; retry only idempotent calls, at one layer, with capped exponential backoff and full jitter, inside a retry budget.
+7. **Slow work goes to a job**: email, third-party webhooks, reports. Jobs are idempotent, have a max duration, retry with backoff, and land in a dead-letter queue after N failures with an alert. Compare queue options with the ten questions; a DB table plus a worker is a valid first candidate.
+8. **Rate limits** on every public route; 429 with `Retry-After`. The IETF `RateLimit` fields are still a draft (-12): a candidate, not a requirement.
+9. **Cache** only with a written invalidation rule (TTL, write-through, or tag) and a test that a write is visible after invalidation.
+10. **Observe.** Structured logs with `request_id`; HTTP server spans named `{method} {route}` with the stable attributes `http.request.method`, `url.path`, `http.route`, `http.response.status_code`; p50/p95/p99 latency and error rate per route. No secrets or full tokens in logs.
+11. **Prove it.** For each pattern touched, one test: duplicate request with the same key, timeout path, retry exhaustion, 429, a problem-details body. Paste command, exit code and output.
 
-### REST + Zod schemas (default for most v1s)
+## Worked example (real run, 2026-11-21)
 
-Use when:
-- Solo founders / small teams
-- Public API consumers expected
-- Simple CRUD dominates
-- Tooling matters (curl, Postman, browser devtools)
+Task: `POST /orders` must not charge twice when the mobile client retries. An in-process implementation of step 5 (`idem_demo.py`, key `5f2b8c1e-...`, payload `{"amount": 4900}`) printed:
 
-Pattern:
-```ts
-// app/api/bookings/route.ts
-import { z } from "zod";
-
-const Body = z.object({
-  customerId: z.string().uuid(),
-  startsAt: z.string().datetime(),
-  notes: z.string().max(500).optional(),
-});
-
-export async function POST(req: Request) {
-  const parsed = Body.safeParse(await req.json());
-  if (!parsed.success) {
-    return Response.json({ error: parsed.error.flatten() }, { status: 400 });
-  }
-  // ... handler
-}
+```
+1 first           (201, {'order_id': 'ord_d50909c403fc', 'amount': 4900})
+2 same retry      (201, {'order_id': 'ord_d50909c403fc', 'amount': 4900})   same id, no second charge
+3 diff payload    422
+4 missing key     400
+5 concurrent dup  409    (original still processing, 0.3 s)
+6 original done   201
+exit=0
 ```
 
-### tRPC / RPC (default for typescript-only stacks)
+Design notes that came out of the run: the key record is written as `processing` under a lock before the side effect, so a duplicate arriving mid-flight gets 409 instead of a second charge; the payload fingerprint is a SHA-256 of the sorted JSON body; keys expire after 24 h. In a real service the record lives in the database with a unique index on the key, not in memory.
 
-Use when:
-- 100% TypeScript end-to-end
-- No public API consumers
-- Type safety is the dominant value
+## Quality gate
 
-### GraphQL (default only for complex frontends)
+- Every touched endpoint has: a validated input schema, the problem-details error shape, a stated timeout for each outbound call, and a test.
+- Every retried write has an idempotency test showing the duplicate returns the stored response.
+- No retry loop without a cap, jitter and an idempotency reason.
+- Each tool or service picked has a decision note (ten questions); none was installed without the user's yes.
+- Evidence holds commands, exit codes and output. No "should work".
 
-Use when:
-- Many client variants (web + mobile + admin) need different shapes
-- Federation is a real need (microservices)
+## Boundaries
 
-Almost never for v1. Adds complexity, doesn't pay off until ~5K users.
+- Does not choose the database or write migrations; hand off to `bequite-database-architect`.
+- Production config, paid services and secrets are hard human gates.
+- Libraries and services named in references (validation libraries, queue services, rate limiters, tracing vendors) are candidates; verify each in its registry this session before naming a version.
 
----
+## References (load on demand)
 
-## Error-handling layers
-
-Three layers, three error types:
-
-1. **Validation errors** (400): bad input. Return structured field errors. Zod's `flatten()` is perfect.
-2. **Auth errors** (401 / 403): no token / wrong permissions. NEVER leak why (e.g. "user not found" vs "wrong password" — both → "invalid credentials").
-3. **Server errors** (5xx): your bug. Log full context server-side; return `{ error: "internal_server_error", requestId }` to client. The requestId is what the user gives support.
-
-NEVER:
-- Return stack traces to clients
-- Use HTTP 200 with `{ ok: false }` patterns (proxies + CDNs assume 200 = success)
-- Throw without logging
-
----
-
-## Input validation discipline
-
-Every public API endpoint validates:
-- Body: Zod / Pydantic / Valibot schema
-- Query params: same
-- Path params: type-coerced + bounded (no `parseInt(id)` without bounds check)
-- Headers: only the ones you read; ignore the rest
-- File uploads: size limit, MIME-type allowlist, content-type-vs-extension check
-
-Server-side ONLY. Client-side validation is UX, not security.
-
----
-
-## Async patterns
-
-### Missing await — the #1 bug
-
-```ts
-// ✗ silently never runs in time
-const result = somethingAsync();
-
-// ✓
-const result = await somethingAsync();
-```
-
-Lint with ESLint `@typescript-eslint/no-floating-promises` (treat as error, not warning).
-
-### Background jobs
-
-For work that's slow or shouldn't block the response:
-
-- Email sending
-- Webhooks to third parties
-- Report generation
-- Cache warming
-
-Options for 2026:
-- **Inline + log if fails** — only if duration < 1s and failure is OK (e.g. analytics ping)
-- **Vercel Cron + DB queue table** — simple, no extra infra; fine for low-volume
-- **Inngest** — managed serverless jobs, generous free tier; recommended for v1
-- **Trigger.dev** — open-source alternative to Inngest
-- **BullMQ + Redis** — if you already have Redis; otherwise overkill for v1
-- **Temporal** — durable workflows; overkill until you need it
-
-Never fire-and-forget without retry + dead-letter queue. Lost jobs = lost trust.
-
----
-
-## Caching
-
-Three layers, three TTLs:
-
-1. **In-memory** (per process / per Lambda) — milliseconds; for hot computations
-2. **Redis / Upstash / KV** — seconds to hours; for shared cache across instances
-3. **CDN / browser** — hours to days; for public assets and immutable responses
-
-Cache invalidation is the hard part. Patterns:
-- **TTL only** — simple, accepts stale data; use for analytics, recommendations
-- **Write-through** — invalidate on every write; use for user-data caches
-- **Tag-based** — invalidate by tag (e.g. all "user:123" caches); use for complex deps
-- **Event-driven** — pub/sub invalidation; use for multi-region
-
-Default: TTL + write-through for v1. Add tag-based when complexity grows.
-
-For Next.js 16: Cache Components with `cacheLife`, `cacheTag`, `updateTag` — see vercel:next-cache-components skill.
-
----
-
-## Rate limiting
-
-Every public endpoint has rate limits:
-- Auth endpoints: 5 attempts per 15 min per IP + per account
-- API endpoints: 100 req/min per token
-- Public reads: 1000 req/min per IP (or higher; depends on cost)
-
-Implementation:
-- **Upstash Ratelimit** — managed Redis, generous free tier (recommended)
-- **Vercel Firewall rate-limit rules** — at edge, before code runs
-- **next-rate-limit middleware** — DIY in middleware
-
-Never run without any rate limiting. The first DDoS is free; the second one costs you a customer.
-
----
-
-## Idempotency
-
-For any non-GET endpoint that could be retried (network failure, browser refresh, etc.):
-- Accept an `Idempotency-Key` header
-- Store the key + response for 24h
-- On repeat with same key + same body → return the stored response
-
-Critical for:
-- Payments (Stripe, Lemonsqueezy require this)
-- Order creation
-- Email sending
-- Webhook receivers (the third party WILL retry)
-
----
-
-## Observability (the 3 pillars)
-
-1. **Logs** — structured JSON, with `requestId` per request, `userId` when known, never log secrets
-2. **Metrics** — request count, p50/p95/p99 latency, error rate per endpoint
-3. **Traces** — for distributed flows (auth → DB → external API → response)
-
-Recommended 2026 stack:
-- **Sentry** — errors (it's standard for a reason)
-- **Vercel Analytics** — page-level metrics
-- **Axiom or Datadog** — structured logs
-- **OpenTelemetry** — traces (vendor-neutral)
-
-Sentry's bug: don't capture PII in `extra` data. Configure `beforeSend` to scrub.
-
----
-
-## Sync vs async I/O
-
-The killer pattern:
-```ts
-// ✗ blocks the event loop on Node single-thread
-const file = fs.readFileSync("./data.json");
-
-// ✓ non-blocking
-const file = await fs.promises.readFile("./data.json");
-```
-
-Same for:
-- `crypto.pbkdf2Sync` — use async version + worker thread
-- `child_process.execSync` — use `exec` with promise wrapper
-- Image processing on the main thread — offload to worker / queue
-
-If a single request can block the event loop > 100ms, it kills concurrency.
-
----
-
-## Server-side vs edge
-
-Pick per-route:
-- **Edge (Cloudflare Workers, Vercel Edge)** — for routes that need < 50ms global latency. Stateless. No long-running.
-- **Serverless (Vercel Functions, AWS Lambda)** — for most routes. Up to 300s on Vercel Pro.
-- **Long-running (Vercel Fluid Compute, dedicated server)** — for AI streaming, file uploads, anything > 300s.
-
-Never pick edge for routes that:
-- Need Node.js APIs (`fs`, `child_process`)
-- Use heavy libraries (Drizzle ORM full driver, etc.)
-- Need long-lived DB connections (use pooled connections via Supavisor / PgBouncer)
-
----
-
-## Background-task safety
-
-For jobs that mutate state:
-- Use database transactions
-- Make idempotent (a job that runs twice produces the same result)
-- Set max execution time + memory limit
-- Send to dead-letter queue on > 3 failures
-- Alert on dead-letter queue > 10 items
-
----
-
-## When activated by /bq-fix
-
-Backend bug types (per the 15-type router):
-- **Backend bug (API/logic)** → check the handler's error paths, validation, DB calls
-- **Auth bug** → check token validation, cookie / session handling, CORS
-- **Performance regression** → profile (clinic.js, Node --prof, or APM); look for sync I/O, N+1, missing index
-- **Race condition** → check await order, parallel state updates, missing locks
-- **Memory leak** → check for closures holding refs, unbounded arrays, missing cleanup in long-running processes
-
----
-
-## When activated by /bq-plan
-
-Write the §11 (security) and §12 (devops) sections in detail. Include:
-- Auth flow diagram (sign-up, sign-in, password reset, MFA if needed)
-- Rate limits per endpoint family
-- Background-job catalog (what jobs run when)
-- Cache layers + invalidation strategy
-- Error-response shape
-
----
-
-## What this skill does NOT do
-
-- Pick the database (use `bequite-database-architect`)
-- Set up CI/CD (use `bequite-devops-cloud`)
-- Do penetration testing (use `bequite-security-reviewer` + a real pentester)
-- Design the UI (use `bequite-ux-ui-designer`)
-
----
-
-## Tool neutrality (global rule)
-
-⚠ **Every tool, library, framework, design system, or workflow named in this file (Zod, tRPC, GraphQL, Inngest, Trigger.dev, BullMQ, Temporal, Upstash, Redis, Sentry, Vercel, AWS Lambda, Cloudflare Workers, OpenTelemetry, Better-Auth, Clerk, etc.) is an EXAMPLE, not a mandatory default.**
-
-The patterns (validate inputs server-side, async correctness, idempotency, rate limits, observability layers) are **universal**. Specific tool picks are candidates per project.
-
-**Do not say:** "Use Inngest."
-**Say:** "Inngest is one candidate for background jobs. Compare against Trigger.dev, BullMQ + Redis, Temporal, or a simple DB-queue table for this project's job volume, durability needs, and team expertise. Use it only if it fits."
-
-The 10 decision questions:
-1. What is the project type?
-2. What is the actual problem?
-3. What scale is expected?
-4. What constraints exist?
-5. What stack already exists?
-6. What user experience is required?
-7. What failure risks exist?
-8. What tools are proven for this case?
-9. What tools are overkill?
-10. What tool gives the best output with the least complexity?
-
-Write a decision section before adopting (Problem / Options / Sources / Best option / Why it fits / Why others rejected / Risk / Cost / Test plan / Rollback plan).
-
-See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.
-
----
-
-## When NOT to use this skill (alpha.15)
-
-- The task at hand doesn't touch this skill's domain — defer to the right specialist skill
-- A faster / simpler skill covers the same need — pick the simpler one and document why
-- The skill's core invariants don't apply to the current project (e.g. regulated-mode rules on a prototype)
-- The command that would activate this skill is already running with another specialist that fits better
-
-If unsure, surface the trade-off in the command's output and let the user decide.
-
-## Quality gate (alpha.15)
-
-Before claiming this skill's work complete:
-
-- [ ] Artifacts produced match the skill's expected outputs
-- [ ] All discipline rules in this skill were respected (not just glanced at)
-- [ ] No banned weasel words in any completion claim — `should`, `probably`, `seems to`, `appears to`, `might`, `hopefully`, `in theory`
-- [ ] Any tool / library / framework added during this run has a decision section per `.bequite/principles/TOOL_NEUTRALITY.md`
-- [ ] Acceptance criteria for the invoking command's task are met (or honestly reported as PARTIAL / FAIL)
-- [ ] `.bequite/state/MISTAKE_MEMORY.md` updated when a project-specific lesson surfaced
-- [ ] `.bequite/logs/AGENT_LOG.md` entry appended for the run
-- [ ] Memory state files (LAST_RUN, WORKFLOW_GATES, CURRENT_PHASE) updated when gate state changed
-
-If any item fails, do not claim done — report PARTIAL with the specific gap.
+- `references/api-patterns.md`: API style choice, problem-details example, validation, pagination, webhooks, versioning.
+- `references/reliability.md`: timeouts, deadlines, retries, budgets, jobs, caching, rate limits, sync I/O traps.

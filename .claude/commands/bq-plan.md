@@ -5,15 +5,10 @@ description: Write a complete implementation plan — vision, architecture, stac
 # /bq-plan — write the definitive plan
 
 <!-- bq:contract -->
-> **Every run follows the contract** (`.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md`):
-> 1. **Up to date:** first run `bash .claude/bequite/bin/bq-update.sh` (hourly; it updates BeQuite when a newer version is published, backs up first, never touches `.bequite/` memory, never blocks) and say its one line.
-> 2. **Skills first:** announce the `Skill Selection:` block before any plan, edit or tool call for the task.
-> 3. **Resolve the work:** read `.bequite/ACTIVE.md`; use `.bequite/work/<id>/`, or create the next work folder if this is new work (`/bq-work`).
-> 4. **Gates:** project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `work/<id>/gates.md`. Refuse and name the missing gate.
-> 5. **Plan first:** non-trivial work gets a plan the user approves before output. Hard human gates always wait for a yes.
-> 6. **Evidence:** every check goes to `work/<id>/evidence.md` (command + exit code + output) or is marked `UNVERIFIED:`.
-> 7. **Write back:** `work/<id>/log.md`, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, and `.bequite/state/MISTAKE_MEMORY.md` when a lesson surfaced.
-> 8. **Finish** with the Next Command Recommendations block.
+> **This command runs inside the BeQuite pipeline** (`.claude/bequite/docs/architecture/PIPELINE.md`):
+> 1. **Up to date:** first run `bash .claude/bequite/bin/bq-update.sh` and say its one line (hourly; never blocks).
+> 2. **Orient:** announce the `Skill Selection:` block; resolve the work (`.bequite/ACTIVE.md`, `.bequite/work/<id>/`, or `/bq-work new`); refuse and name any missing gate (`.bequite/state/WORKFLOW_GATES.md`, `work/<id>/gates.md`).
+> 3. **Prove and write back:** plan first for non-trivial work and stop at hard human gates; every check goes to `work/<id>/evidence.md` or is `UNVERIFIED:`; write back (work log, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, `.bequite/state/MISTAKE_MEMORY.md` on a lesson) and end with the Next Command Recommendations.
 <!-- /bq:contract -->
 
 ## Purpose
@@ -112,6 +107,15 @@ Read each skill's SKILL.md as needed during plan authoring.
 ```
 
 (2-4 paragraphs explaining the architecture, data flow, deployment model.)
+
+## 4b. Options board (pipeline stage 4)
+
+Two to four real options, built from `.bequite/state/CAPABILITIES.md` (what this machine and this user actually have; run `/bq-doctor` if it is empty). Per option: what it uses, cost (money, credits, time), risk, what it cannot do, and the ten decision questions. Recommend one and say why the others lost.
+
+| Option | Uses (from CAPABILITIES) | Cost | Risk | Can't do | Verdict |
+|---|---|---|---|---|---|
+| A | | | | | |
+| B | | | | | |
 
 ## 5. Stack decision
 

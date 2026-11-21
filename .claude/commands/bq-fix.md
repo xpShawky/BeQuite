@@ -1,406 +1,55 @@
 ---
-description: Fix a broken behavior. 15-type problem router. Reproduce first → identify type → activate matching specialist skills → root cause → smallest patch → add test → verify symptom is gone → log to ERROR_LOG.md.
+description: Fix a broken behaviour, reproduce first. Classifies it with the 15-type router, loads the matching specialists, captures the exact error, finds the root cause, makes the smallest patch, adds a regression test that fails before and passes after, verifies the symptom is gone and logs it to ERROR_LOG.md.
 ---
 
-# /bq-fix — diagnose + repair, with type router
+# /bq-fix: reproduce, root cause, smallest patch, proof
 
 <!-- bq:contract -->
-> **Every run follows the contract** (`.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md`):
-> 1. **Up to date:** first run `bash .claude/bequite/bin/bq-update.sh` (hourly; it updates BeQuite when a newer version is published, backs up first, never touches `.bequite/` memory, never blocks) and say its one line.
-> 2. **Skills first:** announce the `Skill Selection:` block before any plan, edit or tool call for the task.
-> 3. **Resolve the work:** read `.bequite/ACTIVE.md`; use `.bequite/work/<id>/`, or create the next work folder if this is new work (`/bq-work`).
-> 4. **Gates:** project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `work/<id>/gates.md`. Refuse and name the missing gate.
-> 5. **Plan first:** non-trivial work gets a plan the user approves before output. Hard human gates always wait for a yes.
-> 6. **Evidence:** every check goes to `work/<id>/evidence.md` (command + exit code + output) or is marked `UNVERIFIED:`.
-> 7. **Write back:** `work/<id>/log.md`, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, and `.bequite/state/MISTAKE_MEMORY.md` when a lesson surfaced.
-> 8. **Finish** with the Next Command Recommendations block.
+> **This command runs inside the BeQuite pipeline** (`.claude/bequite/docs/architecture/PIPELINE.md`):
+> 1. **Up to date:** first run `bash .claude/bequite/bin/bq-update.sh` and say its one line (hourly; never blocks).
+> 2. **Orient:** announce the `Skill Selection:` block; resolve the work (`.bequite/ACTIVE.md`, `.bequite/work/<id>/`, or `/bq-work new`); refuse and name any missing gate (`.bequite/state/WORKFLOW_GATES.md`, `work/<id>/gates.md`).
+> 3. **Prove and write back:** plan first for non-trivial work and stop at hard human gates; every check goes to `work/<id>/evidence.md` or is `UNVERIFIED:`; write back (work log, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, `.bequite/state/MISTAKE_MEMORY.md` on a lesson) and end with the Next Command Recommendations.
 <!-- /bq:contract -->
 
-## Purpose
+A route into `PIPELINE.md` stages 0, 1, reproduce, 5 (root cause and patch plan), 7, 8, 9, 10. The type router: `.claude/bequite/docs/architecture/FEATURE_AND_FIX_WORKFLOWS.md` (section "/bq-fix: 15-type router"). Procedure: `bequite-problem-solver`.
 
-Fix **one specific broken behavior**. The command classifies the problem into one of 15 types and activates the matching specialist skills. Reproduce-first discipline. Smallest safe patch. Always a regression test.
+## Syntax
 
-## When to use it
+```
+/bq-fix "<symptom in the user's words>" [type=<1-15 or name>] [mode]
+```
 
-- Anything broken: error, wrong output, performance regression, security issue, UX regression
-- A test went red and you don't know why
-- Production incident (with `bequite-problem-solver` skill in heavy mode)
+## Gates
 
-## Preconditions
-
-- `BEQUITE_INITIALIZED ✅`
-- Code exists (the bug has to be in something)
-
-## Required previous gates
-
-- `BEQUITE_INITIALIZED`
-- `MODE_SELECTED` (Fix Problem mode — or any mode mid-cycle)
-
-## Files to read
-
-- `.bequite/work/<id>/log.md` (prior entries for context)
-- recent `git log`
-- the failing code + tests
-
-## Files to write
-
-- The fix (source file)
-- A new or updated regression test
-- `.bequite/work/<id>/log.md` (appended)
-- `CHANGELOG.md` (appended if user-visible)
-- `.bequite/audits/FIX_<slug>.md` (mini-spec for the fix)
-- `.bequite/work/<id>/tasks.md`
-- `.bequite/state/WORKFLOW_GATES.md` (`FIX_VERIFIED ✅`)
-- `.bequite/logs/AGENT_LOG.md`
-- `.bequite/state/LAST_RUN.md`
+`BEQUITE_INITIALIZED`. Visual or cross-browser fixes (types 1 and 15) re-run the Design Continuity Gate on the touched sections. A fix that changes auth, a migration on a shared database or production config is a hard human gate.
 
 ## Steps
 
-### 1. Get the bug
+1. **Get the bug:** the symptom, where, since when, what changed. Small fix inside the active work, or a new work (`/bq-work new "<symptom>" type=fix`).
+2. **Classify** with the 15-type router (frontend, backend, database, auth, build, test failure, deployment/CI, performance, security, dependency, configuration, network/integration, memory/resource, race/async, cross-platform); load its skills plus `bequite-testing-gate`.
+3. **Reproduce** before touching code: the exact steps or a failing test. No reproduction: say so, collect more (logs, versions, inputs) and stop rather than guess.
+4. **Capture the exact error** (message, stack, request, environment) in `.bequite/logs/ERROR_LOG.md` with a UTC time and the one-line symptom.
+5. **Mini-spec** in the work: symptom, reproduction, hypothesis, files the fix will touch, test plan, rollback.
+6. **Root cause** with evidence: narrow by logs, `git bisect`, `git log -S` (pickaxe), a minimal input. Name the cause in one sentence; a fix for a symptom without a cause is not done.
+7. **Fix the smallest cause.** No refactor riding along.
+8. **Regression test** that fails on the old code and passes on the new; paste both runs.
+9. **Verify** the original symptom is gone the way the user saw it (the browser, the command, the endpoint) and the suite is green.
+10. **Write back:** `ERROR_LOG.md` (cause and fix), the work log, `CHANGELOG.md` `### Fixed` when users saw the bug, `MISTAKE_MEMORY.md` when the cause is a pattern that can recur, the regression ledger.
 
-If user typed `/bq-fix` alone:
-> "What's broken? Paste the error message, command, or describe the symptom."
-
-If `/bq-fix "login button does nothing on Safari"` — use that.
-
-### 2. Classify the problem (15 types)
-
-Ask the model (silently) to classify into one of:
-
-| # | Type | Activates skill(s) |
-|---|---|---|
-| 1 | **Frontend bug (visual / state)** | `bequite-frontend-quality`, `bequite-problem-solver` |
-| 2 | **Backend bug (API / logic)** | `bequite-backend-architect`, `bequite-problem-solver` |
-| 3 | **Database bug (query / data)** | `bequite-database-architect`, `bequite-problem-solver` |
-| 4 | **Auth bug (login / permissions)** | `bequite-security-reviewer`, `bequite-backend-architect` |
-| 5 | **Build / compile error** | `bequite-problem-solver`, `bequite-testing-gate` |
-| 6 | **Test failure** | `bequite-testing-gate`, `bequite-problem-solver` |
-| 7 | **Deployment / CI bug** | `bequite-devops-cloud`, `bequite-problem-solver` |
-| 8 | **Performance regression** | `bequite-problem-solver`, `bequite-backend-architect` |
-| 9 | **Security vulnerability** | `bequite-security-reviewer` |
-| 10 | **Dependency / package issue** | `bequite-problem-solver`, `bequite-project-architect` |
-| 11 | **Configuration / env bug** | `bequite-devops-cloud`, `bequite-problem-solver` |
-| 12 | **Network / integration bug** | `bequite-backend-architect`, `bequite-problem-solver` |
-| 13 | **Memory leak / resource issue** | `bequite-problem-solver`, `bequite-backend-architect` |
-| 14 | **Race condition / async bug** | `bequite-problem-solver`, `bequite-backend-architect` |
-| 15 | **Cross-browser / platform bug** | `bequite-frontend-quality`, `bequite-problem-solver` |
-
-Print the classification + which skills will be active. Ask: "Correct? (y/N + correction)"
-
-### 3. Reproduce
-
-**Before changing anything**, reproduce the bug:
-
-- Code-level error: run the failing command yourself
-- UI bug: navigate to the page yourself
-- Test failure: run the failing test in isolation
-- Env / config issue: re-run the setup
-- Performance: run a benchmark with the regression visible
-
-If you can't reproduce, ask the user for:
-- Exact command run
-- Exact error output
-- OS / browser / runtime version
-- Steps to reproduce
-
-**Do NOT proceed without reproduction.** "I think I know what's wrong" is wrong — you've been wrong before.
-
-### 4. Capture the exact error
-
-Save verbatim error output + reproduction steps to `ERROR_LOG.md`:
-
-```markdown
-## <ISO 8601 UTC> — <one-line symptom>
-
-**Type:** <1 of 15>
-**Reproduced via:** <command or steps>
-**Error output:**
+## Output
 
 ```
-<verbatim stderr or stack trace>
+✓ /bq-fix "<symptom>" (type <n>: <name>)
+Cause: <one sentence>   Patch: <files, lines>
+Regression test: <name> failed before, passes after
+Verified: <how>   Suite: <pass>/<total>
+Next: /bq-review or /bq-verify
 ```
-
-**Affected component:** <file or system>
-**Activated skills:** <list>
-```
-
-### 5. Write the fix mini-spec
-
-Save to `.bequite/audits/FIX_<slug>.md`:
-
-```markdown
-# Fix: <symptom>
-
-**Generated:** <date>
-**Type:** <classification>
-**Active skills:** <list>
-
-## Symptom
-
-(one paragraph)
-
-## Reproduction
-
-(steps + expected vs actual)
-
-## Hypothesis
-
-(2-3 possible causes, ranked by likelihood)
-
-## Files this fix will touch
-
-| File | Why |
-|---|---|
-
-## Test plan
-
-- The reproduction (currently fails) will pass
-- New regression test: <name>
-- Suite: no new failures
-
-## Rollback
-
-(if fix is wrong, how to revert in one step)
-```
-
-### 6. Find the root cause
-
-Walk back from the error:
-
-1. **What was the LAST thing that changed?** (`git log`)
-2. **Where in the code does this error originate?** (Read the stack trace; open the file at the offending line)
-3. **What does that code DO?** (Read function + neighborhood; understand intent)
-4. **What's wrong?** (the actual cause — not the symptom)
-
-The root cause is the **smallest change** that makes the symptom disappear.
-
-**Common root-cause patterns per type:**
-
-- Frontend: stale prop, missing useEffect dep, CSS specificity, hydration mismatch
-- Backend: missing await, wrong env var, type coercion, missing null check
-- Database: missing index, wrong join, N+1, transaction isolation
-- Auth: cookie not set, CORS, redirect URL mismatch, expired token
-- Build: peer dep mismatch, missing types, wrong path alias
-- Test: order-dependent test, leaky fixture, time-dependent
-- Deployment: env var missing, wrong region, build cache stale
-- Performance: missing index, sync I/O in hot path, no caching
-- Security: input not sanitized, exposed secret, OWASP-Top-10 hit
-- Dependency: transitive CVE, version pin missing, AGPL leak
-- Config: typo in env var name, path separator (Windows vs Unix), permissions
-- Network: timeout, retry not configured, certificate
-- Memory: closure holding ref, unbounded array, missing cleanup
-- Race: missing lock, await order, fire-and-forget
-- Cross-browser: vendor prefix, polyfill missing, BOM differences
-
-### 7. Fix the smallest cause
-
-Make the smallest safe change that addresses the root cause. NOT a refactor. NOT "while I'm here...".
-
-Read the file. Edit only what needs editing.
-
-### 8. Add or update a regression test
-
-Every fix gets a test that **reproduces the bug**:
-
-- Fails BEFORE the fix
-- Passes AFTER the fix
-- Has a name that describes the bug (`it("renders login button on Safari", ...)`)
-
-If a test for this behavior already existed and was passing → it was missing a case. Add the case.
-
-### 9. Verify
-
-Run the failing reproduction + the new test:
-
-- Original symptom gone? (the reproduction now succeeds)
-- New test passes?
-- Other tests still pass? (no regressions in full suite)
-
-### 10. Log the fix
-
-Append to ERROR_LOG.md below the original entry:
-
-```markdown
-**Root cause:** <one sentence>
-**Fix:** <file:line + summary; ~3 lines of diff if helpful>
-**Verification:**
-- Reproduction now: passes
-- New test: passes (`<test name>`)
-- Full suite: <count pass / count total>
-**Resolved:** <date>
-```
-
-### 11. Update CHANGELOG (if user-visible)
-
-If the bug was user-visible, append to `CHANGELOG.md` under `[Unreleased]`:
-
-```markdown
-### Fixed
-- <one-line symptom + brief cause>
-```
-
-### 12. Update state + report
-
-- Mark `FIX_VERIFIED ✅` in `WORKFLOW_GATES.md`
-- `LAST_RUN.md` updated
-- `AGENT_LOG.md` appended
-
-Print to chat:
-
-```
-✓ Fixed — <symptom>
-
-Type:         <classification>
-Active skills:<list>
-Root cause:   <one-liner>
-Fix:          <file:line>
-Test added:   <test name>
-Suite:        <pass> / <total>
-
-Logged: .bequite/work/<id>/log.md
-        .bequite/audits/FIX_<slug>.md
-```
-
-## Output format
-
-Narrate each step. Highlight the classification + activated skills early so user can correct.
 
 ## Quality gate
 
-- Reproduction confirmed BEFORE any code change
-- Type classified (1 of 15)
-- Root cause stated in one sentence
-- Smallest patch (no refactor, no "while I'm here")
-- Regression test added (fails before, passes after)
-- Full suite green (no new failures)
-- ERROR_LOG.md entry complete
-- No banned weasel words
+Reproduced before fixing; a named root cause; a regression test proven to fail first; the symptom checked the way the user saw it; three failed attempts in a row stop and ask.
 
-## Failure behavior
+## Next Command Recommendations (typical)
 
-- Can't reproduce → log the symptom, ask user for more details, exit
-- Root cause unclear after 30 minutes → pause, ask user, consider `/bq-research` for the specific tech
-- Fix breaks other tests → roll back, log, retry with a different approach
-- Type classification wrong → user corrects, re-route to different skills
-
-## Rules
-
-- **Reproduce first.** No fix without reproduction.
-- **Smallest cause, smallest patch.** No refactors.
-- **Always add a test.** A bug that escaped means the test was missing.
-- **No "should fix" claims.** Verify the original symptom is actually gone.
-- **One bug per /bq-fix.** Multiple bugs = multiple invocations.
-- **Failing test FIRST (alpha.18).** Write the regression test that reproduces the bug, confirm it FAILS, then patch until it passes — the test is the external oracle that stays accurate as context fills. (Move step 8 before step 7.) Never edit/delete tests to make things pass.
-- **Verify any new package in-session (alpha.18).** If a fix tempts a new dependency, confirm it exists on the registry + age + weekly-downloads + publisher + lockfile-presence before importing (slopsquatting / PhantomRaven; ~5–22% of LLM package suggestions are fake). See `bequite-anti-hallucination`.
-- **Evidence, not assertion (alpha.18).** The completion report pastes the reproduction command + its output (now passing), not "should be fixed."
-
-## Skills activated
-
-Per the 15-type table above. Always plus `bequite-problem-solver` (the reproduce-first discipline core).
-
-## Usual next command
-
-- `/bq-test` — full suite to confirm no regressions
-- `/bq-implement` — continue task list if mid-implementation when bug hit
-- `/bq-fix` — if another bug surfaced during the fix
-- `/bq-changelog` — if you fixed a user-visible bug and want to sharpen the entry
-
----
-
-## Mistake memory update
-
-After a fix lands, evaluate whether the root cause is a **recurring pattern** in this project. If yes, append an entry to `.bequite/state/MISTAKE_MEMORY.md`:
-
-- One entry per **pattern**, not per **instance** (e.g. "missing await on async DB calls" is a pattern; one missed await on Friday is an instance)
-- Cite the file:line where the pattern occurred
-- Include a **prevention rule** that's concrete enough to grep for or check in CI
-
-Skip MISTAKE_MEMORY for trivial one-offs (typos, single missing import). The file is for **lessons that apply forward**, not a log of every fix.
-
-See `.bequite/state/MISTAKE_MEMORY.md` template + tag system.
-
----
-
-## Design Continuity Gate (alpha.17 — visual / cross-browser fixes)
-
-For type-1 (frontend visual/state) and type-15 (cross-browser/platform) fixes, activate `bequite-frontend-design-system` and **re-run the Design Continuity Gate on the touched page after the fix**. A fix must not create new middle-section drift.
-
-- Read `.bequite/design/DESIGN_DNA.md` before editing — the fixed section must still match the DNA (not just "stop the symptom").
-- After the patch, check the edited section AND its neighbors against the DNA (`references/design-continuity-checklist.md`).
-- If the page renders, do a quick Visual QA on the affected route (highest available browser tier; never auto-install Playwright).
-- Append the drift pattern to `.bequite/state/MISTAKE_MEMORY.md` with `[fe][design]` + a detection rule. Update `DESIGN_CONTINUITY_REPORT.md` if a full page was re-checked.
-
-**Effort awareness:** low/medium → check the touched section + grep heuristics; high → touched page; xhigh/Ultracode → full continuity + visual QA sweep.
-
-Spec: `.claude/bequite/docs/architecture/DESIGN_CONTINUITY_GATE.md`.
-
----
-
-## Tool neutrality (global rule)
-
-⚠ **A fix should rarely introduce a new tool. If it does, the fix mini-spec must include a decision section before the patch lands.**
-
-The smallest-cause / smallest-patch discipline means most fixes use existing project tooling. If a fix tempts you to "let's add library X to handle this properly" — pause. Either the existing stack solves it, or the fix is larger than a fix (becomes a feature).
-
-**Do not write in the FIX mini-spec:** "Add Zod for validation."
-**Write:** "Zod is one candidate to address the validation gap. Compared against [alternatives]; chosen because [reasons]; risk [X]; rollback [Y]."
-
-The 10 decision questions every new dep introduced during a fix must answer:
-1. What is the project type?
-2. What is the actual problem?
-3. What scale is expected?
-4. What constraints exist?
-5. What stack already exists?
-6. What user experience is required?
-7. What failure risks exist?
-8. What tools are proven for this case?
-9. What tools are overkill?
-10. What tool gives the best output with the least complexity?
-
-**Default for fixes:** use what's already installed. Adding a dep during a fix is a flag — re-scope as a feature if the dep is structural.
-
-See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.
-
----
-
-## Automatic skill routing (alpha.20)
-
-This command runs the Skill Router BEFORE acting (execution-contract steps 2–4):
-
-1. Load `.bequite/skills/SKILL_REGISTRY.md` (the token-cheap routing index — NOT the skill files)
-2. Classify the task into domains per `.bequite/skills/SKILL_ROUTER.md` (user text → command → files present → mode/phase → memory → risk tier → output type)
-3. Auto-select skills: domain primaries + cross-cutting auto-attach (anti-hallucination on claims · testing-gate on code · context-engineer on >5 files or >1 session · security-reviewer on R3 paths · frontend-design-system on >1 UI section) + mode sizing (fast = smallest safe set · deep = broader · token-saver = lazy-load · delegate = skills named in task pack)
-4. Emit the selection block in the output, then load ONLY the selected SKILL.md files:
-
-```
-Skill Selection:
-- Selected: bequite-<skill> — <one-line reason tied to this task>
-- Not selected: bequite-<skill> — <why considered and skipped>
-```
-
-**The user never has to name skills** — describe the goal; the router picks the disciplines. An explicit user skill choice overrides routing (log the override). At writeback, append the selection + outcome to `.bequite/skills/SKILL_USAGE_LOG.md`.
-
-Strategy: `.claude/bequite/docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.
-
----
-
-## Confidence Forecast (alpha.21)
-
-For each phase / task / feature this command handles, report calibrated confidence per `.claude/bequite/docs/architecture/CONFIDENCE_CALIBRATION_STRATEGY.md`:
-
-```
-Confidence: NN% (band) — <one-line why>
-Evidence level: verified | inferred | assumed | unknown
-Lowers it: <factors>      Raises it: <checks that would>
-Unknowns/blockers: <list or none>      Next: <recommended action>
-```
-
-Bands: 90–100 routine · 75–89 likely · 50–74 needs exploration · 25–49 spike first · 0–24 blocked/insufficient info. **Confidence is not a feeling — it is a report** (evidence, tests, scope clarity, familiarity, dependency risk, verification). It must MOVE as evidence arrives (before-inspection → after-reading → after-implementation → after-verification; recorded per task in `.bequite/work/<id>/tasks.md`). Never 100% — and ≥95% only with all tests passing + zero unresolved assumptions + EVIDENCE_LOG entry. Apply project modifiers from `.bequite/state/CONFIDENCE_RULES.md`; at verify/release, log forecast-vs-actual to `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`.
-
-## Regression Ledger writeback (alpha.22)
-
-Every fixed bug appends a guard record to `.bequite/state/REGRESSION_LEDGER.md` (bug → root cause → guard test → verify command). `/bq-verify regressions` re-checks the ledger; a recurrence is an automatic FAIL.
-
-## Next Command Recommendations (alpha.22)
-
-Per contract step 12: Required next W4.1 `/bq-verify` · Guard Pass (code guard) before it · router block per `COMMAND_ROUTER.md`.
+`/bq-review` · `/bq-verify` · `/bq-test` if the area had no tests.

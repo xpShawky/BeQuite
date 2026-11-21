@@ -5,15 +5,10 @@ description: Environment health check — Node / Python / Docker / package manag
 # /bq-doctor — environment health
 
 <!-- bq:contract -->
-> **Every run follows the contract** (`.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md`):
-> 1. **Up to date:** first run `bash .claude/bequite/bin/bq-update.sh` (hourly; it updates BeQuite when a newer version is published, backs up first, never touches `.bequite/` memory, never blocks) and say its one line.
-> 2. **Skills first:** announce the `Skill Selection:` block before any plan, edit or tool call for the task.
-> 3. **Resolve the work:** read `.bequite/ACTIVE.md`; use `.bequite/work/<id>/`, or create the next work folder if this is new work (`/bq-work`).
-> 4. **Gates:** project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `work/<id>/gates.md`. Refuse and name the missing gate.
-> 5. **Plan first:** non-trivial work gets a plan the user approves before output. Hard human gates always wait for a yes.
-> 6. **Evidence:** every check goes to `work/<id>/evidence.md` (command + exit code + output) or is marked `UNVERIFIED:`.
-> 7. **Write back:** `work/<id>/log.md`, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, and `.bequite/state/MISTAKE_MEMORY.md` when a lesson surfaced.
-> 8. **Finish** with the Next Command Recommendations block.
+> **This command runs inside the BeQuite pipeline** (`.claude/bequite/docs/architecture/PIPELINE.md`):
+> 1. **Up to date:** first run `bash .claude/bequite/bin/bq-update.sh` and say its one line (hourly; never blocks).
+> 2. **Orient:** announce the `Skill Selection:` block; resolve the work (`.bequite/ACTIVE.md`, `.bequite/work/<id>/`, or `/bq-work new`); refuse and name any missing gate (`.bequite/state/WORKFLOW_GATES.md`, `work/<id>/gates.md`).
+> 3. **Prove and write back:** plan first for non-trivial work and stop at hard human gates; every check goes to `work/<id>/evidence.md` or is `UNVERIFIED:`; write back (work log, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, `.bequite/state/MISTAKE_MEMORY.md` on a lesson) and end with the Next Command Recommendations.
 <!-- /bq:contract -->
 
 You are checking that the local environment can actually build + run this project. Surfaces missing tools, missing env files, port conflicts, and install-clarity issues.
@@ -92,6 +87,14 @@ Report whether the opt-in BeQuite hooks are present + active:
 - **Present:** `.claude/hooks/*.{sh,ps1}` exist (shipped + reviewable).
 - **Active:** the project's `.claude/settings.json` (or `settings.local.json`) has a `hooks` block referencing them.
 - If present-but-not-active → note "hooks available but not enabled — review + merge `.claude/settings.json.example` (or `.windows.`) to turn on; see `.claude/bequite/docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`." **Never enable them automatically** (security: review-before-enable).
+
+## Step 7c — Capability inventory (v1)
+
+Write `.bequite/state/CAPABILITIES.md` (template in `templates/bequite/state/CAPABILITIES.md`): what this machine and this user really have, so every plan's options board (pipeline stage 4) offers routes that can actually run here.
+- **Detect, do not ask:** programs on PATH or in their usual install folders (git, Python, Node, ffmpeg, yt-dlp, Whisper; After Effects, Premiere, Blender, DaVinci Resolve, Photoshop, Illustrator), browsers, the browser and computer-use tools this session has, and the MCP servers connected (the session's tool list, `.mcp.json`, `claude mcp list` when it works). Record each with its version or "found, version unknown".
+- **Ask once, then never again:** paid tools and subscriptions the user already has (for example a ChatGPT plan, Google AI Studio access, a design or video service), accounts the work may use, and anything they do not want used. Names only: never a password, key or token.
+- Refresh it when the user says something changed, or when a plan needs a capability the file does not list.
+- The file holds capabilities, never credentials. If the project is a public repository, ask before committing it.
 
 ## Step 8 — Write the report
 

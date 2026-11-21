@@ -1,4 +1,6 @@
-# Command Execution Contract (12 steps, v4)
+# Command Execution Contract (12 steps, v4; v1 adds step 0)
+
+> **v1:** the flow is described once in `PIPELINE.md` (stages 0-10); each command carries a three-line pointer to it (`bq_check.py` holds the text). This file keeps the detailed rules each stage follows.
 
 > **The single citable contract every BeQuite command follows.** When a command file says "per the execution contract," it means these 12 steps, in this order. Commands may compress steps that don't apply (read-only commands skip 7–9) but may never reorder or silently skip an applicable step.
 

@@ -1,288 +1,55 @@
 ---
-description: Add Feature workflow with type router. Classifies the feature (frontend / backend / database / auth / etc.) and activates the right specialist skills. Replaces bq-add-feature.
+description: Add one feature through the pipeline. Classifies it with the 12-type router (frontend UI, backend API, database, auth, automation, scraping, deployment, admin panel, dashboard, CLI, integration, security), loads the matching specialists, writes a mini-spec, builds it task by task, tests and verifies it. Arguments demo-data and landing.
 ---
 
-# /bq-feature — Add Feature workflow
+# /bq-feature: one feature, end to end
 
 <!-- bq:contract -->
-> **Every run follows the contract** (`.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md`):
-> 1. **Up to date:** first run `bash .claude/bequite/bin/bq-update.sh` (hourly; it updates BeQuite when a newer version is published, backs up first, never touches `.bequite/` memory, never blocks) and say its one line.
-> 2. **Skills first:** announce the `Skill Selection:` block before any plan, edit or tool call for the task.
-> 3. **Resolve the work:** read `.bequite/ACTIVE.md`; use `.bequite/work/<id>/`, or create the next work folder if this is new work (`/bq-work`).
-> 4. **Gates:** project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `work/<id>/gates.md`. Refuse and name the missing gate.
-> 5. **Plan first:** non-trivial work gets a plan the user approves before output. Hard human gates always wait for a yes.
-> 6. **Evidence:** every check goes to `work/<id>/evidence.md` (command + exit code + output) or is marked `UNVERIFIED:`.
-> 7. **Write back:** `work/<id>/log.md`, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, and `.bequite/state/MISTAKE_MEMORY.md` when a lesson surfaced.
-> 8. **Finish** with the Next Command Recommendations block.
+> **This command runs inside the BeQuite pipeline** (`.claude/bequite/docs/architecture/PIPELINE.md`):
+> 1. **Up to date:** first run `bash .claude/bequite/bin/bq-update.sh` and say its one line (hourly; never blocks).
+> 2. **Orient:** announce the `Skill Selection:` block; resolve the work (`.bequite/ACTIVE.md`, `.bequite/work/<id>/`, or `/bq-work new`); refuse and name any missing gate (`.bequite/state/WORKFLOW_GATES.md`, `work/<id>/gates.md`).
+> 3. **Prove and write back:** plan first for non-trivial work and stop at hard human gates; every check goes to `work/<id>/evidence.md` or is `UNVERIFIED:`; write back (work log, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, `.bequite/state/MISTAKE_MEMORY.md` on a lesson) and end with the Next Command Recommendations.
 <!-- /bq:contract -->
 
-## Purpose
+A route into `PIPELINE.md` stages 0, 1, 3 (scoped), 4, 5, 6, 7, 8, 9, 10 for one feature, in its own work folder. The type router and its specialists: `.claude/bequite/docs/architecture/FEATURE_AND_FIX_WORKFLOWS.md` (section "/bq-feature: 12-type router").
 
-Add a new feature to an existing project, safely. **Identifies the feature type** (12 categories) and activates the matching specialist skills.
+## Syntax
 
-## When to use it
+```
+/bq-feature "<feature title>" [type=<1-12 or name>] [mode]
+/bq-feature demo-data "<what to seed>"       realistic, labelled demo data (never shipped as real)
+/bq-feature landing "<offer or product>"      a landing page through the frontend-design-system loop
+```
 
-- Existing project (`.git/` + manifests present)
-- You want to add ONE feature
-- Mode = Add Feature (or you're using this as the mode-entry shortcut)
+## Gates
 
-## Preconditions
-
-- `BEQUITE_INITIALIZED`
-
-## Required previous gates
-
-- `BEQUITE_INITIALIZED`
-
-## Files to read
-
-- `.bequite/state/CURRENT_MODE.md`
-- `.bequite/audits/DISCOVERY_REPORT.md` (if exists; else suggest `/bq-discover` first)
-- `.bequite/work/<id>/plan.md` (if exists)
-
-## Files to write
-
-- `.bequite/state/CURRENT_MODE.md` → "Add Feature" if not already
-- `.bequite/work/<id>/spec.md` — feature mini-spec
-- `.bequite/work/<id>/tasks.md` (the feature becomes the active task)
-- `.bequite/state/OPEN_QUESTIONS.md` (any unresolved)
-- `.bequite/logs/AGENT_LOG.md`
+`BEQUITE_INITIALIZED`; the work's `PLAN_APPROVED` before build (auto mode states the plan and continues for safe, scoped work). UI types (1 frontend UI, 8 admin panel, 9 dashboard) also need `DESIGN_DNA_LOCKED` before build and set `DESIGN_CONTINUITY_PASS` and `VISUAL_QA_DONE` before done. Motion, video or 3D on the web adds `PERF_BUDGET_PASS`.
 
 ## Steps
 
-### 1. Get the feature title
+1. **Orient.** New work folder (`/bq-work new "<title>" type=feature`) unless the feature belongs to the active work.
+2. **Classify** with the 12-type router; a feature may be two types (say both). Load the router's skills plus `bequite-testing-gate`.
+3. **Research, scoped:** only what changes for this feature (a library version, an API rule), dated, in `research.md`.
+4. **Options and mini-spec** in `spec.md`: what, why, in scope, out of scope, files it will touch, acceptance criteria, test plan, security notes (security-reviewer for auth, input, secrets), deployment notes when it touches deploys, the implementation order.
+5. **Approval:** show the mini-spec and wait (or state it and continue in auto mode on safe, scoped work).
+6. **Build** task by task, tests with each task. UI types: section by section against the Design DNA (`bequite-frontend-design-system`), re-reading `FRONTEND_CONTEXT_SUMMARY.md` between sections; pick the product type's rules, never a default "cinematic SaaS landing".
+7. **Guard:** `bequite-guard-pass`; `bq-red-team` when the feature touches auth, money or data.
+8. **Verify** the way a user would: the browser at desktop and phone width for UI, the real command for a CLI, the endpoint for an API. Evidence in `evidence.md`.
+9. **Write back:** work log, `CHANGELOG.md` `[Unreleased]` when users see the change, `LAST_RUN.md`.
 
-If user typed `/bq-feature` alone:
-> "Describe the feature in one sentence."
-
-If `/bq-feature "csv export on bookings page"` — use the argument.
-
-### 2. Classify the feature type
-
-Ask the model (silently) to classify into one of:
-
-| # | Type | Activates skill(s) |
-|---|---|---|
-| 1 | **Frontend UI** | `bequite-frontend-quality`, `bequite-ux-ui-designer` |
-| 2 | **Backend API** | `bequite-backend-architect`, `bequite-security-reviewer` |
-| 3 | **Database** | `bequite-database-architect`, `bequite-backend-architect` |
-| 4 | **Auth** | `bequite-security-reviewer`, `bequite-backend-architect` |
-| 5 | **Automation** | `bequite-automation`, `bequite-backend-architect` |
-| 6 | **Scraping / Crawling** | `bequite-automation` |
-| 7 | **Cloud / Deployment** | `bequite-devops-cloud` |
-| 8 | **Admin panel** | `bequite-frontend-quality`, `bequite-security-reviewer` |
-| 9 | **Dashboard** | `bequite-frontend-quality`, `bequite-ux-ui-designer` |
-| 10 | **CLI** | `bequite-backend-architect`, `bequite-testing-gate` |
-| 11 | **Integration** | `bequite-backend-architect`, `bequite-security-reviewer` |
-| 12 | **Security** | `bequite-security-reviewer` |
-
-Print the classification + which skills will be active. Ask: "Correct? (y/N + correction)"
-
-### 3. Write the mini-spec
-
-Save to `.bequite/work/<id>/spec.md` (slug from title):
-
-```markdown
-# Feature: <title>
-
-**Generated:** <date>
-**Type:** <classification>
-**Active skills:** <list>
-
-## What
-(2-3 sentences)
-
-## Why
-(1 sentence)
-
-## In scope
-- ...
-
-## Out of scope
-- ...
-
-## Files this will touch
-| File | Action |
-|---|---|
-
-## Acceptance criteria
-(specific + testable + no weasel words)
-
-## Test plan
-- Unit: ...
-- Integration: ...
-- E2E: ... (if UI)
-
-## Security considerations (from bequite-security-reviewer)
-- ...
-
-## DevOps considerations (from bequite-devops-cloud, if deployment-touching)
-- ...
-
-## Implementation order
-1. ...
-2. ...
-3. ...
-```
-
-### 4. Present + confirm
-
-Show user the mini-spec. Wait for "yes" or corrections.
-
-### 5. Implement
-
-Once confirmed, implement per the order in §3.
-- Read files first
-- Make minimal changes per file
-- Run tests after each material change
-- Update `.bequite/work/<id>/tasks.md` with progress
-
-### 6. Test + verify
-
-Run the test plan from the spec. Run a quick `/bq-test` subset.
-
-### 7. Log + changelog
-
-- `CHANGELOG.md` `[Unreleased]` `### Added` entry
-- `.bequite/logs/AGENT_LOG.md` entry
-
-## Output format
+## Output
 
 ```
-✓ Feature added — <title>
-
-Type:         <classification>
-Active skills:<list>
-Spec:         .bequite/work/<id>/spec.md
-Files:        <count> touched
-Tests:        <pass / total>
-Acceptance:   <one-line confirmation>
-
-Next: /bq-review (review the change) or /bq-verify (full gates)
+✓ /bq-feature "<title>" (type <n>: <name>)
+Spec: work/<id>/spec.md · Tasks: <done>/<total> · Tests: <pass>/<total>
+Verified: <how: browser / command / endpoint> · Gates set: <list>
+Next: /bq-review or /bq-verify
 ```
 
 ## Quality gate
 
-- Mini-spec exists at `.bequite/work/<id>/spec.md`
-- User confirmed the spec
-- All implementation files compiled / typechecked
-- New test exists + passes
-- Acceptance criterion verified by running it
-- CHANGELOG `[Unreleased]` updated
-- New code matches `.bequite/state/PROJECT_DNA.md` conventions + dependency direction (alpha.18 — no off-convention spaghetti; follow the exemplar files it names)
-- Any new package verified in-session — registry + age + downloads + publisher + lockfile — before import (alpha.18; `bequite-anti-hallucination`)
-- For multi-file features: a File-Responsibility Map exists before tasks (`bequite-context-engineer`); failing-test-first for logic; completion report pastes command output (no weasel words)
+Every acceptance criterion has a test or a recorded check; UI features cover every in-scope section and the phone layout, not only the first section; no hard human gate was crossed without a yes.
 
-## Failure behavior
+## Next Command Recommendations (typical)
 
-- Type-classification wrong → user corrects → re-route
-- Mini-spec rejected → revise → re-present
-- Implementation hits a blocker → mark `[!]` blocked → log → exit
-- Test fails after implementation → roll back via git stash → log error → exit
-
-## Usual next command
-
-- `/bq-review` — formal review of the change
-- `/bq-test` — broader test pass
-- `/bq-verify` — full gate matrix before shipping
-- `/bq-changelog` — sharpen the CHANGELOG entry
-
----
-
-## Design Continuity Gate (alpha.17 — UI-typed features)
-
-For features classified Frontend UI / Admin panel / Dashboard (types 1 / 8 / 9), this command activates `bequite-frontend-design-system` and runs the **Design Continuity Gate** so the feature holds the same quality across **every** section — not just the first one built.
-
-**Before implementing UI:**
-- Read `.bequite/design/DESIGN_DNA.md` (gate `DESIGN_DNA_LOCKED`). If missing/placeholder, fill + lock it first — every section is judged against it.
-- Pick the product type → apply `.claude/skills/bequite-frontend-design-system/references/product-type-rules.md` (do NOT default to "cinematic SaaS landing").
-- Add each section to `.bequite/uiux/SECTION_MAP.md` with acceptance criteria.
-
-**While implementing:** build section-by-section — build a section → check it against the DNA → continue. Don't build the whole surface then hope. Re-read `.bequite/state/FRONTEND_CONTEXT_SUMMARY.md` between sections.
-
-**Before "done":**
-- Run the Design Continuity Gate → `.bequite/design/DESIGN_CONTINUITY_REPORT.md` (no BLOCKER/HIGH drift; close the quality cliff between weakest and strongest section).
-- Run Visual QA → `.bequite/audits/VISUAL_QA_REPORT.md` (render it; never claim a visual PASS you didn't see).
-- Set `DESIGN_CONTINUITY_PASS` + `VISUAL_QA_DONE`. Log any `[fe][design]` lesson to `MISTAKE_MEMORY.md`.
-- If the feature adds scroll motion, video, frame sequences or 3D: run the web-motion performance pass (`PERF_BUDGET_PASS`: Lighthouse mobile within the budget in `.claude/skills/bequite-frontend-design-system/references/web-motion.md`, CPU 4x scroll trace, real phone or `UNVERIFIED: no device`) and set it in the work's `gates.md`.
-
-**Effort awareness:** low/medium → compact heuristic check; high → full per-section; xhigh/Ultracode → per-section critique + browser visual QA + final polish.
-
-Spec: `.claude/bequite/docs/architecture/DESIGN_CONTINUITY_GATE.md`. Map: `.bequite/design/FRONTEND_SKILL_MAP.md`.
-
----
-
-## Tool neutrality (global rule)
-
-⚠ **Every tool, library, framework, or design system this command might add as part of a feature is a CANDIDATE, not a default.**
-
-If the feature mini-spec requires a new tool / library / dep, the spec must include a decision section before `/bq-implement` runs.
-
-**Do not write in the mini-spec:** "Add Drizzle."
-**Write:** "Drizzle is one candidate. Compared against [alternatives]; chosen because [reasons]; risk [X]; rollback [Y]."
-
-The 10 decision questions every new dep must answer:
-1. What is the project type?
-2. What is the actual problem?
-3. What scale is expected?
-4. What constraints exist?
-5. What stack already exists?
-6. What user experience is required?
-7. What failure risks exist?
-8. What tools are proven for this case?
-9. What tools are overkill?
-10. What tool gives the best output with the least complexity?
-
-For each new dep, embed a short decision section in the feature mini-spec (Problem / Options / Sources / Best option / Why it fits / Why others rejected / Risk / Cost / Test plan / Rollback plan). For features touching auth, payments, or DB schema, use a full ADR.
-
-**Do not auto-install new deps.** Adding a dependency requires explicit justification per the 6-point implementation rule: needed, justified, compatible, not over-complex, has test plan, has rollback path.
-
-See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.
-
----
-
-## Automatic skill routing (alpha.20)
-
-This command runs the Skill Router BEFORE acting (execution-contract steps 2–4):
-
-1. Load `.bequite/skills/SKILL_REGISTRY.md` (the token-cheap routing index — NOT the skill files)
-2. Classify the task into domains per `.bequite/skills/SKILL_ROUTER.md` (user text → command → files present → mode/phase → memory → risk tier → output type)
-3. Auto-select skills: domain primaries + cross-cutting auto-attach (anti-hallucination on claims · testing-gate on code · context-engineer on >5 files or >1 session · security-reviewer on R3 paths · frontend-design-system on >1 UI section) + mode sizing (fast = smallest safe set · deep = broader · token-saver = lazy-load · delegate = skills named in task pack)
-4. Emit the selection block in the output, then load ONLY the selected SKILL.md files:
-
-```
-Skill Selection:
-- Selected: bequite-<skill> — <one-line reason tied to this task>
-- Not selected: bequite-<skill> — <why considered and skipped>
-```
-
-**The user never has to name skills** — describe the goal; the router picks the disciplines. An explicit user skill choice overrides routing (log the override). At writeback, append the selection + outcome to `.bequite/skills/SKILL_USAGE_LOG.md`.
-
-Strategy: `.claude/bequite/docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.
-
----
-
-## Confidence Forecast (alpha.21)
-
-For each phase / task / feature this command handles, report calibrated confidence per `.claude/bequite/docs/architecture/CONFIDENCE_CALIBRATION_STRATEGY.md`:
-
-```
-Confidence: NN% (band) — <one-line why>
-Evidence level: verified | inferred | assumed | unknown
-Lowers it: <factors>      Raises it: <checks that would>
-Unknowns/blockers: <list or none>      Next: <recommended action>
-```
-
-Bands: 90–100 routine · 75–89 likely · 50–74 needs exploration · 25–49 spike first · 0–24 blocked/insufficient info. **Confidence is not a feeling — it is a report** (evidence, tests, scope clarity, familiarity, dependency risk, verification). It must MOVE as evidence arrives (before-inspection → after-reading → after-implementation → after-verification; recorded per task in `.bequite/work/<id>/tasks.md`). Never 100% — and ≥95% only with all tests passing + zero unresolved assumptions + EVIDENCE_LOG entry. Apply project modifiers from `.bequite/state/CONFIDENCE_RULES.md`; at verify/release, log forecast-vs-actual to `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`.
-
-## Next Command Recommendations (alpha.22)
-
-Per contract step 12: end with the router block — Required next W3.1 `/bq-test` (or W4.1 `/bq-verify` for small scopes) · capability suggestions on signals (C3 reference for visual-direction features, C7 integrate for API features) · Guard Pass (code guard) runs before verify. IDs from `COMMAND_ID_MAP.md`; routes from `COMMAND_ROUTER.md`.
-
-## System Design Risk Check (alpha.22 orchestration update — mandatory when relevant)
-
-When the task touches payments · inventory · bookings · auth · permissions/tenancy · database writes · concurrency · queues · external APIs · webhooks · uploads · UGC · admin actions · production · security logic, the output MUST include the structured block from `.claude/bequite/docs/architecture/SYSTEM_DESIGN_REASONING_STANDARD.md` (Domain · Critical entities · State transitions · Concurrent user risks · Data consistency · Failure modes · Recovery · Security · Edge cases · Tests required · Confidence · Unknowns). Canonical test: one item in stock, two simultaneous buyers — if the plan can't answer reservation/locking/idempotency/order-states/user-visible-outcome, implementation does not start. Outside these domains: `Not applicable — reason:`. Risk without a named test = unfinished plan. Blocking unknowns stop the build.
-
-## Skills-first + post-phase verify (alpha.25)
-
-Announce selected skills before building (contract step 4). After the feature is implemented, run the post-phase test + verify gate (select testing-gate + guard-pass + domain skills first; run tests/build; evidence in `EVIDENCE_LOG.md`) before claiming done — and before the Design Continuity / Visual QA gates for UI. Failure → `/bq-fix`.
+`/bq-review` (diff review) · `/bq-verify` (before release) · `/bq-fix` if verification found a bug.

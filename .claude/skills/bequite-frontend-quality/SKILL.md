@@ -1,189 +1,72 @@
 ---
 name: bequite-frontend-quality
-description: Frontend design + UX quality. Detects "AI-looking UI" — bad colors, dead buttons, hidden text, poor spacing, mock data masquerading as live. Loaded when the project has a UI. Pairs with Impeccable.
-allowed-tools: ["Read", "Glob", "Grep", "WebFetch", "WebSearch", "Edit", "Write"]
+description: Use when a frontend is about to be called done, reviewed, audited or shipped, or when a page "looks AI-made". Runs the owner's AI-tell sweep on the rendered page, checks accessibility (WCAG 2.2 AA) and Core Web Vitals, and checks for dead buttons, fake data and missing states, all measured in a real browser with every hit fixed or justified.
+last_verified: 2026-11-21
+sources:
+  - https://www.w3.org/TR/WCAG22/ (read 2026-11-21) AA contrast, target size, focus
+  - https://web.dev/articles/vitals (read 2026-11-21) LCP, INP, CLS thresholds at p75
+  - https://web.dev/articles/optimize-inp (read 2026-11-21) input delay, processing, presentation
+  - https://webaim.org/projects/million/ (read 2026-11-21) 2026 report, 95.9% home pages fail, low contrast 83.9%
+  - https://github.com/dequelabs/axe-core (read 2026-11-21) v4.14.1, finds about 57% of WCAG issues automatically
+  - https://github.com/ChromeDevTools/chrome-devtools-mcp (read 2026-11-21) v1.13.0, traces, network, console
+  - https://github.com/pbakaus/impeccable (read 2026-11-21) named anti-patterns, deterministic detector
+  - https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing (read 2026-11-21) copy tells
+allowed-tools: Read, Glob, Grep, Edit, Write, Bash, WebFetch, WebSearch
 ---
 
 # bequite-frontend-quality
 
-Frontend quality discipline. Invoked when the project has UI — Next.js, Nuxt, SvelteKit, Vite + React, plain HTML, anything visual.
+A page can pass the build and still fail people: grey text nobody can read, a button that does nothing, a chart with invented numbers, the same purple gradient every generated page has. This skill finds those on the rendered page, with numbers, and does not accept "looks fine to me".
 
-> **Master coordination (alpha.17):** This skill is the **AI-slop detection** specialist. The master skill `bequite-frontend-design-system` orchestrates frontend work (Design DNA, section-by-section loop, Design Continuity Gate, visual QA, product-type rules) and *calls* this skill to detect slop. The canonical 15 AI-slop tells (below) live here; the master references them — don't duplicate them. Map: `.bequite/design/FRONTEND_SKILL_MAP.md`.
->
-> **Effort awareness:** `${CLAUDE_EFFORT}` scales the scan — low/medium: grep the slop heuristics + spot-check the weakest middle sections; high: full 15-tell scan on **every** section; xhigh/max/Ultracode: full scan + browser visual QA + per-section comparison to the hero (senior design-review mode). If effort is unset, infer from operating mode (deep→high+, fast→compact, token-saver→compact + cached DNA).
+## When to use
 
-**References:**
-- Impeccable (Paul Bakaus) — https://github.com/pbakaus/impeccable
-- The 15 AI-slop patterns + the 10 design principles below
-- shadcn/ui — https://ui.shadcn.com
-- tweakcn theme editor — https://tweakcn.com
+- Before a frontend task is marked done (`/bq-feature`, `/bq-live-edit`, `/bq-uiux-variants`), in `/bq-review`, `/bq-audit`, `/bq-red-team` of a UI, and in `/bq-verify`.
+- When the user says the page looks generic or AI-made.
 
-## When this skill activates
+Not for: designing from scratch (`bequite-ux-ui-designer`) or the section loop (`bequite-frontend-design-system`).
 
-- `/bq-audit` when the discovered repo has a frontend
-- `/bq-feature` when adding a UI feature
-- `/bq-feature` when the feature is UI-typed (12-type router)
-- `/bq-review` when reviewing a UI PR
-- `/bq-red-team` when adversarial-reviewing a UI
-- `/bq-uiux-variants` for variant quality checks (no broken layout, contrast, real states)
-- `/bq-live-edit` for section-by-section edits (delegates section mapping to `bequite-live-edit`)
-- `/bq-auto uiux` / `/bq-auto frontend` / `/bq-auto live-edit` / `/bq-auto variants`
+## Procedure
 
-## The 10 design principles
+1. **Render it.** Open the page in a browser tool (tiers in `bequite-live-edit`). Measure at desktop width and at 375 x 812 with real emulation; a hidden or 0x0 viewport gives wrong numbers.
+2. **Console and network**: zero errors on load; no 4xx or 5xx except expected auth probes.
+3. **Tell sweep.** Run `references/tell-sweep.js` in the page (read-only). Then the manual rows of `references/ai-tells.md` from a full-page screenshot. For each hit: fix it, or write one line of justification naming the reference or brand rule. Human sites hit some tells too (Stripe's brand purple trips the gradient check six times), so the count alone is not the verdict; defaults and dominance are.
+4. **Copy.** Read every visible string against the copy tells (vague claims, "seamless", groups of three, a moral at the end). Replace with concrete facts from the product.
+5. **Honest data and states.** No invented chart numbers or fake "live" counters; every list has empty, loading, error and success states, each reachable and shown on screen. A skeleton that never resolves becomes an error state.
+6. **Interaction.** Click every primary button and link in the changed area; each does something visible. Tab through: focus is visible and never hidden behind sticky bars.
+7. **Accessibility** (WCAG 2.2 AA): text contrast 4.5:1 (3:1 large), UI parts 3:1, targets at least 24 x 24 CSS px, labels on inputs, alt text, one h1. Run an automated checker if the project has one (axe-core finds about 57% of issues by its maker's count); do the rest by hand. Low contrast is the most common failure on the web (83.9% of home pages, WebAIM 2026), so check it first.
+8. **Performance.** Core Web Vitals at p75 on mobile: LCP ≤ 2.5 s, INP ≤ 200 ms, CLS ≤ 0.1. Use field data where the site is live, a lab trace (Lighthouse or a DevTools trace tool) for previews. For slow interactions, split the time into input delay, processing and presentation, and fix the largest part.
+9. **Report** in `.bequite/audits/VISUAL_QA_REPORT.md`: measured values, screenshots (desktop and phone), each tell hit with its fix or justification, open items by severity.
 
-1. **Hierarchy** — every screen has one primary action. Others are secondary.
-2. **Recorded typography** — pick a font deliberately. Inter is fine but state WHY it was chosen.
-3. **Three-color system** — one primary brand, one neutral scale, one accent. More = AI-slop.
-4. **Spacing scale: 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 / 96 / 128** — never `padding: 13px`.
-5. **Eased motion** — `cubic-bezier(0.16, 1, 0.3, 1)` style. No bounce, no elastic.
-6. **Real states** — empty, loading, error all real. Hardcoded "no data" placeholder is dishonest.
-7. **Mobile-first + RTL + keyboard** — every screen passes axe-core + works at 360px + works for RTL locales.
-8. **Density variants** — comfortable for mouse, compact for power users, generous for touch.
-9. **Consistency over cleverness** — same button style across screens. Same heading scale. Same loading spinner.
-10. **Skeptic kill-shot** — "what happens to this UI when the data is 10x bigger than I designed for?"
+## Worked example (real run, 2026-11-21)
 
-## The 15 AI-slop tells (refuse these)
+Sweep on a clinic-booking test page in the built-in browser pane, 375 x 812:
 
-1. **Inter font everywhere with no recorded reason.** Inter is fine but the choice must be recorded in tokens.css.
-2. **Purple-blue gradients.** Used by 80% of AI-generated dashboards. Refuse unless brand is genuinely purple.
-3. **Cards nested in cards.** One card depth. Maybe two for very specific reasons.
-4. **Gray-on-color text.** Fails contrast. axe-core catches this. The fix is always to choose: text color or background color, not both gray.
-5. **Bounce / elastic / spring animations.** Never. Apple's macbook-pro uses cubic-bezier(0.16, 1, 0.3, 1). Match that.
-6. **Made-up chart data.** "Revenue chart" with fake bars. Either show real data or show the empty state.
-7. **Skeleton loaders that never resolve.** If the skeleton hangs > 2s, fall back to a real error state.
-8. **Weak empty states.** "No items found" with no action. The empty state must say "create one" with a button.
-9. **Bad mobile layouts.** Buttons < 44px touch target. Text overlapping. Horizontal scroll on body.
-10. **Poor contrast** that passes "looks OK in my Figma" but fails WCAG AA. Test with axe-core.
-11. **Missing focus states.** Keyboard navigation invisible. Add `:focus-visible` styles.
-12. **Repeated icons** that don't differentiate context. Trash icon used for "delete," "archive," AND "close" in the same screen.
-13. **UX copy in passive voice.** "An error has occurred" → "We couldn't save your changes — try again."
-14. **Wrong typographic hierarchy.** Body text = section heading. H1 = H4. Establish a scale and stick.
-15. **Over-rounded everything.** `border-radius: 24px` on a 32px button = ovoid pill blob. Stick to the radius scale.
-
-## Component sourcing order
-
-When adding a new UI component, search in this order:
-
-1. **Project's existing components** — does `components/` already have something similar? Use + extend.
-2. **shadcn/ui** — `npx shadcn@latest add <component>` — copies the source into your repo, fully owned.
-3. **tweakcn theme editor** — for theme customization, then export tokens.css.
-4. **Aceternity UI / Magic / Origin UI** — for specific animations / templates. Vet license; some are commercial.
-5. **21st.dev Magic MCP** — `@21st-dev/magic` — AI-assisted component generation. Per-prompt quota.
-6. **context7** — `@upstash/context7-mcp` — version-pinned docs. Useful for "how does library X do Y?"
-7. **Custom** — only if 1-6 didn't fit. Write the component yourself.
-
-## Tokens.css discipline (when Doctrine `default-web-saas` active)
-
-Every visual value comes from `tokens.css`:
-
-```css
-:root {
-  /* Color (3-tier: primary brand + neutral scale + accent) */
-  --color-brand: <chosen for a recorded reason>;
-  --color-bg: <neutral 1>;
-  --color-fg: <neutral 9>;
-  --color-fg-muted: <neutral 6>;
-  --color-accent: <complementary>;
-
-  /* Spacing scale */
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  /* ... */
-
-  /* Type scale */
-  --text-body: 1rem;
-  --text-h3: 1.5rem;
-  /* ... */
-
-  /* Motion */
-  --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
-  --dur-base: 400ms;
-}
+```
+before: tellsFound {gradientHeadlineText:1, purpleToBlueGradients:1, numberedSectionLabels:3,
+                    thinBodyBoldHeadings:"body 300 / headings 800", oneRadiusEverywhere:"24px"}
+        h1 72px/800, 5 lines; grid clipped; copy "Unlock the Future of Clinic Bookings"
+after:  tellsFound {oneRadiusEverywhere:"12px"}  -> justified: one component type on the page
+        h1 36px/560/-0.792px, 4 lines; horizontalScroll false
 ```
 
-No `padding: 13px` in component files. Always `padding: var(--space-3)`.
+The same sweep on the references, as a false-positive check: Linear 1 hit, Apple 1 hit (a blurred media card), Stripe 4 kinds (brand purple gradients, one `0x` label, one emoji, one blurred card). The rule "fix or justify each hit" came from that check.
 
-## Verification gates
+## Quality gate
 
-When `/bq-audit` or `/bq-verify` exercise the frontend:
+- Every number in the report was measured on the rendered page in this session (viewport stated).
+- Every tell hit has a fix or a one-line justification; manual rows were checked on a screenshot.
+- Zero console errors on load; every changed button tested by clicking.
+- Contrast, targets and focus checked; automated checker output pasted if one ran.
+- Web Vitals measured (field or lab, said which) or the item is marked `UNVERIFIED:` with the reason.
 
-1. **axe-core** — accessibility violations
-2. **Playwright walks** — admin + user flows
-3. **Visual regression** (optional) — Percy / Chromatic
-4. **Console errors** — page must boot with zero console errors
-5. **Network errors** — no 4xx/5xx network requests on page load (other than expected auth probes)
-6. **Mode chip honesty** — if a UI claims "live data", the data must be live (Article VI)
-7. **Empty / loading / error states** — visit each state by mocking the API; each must render usefully
+## Boundaries
 
-## Per-feature checklist (drop into /bq-feature for UI features)
+- The sweep and checks are read-only; fixes go through `bequite-live-edit` or the feature's own task.
+- Checker tools, MCP servers and component sources are candidates; never installed without the user's yes.
+- Never report a page as accessible or fast from code reading alone.
 
-- [ ] Component sourced from priority order above
-- [ ] No hardcoded mock data unless the screen is explicitly "demo"
-- [ ] Empty / loading / error states all real
-- [ ] axe-core passes on the new screen
-- [ ] Touch targets ≥ 44px
-- [ ] Contrast ratio ≥ AA (use a contrast checker)
-- [ ] Tested at 360px viewport
-- [ ] Keyboard-navigable (tab → focus visible → activate)
-- [ ] No new font added without recorded reason
-- [ ] No new color added without recorded reason
+## References (load on demand)
 
-## Anti-patterns to refuse
-
-- **"It looks fine in Figma."** Verify in the browser. With real data.
-- **"We'll add empty states later."** They'll never get added. Add them now.
-- **"Just use Inter."** Inter is fine but state WHY.
-- **"Make it pop with a gradient."** No. Apple, Linear, Vercel, Stripe, Raycast, Arc, Notion — none use gradients heavily. Match those, not the AI defaults.
-
----
-
-## Tool neutrality (global rule)
-
-⚠ **Every tool, library, framework, design system, or workflow named in this file (Impeccable, shadcn/ui, Tailwind, tweakcn, Aceternity, Magic, context7, Inter, axe-core, Playwright, etc.) is an EXAMPLE, not a mandatory default.**
-
-The 10 design principles + 15 AI-slop patterns are **universal rules**. The named tools that help implement them are candidates to evaluate per project.
-
-**Do not say:** "Use shadcn/ui."
-**Say:** "shadcn/ui is one candidate for the component layer. Compare against Radix primitives, Headless UI, Aria-Components, or framework-native components for this specific project's stack and complexity. Use it only if it fits."
-
-The 10 decision questions:
-1. What is the project type?
-2. What is the actual problem?
-3. What scale is expected?
-4. What constraints exist?
-5. What stack already exists?
-6. What user experience is required?
-7. What failure risks exist?
-8. What tools are proven for this case?
-9. What tools are overkill?
-10. What tool gives the best output with the least complexity?
-
-Write a decision section before adopting (Problem / Options / Sources / Best option / Why it fits / Why others rejected / Risk / Cost / Test plan / Rollback plan).
-
-See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.
-
----
-
-## When NOT to use this skill (alpha.15)
-
-- The task at hand doesn't touch this skill's domain — defer to the right specialist skill
-- A faster / simpler skill covers the same need — pick the simpler one and document why
-- The skill's core invariants don't apply to the current project (e.g. regulated-mode rules on a prototype)
-- The command that would activate this skill is already running with another specialist that fits better
-
-If unsure, surface the trade-off in the command's output and let the user decide.
-
-## Quality gate (alpha.15)
-
-Before claiming this skill's work complete:
-
-- [ ] Artifacts produced match the skill's expected outputs
-- [ ] All discipline rules in this skill were respected (not just glanced at)
-- [ ] No banned weasel words in any completion claim — `should`, `probably`, `seems to`, `appears to`, `might`, `hopefully`, `in theory`
-- [ ] Any tool / library / framework added during this run has a decision section per `.bequite/principles/TOOL_NEUTRALITY.md`
-- [ ] Acceptance criteria for the invoking command's task are met (or honestly reported as PARTIAL / FAIL)
-- [ ] `.bequite/state/MISTAKE_MEMORY.md` updated when a project-specific lesson surfaced
-- [ ] `.bequite/logs/AGENT_LOG.md` entry appended for the run
-- [ ] Memory state files (LAST_RUN, WORKFLOW_GATES, CURRENT_PHASE) updated when gate state changed
-
-If any item fails, do not claim done — report PARTIAL with the specific gap.
+- `references/ai-tells.md`: the owner's tell list (web, slides, motion, copy, images), validated on three live sites.
+- `references/tell-sweep.js`: the read-only browser script.
+- `references/states-and-sourcing.md`: real states checklist, component sourcing order, per-feature checklist.

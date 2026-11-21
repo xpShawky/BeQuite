@@ -2,7 +2,7 @@
 
 **When confused, conflicted, or a capability is missing: come here first.** A compact index of one-liners and pointers; details live in the files named. Model doc: `.claude/bequite/docs/architecture/BEQUITE_ORCHESTRATION_MODEL.md`. Used by: bequite, suggest, discover, plan, auto, implement, review, verify, skill-audit (and both routers on a conflict).
 
-## 1-5. Commands (51 in three packs; full map: `.bequite/commands/COMMAND_ID_MAP.md`)
+## 1-5. Commands (55 in three packs; full map: `.bequite/commands/COMMAND_ID_MAP.md`)
 
 - **W0 setup:** bequite (update check + menu) · init · discover · doctor · mode · new · existing · work
 - **W1 framing:** clarify · research · scope (+from-interview, intake) · plan (+from-issues, delegate) · spec · multi-plan
@@ -15,7 +15,7 @@
 - **C core capabilities:** writing-dna · knowledge (build, ask, rag-plan, export, recording, reference, integrate, automation) · team (command center) · operator (Telegram)
 - **C studio:** presentation · motion · content (radar, study, script, produce, package, queue, from-work, brand-kit, community, course) · watch · dna
 - **C business:** offer (offer, proposal, local-business, pain-radar, business-system) · make-money · job-finder · start · productize
-- **M maintenance:** update (also automatic at every command) · skill-audit · hooks
+- **M maintenance and harness:** update (also automatic at every command) · skill-audit · hooks · budget · taste · forge · eval
 
 **Near-miss boundaries (conflict killers):** audit = whole project vs review = a diff · spec = one page vs scope = boundaries vs plan = blueprint · bequite = menu vs suggest = advisor · offer pain-radar = find problems vs make-money = find earning routes · offer proposal = one client vs offer = a standing package · content = one piece vs team = a standing team · watch = one video vs dna = a niche's format · verify = does it work vs release readiness = should it ship.
 

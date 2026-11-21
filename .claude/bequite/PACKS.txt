@@ -1,0 +1,26 @@
+# Pack membership. Everything not listed here is core (always installed).
+# The installers read this file: --packs core,studio,business (bash) or $env:BEQUITE_PACKS (PowerShell).
+# The choice is saved in .bequite/state/PACKS.md, so automatic updates keep the same packs.
+# Format: <pack> <path relative to .claude/>. Kept in step with COMMAND_ID_MAP.md and SKILL_REGISTRY.md by bq_check.py.
+studio commands/bq-presentation.md
+studio commands/bq-motion.md
+studio commands/bq-content.md
+studio commands/bq-watch.md
+studio commands/bq-dna.md
+studio skills/bequite-motion-director
+studio skills/bequite-kinetic-type
+studio skills/bequite-sound-voice
+studio skills/bequite-render-pipeline
+studio skills/bequite-presentation-builder
+studio skills/bequite-video-intel
+studio skills/bequite-trend-radar
+studio skills/bequite-format-dna
+studio skills/bequite-hooks-and-copy
+studio skills/bequite-publish-prep
+business commands/bq-offer.md
+business commands/bq-make-money.md
+business commands/bq-job-finder.md
+business commands/bq-start.md
+business commands/bq-productize.md
+business skills/bequite-make-money
+business skills/bequite-job-finder

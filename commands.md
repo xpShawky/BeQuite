@@ -1,6 +1,6 @@
 # BeQuite commands (v1)
 
-51 commands in three packs (core, studio, business). Each command is a markdown playbook in `.claude/commands/`; run it in Claude Code as `/<name>`. Catalog IDs: `.bequite/commands/COMMAND_ID_MAP.md` (in the BeQuite repo: `templates/bequite/commands/COMMAND_ID_MAP.md`). Detailed walkthroughs: `.claude/bequite/docs/runbooks/USING_BEQUITE_COMMANDS.md`.
+55 commands in three packs (core, studio, business). Each command is a markdown playbook in `.claude/commands/`; run it in Claude Code as `/<name>`. Catalog IDs: `.bequite/commands/COMMAND_ID_MAP.md` (in the BeQuite repo: `templates/bequite/commands/COMMAND_ID_MAP.md`). Detailed walkthroughs: `.claude/bequite/docs/runbooks/USING_BEQUITE_COMMANDS.md`.
 
 ## How every command behaves
 
@@ -148,3 +148,7 @@ Folded in v1: the ten small capability commands are now modes of `/bq-knowledge`
 | M1 | `/bq-update` (`check`, `source=local path=…`) | update BeQuite by hand; every command already checks automatically; never touches project memory |
 | M2 | `/bq-skill-audit` | skill-pack quality audit |
 | M3 | `/bq-hooks status\|enable\|disable\|test` | opt-in safety hooks (off by default) |
+| M4 | `/bq-budget set\|status\|log\|report` | a credit budget per work; stops at the ceiling |
+| M5 | `/bq-taste review\|add\|list` | your corrections become DNA rules (saved only on your yes) |
+| M6 | `/bq-forge propose\|use\|status\|promote` | a proven procedure becomes a skill after three evidenced uses |
+| M7 | `/bq-eval run\|add\|list\|compare` | scenarios per skill; a regression blocks the release |

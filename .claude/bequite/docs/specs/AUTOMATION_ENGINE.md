@@ -1,6 +1,6 @@
 # Automation Engine — `/bq-knowledge automation` (C12) — alpha.24
 
-Turn a workflow or bot idea into a **tool-neutral automation blueprint**. Command: `bq-automation.md`. Skill: `bequite-automation` (distilled from the retired v2 automation-architect + ai-automation references; see LEGACY_SKILL_FOLDER_AUDIT). **Installs nothing — designs only.**
+Turn a workflow or bot idea into a **tool-neutral automation blueprint**. Command: `/bq-knowledge automation` (in `bq-knowledge.md`). Skill: `bequite-automation` (distilled from the retired v2 automation-architect + ai-automation references; see LEGACY_SKILL_FOLDER_AUDIT). **Installs nothing — designs only.**
 
 ## Why a command (not an argument)
 

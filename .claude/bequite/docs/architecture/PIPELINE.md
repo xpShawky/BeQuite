@@ -33,7 +33,7 @@ A later stage never starts while an earlier stage's gate is open; the command na
 
 ## Subagents (when they pay)
 
-Allowed when the reading is wider than five sources, when a check must be independent of the builder, or when the output would flood the main context; otherwise the stage runs inline. Shipped definitions in `.claude/agents/`: `bq-researcher` (stage 3), `bq-red-team` (stage 8), `bq-verifier` (stage 9), `bq-scout` (fast sweeps for stages 2 and 3 on the fast model). Never more readers than distinct questions.
+Allowed when the reading is wider than five sources, when a check must be independent of the builder, or when the output would flood the main context; otherwise the stage runs inline. Shipped definitions (`agents/` in the plugin; `.claude/agents/` after a script install): `bq-researcher` (stage 3), `bq-red-team` (stage 8), `bq-verifier` (stage 9), `bq-scout` (fast sweeps for stages 2 and 3 on the fast model). Never more readers than distinct questions.
 
 ## Modes
 

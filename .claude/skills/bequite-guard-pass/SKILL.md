@@ -49,8 +49,8 @@ Not for: style while writing (it is reactive); unchanged code; replacing `/bq-re
 ## Worked example (docs guard, run on this repo, 2026-11-21)
 
 ```
-$ ls .claude/commands/*.md | wc -l        -> 55
-$ ls -d .claude/skills/*/ | wc -l          -> 35
+$ ls .claude/commands/*.md | wc -l        -> 55   (v1: core 45, studio 5, business 5)
+$ ls -d .claude/skills/*/ | wc -l          -> 38
 $ grep -n -E "[0-9]+ (commands|skills)" CLAUDE.md README.md commands.md   # every count must match `python scripts/bq_check.py counts_match`
 CLAUDE.md:13, CLAUDE.md:14, README.md:9, README.md:10, commands.md:3
 ```

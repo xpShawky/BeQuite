@@ -152,6 +152,10 @@ Command map (55 active commands — catalog IDs per .bequite/commands/COMMAND_ID
     M1 /bq-update       update BeQuite itself (safe + non-destructive)
     M2 /bq-skill-audit  structural quality loop over all skills (+ command-router drift checks)
     M3 /bq-hooks        manage opt-in safety hooks (status/enable/disable/test) - OFF by default
+    M4 /bq-budget       a credit budget per work; stops at the ceiling
+    M5 /bq-taste        your corrections become DNA rules (saved only on your yes)
+    M6 /bq-forge        a proven procedure becomes a skill after three evidenced uses
+    M7 /bq-eval         scenarios per skill; a regression blocks the release
 
 Automatic skill routing (alpha.20): you describe the goal — BeQuite selects the
 right expert skills itself. You never need to name skills manually.

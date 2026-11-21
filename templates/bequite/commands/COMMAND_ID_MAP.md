@@ -1,7 +1,7 @@
 # BeQuite Command ID Map (canonical, v1)
 
 Display-only catalog IDs (files are never renamed). Strategy: `.claude/bequite/docs/architecture/COMMAND_NUMBERING_AND_ORDERING_STRATEGY.md`.
-**51 commands** in three packs: core 41 · studio 5 · business 5. Shapes: WF workflow · CAP capability · NAV navigation · ORC orchestrator · MNT maintenance; ARG marks argument modes. Folded commands live on as modes (rows with a `·` after the parent).
+**55 commands** in three packs: core 45 · studio 5 · business 5. Shapes: WF workflow · CAP capability · NAV navigation · ORC orchestrator · MNT maintenance; ARG marks argument modes. Folded commands live on as modes (rows with a `·` after the parent).
 
 | ID | Command | Pack | Category | Phase | Purpose | Usually next | Auto-run? | Shape |
 |---|---|---|---|---|---|---|---|---|
@@ -50,6 +50,10 @@ Display-only catalog IDs (files are never renamed). Strategy: `.claude/bequite/d
 | M1 | `/bq-update` | core | maintenance | any | update BeQuite (also automatic at every command) | W0.4 doctor | yes (backup first) | MNT |
 | M2 | `/bq-skill-audit` | core | maintenance | any | skill-pack quality audit | fixes on approval | yes (report only) | MNT |
 | M3 | `/bq-hooks` | core | maintenance | any | manage the safety hooks | reload + test | partial | MNT |
+| M4 | `/bq-budget` | core | harness | any | a credit budget per work: ceiling, model role per stage, stop at 100% | per stage | yes (raising the ceiling needs a yes) | MNT (v1) · modes `set/status/log/report` |
+| M5 | `/bq-taste` | core | harness | any | the user's corrections into DNA rules, saved only on a yes | review | partial | MNT (v1) · modes `review/add/list` |
+| M6 | `/bq-forge` | core | harness | any | a closing work's proven procedure into a skill candidate; promoted after 3 evidenced uses | skill-audit | partial | MNT (v1) · modes `propose/use/status/promote` |
+| M7 | `/bq-eval` | core | harness | any | scenarios per skill (scripted + fast model); a regression blocks release | release | yes | MNT (v1) · modes `run/add/list/compare` |
 | C1 | `/bq-presentation` | studio | capability | any | PPTX / HTML decks from references | W4.1 if built | yes (variant gate) | CAP |
 | C18 | `/bq-motion` | studio | capability | any | direct a film: references, script, style, render plan, build, sound, QC, recuts | C19 package | partial (plan, credits, final render, posting) | CAP |
 | C19 | `/bq-content` | studio | capability | any | the content studio: radar, study, script, produce, package, queue, from-work | approval per post | partial (owner approves each post) | CAP (v1) |

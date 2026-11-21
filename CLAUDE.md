@@ -4,13 +4,13 @@ Operating instructions for working **on the BeQuite repository** (the source of 
 
 ## What this repo is
 
-BeQuite is a lightweight workflow pack for Claude Code (and other agents): slash commands, skills, a `.bequite/` memory scaffold, gates and evidence rules, all markdown. Current version: **v4.0.0 "Titan"**. Direction: lightweight only. No Studio, no heavy CLI/TUI, no dashboard, no Docker, no database (ADR-001, ADR-004).
+BeQuite is a lightweight workflow pack for Claude Code (and other agents): slash commands, skills, a `.bequite/` memory scaffold, gates and evidence rules, all markdown. Current version: **v1.0.0** (the relaunch; the old line ended at v4.0.0 "Titan"). Direction: lightweight only. No Studio, no heavy CLI/TUI, no dashboard, no Docker, no database (ADR-001, ADR-004).
 
 ## Layout
 
 | Path | What it is | Ships to user projects |
 |---|---|---|
-| `.claude/commands/` | 51 commands in three packs, core, studio and business (catalog IDs in `templates/bequite/commands/COMMAND_ID_MAP.md`) | yes |
+| `.claude/commands/` | 55 commands in three packs, core, studio and business (catalog IDs in `templates/bequite/commands/COMMAND_ID_MAP.md`) | yes |
 | `.claude/skills/bequite-*/` | 38 skills in the same packs (registry: `templates/bequite/skills/SKILL_REGISTRY.md`) | yes |
 | `.claude/bequite/docs/` | reference docs commands cite: `architecture/`, `specs/`, `decisions/` (ADRs), `runbooks/` | yes |
 | `.claude/hooks/`, `.claude/settings*.json.example` | opt-in safety hooks (never active by default) | yes |

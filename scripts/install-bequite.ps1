@@ -7,6 +7,8 @@
 # Options through iex: set $env:BEQUITE_FROM_LOCAL / $env:BEQUITE_FORCE before the irm line.
 #
 # -Force re-installs commands and skills over an existing install.
+# -Packs core,studio,business (or $env:BEQUITE_PACKS) picks the packs; core is always installed; default: all three,
+#   or the choice saved in .bequite\state\PACKS.md by an earlier install, so updates keep the same packs.
 # Project memory in .bequite\ is NEVER overwritten (missing files are added).
 #
 # Rules for this file (checked by scripts/bq_check.py): pure ASCII, no BOM, no param()/CmdletBinding
@@ -14,16 +16,18 @@
 
 $BqFromLocal = if ($env:BEQUITE_FROM_LOCAL) { $env:BEQUITE_FROM_LOCAL } else { "" }
 $BqForce = [bool]($env:BEQUITE_FORCE)
+$BqPacks = if ($env:BEQUITE_PACKS) { $env:BEQUITE_PACKS } else { "" }
 for ($i = 0; $i -lt $args.Count; $i++) {
   switch -regex ("$($args[$i])") {
     '^-+[Ff]rom[Ll]ocal$' { if ($i + 1 -lt $args.Count) { $i++; $BqFromLocal = "$($args[$i])" } }
     '^-+[Ff]orce$'        { $BqForce = $true }
+    '^-+[Pp]acks$'        { if ($i + 1 -lt $args.Count) { $i++; $BqPacks = "$($args[$i])" } }
   }
 }
 
-function Install-BeQuite([string]$FromLocal, [bool]$Force) {
+function Install-BeQuite([string]$FromLocal, [bool]$Force, [string]$Packs) {
   $ErrorActionPreference = "Stop"
-  $Version = "v4.0.0"
+  $Version = "v1.0.0"
   $RepoUrl = "https://github.com/xpShawky/BeQuite.git"
   $Target = (Get-Location).Path
   $Utf8NoBom = New-Object System.Text.UTF8Encoding $false
@@ -63,13 +67,33 @@ function Install-BeQuite([string]$FromLocal, [bool]$Force) {
   $VerFile = Join-Path $Source "VERSION"
   if (Test-Path $VerFile) { $Version = "v" + [System.IO.File]::ReadAllText($VerFile).Trim().TrimStart('v') }
   $Stamp = Get-Date -Format "yyyyMMdd-HHmmss"
+  # packs: the argument, else the choice saved by an earlier install, else all three; core is always in
+  if ($Packs -eq "" -and (Test-Path ".\.bequite\state\PACKS.md")) {
+    $pm = [regex]::Match([System.IO.File]::ReadAllText((Join-Path $Target ".bequite\state\PACKS.md")), '(?m)^\*\*Packs:\*\* *([^\r\n]*)')
+    if ($pm.Success) { $Packs = $pm.Groups[1].Value }
+  }
+  if ($Packs -eq "") { $Packs = "core,studio,business" }
+  $packList = @("core") + @($Packs.Split(",") | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne "" -and $_ -ne "core" })
+  $Packs = ($packList | Select-Object -Unique) -join ","
+  $excluded = @{}
+  $packsFile = Join-Path $Source ".claude\bequite\PACKS.txt"
+  if (Test-Path $packsFile) {
+    foreach ($line in [System.IO.File]::ReadAllLines($packsFile)) {
+      $parts = $line.Trim() -split '\s+', 2
+      if ($parts.Count -lt 2 -or $parts[0].StartsWith("#")) { continue }
+      if (-not ($packList -contains $parts[0])) { $excluded[$parts[1]] = $true }
+    }
+  }
 
   try {
     # --- 3. Commands, skills, hooks ----------------------------------------
     Section "Installing commands and skills"
     New-Item -ItemType Directory -Force ".\.claude\commands", ".\.claude\skills" | Out-Null
-    Copy-Item -Path (Join-Path $Source ".claude\commands\*.md") -Destination ".\.claude\commands\" -Force
+    Get-ChildItem (Join-Path $Source ".claude\commands") -Filter "*.md" | ForEach-Object {
+      if (-not $excluded.ContainsKey("commands/" + $_.Name)) { Copy-Item $_.FullName ".\.claude\commands\" -Force }
+    }
     Get-ChildItem (Join-Path $Source ".claude\skills") -Directory -Filter "bequite-*" | ForEach-Object {
+      if ($excluded.ContainsKey("skills/" + $_.Name)) { return }
       $dst = Join-Path ".\.claude\skills" $_.Name
       if (Test-Path $dst) { Remove-Item $dst -Recurse -Force }
       Copy-Item -Path $_.FullName -Destination $dst -Recurse -Force
@@ -92,9 +116,16 @@ function Install-BeQuite([string]$FromLocal, [bool]$Force) {
         }
       }
     }
+    Get-ChildItem ".\.claude\skills" -Recurse -Directory -Filter "__pycache__" -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+    $agentsSrc = Join-Path $Source "agents"
+    if (Test-Path $agentsSrc) {
+      New-Item -ItemType Directory -Force ".\.claude\agents" | Out-Null
+      Copy-Item -Path (Join-Path $agentsSrc "bq-*.md") -Destination ".\.claude\agents\" -Force
+    }
     $nCmd = (Get-ChildItem ".\.claude\commands" -Filter *.md).Count
     $nSkill = (Get-ChildItem ".\.claude\skills" -Directory -Filter "bequite-*").Count
-    Write-Host "  $nCmd commands, $nSkill skills, reference docs in .claude\bequite\docs" -ForegroundColor Green
+    $nAgent = @(Get-ChildItem ".\.claude\agents" -Filter "bq-*.md" -ErrorAction SilentlyContinue).Count
+    Write-Host "  $nCmd commands, $nSkill skills, $nAgent subagents (packs: $Packs)" -ForegroundColor Green
     if ($moved -gt 0) { Write-Host "  $moved removed command or skill file(s) moved to .bequite\backups\$Stamp-removed\" }
 
     $hooks = Join-Path $Source ".claude\hooks"
@@ -126,6 +157,10 @@ function Install-BeQuite([string]$FromLocal, [bool]$Force) {
     }
     Write-Host "  $added files added (existing memory left untouched)"
 
+    # the pack choice is remembered so updates install the same packs
+    New-Item -ItemType Directory -Force ".\.bequite\state" | Out-Null
+    $packsMd = "# BeQuite packs`n`n**Packs:** $Packs`n`nChange with: set `$env:BEQUITE_PACKS and `$env:BEQUITE_FORCE=1 before the installer line (or --packs with install-bequite.sh).`n"
+    [System.IO.File]::WriteAllText((Join-Path $Target ".bequite\state\PACKS.md"), $packsMd, $Utf8NoBom)
     # version metadata is not memory: it always says what is installed now
     $vf = Join-Path $Target ".bequite\state\BEQUITE_VERSION.md"
     if (Test-Path $vf) {
@@ -191,4 +226,4 @@ function Install-BeQuite([string]$FromLocal, [bool]$Force) {
   }
 }
 
-Install-BeQuite -FromLocal $BqFromLocal -Force $BqForce
+Install-BeQuite -FromLocal $BqFromLocal -Force $BqForce -Packs $BqPacks

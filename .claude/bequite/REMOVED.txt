@@ -24,3 +24,4 @@ commands/bq-proposal.md
 commands/bq-recording.md
 commands/bq-reference.md
 commands/bq-course.md
+hooks/stop-banned-weasel-words.ps1

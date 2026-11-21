@@ -1,28 +1,32 @@
 #!/usr/bin/env bash
-# BeQuite hook — Stop — block a completion claim that uses banned weasel words instead of evidence.
-# OPT-IN and the MOST EXPERIMENTAL of the three (reads the transcript; fails soft on any uncertainty).
-# Review before enabling. See .claude/bequite/docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md
-#
-# Protocol (verified vs docs): Stop hook gets {stop_hook_active, transcript_path, ...}.
-#   exit 2 = block the turn from ending (forces Claude to keep working); stderr -> Claude.
-#   MUST exit 0 when stop_hook_active is true, or you get an infinite loop.
-#   Claude Code force-overrides after 8 consecutive blocks regardless.
-set -uo pipefail
-INPUT="$(cat)"
+# BeQuite hook - Stop - refuse a completion claim that has no evidence, or that uses a banned weasel word.
+# Reads the last assistant message from the hook input (no jq, no transcript parsing needed).
+# exit 2 blocks the stop; stderr tells Claude what to fix. Fails soft: any doubt -> exit 0.
+# Loop guard: exits 0 when stop_hook_active is true (Claude Code also overrides after 8 blocks in a row).
+# Plugin installs run it from ${CLAUDE_PLUGIN_ROOT}; script installs enable it through /bq-hooks.
+set -u
+INPUT="$(cat 2>/dev/null || true)"
+[ -z "$INPUT" ] && exit 0
+printf '%s' "$INPUT" | grep -Eq '"stop_hook_active"[[:space:]]*:[[:space:]]*true' && exit 0
+PROJECT="${CLAUDE_PROJECT_DIR:-$(pwd)}"
+[ -d "$PROJECT/.bequite" ] || exit 0
 
-if ! command -v jq >/dev/null 2>&1; then exit 0; fi   # fail soft without jq
-ACTIVE="$(printf '%s' "$INPUT" | jq -r '.stop_hook_active // false' 2>/dev/null || echo false)"
-[ "$ACTIVE" = "true" ] && exit 0                       # already blocked this cycle -> allow (no infinite loop)
-TRANSCRIPT="$(printf '%s' "$INPUT" | jq -r '.transcript_path // empty' 2>/dev/null || true)"
-[ -z "$TRANSCRIPT" ] || [ ! -f "$TRANSCRIPT" ] && exit 0   # can't read transcript -> fail soft
+# the last assistant message as a JSON string (escapes kept; enough for word matching)
+MSG="$(printf '%s' "$INPUT" | grep -oE '"last_assistant_message"[[:space:]]*:[[:space:]]*"([^"\\]|\\.)*"' | head -n 1)"
+[ -z "$MSG" ] && exit 0
 
-# Last assistant text turn (transcript is JSONL).
-LAST="$(jq -rs 'map(select(.type=="assistant")) | last | (.message.content // [])[] | select(.type=="text") | .text' "$TRANSCRIPT" 2>/dev/null || true)"
-[ -z "$LAST" ] && exit 0
+# only completion claims are checked
+printf '%s' "$MSG" | grep -Eiq '(\b(done|completed?|finished|fixed|implemented|shipped|all (tests|checks) pass(ed)?|ready to (ship|merge|release))\b|خلصت|تم الانتهاء|اتعمل|جاهز)' || exit 0
 
-if printf '%s' "$LAST" | grep -Eiq '\b(should (work|be fixed|pass|be fine)|probably (works|correct|fixed|fine)|seems to (work|be fixed)|appears to (work|be fixed)|i think it works|i believe it works|might (work|fix(es)? (it|the))|hopefully (fixed|works|that)|in (theory|principle))\b'; then
-  echo "BeQuite Stop hook: this response makes a completion claim with a banned weasel word." >&2
-  echo "Replace it with concrete evidence (the command run + exit code + output), or state an explicit 'UNVERIFIED:' / 'I don't know' — then finish." >&2
+if printf '%s' "$MSG" | grep -Eiq '\b(should (work|be fixed|pass|be fine)|probably (works|correct|fixed|fine)|seems to (work|be fixed)|appears to (work|be fixed)|i think it works|i believe it works|might (work|fix)|hopefully|in (theory|principle))\b'; then
+  echo "BeQuite Stop hook: this reply claims the work is done but uses a banned weasel word." >&2
+  echo "Replace it with the evidence (the command, its exit code and the decisive output) or write UNVERIFIED: with the reason, then finish." >&2
+  exit 2
+fi
+
+if ! printf '%s' "$MSG" | grep -Eiq '(exit( code)? ?[0-9]|exit [0-9]|UNVERIFIED|evidence\.md|[0-9]+ ?/ ?[0-9]+ (checks|tests)|checks passed|tests? passed|PASS\b|FAIL\b|bq_check|\bok\b.*[0-9])'; then
+  echo "BeQuite Stop hook: this reply claims the work is done without evidence." >&2
+  echo "Add the evidence (command + exit code + decisive output, also written to work/<id>/evidence.md) or say UNVERIFIED: and why, then finish." >&2
   exit 2
 fi
 exit 0

@@ -1,0 +1,27 @@
+{
+  "description": "BeQuite: session context at start, evidence before a done claim, taste corrections into the inbox.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/session-start.sh\"", "timeout": 20 }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/stop-banned-weasel-words.sh\"", "timeout": 10 }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/userprompt-taste-inbox.sh\"", "timeout": 10 }
+        ]
+      }
+    ]
+  }
+}

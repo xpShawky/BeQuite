@@ -2,11 +2,11 @@
 
 # BeQuite
 
-**A disciplined AI-engineering and creative workflow for coding agents: slash commands, expert skills, persistent memory, and quality gates, all in plain markdown.**
+**A workflow pack for Claude Code that makes the agent research and plan before it builds, and prove its work before it says done.**
 
-**Latest:** `v4.0.0` "Titan" · MIT · by [@xpShawky](https://github.com/xpShawky)
+**Version:** `1.0.0` · MIT · by [@xpShawky](https://github.com/xpShawky)
 
-<a href="commands.md"><img alt="51 commands" src="https://img.shields.io/badge/slash_commands-51-7c3aed?style=flat-square"></a>
+<a href="commands.md"><img alt="55 commands" src="https://img.shields.io/badge/slash_commands-55-7c3aed?style=flat-square"></a>
 <a href="#skills"><img alt="38 skills" src="https://img.shields.io/badge/skills-38-10b981?style=flat-square"></a>
 <img alt="zero runtime deps" src="https://img.shields.io/badge/runtime_deps-0-0ea5e9?style=flat-square">
 <img alt="markdown only" src="https://img.shields.io/badge/install-markdown_only-f59e0b?style=flat-square">
@@ -15,34 +15,40 @@
 
 ---
 
-## What is BeQuite?
+## What it is
 
-BeQuite turns a coding agent into a disciplined senior team. You describe a goal; BeQuite supplies:
+BeQuite is a set of slash commands, skills, subagents and hooks for Claude Code, written in plain markdown with a few small scripts. It gives every piece of work the same path: find out what is true, choose between real options, get a yes on the plan, build it in small steps, have something independent check it, and write down what happened. A project keeps its memory in a `.bequite/` folder, so the next session (or the next model) starts where the last one stopped.
 
-- **the workflow:** research → scope → plan → build → test → verify → release;
-- **the expertise:** 38 specialist skills the agent selects and announces before it acts;
-- **the memory:** a `.bequite/` folder with **one folder per piece of work**, so nothing is lost between sessions;
-- **the brakes:** gates, hard human approval points, plan-first approval, and evidence rules that ban "should probably work" as a completion claim.
+It also covers work that is not code. A film studio directs motion pieces from studied references. A content studio goes from what is moving in a niche to a packaged post that waits for your yes. An agent team works a ticket board on a schedule, inside a token budget, with an editor that can reject a draft.
 
-It installs into any project as markdown. No server, no database, no daemon, no dependencies.
+## The workflow
 
-**Who it's for:** developers and indie builders using Claude Code (or other coding agents) who want consistent, verifiable output, and creators who want the same discipline for films, courses, proposals and client work.
+```
+ 0 up to date   1 orient   2 references   3 research   4 options board
+ (update check) (memory)   (creative work) (dated sources) (built from what you have)
+        |                                                        |
+        v                                                        v
+ 10 write back  <-  9 verify  <-  8 guard  <-  7 build  <-  6 approval  <-  5 plan
+ (log, lessons)    (evidence)    (second pass) (one task at a time)  (your yes)
+```
 
-## What's new in v4 "Titan"
+Every command is an entry point into this one pipeline ([PIPELINE.md](.claude/bequite/docs/architecture/PIPELINE.md)). `/bq-auto` runs all of it for one intent; `/bq-feature`, `/bq-fix`, `/bq-motion` and `/bq-content` preset the stages; the phase commands (`/bq-plan`, `/bq-verify` and the rest) run one stage by hand. A missing gate stops the command and names the step that has to come first. Some steps always wait for you: deleting things, touching production or a shared database, secrets, paid services, a release, and for creative work the script, the style and the render plan.
 
-- **Work folders.** Every feature, fix, film or course gets `.bequite/work/NNNN-slug/` with its own brief, research, spec, plan, tasks, gates, evidence and log, Spec Kit / OpenSpec style. Gates are per work; finished work converges, merges into living specs and is archived. New `/bq-work`.
-- **Motion studio.** `/bq-motion` directs a film like a motion director: references → script and beats → style lock → tool and render plan → animatic → build rounds → voice and sound → render and QC → platform recuts, launch posts and a making-of guide. It is plan-first and tool-neutral (After Effects, Remotion/HyperFrames, Blender, DaVinci Resolve, AI video), and it stops before paid credits, the final render and any posting.
-- **Web motion that stays fast on phones.** Scroll stories, frame sequences, depth and 3D with a mobile performance budget, full / lite / static device tiers, and a `PERF_BUDGET_PASS` gate.
-- **Rules that are checked, not just written.** Every action command carries the same contract block (skills first, resolve the work, gates, plan first, evidence, write back), and `scripts/bq_check.py` runs in CI.
-- **Clean installs.** Your project gets a clean memory scaffold (earlier versions leaked BeQuite's own logs into it), plus BeQuite's reference docs, so every pointer in a command resolves.
-- **Leaner.** v2 leftovers removed (kept on the `archive/v2` branch).
+## Five-minute start
 
-Full notes: [CHANGELOG.md](CHANGELOG.md).
+As a plugin:
 
-## Quick start
+```
+/plugin marketplace add xpShawky/BeQuite
+/plugin install bequite@bequite
+```
+
+Plugin commands carry the plugin's name: `/bequite:bq-auto`, `/bequite:bq-plan`. The hooks are on from the start.
+
+With the script installer, inside the project you want to work on:
 
 ```powershell
-# Windows (run inside the project you want to enhance)
+# Windows
 irm https://raw.githubusercontent.com/xpShawky/BeQuite/main/scripts/install-bequite.ps1 | iex
 ```
 
@@ -54,128 +60,69 @@ curl -fsSL https://raw.githubusercontent.com/xpShawky/BeQuite/main/scripts/insta
 Then, in Claude Code:
 
 ```
-/bequite                                    menu: project state + next recommended commands
-/bq-suggest "what I want to do"             the navigation assistant picks your route
-/bq-auto new "Build a booking dashboard for clinics"
-/bq-motion "45s launch film for my app, Apple-style, 16:9 + 9:16"
+/bequite                                  the menu: where the project stands and the next three commands
+/bq-doctor                                checks the environment and records what this machine can do
+/bq-auto feature "Add a booking page"     one feature through the whole pipeline
+/bq-suggest "what I want to do"           not sure where to start
 ```
 
-The installer copies `.claude/commands/`, `.claude/skills/`, BeQuite's reference docs (`.claude/bequite/`), the opt-in safety hooks, and a clean `.bequite/` scaffold. Re-running with `--force` (`$env:BEQUITE_FORCE=1` on Windows) refreshes commands and skills; **your project memory is never overwritten.**
+The installer copies the commands, skills, subagents, docs and hooks into `.claude/`, adds a `.bequite/` scaffold and a section in `CLAUDE.md`. Your project memory is never overwritten, not by a re-install and not by an update.
 
-**Staying up to date.** Every BeQuite command starts with a short update check (`.claude/bequite/bin/bq-update.sh`, at most once an hour). When the `VERSION` published on GitHub differs from yours, it backs up the pack files, updates them, and the command carries on; your `.bequite/` memory is never touched, and offline it simply continues. To be asked instead, set `**Auto update:** off` in `.bequite/state/UPDATE_SOURCE.md` and run `/bq-update` when you want.
+**Coming from v4?** Run the installer once more with `--force` (`$env:BEQUITE_FORCE=1` on Windows). v4 has no update check, so it cannot move itself to v1; from v1 on, updates are automatic.
 
-## How it works
+## Packs
 
-```
-.bequite/
-  ACTIVE.md          which piece of work is active
-  work/0007-launch-film/
-    brief · research · spec · plan · tasks · gates · evidence · review · verify · log
-    assets/ outputs/
-  specs/             the living truth that finished work merges into
-  archive/           closed work, by date
-  state/ logs/ ...   project-wide memory: mode, gates, decisions, mistake memory, design DNA
-```
+| Pack | Commands | Skills | For |
+|---|---|---|---|
+| **core** | 45 | 26 | the engineering pipeline, memory, research, review and verification, the agent team, the harness commands |
+| **studio** | 5 | 10 | films (`/bq-motion`), decks (`/bq-presentation`), content (`/bq-content`, `/bq-watch`, `/bq-dna`) |
+| **business** | 5 | 2 | offers and proposals (`/bq-offer`), earning routes, jobs, turning work into a product |
 
-Every command follows one **contract**: announce the skills it will use → resolve the active work → check gates → plan first for non-trivial work → write evidence (command + exit code + output) → write back to the work log and project memory → end with the next recommended commands. Contract: [COMMAND_EXECUTION_CONTRACT.md](.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md) · work folders: [WORK_FOLDERS.md](.claude/bequite/docs/architecture/WORK_FOLDERS.md).
+All three install by default. To install fewer: `install-bequite.sh --packs core,studio`, or `$env:BEQUITE_PACKS="core"` before the PowerShell line. Core is always included and the choice is remembered for updates. What each pack holds: [core](.claude/bequite/docs/packs/core.md), [studio](.claude/bequite/docs/packs/studio.md), [business](.claude/bequite/docs/packs/business.md).
 
-Two routers, two questions:
+## What keeps it honest
 
-- The **Skill Router** answers *"which expert procedures should load?"* You describe the goal; BeQuite selects from 38 skills and says what it picked and why.
-- The **Command Router** answers *"what should happen next?"* Every non-trivial command ends with the required next step, a short recommended set, and "do not run yet" warnings with the blocking gate named.
+- **Evidence before done.** A claim of done needs the command, its exit code and the output, or the word `UNVERIFIED:` with a reason. The Stop hook refuses a "done" that has neither, and one that leans on "should work" or "probably fixed".
+- **Independent checks.** `bq-verifier` re-runs the evidence without having built the work; `bq-red-team` attacks risky plans and diffs. On this repository, the verifier found five stale pointers that the self-check had missed; both the pointers and the check were fixed.
+- **Memory at every session start.** The SessionStart hook hands the agent the active work, its open gates, the last run, the five newest lessons and your taste rules before the first message.
+- **A self-check in CI.** `python scripts/bq_check.py` checks installer safety, the plugin, the command contract, every path and command a file cites, counts, gates, packs and stale model names. Releases run it in strict mode.
 
-For risky domains (payments, inventory, bookings, auth, concurrency), a **System Design Risk Check** answers questions like "one item in stock, two buyers at once: what happens?" before any code is written. A **Guard Pass** hunts AI-specific failure modes (hallucinated APIs, hardcoded success, over-mocked tests, stale docs) before anything ships.
+## The human test
 
-## Operating modes
+Creative work in BeQuite starts from real references, not from a model's defaults: sites, films, posts and decks people made, measured before anything is drafted. Before delivery it is checked against lists of things that make work look machine-made (for pages and decks, among others: decorative gradients, "01 / 02 / 03" section labels, thin body text under all-bold headings, coloured left-border note boxes). Writing in someone's voice is learned from their real samples and checked with a blind pick. When you correct the agent ("no, not like that"), the correction goes to an inbox, and `/bq-taste` turns it into a rule you approve, with the example that caused it.
 
-Composable depth and cost flags for any command: `deep` (full research and red-team), `fast` (short discovery, still tests and verifies), `token-saver` (focused reads, reuse cached research), and `delegate` (a strong model plans and reviews, a cheaper model implements). Hard human gates apply in every mode.
+## Off-label uses
 
-## Command map
+People use the same pipeline for things that are not software:
 
-Every command has a stable catalog ID: workflow (`W`), navigation (`N`), orchestrator (`O`), capability (`C`), maintenance (`M`). Full map: [COMMAND_ID_MAP.md](templates/bequite/commands/COMMAND_ID_MAP.md) · reference: [commands.md](commands.md).
+- **A film without spending Claude credits.** A chat model (ChatGPT, Gemini or Claude) writes a kinetic-type film as JSON from six short files; the BQ Kinetic panel builds it in After Effects and makes a contact sheet the model reviews. In our test ChatGPT directed a 15-second intro in five rounds without a single edit to its JSON. See [examples/chat-directed-kinetic-film](examples/chat-directed-kinetic-film/).
+- **A content desk.** `/bq-content radar` finds what is moving in a niche, with links and numbers; `study` measures the top five videos' format; `script` writes in your voice; `package` checks every platform limit; nothing is posted without a yes per post.
+- **An agent team in a folder.** `/bq-team` runs six roles (chief, scout, analyst, writer, editor, producer) on heartbeats with a token cap per role. One post through the full team cost about 634,000 tokens in our first test, which is why heartbeats are off until you turn them on.
+- **Selling the work.** `/bq-offer` builds an honest offer, a proposal for one client or a minimum digital system for a local business; `/bq-productize` turns a finished project into a product from its own evidence.
 
-| Family | Commands |
+## Staying up to date
+
+Every command starts with a short update check (at most once an hour). When the version published on GitHub differs from yours, BeQuite backs up its own files, updates them and carries on with your command; offline it simply continues. Set `**Auto update:** off` in `.bequite/state/UPDATE_SOURCE.md` to be told instead, and run `/bq-update` when you want. Plugin installs update through `/plugin`.
+
+## Commands
+
+The full list with arguments is in [commands.md](commands.md); `/bq-help` prints it inside Claude Code. The most used:
+
+| Need | Command |
 |---|---|
-| **W0 Setup** | `/bequite` · `/bq-init` · `/bq-discover` · `/bq-doctor` · `/bq-mode` · `/bq-new` · `/bq-existing` · `/bq-work` |
-| **W1 Framing** | `/bq-clarify` · `/bq-research` · `/bq-scope` · `/bq-plan` · `/bq-spec` · `/bq-multi-plan` |
-| **W2 Build** | `/bq-assign` · `/bq-implement` · `/bq-feature` · `/bq-fix` · `/bq-uiux-variants` · `/bq-live-edit` |
-| **W3 Quality** | `/bq-test` · `/bq-audit` · `/bq-review` · `/bq-red-team` |
-| **W4 Release** | `/bq-verify` · `/bq-release` · `/bq-changelog` |
-| **W5 Memory** | `/bq-memory` · `/bq-recover` · `/bq-handoff` |
-| **N Navigation** | `/bq-help` · `/bq-explain` · `/bq-suggest` |
-| **O Orchestrator** | `/bq-auto` (18 intents, `phase=P0..P5`) |
-| **C Capabilities** | `/bq-presentation` · `/bq-writing-dna` · `/bq-knowledge reference` · `/bq-knowledge` · `/bq-content course` · `/bq-offer pain-radar` · `/bq-knowledge integrate` · `/bq-offer proposal` · `/bq-job-finder` · `/bq-make-money` · `/bq-offer` · `/bq-knowledge automation` · `/bq-offer local-business` · `/bq-content brand-kit` · `/bq-content community` · `/bq-knowledge recording` · `/bq-start` · `/bq-motion` |
-| **M Maintenance** | `/bq-update` · `/bq-skill-audit` · `/bq-hooks` |
-
-Many commands take argument workflows instead of new commands (`/bq-verify drift`, `/bq-release readiness`, `/bq-plan migration`, `/bq-handoff client`, `/bq-spec export=speckit`, ...). BeQuite grows arguments, not command count.
-
-## Motion studio
-
-`/bq-motion` directs a film; it does not "make an animation". The flow, with a ✋ wherever it waits for your yes:
-
-| Phase | Output | ✋ |
-|---|---|---|
-| M0 Brief · M1 References | goal, audience, platforms, budget; 2-3 reference options from your `motion-library/` ("we could do it like X or like Y, because…") | |
-| M2 Script + beats | script, story shape, beat sheet (≤ 3 s per beat), a type treatment per line | ✋ |
-| M3 Style lock | 2-3 styleframes of the same key frame → Motion DNA | ✋ |
-| M4 Tool + render plan | engine per shot with reasons, render plan, every paid credit priced | ✋ |
-| M5 Animatic · M6 Build rounds | timing with a free scratch voice; contact sheets and phone previews per round | ✋ picture lock |
-| M7 Voice + sound | voice auditions in the mix, music edited to picture, sparse SFX, −14 LUFS master | ✋ before paid credits |
-| M8 Render + QC · M9 Delivery | QC with commands; real recuts per platform (reframed, not letterboxed), captions, posts for Instagram / TikTok / Facebook / LinkedIn, comment-to-DM plan, making-of guide | ✋ final render · you post |
-
-`motion-library/` is your reference memory: drop films into `motion-library/inbox/`, run `/bq-motion study`, and each film gets a written breakdown (story, beats, techniques, when to use it). Films and frames stay local; only the breakdowns are tracked.
-
-## Capability commands
-
-Beyond software workflows, BeQuite ships engines for the work *around* building:
-
-- **`/bq-presentation`**: premium PPTX or HTML decks (design variants, strict source fidelity or creative mode, motion planning).
-- **`/bq-writing-dna`**: a reusable writing profile from your samples; content in *your* voice (no fabricated citations, no detector evasion).
-- **`/bq-knowledge reference`**: a screenshot, competitor URL or app flow → design extraction plus an original, clone-safe rebuild blueprint.
-- **`/bq-knowledge`**: a pile of docs → a searchable knowledge pack, FAQ, glossary, troubleshooting trees and a tool-neutral RAG blueprint.
-- **`/bq-content course`**: market-gap validation → learner persona → curriculum → lessons and quizzes → slides → launch plan; handles scanned/OCR PDFs; Arabic/MENA/RTL-aware.
-- **`/bq-offer pain-radar`**: public complaints in a niche → ranked MVP / service / course / automation opportunities (official APIs and public sources only).
-- **`/bq-knowledge integrate`**: API docs → integration blueprint; never invents endpoints (unknowns are marked `UNVERIFIED`).
-- **`/bq-offer proposal`**: a job post or RFP → an honest, tailored proposal with milestones, pricing options and scope boundaries.
-- **`/bq-offer`**: a skill, niche or pain → a sellable productized offer; `business-system` / `agency` modes build a whole service business. No invented demand, no income hype.
-- **`/bq-knowledge automation`**: a workflow or bot idea → a tool-neutral automation blueprint (official API first, idempotency, retries, secrets, bot safety). Installs nothing.
-- **`/bq-offer local-business`** (offline business → minimum digital system) · **`/bq-content brand-kit`** (non-generic identity) · **`/bq-content community`** (community plan) · **`/bq-knowledge recording`** (long video → structured knowledge) · **`/bq-start`** (choose how to start).
-- **`/bq-job-finder`** / **`/bq-make-money`**: verified work opportunities and legitimate earning tracks, safety-first.
-
-Honest status: the capability commands are complete playbooks but most have not yet run on a real project; the first live runs will tune them.
+| start here | `/bequite`, `/bq-suggest "<goal>"` |
+| one feature or fix | `/bq-feature "<title>"`, `/bq-fix "<symptom>"` |
+| run a whole intent | `/bq-auto <intent> "<task>"` |
+| check before shipping | `/bq-verify`, then `/bq-release` |
+| a film, a deck, a post | `/bq-motion`, `/bq-presentation`, `/bq-content` |
+| understand a video | `/bq-watch "<link>"` |
+| a standing team | `/bq-team init` |
+| watch the spend | `/bq-budget set 500k tokens` |
 
 ## Skills
 
-38 specialist skills encode senior-practitioner procedure: project architecture, verified research, product strategy, UX/UI and AI-slop detection, a frontend design-system master (Design DNA, section-by-section continuity, web motion with a performance budget), backend / database / security / DevOps review, testing discipline, scraping and automation, localization/RTL for Arabic/MENA, delegate planning, anti-hallucination, context engineering, the Guard Pass, and the motion team (director, kinetic type, sound and voice, render pipeline). Registry: [SKILL_REGISTRY.md](templates/bequite/skills/SKILL_REGISTRY.md).
+38 skills hold the procedures: architecture and research, backend, database, security, DevOps and release, testing and debugging, a frontend design system with its quality checks, localization for Arabic and right-to-left layouts, automation (official API first, Scrapling as the scraping default), delegation between models, the human-taste and writing-voice skills, the film team (director, kinetic type, sound and voice, render pipeline), the content skills, the agent team, and the business skills. All but six of them were rewritten for v1 and name their sources and the date they were last checked; six still have to be brought up to that rule (the four film skills, the skill auditor and the updater). Registry: [SKILL_REGISTRY.md](templates/bequite/skills/SKILL_REGISTRY.md).
 
-## Scenarios
+## Docs and contributing
 
-| You want to… | Run | You get |
-|---|---|---|
-| Start a new project | `/bq-auto new "<idea>"` | research, scope, plan (approved by you), built and verified project |
-| Audit an existing repo | `/bq-existing` → `/bq-discover` → `/bq-audit` | discovery report and full audit with evidence |
-| Fix a bug safely | `/bq-fix "<symptom>"` | reproduced root cause, smallest patch, regression test |
-| Build a feature | `/bq-feature "<title>"` | its own work folder: spec → plan → build → test → verify |
-| Make a launch film or reel | `/bq-motion "<idea>"` | reference options, script, styleframes, render plan, film, recuts, posts |
-| Explore UI directions | `/bq-uiux-variants 5 "<task>"` | 5 isolated design directions; you pick the winner |
-| Create a course | `/bq-content course "<idea>"` | validation → curriculum → lessons → slide briefs → launch plan |
-| Turn a job post into a proposal | `/bq-offer proposal "<post>"` | honest proposal, milestones, pricing options |
-| Prepare a release | `/bq-verify` → `/bq-release readiness` | verification evidence and a ship / no-ship scorecard |
-| Use BeQuite outside Claude Code | [outside-Claude-Code runbook](.claude/bequite/docs/runbooks/USING_BEQUITE_OUTSIDE_CLAUDE_CODE.md) | the same playbooks and memory with other agents |
-
-## Cross-agent compatibility
-
-BeQuite is Claude-Code-first, but most of it is agent-agnostic: every command is a readable markdown playbook and the memory contract is plain files. Per-agent setup (Antigravity, Gemini CLI, Cursor, Codex, Kimi, MiniMax, DeepSeek, Ollama and others; Windows / macOS / Linux): [INSTALL_FOR_OTHER_AGENTS.md](.claude/bequite/docs/runbooks/INSTALL_FOR_OTHER_AGENTS.md) · [agent matrix](.claude/bequite/docs/specs/AGENT_COMPATIBILITY_MATRIX.md). What doesn't port (slash invocation, skill auto-attach, the opt-in hooks) is documented honestly. Smaller and local models: [smaller-models runbook](.claude/bequite/docs/runbooks/USING_BEQUITE_WITH_SMALLER_MODELS.md).
-
-## Design philosophy
-
-**Lightweight on purpose:** no Studio app, no heavy CLI, no dashboard, no Docker, no database. **Tool-neutral:** named tools are candidates, never defaults; every significant pick runs through ten decision questions and gets a recorded reason. **Anti-bloat:** a new capability must justify its shape (command vs skill vs argument vs template) before it is built. **Honest by contract:** unverified means saying `UNVERIFIED`; opt-in hooks can machine-enforce the safety subset (destructive-op blocking, secret scanning, weasel-word interception; review before enabling with `/bq-hooks`).
-
-## Update · docs · contributing
-
-- **Update:** `/bq-update` refreshes commands, skills and docs, backs up first, and never touches your project memory.
-- **Safety hooks (opt-in):** `/bq-hooks status|enable|disable|test`. Off by default because they run shell on every tool call. See [CLAUDE_CODE_HOOKS_STRATEGY.md](.claude/bequite/docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md).
-- **Docs:** [commands.md](commands.md) · [usage guide](.claude/bequite/docs/runbooks/USING_BEQUITE_COMMANDS.md) · [architecture](.claude/bequite/docs/architecture/) · [specs](.claude/bequite/docs/specs/) · [decisions](.claude/bequite/docs/decisions/) · [CHANGELOG.md](CHANGELOG.md).
-- **Contributing:** issues and PRs welcome at [xpShawky/BeQuite](https://github.com/xpShawky/BeQuite). Keep contributions markdown-first and dependency-free, and run `python3 scripts/bq_check.py` before a PR (CI runs it too).
-
-**License:** MIT.
+Reference docs live in `.claude/bequite/docs/` (architecture, specs, runbooks, decisions). [CONTRIBUTING.md](CONTRIBUTING.md) explains how to change the pack and keep the self-check green; [CHANGELOG.md](CHANGELOG.md) lists what changed. BeQuite is MIT licensed.

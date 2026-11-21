@@ -1,0 +1,12 @@
+{
+  "name": "bequite",
+  "owner": { "name": "xpShawky", "url": "https://github.com/xpShawky" },
+  "description": "BeQuite for Claude Code: the pipeline, the skills, the subagents and the hooks in one plugin.",
+  "plugins": [
+    {
+      "name": "bequite",
+      "source": "./",
+      "description": "One pipeline from research and plan to verified, written-back work; reference-first creative work; content studio, film studio and agent team."
+    }
+  ]
+}

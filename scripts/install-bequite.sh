@@ -7,20 +7,24 @@
 #   /path/to/BeQuite/scripts/install-bequite.sh --from-local /path/to/BeQuite [--force]
 #
 # --force re-installs commands and skills over an existing install.
+# --packs core,studio,business picks the packs (core is always installed; default: all three, or the
+#   choice saved in .bequite/state/PACKS.md by an earlier install, so updates keep the same packs).
 # Project memory in .bequite/ is NEVER overwritten (missing files are added).
 
 set -uo pipefail
 
-BEQUITE_VERSION="v4.0.0"
+BEQUITE_VERSION="v1.0.0"
 REPO_URL="https://github.com/xpShawky/BeQuite.git"
 TARGET="$(pwd)"
 FROM_LOCAL=""
 FORCE=false
+PACKS=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --from-local) FROM_LOCAL="${2:-}"; shift 2 ;;
     --force) FORCE=true; shift ;;
+    --packs) PACKS="${2:-}"; shift 2 ;;
     -h|--help) sed -n '2,10p' "$0"; exit 0 ;;
     *) echo "unknown arg: $1" >&2; exit 1 ;;
   esac
@@ -63,16 +67,34 @@ fi
 # the source's VERSION file is the version being installed (the constant above is only the fallback)
 if [[ -f "$SOURCE/VERSION" ]]; then BEQUITE_VERSION="v$(tr -d ' \r\n' < "$SOURCE/VERSION" | sed 's/^v//')"; fi
 STAMP="$(date +%Y%m%d-%H%M%S)"
+# packs: the flag, else the choice saved by an earlier install, else all three; core is always in
+if [[ -z "$PACKS" && -f ./.bequite/state/PACKS.md ]]; then PACKS="$(sed -n 's/^\*\*Packs:\*\* *//p' ./.bequite/state/PACKS.md | head -n 1 | tr -d '\r ')"; fi
+[[ -z "$PACKS" ]] && PACKS="core,studio,business"
+PACKS="core,$(printf '%s' "$PACKS" | tr -d ' ' | sed 's/core,\{0,1\}//g; s/,$//')"; PACKS="${PACKS%,}"
+EXCLUDE=""
+if [[ -f "$SOURCE/.claude/bequite/PACKS.txt" ]]; then
+  while read -r pk path || [[ -n "$pk" ]]; do
+    pk="$(printf '%s' "$pk" | tr -d '\r')"; path="$(printf '%s' "$path" | tr -d '\r')"
+    [[ -z "$pk" || "$pk" == \#* ]] && continue
+    case ",$PACKS," in *",$pk,"*) ;; *) EXCLUDE="$EXCLUDE|$path|" ;; esac
+  done < "$SOURCE/.claude/bequite/PACKS.txt"
+fi
+excluded() { case "$EXCLUDE" in *"|$1|"*) return 0 ;; esac; return 1; }
 
 # --- 3. Commands, skills, hooks ---------------------------------------------
 section "Installing commands and skills"
 mkdir -p ./.claude/commands ./.claude/skills
-cp -r "$SOURCE/.claude/commands/"*.md ./.claude/commands/
+for cmd in "$SOURCE"/.claude/commands/*.md; do
+  excluded "commands/$(basename "$cmd")" || cp "$cmd" ./.claude/commands/
+done
 for skill in "$SOURCE"/.claude/skills/bequite-*/; do
   name="$(basename "$skill")"
+  excluded "skills/$name" && continue
   rm -rf "./.claude/skills/$name"
   cp -r "$skill" "./.claude/skills/$name"
 done
+find ./.claude/skills -type d -name __pycache__ -prune -exec rm -rf {} + 2>/dev/null || true
+if [[ -d "$SOURCE/agents" ]]; then mkdir -p ./.claude/agents && cp "$SOURCE"/agents/bq-*.md ./.claude/agents/ 2>/dev/null || true; fi
 rm -rf ./.claude/bequite
 cp -r "$SOURCE/.claude/bequite" ./.claude/bequite
 # files a newer version removed: move them aside, never delete
@@ -87,7 +109,7 @@ if [[ -f "$SOURCE/.claude/bequite/REMOVED.txt" ]]; then
     fi
   done < "$SOURCE/.claude/bequite/REMOVED.txt"
 fi
-echo "  $(green "$(ls -1 ./.claude/commands/*.md | wc -l | tr -d ' ') commands, $(ls -d ./.claude/skills/bequite-*/ | wc -l | tr -d ' ') skills, reference docs in .claude/bequite/docs")"
+echo "  $(green "$(ls -1 ./.claude/commands/*.md | wc -l | tr -d ' ') commands, $(ls -d ./.claude/skills/bequite-*/ | wc -l | tr -d ' ') skills, $(ls -1 ./.claude/agents/bq-*.md 2>/dev/null | wc -l | tr -d ' ') subagents (packs: $PACKS)")"
 [[ $moved -gt 0 ]] && echo "  $moved removed command or skill file(s) moved to .bequite/backups/$STAMP-removed/"
 
 if [[ -d "$SOURCE/.claude/hooks" ]]; then
@@ -114,6 +136,14 @@ while IFS= read -r -d '' src; do
 done < <(find "$SOURCE/templates/bequite" -type f -print0)
 echo "  $added files added (existing memory left untouched)"
 
+# the pack choice is remembered so updates install the same packs
+mkdir -p ./.bequite/state
+printf '# BeQuite packs
+
+**Packs:** %s
+
+Change with: install-bequite.sh --force --packs core,studio,business (or $env:BEQUITE_PACKS on Windows).
+' "$PACKS" > ./.bequite/state/PACKS.md
 # version metadata is not memory: it always says what is installed now
 vf=./.bequite/state/BEQUITE_VERSION.md
 if [[ -f "$vf" ]]; then

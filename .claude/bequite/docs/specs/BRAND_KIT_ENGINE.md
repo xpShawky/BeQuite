@@ -1,6 +1,6 @@
 # Brand Kit Engine — `/bq-content brand-kit` (C14) — alpha.24
 
-Build a **non-generic** brand identity from niche + audience + competitors + positioning. Command: `bq-brand-kit.md`. Skills: ux-ui-designer + frontend-design-system + researcher + writing-dna + localization-rtl. Reference-safe (shares C3's originality discipline).
+Build a **non-generic** brand identity from niche + audience + competitors + positioning. Command: `/bq-content brand-kit` (in `bq-content.md`). Skills: ux-ui-designer + frontend-design-system + researcher + writing-dna + localization-rtl. Reference-safe (shares C3's originality discipline).
 
 ## Why a command
 

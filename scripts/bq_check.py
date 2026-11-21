@@ -77,6 +77,29 @@ def installer():
             errors.append(".claude/bequite/bin/bq-update.sh: non-ASCII byte")
         if b"\nmain \"$@\"\nexit 0" not in data:
             errors.append(".claude/bequite/bin/bq-update.sh: must end with main \"$@\" then exit 0 (so an update can replace the file while it runs)")
+    # every shipped bash script: a bash shebang and LF line endings (bash on macOS and Linux fails on CR)
+    for sh_path in glob.glob(os.path.join(ROOT, ".claude", "hooks", "*.sh")) + glob.glob(os.path.join(ROOT, ".claude", "bequite", "bin", "*.sh")) + [os.path.join(ROOT, "scripts", "install-bequite.sh")]:
+        data = read_bytes(sh_path)
+        if b"\r" in data:
+            errors.append("%s: has CR line endings" % rel(sh_path))
+        if not data.startswith(b"#!/usr/bin/env bash"):
+            errors.append("%s: must start with #!/usr/bin/env bash" % rel(sh_path))
+    # the plugin: valid JSON, the version equals VERSION, hooks point at shipped scripts
+    import json as _json
+    pj = os.path.join(ROOT, ".claude-plugin", "plugin.json")
+    if os.path.isfile(pj):
+        try:
+            man = _json.loads(read(pj))
+            for f in (".claude-plugin/marketplace.json", "hooks/hooks.json"):
+                _json.loads(read(os.path.join(ROOT, f)))
+            v = read(os.path.join(ROOT, "VERSION")).strip()
+            if man.get("version") != v:
+                errors.append(".claude-plugin/plugin.json: version %r differs from VERSION %r" % (man.get("version"), v))
+            for cmd in re.findall(r"CLAUDE_PLUGIN_ROOT\}/([^\"\\]+)", read(os.path.join(ROOT, "hooks", "hooks.json"))):
+                if not os.path.isfile(os.path.join(ROOT, cmd)):
+                    errors.append("hooks/hooks.json: %s does not exist" % cmd)
+        except ValueError as e:
+            errors.append("plugin JSON does not parse: %s" % e)
     return errors
 
 
@@ -219,6 +242,10 @@ def references_exist():
                     continue
                 if not os.path.exists(os.path.join(ROOT, ref)) and not git_ignored(ref):
                     errors.append("%s:%d: missing path `%s`" % (rel(path), n, ref))
+            # a command cited by its file name (`bq-automation.md`) must exist, in docs too (found by the bq-verifier run, 2026-11-21)
+            for m in re.finditer(r"(?<![\w/.-])(bq-[a-z0-9-]+)\.md\b", line):
+                if m.group(1) not in cmd_names and not os.path.exists(os.path.join(os.path.dirname(path), m.group(0))):
+                    errors.append("%s:%d: missing command file `%s`" % (rel(path), n, m.group(0)))
             if not operational:
                 continue
             for m in re.finditer(r"(?<![\w/.-])/(bq-[a-z0-9-]+|bequite)\b", line):
@@ -289,6 +316,41 @@ def version_consistent():
     rel_sec = re.search(r"^## \[(\d+\.\d+\.\d+[^\]]*)\]", read(os.path.join(ROOT, "CHANGELOG.md")), re.M)
     if rel_sec and "v" + rel_sec.group(1) != sh.group(1):
         errors.append("installers say %s but the newest released CHANGELOG section is [%s]" % (sh.group(1), rel_sec.group(1)))
+    return errors
+
+
+# ---------------------------------------------------------------- packs
+@check
+def packs_consistent():
+    """PACKS.txt (what the installers leave out per pack) agrees with the Pack columns of COMMAND_ID_MAP.md and SKILL_REGISTRY.md."""
+    errors = []
+    pf = os.path.join(ROOT, ".claude", "bequite", "PACKS.txt")
+    if not os.path.isfile(pf):
+        return [".claude/bequite/PACKS.txt missing (the installers read it)"]
+    listed = {}
+    for n, line in enumerate(read(pf).splitlines(), 1):
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        parts = line.split(None, 1)
+        if len(parts) != 2 or parts[0] not in ("studio", "business"):
+            errors.append(".claude/bequite/PACKS.txt:%d: expected '<studio|business> <path>'" % n)
+            continue
+        if not os.path.exists(os.path.join(ROOT, ".claude", parts[1])):
+            errors.append(".claude/bequite/PACKS.txt:%d: %s does not exist" % (n, parts[1]))
+        listed[parts[1]] = parts[0]
+    want = {}
+    for row in read(os.path.join(ROOT, "templates", "bequite", "commands", "COMMAND_ID_MAP.md")).splitlines():
+        m = re.match(r"\|\s*[A-Z][0-9.]+\s*\|\s*`/(bq-[a-z0-9-]+|bequite)`\s*\|\s*(core|studio|business)\s*\|", row)
+        if m and m.group(2) != "core":
+            want["commands/%s.md" % m.group(1)] = m.group(2)
+    for row in read(os.path.join(ROOT, "templates", "bequite", "skills", "SKILL_REGISTRY.md")).splitlines():
+        m = re.match(r"\|\s*`([a-z0-9-]+)`\s*\|\s*(core|studio|business)\s*\|", row)
+        if m and m.group(2) != "core":
+            want["skills/bequite-%s" % m.group(1)] = m.group(2)
+    for k in sorted(set(want) | set(listed)):
+        if want.get(k) != listed.get(k):
+            errors.append("pack mismatch for %s: catalogs say %s, PACKS.txt says %s" % (k, want.get(k, "core"), listed.get(k, "core")))
     return errors
 
 

@@ -22,6 +22,7 @@ main() {
   cd "$root" || { echo "BeQuite update check skipped: project folder not found."; return 0; }
   src_md=".bequite/state/UPDATE_SOURCE.md"; ver_md=".bequite/state/BEQUITE_VERSION.md"; chk_md=".bequite/state/UPDATE_CHECK.md"
   [ -d .bequite/state ] || { echo "BeQuite update check skipped: no .bequite/state here."; return 0; }
+  if [ -d templates/bequite ] && [ -f scripts/install-bequite.sh ]; then echo "BeQuite update check skipped: this is the BeQuite source repo (updates never install over it)."; return 0; fi
 
   field() { [ -f "$1" ] && sed -n "s/^\*\*$2:\*\* *//p" "$1" | head -n 1 | tr -d '\r' | sed 's/[[:space:]]*$//'; }
   word() { printf '%s' "$1" | awk '{print $1}'; }
@@ -102,8 +103,9 @@ main() {
   stamp="$(date +%Y%m%d-%H%M%S)"; backup=".bequite/backups/$stamp-v$installed"; log=".bequite/logs/UPDATE_LOG.md"
   mkdir -p "$backup/.claude/skills" .bequite/logs || { echo "BeQuite update skipped: could not create $backup. Continuing with v$installed."; return 0; }
   [ -d .claude/commands ] && cp -R .claude/commands "$backup/.claude/commands"
-  for d in .claude/skills/bequite-*/; do [ -d "$d" ] && cp -R "$d" "$backup/.claude/skills/"; done
+  for d in .claude/skills/bequite-*/; do [ -d "$d" ] && cp -R "${d%/}" "$backup/.claude/skills/"; done
   [ -d .claude/bequite ] && cp -R .claude/bequite "$backup/.claude/bequite"
+  for x in hooks agents; do [ -d ".claude/$x" ] && cp -R ".claude/$x" "$backup/.claude/$x"; done
   for f in CLAUDE.md commands.md; do [ -f "$f" ] && cp "$f" "$backup/$f"; done
   { echo; echo "## $(date -u +%Y-%m-%dT%H:%M:%SZ) automatic update v$installed -> v$published ($where)"; echo; echo "Backup: $backup"; echo; echo '```'; } >> "$log"
   ok=1

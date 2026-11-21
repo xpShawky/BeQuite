@@ -1,190 +1,72 @@
 ---
 name: bequite-problem-solver
-description: Deep diagnostic procedures — reproduce-first, binary search, git bisect, minimal repro, root-cause patterns. Invoked by /bq-fix.
-allowed-tools: ["Read", "Glob", "Grep", "Bash", "Edit", "Write"]
+description: Use when something is broken and the cause is not obvious, such as a failing test, an error or crash, "works locally but not in CI", a regression, flaky or intermittent behaviour, or a fix that did not hold. Reproduce first, narrow with evidence (logs, bisect, pickaxe, minimal input), fix the root cause with the smallest change, and prove it with a regression test.
+last_verified: 2026-11-21
+sources:
+  - https://git-scm.com/docs/git-bisect (read 2026-11-21) bisect run exit codes, custom terms
+  - https://git-scm.com/docs/git-log (read 2026-11-21) pickaxe -S and -G
+  - https://code.claude.com/docs/en/best-practices (read 2026-11-21) give the agent a pass-or-fail check
+  - https://sre.google/sre-book/effective-troubleshooting/ (read 2026-11-21) triage, examine, diagnose, test; pitfalls
+  - https://www.debuggingbook.org/html/DeltaDebugger.html (read 2026-11-21) shrinking a failing input
+  - https://sre.google/workbook/postmortem-culture/ (read 2026-11-21) blameless follow-up
+allowed-tools: Read, Glob, Grep, Bash, Edit, Write
 ---
 
 # bequite-problem-solver
 
-You are the methodical bug hunter. Invoked when `/bq-fix` needs deeper than "spot the typo".
+Guessing at fixes creates new bugs. This skill turns a symptom into a reproduction, the reproduction into a root cause, and the cause into a one-line fix plus a test, with every step written down so nobody repeats it.
 
-## When this skill activates
+## When to use
 
-- `/bq-fix` when the bug isn't obvious
-- `/bq-implement` when a task hits an unexpected failure
-- Any time a previously-passing test starts failing
-- `/bq-auto fix "<task>"` (scoped fix mode) — reproduce-first applies
-- `/bq-live-edit` when the requested edit is fix-shaped (e.g. "fix mobile overflow on cards") — reproduce-first applies before any edit
+- `/bq-fix` when the cause is not visible in the first read; `/bq-implement` when a task hits an unexpected failure.
+- A test that used to pass now fails; CI and local disagree; a bug comes back.
+- `/bq-live-edit` when the request is a fix ("cards overflow on mobile"): reproduce before editing.
 
-## Core principles
+Not for: new features, refactors, or performance tuning without a symptom.
 
-### 1. Reproduce before diagnose
+## Procedure
 
-Every bug-hunt starts with **a reproduction the user (and you) can repeat**. If you can't reproduce:
+1. **Triage.** If users are hurt now, stop the bleeding first (revert, feature flag, the owner's call on production), then debug.
+2. **Reproduce.** Get the exact command, input, environment and commit. Run it and paste the verbatim output and exit code into `.bequite/work/<id>/log.md`. No reproduction, no fix: collect more facts (versions, OS, env diff, logs) or ask for them.
+3. **Expected vs actual**, one line each.
+4. **Shrink.** Remove input, code and config until the failure is as small as it gets while still failing (delta debugging by hand: halve, test, keep the failing half).
+5. **Locate in time.** If it used to work: `git log -S'<string>'` or `-G'<regex>'` when the symptom has a searchable string; otherwise `git bisect run <script>` (exit 0 good, 1-127 bad, 125 skip).
+6. **Locate in space.** Read the code path end to end before editing: caller, handler, config, types. Check the layer that differs between the passing and failing environment first (`references/patterns.md`). Use a debugger (`breakpoint()`, browser DevTools) or targeted logs, not guesses.
+7. **Name the root cause** in one sentence: the thing which, if changed, makes the symptom impossible. Ask "why" until you reach something the team controls (a process gap counts).
+8. **Smallest fix.** One change aimed at the cause. No drive-by refactors, no touching unrelated files, no `catch` that hides the error.
+9. **Regression test** (`bequite-testing-gate`): fails on the old code, passes on the fix, named after the bug.
+10. **Verify**: re-run the original reproduction and the full suite; paste both. Symptom gone = done. Still there = back to step 6 with the new facts.
+11. **Write back**: the log entry (verbatim error, root cause sentence, fix as file:line, proof), and a MISTAKE_MEMORY lesson when the trap is likely to recur. Three failed fix attempts in a row: stop and report to the user.
 
-- Ask for: exact command, exact output, OS, runtime version, git SHA
-- Try a minimal repro: copy the failing code into a new file, strip everything not needed
-- If still no repro: maybe it's an environment-only issue → `/bq-doctor` first
+Wide reading (many logs, a large codebase, several hypotheses at once) can go to a subagent that returns only findings with file:line, so the main context stays on the fix.
 
-**Never start guessing fixes without a reproduction.** That's how you create new bugs.
+## Worked example (real run on this repo, 2026-11-21)
 
-### 2. Capture verbatim
+Symptom: `python scripts/bq_check.py` exits 1 in a fresh worktree; the author's checkout exits 0.
 
-Save the literal error output to `.bequite/work/<id>/log.md`. Don't paraphrase — paraphrasing loses signal:
+```
+repro (fresh worktree):  $ python scripts/bq_check.py   -> exit 1, "FAIL references_exist (1) .claude/commands/bq-motion.md:33: missing path `motion-library/inbox/New`"
+expected / actual:       a clean clone passes the self-check / it fails
+locate in time:          $ git log -S "motion-library/inbox/New" --oneline -- .claude/commands/bq-motion.md   -> 5259275
+locate in space:         $ git check-ignore -v motion-library/inbox/New   -> .gitignore:117:motion-library/inbox/*
+```
 
-- Stack traces with line numbers
-- Error messages with exact strings (often searchable verbatim in GitHub issues)
-- Exit codes
-- Time of occurrence (relevant for flaky / race issues)
+Root cause: the check tests paths against the working tree, and the cited folder is gitignored media. On the author's disk the untracked folder exists, so the check passes there and fails on every clean clone (CI included). Why it was not caught: nobody ran the check from a clean clone after 5259275. Fix, owned by the track that owns the file: cite the folder outside backticks, or make the check ignore gitignored paths. Process fix: run the self-check in a fresh worktree before merging.
 
-### 3. Root cause vs symptom
+## Quality gate
 
-The **symptom** is what the user sees. The **root cause** is what made it happen.
+- The log holds the verbatim error, the reproduction command and its exit code.
+- The root cause is one sentence and explains both the failing and the passing environment.
+- The fix touches only what the cause needs; the diff is shown.
+- A regression test failed before and passes after; the full suite is green; output pasted.
+- No "should be fixed now". The symptom was re-run and is gone, or the report says PARTIAL.
 
-- Symptom: "Login button does nothing on Safari"
-- Possible root cause 1: button has no `onClick` (would also fail on Chrome — verify)
-- Possible root cause 2: Safari blocks third-party cookies; the redirect after sign-in loses the session
-- Possible root cause 3: a recent CSS change made the button cover the actual click target with a transparent overlay (would affect all browsers)
+## Boundaries
 
-**The smallest revertible change that makes the symptom disappear is the root cause.** Apply that change.
+- Never change production, shared databases or servers to test a hypothesis; reproduce on a copy.
+- Never delete or rewrite tests to make a failure disappear.
+- A fix in a file owned by another track or person is handed over with the repro, not made in place.
 
-### 4. Binary search the codebase
+## References (load on demand)
 
-If the bug surface is broad:
-
-1. Pick the midpoint of recent commits (`git log` count // 2)
-2. Check out that commit
-3. Test for the bug
-4. If bug is present → it was introduced before this point; binary-search earlier
-5. If bug is absent → it was introduced after this point; binary-search later
-6. Repeat until you have a single bad commit (`git bisect` automates this)
-
-Once you have the bad commit:
-- What did it change?
-- Is the change unrelated to the symptom? (sometimes regressions are surprising — they reveal preexisting bugs)
-- Revert the file portion that broke it; keep the rest
-
-### 5. Common root-cause patterns
-
-Walk this checklist when stuck:
-
-| Symptom | Likely cause | Where to look |
-|---|---|---|
-| Works locally, fails in CI | env var missing in CI / different Node version / different timezone | CI workflow file |
-| Works in dev, fails in prod | NODE_ENV-conditional code path / NEXT_PUBLIC_* vars baked at build / different DB | dev/prod diff |
-| Intermittent failure | race condition / network flake / order-dependent test | logs for timing |
-| Failed only on Windows | path separator (`/` vs `\`) / case-sensitivity / line endings (CRLF) | file ops + spawn |
-| Failed only on macOS | case-insensitive FS / different Python version / Homebrew vs system | file ops |
-| Worked yesterday, fails today | dependency auto-update / upstream API change / clock drift | lockfile diff |
-| "Permission denied" | file mode / docker user / SELinux | ls -la + docker exec |
-| "Module not found" | new dep not installed / `.js` extension mismatch (NodeNext vs bundler) / wrong cwd | check import paths |
-| Memory bloat | unbounded cache / event listener leak / infinite loop with growth | add log + measure |
-| CORS error | server doesn't echo Origin / preflight 404 / credentials mismatch | network tab |
-
-### 6. The 5-whys
-
-When you find a fix, ask **5 whys** to find the REAL root cause:
-
-1. Why did this fail? → "The button had no onClick."
-2. Why did the button have no onClick? → "The PR added the button without one."
-3. Why didn't the PR add an onClick? → "The PR was the visual styling; the wiring was a separate task that got forgotten."
-4. Why was the wiring task forgotten? → "It wasn't on the TASK_LIST."
-5. Why wasn't it on the TASK_LIST? → "The /bq-assign output split visual from wiring as separate tasks but didn't link them as 'visual-without-wiring is incomplete'."
-
-The fix isn't just "add the onClick" — it's "future feature tasks that depend on each other should be marked `depends_on:` in TASK_LIST".
-
-Capture this learning in `.bequite/state/DECISIONS.md`.
-
-### 7. Always add a test
-
-Every fix gets a test. Always.
-
-The test:
-- Has a name describing the BUG (so future grep finds it)
-- Fails before the fix
-- Passes after the fix
-- Is at the lowest reasonable level (unit > integration > e2e — pick the lightest that catches it)
-
-## Anti-patterns
-
-- **"I think this fixes it"** without verifying the symptom is gone. Verify.
-- **Multi-line refactors during a bug fix.** Surgical change only.
-- **Suppressing the error** without understanding it (`catch { /* ignore */ }` is rarely right).
-- **Skipping the test** because the fix is "obvious." If it's obvious, the test is fast to write.
-
-## Memory hooks
-
-This skill reads:
-- `.bequite/work/<id>/log.md` (prior bugs for pattern matching)
-- Recent git log + commits
-- The failing test output
-
-This skill writes (via /bq-fix):
-- The source fix
-- The new/updated test
-- `.bequite/work/<id>/log.md` (the bug + root cause + fix)
-
-## Output discipline
-
-When this skill produces output via /bq-fix, the ERROR_LOG entry must:
-
-- Quote the verbatim error (not paraphrase)
-- Name the root cause in one sentence
-- Cite the fix as file:line + ~3-line diff
-- Show verification (the original repro now succeeds + new test passes + full suite green)
-- Never claim "should be fixed" — verify the actual symptom is gone
-
----
-
-## When NOT to use this skill (alpha.15)
-
-- The task at hand doesn't touch this skill's domain — defer to the right specialist skill
-- A faster / simpler skill covers the same need — pick the simpler one and document why
-- The skill's core invariants don't apply to the current project (e.g. regulated-mode rules on a prototype)
-- The command that would activate this skill is already running with another specialist that fits better
-
-If unsure, surface the trade-off in the command's output and let the user decide.
-
-## Quality gate (alpha.15)
-
-Before claiming this skill's work complete:
-
-- [ ] Artifacts produced match the skill's expected outputs
-- [ ] All discipline rules in this skill were respected (not just glanced at)
-- [ ] No banned weasel words in any completion claim — `should`, `probably`, `seems to`, `appears to`, `might`, `hopefully`, `in theory`
-- [ ] Any tool / library / framework added during this run has a decision section per `.bequite/principles/TOOL_NEUTRALITY.md`
-- [ ] Acceptance criteria for the invoking command's task are met (or honestly reported as PARTIAL / FAIL)
-- [ ] `.bequite/state/MISTAKE_MEMORY.md` updated when a project-specific lesson surfaced
-- [ ] `.bequite/logs/AGENT_LOG.md` entry appended for the run
-- [ ] Memory state files (LAST_RUN, WORKFLOW_GATES, CURRENT_PHASE) updated when gate state changed
-
-If any item fails, do not claim done — report PARTIAL with the specific gap.
-
----
-
-## The diagnostic workflow (alpha.24 strengthening — follow in order, no skipping)
-
-1. **Reproduce first.** Get the exact failing command/click/input and run it. No repro → no fix (you're guessing). Record the exact steps.
-2. **Expected vs actual.** Write both in one line each. "Clicking Save should POST /bookings and show a toast; actual: nothing happens, no network request."
-3. **Symptom vs root cause.** The visible failure is rarely the cause. Ask "why" until you hit something that, if changed, makes the symptom impossible.
-4. **Inspect before editing.** Read the involved files (handler, caller, config, types) with Read/Grep BEFORE any edit. Map the data + control flow end to end.
-5. **Check recent changes.** `git log`/`git diff` the touched area — most regressions are in the last few commits. `git bisect` if the bad commit is unclear.
-6. **Check logs/errors.** Console, network tab, server logs, exit codes, stack traces. The real error is often swallowed by a catch-all (Guard Pass catches these).
-7. **Smallest safe fix.** Change the one thing that addresses the root cause. No drive-by refactors, no touching unrelated files.
-8. **Regression test.** Add a test that fails on the old code and passes on the fix — then the bug can't silently return (feeds the regression ledger).
-9. **Verify with evidence.** Re-run the repro; paste command + exit code + output. Symptom gone = done; otherwise back to step 3.
-10. **Mistake memory.** If the bug was a repeat pattern or a non-obvious trap, append to MISTAKE_MEMORY.
-
-**Anti-patterns (refuse these):** fixing by vibes (changing things hoping it helps), broad refactors mid-bug, editing files unrelated to the repro, claiming fixed without re-running the repro, suppressing the symptom (try/catch the error away) instead of fixing the cause.
-
-### Worked example — "button click does nothing"
-
-**Repro:** click "Save booking" on /bookings/new → nothing. **Expected:** POST /api/bookings, success toast. **Actual:** no toast, no row.
-1. Network tab: **no request fired** → the failure is client-side, before the call (not the API).
-2. Console: `Uncaught TypeError: onSubmit is not a function`. Symptom (dead button) ≠ root cause (handler not wired).
-3. Read the form component: `<form onSubmit={handleSubmit}>` but the prop is passed as `onSave`, not `handleSubmit` — a rename in the last commit (`git diff` confirms: `onSubmit`→`onSave` on the parent, child not updated). Root cause = broken prop contract from a partial rename.
-4. Smallest fix: align the child to the new prop name (one line) — NOT rewriting the form.
-5. Regression test: render the form, click submit, assert `onSave` called once. Fails on old code, passes on fix.
-6. Verify: re-run repro → request fires, toast shows, row appears. Evidence pasted. MISTAKE_MEMORY: "partial rename across parent/child = broken contract; grep the old prop name everywhere before claiming a rename done."
-
-This pattern (no-request → client-side → console error → contract mismatch from a recent change → one-line fix + test) generalizes to API-500s (inspect server log + the one handler), fresh-clone install fails (diff lockfile/env/Node version, not the app code), and CLI-fails-on-Windows (path separators / line endings / shell builtins — check the OS-specific layer first).
+- `references/patterns.md`: symptom to likely cause table, environment-difference checklist, bisect script template, pitfalls from the SRE troubleshooting chapter.

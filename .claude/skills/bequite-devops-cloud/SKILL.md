@@ -1,415 +1,81 @@
 ---
 name: bequite-devops-cloud
-description: DevOps + cloud procedures — CI/CD, preview deploys, rollback, env-vars, secrets, monitoring, cost ceilings, IaC, VPS safety, DB migration approval, blue-green + canary, runbooks. Hard gates for prod changes. Loaded by /bq-plan, /bq-feature, /bq-verify, /bq-release.
-allowed-tools: Read, Glob, Grep, WebFetch, WebSearch, Bash
+description: Use when a task touches CI workflows, deploys, environments, env vars and secrets, containers, infrastructure code, monitoring, cost limits, a VPS or server, or a production migration, or when a build or deploy fails. Hardens CI (SHA pins, least-privilege tokens, OIDC), gates production behind human approval, and keeps every change reversible.
+last_verified: 2026-11-21
+sources:
+  - https://docs.github.com/en/actions/reference/security/secure-use (read 2026-11-21) SHA pins, token scope, script injection, OIDC
+  - https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/manage-environments (read 2026-11-21) required reviewers, env secrets
+  - https://www.cisa.gov/news-events/alerts/2025/03/18/supply-chain-compromise-third-party-tj-actionschanged-files-cve-2025-30066-and-reviewdogaction (read 2026-11-21) moved tag leaked secrets
+  - https://docs.docker.com/build/building/best-practices/ (read 2026-11-21) multi-stage, digests, non-root
+  - https://dora.dev/guides/dora-metrics/ (read 2026-11-21) five delivery metrics
+  - https://sre.google/workbook/canarying-releases/ (read 2026-11-21) canary vs control
+  - https://12factor.net/config (read 2026-11-21) config in the environment
+allowed-tools: Read, Glob, Grep, Bash, WebFetch, WebSearch
 ---
 
-# bequite-devops-cloud — production safety
+# bequite-devops-cloud
 
-## Why this skill exists
+Most outages trace back to five things: a missing env var, a migration that outran the code, a hand edit on a server, no way back, and nobody watching. CI adds a sixth: the pipeline itself holds the keys. This skill hardens the pipeline and puts a human between the agent and production.
 
-Most outages come from one of five causes:
-1. Env var missing / wrong in production
-2. Migration deployed before backward-incompatible code
-3. Manual server edit nobody else knew about
-4. Missing rollback path
-5. No monitoring → discovered by customer first
+## When to use
 
-This skill encodes the patterns + hard gates that prevent these.
+- `/bq-plan`: environments, CI gates, deploy trigger, rollback, monitoring, cost ceilings.
+- `/bq-feature`: a new env var, service, job, container or workflow file.
+- `/bq-verify`: deploy readiness. `/bq-release`: with `bequite-release-gate`.
+- `/bq-fix`: CI failures, config bugs, server issues (diagnose only on servers).
 
-**Production safety overrides convenience.** When in doubt, pause.
+Not for: schema design (`bequite-database-architect`), app-level security review (`bequite-security-reviewer`), version and changelog (`bequite-release-gate`).
 
----
+## Procedure
 
-## Environment hierarchy
+1. **Read the pipeline.** Every workflow file, the deploy config, `.env.example`, Dockerfiles. List each job's trigger, permissions, secrets used and third-party actions.
+2. **Harden CI** (`references/ci-hardening.md`): third-party actions pinned to a full commit SHA with the tag in a comment; `permissions:` read-only at the top, raised per job; no `pull_request_target` that checks out PR code; event text passed through `env:`, never inline in `run:`; cloud access through OIDC, not stored keys.
+3. **Environments.** Local, preview, production (staging when the team or the data needs it). Same code, different config and data; production secrets live only in the production environment, released after its protection rules (required reviewer, branch pattern).
+4. **Env vars in order.** Add to `.env.example` with a comment, then to production, then to preview, then merge the code that reads it. A missing var fails at boot with a clear message, not at first use.
+5. **Containers**, if the project uses them (never added by default): multi-stage build, base image pinned by digest with a bot to bump it, non-root `USER`, `.dockerignore`, regular rebuild with `--pull`.
+6. **Deploy and rollback.** Each change type has a written path back: code only = redeploy the previous build; code plus forward-only migration = roll forward with a fix. Risky changes go out as a canary compared against the control on error rate and latency.
+7. **Watch.** Errors, uptime from more than one region, structured logs, and the five DORA metrics (lead time, deploy frequency, failed-deploy recovery time, change fail rate, rework rate) if the team tracks delivery.
+8. **Cost ceilings.** Alerts at 80% of each plan limit; hard per-user caps on LLM spend; max duration for jobs.
+9. **Production and servers are hard human gates** (`references/prod-safety.md`): the agent reads and prints, the user runs.
+10. **Evidence**: the workflow lines before and after, a CI run link or local `act`-style dry run if available, the deploy checklist ticked.
 
-Three at minimum:
-- **Local** — developer's machine; `.env.local`
-- **Preview** — per-PR deploy; same shape as production, different data
-- **Production** — real users
+## Worked example (real audit of this repo, 2026-11-21)
 
-Optional fourth:
-- **Staging** — pre-production with real-shape data; useful when team > 3 or data migrations are common
-
-Rules:
-- Same code on all environments (no env-specific branches in source)
-- Different config (env vars, feature flags)
-- Different data (never share prod data with preview)
-- Different secrets (never share prod secrets with preview)
-
----
-
-## CI gates (every PR)
-
-Required:
-- Lint (eslint, ruff, clippy)
-- Typecheck (tsc, mypy, cargo check)
-- Unit tests
-- Integration tests
-- Build succeeds
-- Lockfile unchanged OR explicitly approved
-
-Optional (per project):
-- E2E tests (Playwright walks)
-- Bundle size check (size-limit)
-- Lighthouse CI for web pages
-- OSV / Snyk security scan
-- Accessibility scan (axe-core)
-
-Block merge on:
-- Any required gate failing
-- Lockfile changed without approval label
-
----
-
-## Preview deploys
-
-Every PR gets a preview URL:
-- Same build process as prod
-- Different DB (per-PR or shared preview DB)
-- Different env vars (preview-tier, e.g. test Stripe keys)
-- Auto-cleanup after PR closes
-
-Vercel does this natively. For self-host:
-- Cloudflare Pages does this
-- Render does this
-- DIY: GitHub Actions + ephemeral container + ngrok / tunnel
-
----
-
-## Production deployment
-
-### Default: trunk-based + auto-deploy on main
-
-- `main` is always deployable
-- Merge to main → auto-deploy to production
-- No long-lived feature branches
-
-### When NOT to auto-deploy
-
-- Database migration in this commit → require human approval
-- Schema-breaking change → require human approval
-- New env var required → require human approval (var must be set in production FIRST)
-- Production touching infra (Terraform changes, etc.) → require human approval
-
-### Approval-gated deploys (Vercel + similar)
-
-Configure: deploys to production paused after build, require human click.
-
-For zero-trust shops: every prod deploy is human-approved.
-
----
-
-## Rollback strategy
-
-Every release has a rollback plan documented. The three rollback types:
-
-1. **Code-only rollback** — `git revert <commit>` and redeploy. Fast, safe IF no DB migration.
-
-2. **Code + reversible migration** — code revert + reverse migration script. Plan the reverse before deploying forward.
-
-3. **Code + forward-only migration** — can't reverse cleanly. Roll forward to a fix (don't try to roll back the DB).
-
-The hierarchy:
-- **Always design migrations forward-only** (per `bequite-database-architect`)
-- **Always test rollback path before deploying** — at minimum, deploy the change to staging, then deploy the revert to staging, confirm both work
-
-Document in IMPLEMENTATION_PLAN §14.
-
----
-
-## Env var management
-
-### Per environment
-- Local: `.env.local` (gitignored)
-- Preview: host's preview env vars (Vercel, Netlify, etc.)
-- Production: host's production env vars
-
-### Template file (committed)
-`.env.example` lists every required var with a comment explaining what it does:
 ```
-# Postgres connection string (Supavisor transaction-mode for serverless)
-DATABASE_URL=postgresql://user:pass@host:5432/dbname
-
-# Better-Auth secret — 32+ random chars
-AUTH_SECRET=
-
-# Resend API key for email delivery
-RESEND_API_KEY=
+$ grep -nE "uses:|permissions|contents:|pull_request_target" .github/workflows/*.yml
+ci.yml:12       contents: read
+ci.yml:19,29,45 uses: actions/checkout@v4          ci.yml:20 uses: actions/setup-python@v5
+release.yml:11  contents: write                    release.yml:17-18 checkout@v4, setup-python@v5
+$ git ls-remote https://github.com/actions/checkout refs/tags/v4      -> 11d5960a326750d5838078e36cf38b85af677262
+$ git ls-remote https://github.com/actions/setup-python refs/tags/v5  -> a26af69be951a213d495a4c3e4e4022e16d87065
 ```
 
-### Adding a new var
-Order matters:
-1. Add to `.env.example`
-2. Add to production secrets store
-3. Add to preview secrets store
-4. Then merge the code that reads it
+Findings: 7 `uses:` lines pinned by movable tag (the tj-actions incident shows why that matters); `release.yml` grants `contents: write` to the whole workflow; no `pull_request_target`; no event text inlined in `run:`. Proposed change, for the owner of the workflow files to apply:
 
-If you skip step 2 or 3, prod / preview breaks on deploy.
-
-### Secret rotation
-- Quarterly minimum
-- Immediately after suspected leak
-- Immediately after engineer offboarding
-- Documented in `SECURITY.md`
-
----
-
-## Monitoring + alerting
-
-The three pillars (also in `bequite-backend-architect` §observability):
-
-### Errors → Sentry
-- Free tier: 5K errors/month
-- Configure `beforeSend` to scrub PII
-- Set up Slack / email alerts on new error types
-- Triage daily; ignore < error_count_p99 baseline
-
-### Uptime → Better Stack / Pingdom / Uptime Robot
-- Probe every 60s from 3+ regions
-- Alert if 2+ regions fail (avoid one-region flakes)
-- Status page automatic (Better Stack does this)
-
-### Logs → Axiom / Datadog / host-native
-- Structured JSON
-- 30-day retention minimum
-- Search before guessing — don't fix bugs by intuition
-
-### Custom metrics
-- Stripe revenue → daily Slack post
-- Sign-up conversion → daily Slack post
-- p95 latency by route → weekly review
-
-Use Discord / Slack webhook for low-noise alerts; PagerDuty for actual on-call (only if you have an on-call rotation).
-
----
-
-## Cost ceilings
-
-Every production deployment has a cost ceiling.
-
-### Per-service ceilings
-- Vercel function execution: alert at 80% of plan
-- Database storage: alert at 80%
-- Email sending volume: alert at 80%
-- LLM API spend: hard cap (cut off requests beyond)
-
-### Per-user ceilings
-For LLM features: max tokens per user per day. Don't let one user burn $1000 of API spend.
-
-### Per-job ceilings
-Background jobs: max duration, max memory. Kill jobs that exceed.
-
----
-
-## IaC patterns
-
-For v1, prefer:
-- **Vercel CLI + dashboard** — for Vercel-hosted projects
-- **fly.toml** — for Fly.io
-- **Terraform** — for AWS/GCP/Azure if multi-resource
-- **Pulumi** — for TypeScript-native IaC
-
-Avoid:
-- Manually clicking through cloud dashboards (drift accumulates)
-- Custom shell scripts (no idempotency, no plan)
-- Premature Kubernetes (almost never needed in v1)
-
-For Terraform:
-- Commit state? **Never** — use remote state (Terraform Cloud / S3+DynamoDB)
-- Run `plan` in PR; `apply` after human approval
-- Never `terraform destroy` without explicit human confirmation
-
----
-
-## Server / VPS safety (hard human gate)
-
-For projects touching their own server / VPS (not managed platforms):
-
-### Hard human gates — never auto-execute
-
-- SSH into production server
-- `rm -rf` anywhere on production filesystem
-- `systemctl stop/restart/disable` of production services
-- Edits to `/etc/` config
-- User add / delete on server
-- Firewall rule changes
-- DNS record changes
-- TLS certificate operations
-
-**The agent MUST pause and ask the user to run these themselves.** The agent can show the command; the user runs it.
-
-### Acceptable agent actions on a VPS
-
-- Read logs via SSH (`tail`, `journalctl`) for debugging
-- Read service status (`systemctl status`)
-- Read disk / memory (`df`, `free`, `top`)
-- Read network state (`ss`, `netstat`) — without making changes
-
----
-
-## Database migration approval (hard human gate)
-
-For projects with a shared DB (preview + prod both touching it, OR multiple developers):
-
-### Migrations against shared / production DB
-
-**Pause for human approval before:**
-- Any migration that's been generated but not reviewed
-- Any migration with `DROP`, `ALTER COLUMN TYPE`, `RENAME`
-- Any migration during business hours (define per project)
-- Migration > 1 minute estimated duration
-
-The agent can:
-- Generate the migration
-- Test against a fresh local DB
-- Test rollback path
-- Print the command for the user to run
-
-The user runs the actual `migrate up` against production.
-
-### Migrations against feature-branch DB (per-PR)
-
-Auto-run is fine. Each PR gets its own scratch DB.
-
----
-
-## Deployment runbooks
-
-Every project ships a deployment runbook at `docs/runbooks/DEPLOY.md` (in the project):
-
-```markdown
-# Deploy runbook
-
-## Pre-deploy
-- [ ] All CI green on the commit
-- [ ] CHANGELOG.md `[Unreleased]` reviewed
-- [ ] Migration (if any) reviewed
-- [ ] Env vars (if new) set in production
-- [ ] Rollback plan written
-
-## Deploy
-1. Tag: `git tag v<X.Y.Z>`
-2. Push tag: `git push origin v<X.Y.Z>`
-3. CI builds + publishes
-4. Monitor Sentry for 30 minutes
-
-## Rollback (if needed)
-1. `git revert <commit>`
-2. Re-deploy
-
-## Post-deploy
-- [ ] Sentry error rate within baseline
-- [ ] Uptime monitor green
-- [ ] Spot-check critical user flow
-- [ ] Update status page if user-visible
+```yaml
+permissions: {}                      # top level
+jobs:
+  release:
+    permissions: { contents: write } # only the job that creates the release
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4 (resolved 2026-11-21)
 ```
 
----
+## Quality gate
 
-## When activated by /bq-plan
+- Every third-party action is SHA-pinned or listed as an accepted exception with a reason.
+- Every job's token permissions are stated; none is broader than the job needs.
+- Every new env var is in `.env.example` and in each environment before the code that reads it merges.
+- Every production-touching step has a rollback line and an approval point.
+- The report shows commands and output; nothing is called "deployed" without the platform's own status.
 
-Write §12 (deployment + DevOps) in detail:
-- Environment hierarchy
-- CI gate list
-- Deployment trigger (auto on main vs approval-gated)
-- Rollback strategy per change type
-- Monitoring stack
-- Cost ceilings
-- Runbook outline
+## Boundaries
 
----
+- Never run production deploys, server commands that change state, DNS, TLS, firewall or production migrations. Print them; the user runs them.
+- Never print or paste secret values; reference them by name.
+- Docker, Kubernetes, Terraform and hosting platforms are candidates chosen with the ten questions. Do not add any of them by default.
 
-## When activated by /bq-verify
+## References (load on demand)
 
-Run the deploy-readiness checklist:
-- All CI gates pass
-- Lockfile committed
-- Env vars documented in `.env.example`
-- Migration reviewed (if present)
-- Rollback path verified
-
----
-
-## When activated by /bq-release
-
-Coordinate with `bequite-release-gate`:
-- Bump version per semver
-- Move CHANGELOG `[Unreleased]` → `[vX.Y.Z]`
-- Print git commands
-- Hard gate: user runs `git push` and `git tag` themselves
-- Never auto-push tags
-- Never auto-deploy from /bq-release
-
----
-
-## When activated by /bq-fix
-
-DevOps bug types:
-- **Deployment / CI bug** → check workflow YAML, runner logs, env vars
-- **Configuration / env bug** → check var name typos, path separators (Windows vs Unix), permission bits
-- **Server / VPS issue** → diagnose only; do NOT modify; print commands for user
-
----
-
-## What this skill does NOT do
-
-- Manage production database content (use `bequite-database-architect`)
-- Real incident response (out of scope; use a runbook + page on-call)
-- Cost optimization beyond ceilings (use a FinOps consultant for serious bills)
-- Cloud architecture certification (AWS / GCP / Azure cert prep is out of scope)
-
----
-
-## Tool neutrality (global rule)
-
-⚠ **Every tool, library, framework, design system, or workflow named in this file (Vercel, Fly.io, Render, Railway, AWS Lambda, Cloudflare Workers, Docker, Kubernetes, Terraform, Pulumi, GitHub Actions, GitLab CI, Sentry, Datadog, Axiom, Better Stack, Doppler, Infisical, etc.) is an EXAMPLE, not a mandatory default.**
-
-The patterns (env hierarchy, CI gates, preview deploys, rollback strategy, monitoring pillars, cost ceilings, hard human gates for prod-touching changes) are **universal**. Specific hosting, IaC, monitoring tool picks are candidates per project.
-
-**Do not say:** "Use Vercel."
-**Say:** "Vercel is one candidate for hosting. Compare against Fly.io, Render, Railway, Cloudflare Pages, AWS Amplify, or self-host on a VPS based on this project's stack, region needs, cold-start budget, function duration limits, and team expertise. Use it only if it fits."
-
-The 10 decision questions:
-1. What is the project type?
-2. What is the actual problem?
-3. What scale is expected?
-4. What constraints exist?
-5. What stack already exists?
-6. What user experience is required?
-7. What failure risks exist?
-8. What tools are proven for this case?
-9. What tools are overkill?
-10. What tool gives the best output with the least complexity?
-
-Write a decision section before adopting (Problem / Options / Sources / Best option / Why it fits / Why others rejected / Risk / Cost / Test plan / Rollback plan).
-
-**Do not auto-install Docker / Kubernetes / Terraform / IaC tooling.** Containerization and IaC are project-specific decisions, not defaults.
-
-See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.
-
----
-
-## When NOT to use this skill (alpha.15)
-
-- The task at hand doesn't touch this skill's domain — defer to the right specialist skill
-- A faster / simpler skill covers the same need — pick the simpler one and document why
-- The skill's core invariants don't apply to the current project (e.g. regulated-mode rules on a prototype)
-- The command that would activate this skill is already running with another specialist that fits better
-
-If unsure, surface the trade-off in the command's output and let the user decide.
-
-## Quality gate (alpha.15)
-
-Before claiming this skill's work complete:
-
-- [ ] Artifacts produced match the skill's expected outputs
-- [ ] All discipline rules in this skill were respected (not just glanced at)
-- [ ] No banned weasel words in any completion claim — `should`, `probably`, `seems to`, `appears to`, `might`, `hopefully`, `in theory`
-- [ ] Any tool / library / framework added during this run has a decision section per `.bequite/principles/TOOL_NEUTRALITY.md`
-- [ ] Acceptance criteria for the invoking command's task are met (or honestly reported as PARTIAL / FAIL)
-- [ ] `.bequite/state/MISTAKE_MEMORY.md` updated when a project-specific lesson surfaced
-- [ ] `.bequite/logs/AGENT_LOG.md` entry appended for the run
-- [ ] Memory state files (LAST_RUN, WORKFLOW_GATES, CURRENT_PHASE) updated when gate state changed
-
-If any item fails, do not claim done — report PARTIAL with the specific gap.
+- `references/ci-hardening.md`: workflow checklist with examples, OIDC, environments, artifact caching.
+- `references/prod-safety.md`: server and VPS gates, migration approval, deploy runbook template, cost ceilings.

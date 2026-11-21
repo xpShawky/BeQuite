@@ -1,181 +1,73 @@
 ---
 name: bequite-project-architect
-description: Deep procedures for project architecture decisions — stack picks, ADRs, scale honesty, layered Constitution + Doctrines. Invoked by /bq-plan, /bq-research, /bq-scope.
-allowed-tools: ["Read", "Glob", "Grep", "WebFetch", "WebSearch", "Edit", "Write"]
+description: Use when a plan needs structure decisions, such as picking or changing a stack, splitting into services, choosing a database or host, declaring the scale tier, writing an ADR, or drawing the file and phase plan. Builds an options board, checks every candidate's current version in its registry that day, and records the choice as a short decision record with a way to confirm it.
+last_verified: 2026-11-21
+sources:
+  - https://adr.github.io/madr/ (read 2026-11-21) MADR 4.0.0 sections incl. Confirmation
+  - https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions (read 2026-11-21) Nygard ADR
+  - https://c4model.com/ (read 2026-11-21) context and container diagrams
+  - https://www.thoughtworks.com/radar (read 2026-11-21) Vol 35, agent instruction bloat, progressive disclosure
+  - https://martinfowler.com/bliki/MonolithFirst.html (read 2026-11-21) monolith first
+  - https://registry.npmjs.org/ (read 2026-11-21) current versions of the common web stack
+  - https://www.postgresql.org/docs/current/ (read 2026-11-21) current PostgreSQL major
+allowed-tools: Read, Glob, Grep, WebFetch, WebSearch, Edit, Write
 ---
 
 # bequite-project-architect
 
-You are the Senior Software Architect persona inside BeQuite. You're invoked when the slash commands need deeper architecture work than the command-level procedure can handle alone.
+Architecture mistakes are the expensive kind: they are made early, from memory, and paid for over years. This skill makes each structural choice from the project's real constraints and today's facts, lists the options it rejected, and writes it down short enough that someone reads it.
 
-## When this skill activates
+## When to use
 
-- `/bq-plan` calls you for stack decisions, ADR drafting, file-plan generation
-- `/bq-research` calls you for stack-matrix lookups
-- `/bq-scope` calls you for "what's reasonable in scope at this scale?"
-- `/bq-auto new` for full lifecycle architecture decisions
-- `/bq-uiux-variants` when a variant direction requires architectural commitment (e.g. variant needs a router that doesn't exist yet — write a decision section, don't auto-install)
+- `/bq-plan`: stack, scale tier, architecture sketch, file plan, phase plan with acceptance evidence.
+- `/bq-research` and `/bq-scope`: what fits this scale; what is out.
+- `/bq-uiux-variants` or a feature that needs a structural change (a router, a queue, a new service): write a decision, do not install.
 
-## Operating principles
+Not for: the inside of one layer (`bequite-backend-architect`, `bequite-database-architect`, `bequite-devops-cloud`), UI design.
 
-### 1. Scale honesty (Iron Law V)
+## Procedure
 
-Every plan declares a **scale tier**:
+1. **Read what exists.** `.bequite/audits/DISCOVERY_REPORT.md` if present, the manifests, the deploy config, existing ADRs. An existing stack is a constraint; replacing it needs its own decision.
+2. **Declare the scale tier** and let it bind (`references/scale-tiers.md`): solo, team, small SaaS, large SaaS, regulated. Do not build above it; do not cap below it.
+3. **Ask the ten questions** (project type, real problem, scale, constraints, existing stack, UX, failure risks, proven tools, overkill tools, least complexity). Write one line per answer.
+4. **Options board.** For each open choice list 2 to 4 candidates, including "keep what we have" and the simplest one (a monolith, SQLite, a cron job, a static site). For each: fit, cost, risk, team familiarity, lock-in, licence.
+5. **Check each candidate today.** Version and release date from its registry (npm, PyPI, crates, the vendor's docs), licence, last release, maintenance signals. A candidate that cannot be verified in this session is marked `UNVERIFIED:` and cannot be the pick. Flag AGPL and GPL for closed-source products.
+6. **Pick and record** a decision (`references/adr-template.md`, MADR-shaped): context, drivers, options, outcome, consequences, and a **confirmation** line, meaning how and when we check the decision holds (a load test, a cost after one month, a migration that ran).
+7. **Sketch** a system-context and a container view (C4 levels 1 and 2) as text or Mermaid. Deeper levels only when a reader needs them.
+8. **File plan**: every path the work creates or changes, marked NEW, MODIFIED or DELETED, with one line each, specific enough to grep.
+9. **Phase plan**: each phase ends in testable acceptance evidence ("sign-up end-to-end test passes and a row appears in `users`"), not "auth works".
+10. **Keep it short.** Plans and memory files that grow long stop being read by people and by agents (the radar's "agent instruction bloat"). Put detail in linked files and load it when needed.
 
-| Tier | Description | Architectural implications |
-|---|---|---|
-| `solo` | 1 user (you) | sqlite is fine; no auth; localhost-only |
-| `team` | 1-50 users | Postgres dev-tier; magic-link auth; single region |
-| `small_saas` | 50-5,000 MAU | Postgres prod; OAuth + sessions; multi-AZ |
-| `large_saas` | 5k-100k MAU | DB replicas; CDN; queue/worker tier; observability |
-| `regulated` | any scale + PCI/HIPAA/FedRAMP | Audit trail; encryption; access control; ADR for every data flow |
+## Worked example (real registry check, 2026-11-21)
 
-The declared tier is **binding**. Don't cap below it. Don't over-build above it.
+The old version of this skill shipped a "2026 known-good defaults" table. Checking it against the registries today:
 
-### 2. ADR discipline
-
-Every non-trivial decision gets an ADR:
-
-```markdown
-# ADR-NNN: <decision>
-
-**Status:** proposed | accepted | superseded by ADR-MMM
-**Date:** YYYY-MM-DD
-
-## Context
-
-(what problem, why this decision is needed now)
-
-## Decision
-
-(what we chose)
-
-## Alternatives considered
-
-(what we didn't choose + why)
-
-## Consequences
-
-(what becomes easier; what becomes harder)
+```
+next          16.4.6   2026-11-09   (table said "Next.js 15")
+react         19.3.1   2026-10-14
+tailwindcss   4.3.5    2026-11-06   (table said "v4 when stable": stable since, now 4.3)
+vitest        5.1.1    2026-11-18
+vite          8.3.8    2026-11-11
+astro 7.4.13 · @sveltejs/kit 3.4.0 · hono 4.13.19 · drizzle-orm 0.45.4 · PostgreSQL 19 (docs, released 2026-11-19)
 ```
 
-Save ADRs at `.bequite/decisions/ADR-NNN-<slug>.md` (project-level) or `docs/decisions/` in the project (if it prefers).
+Two of the table's version claims were wrong within months. Decision recorded for this skill: **no defaults table**; every plan runs step 5 on the day and writes the versions it saw into the plan. Confirmation (proposed to the skill-auditor owner, not built yet): `/bq-skill-audit` flags any version number in a skill older than its `last_verified` window.
 
-### 3. Stack-matrix-first
+## Quality gate
 
-Don't propose a stack from memory. Read DISCOVERY → check what's already chosen → propose deltas grounded in 2026 freshness.
+- The scale tier is declared and every choice is consistent with it.
+- Every pick has at least one rejected alternative with a reason, and a confirmation line.
+- Every named package or service shows a version, date and licence checked in this session.
+- The file plan lists real paths; the phase plan's evidence is testable.
+- Nothing was installed or migrated during planning.
 
-**2026 known-good defaults (as of authoring; verify via `/bq-research` before locking):**
+## Boundaries
 
-| Need | Default | Why |
-|---|---|---|
-| Web framework (React-flavor) | Next.js 15 App Router + React 19 | Stable as of 2026; SSR + SSG + SSR-streaming all production-ready |
-| Web framework (lightweight) | Hono | Smallest TypeScript edge backend |
-| ORM (Postgres) | Drizzle | Type-safe, migration-first, escape hatch to raw SQL |
-| Auth (self-hosted) | Better-Auth | OSS, OAuth + email/password + sessions + 2FA |
-| Auth (managed) | Clerk (50k MAU free tier) | Drop-in UI; SSO ready |
-| DB host | Supabase / Neon | Postgres + free tier with Pooler |
-| Hosting (web) | Vercel | Pro $20/mo; 300s function default (configurable to 800s) |
-| Hosting (API/worker) | Railway / Render / Fly | Better for long-running workers than Vercel |
-| Email | Resend | Developer-friendly, 3k/mo free |
-| Component library | shadcn/ui | Copy-into-repo; tweakcn theme editor |
-| Styling | Tailwind v4 | When stable; track beta carefully |
-| Test runner (Node) | vitest | faster than jest, ESM-native |
-| E2E | Playwright | Cross-browser, MCP integrations |
+- Architecture changes are a hard human gate: the plan proposes, the user approves.
+- No stack is a default. Names in this skill and its references are examples.
+- Never claim a version, price or limit from memory; check it or write `UNVERIFIED:`.
 
-**Always re-verify via WebFetch + /bq-research before locking.** This list rots.
+## References (load on demand)
 
-### 4. Forkable Doctrines
-
-A Doctrine is a per-project-type rule pack. Common ones BeQuite ships templates for:
-
-- `default-web-saas` — UI rules (no Inter without recorded reason; no gradients; tokens.css required)
-- `cli-tool` — semver discipline, exit codes, completions
-- `ml-pipeline` — reproducible training, dataset versioning
-- `desktop-tauri` — Tauri v2, OS keychain, notarytool, AzureSignTool
-- `library-package` — public API freeze, semver-strict, no telemetry without opt-in
-- `fintech-pci` — PCI controls
-- `healthcare-hipaa` — PHI handling
-- `ai-automation` — n8n / Make / Zapier with idempotency + retry + DLQ
-
-Active Doctrines are declared in `.bequite/state/DECISIONS.md`.
-
-### 5. File-plan rigor
-
-The IMPLEMENTATION_PLAN.md `File plan` section must be specific. Not "create the auth files" — list every path + NEW/MODIFIED/DELETED + a one-line description.
-
-A receiver reading the plan should be able to grep their disk and find every file at the listed path.
-
-### 6. Phase-plan acceptance evidence
-
-Each phase has an **acceptance evidence** that's testable. Not "auth works" — "Playwright sign-up walk completes; user row appears in `users` table".
-
-## Anti-patterns to refuse
-
-- "We'll figure out auth later" — no. Auth is structural.
-- "Let's use Mongo because mongo" — only if the data is truly document-shaped + the team has Mongo ops experience.
-- "We'll add caching later" — yes, but specify where it goes architecturally so it's not invasive when added.
-- "Custom auth is fine, we'll be careful" — Doctrine `default-web-saas` Rule 9 forbids. Use Better-Auth / Clerk / Supabase Auth.
-
-## Output discipline
-
-When this skill writes content (ADRs, plan sections, file plans):
-
-- Cite sources for fact claims
-- Prefer 2026 stable versions; mark anything beta/RC
-- Acceptance evidence is concrete, not aspirational
-- License-flag AGPL / GPL dependencies that block commercial closed-source
-- Never list a package without verifying it exists (PhantomRaven defense)
-
----
-
-## Tool neutrality (global rule)
-
-⚠ **Every tool, library, framework, design system, or workflow named in this file (Next.js, Hono, Drizzle, Better-Auth, Clerk, Supabase, Neon, Vercel, Railway, Render, Fly, Resend, shadcn/ui, Tailwind, vitest, Playwright, etc.) is an EXAMPLE, not a mandatory default.**
-
-The stack matrix above is a **starting reference** to verify against `/bq-research` — not a fixed recommendation. Each project's stack is decided by its own scale, constraints, and existing tech.
-
-**Do not say:** "Use Drizzle."
-**Say:** "Drizzle is one candidate. Research and compare against Prisma, Kysely, and raw SQL for this project's specific data needs, scale, and team expertise. Use it only if it fits."
-
-The 10 decision questions:
-1. What is the project type?
-2. What is the actual problem?
-3. What scale is expected?
-4. What constraints exist?
-5. What stack already exists?
-6. What user experience is required?
-7. What failure risks exist?
-8. What tools are proven for this case?
-9. What tools are overkill?
-10. What tool gives the best output with the least complexity?
-
-Write a decision section before adopting (Problem / Options / Sources / Best option / Why it fits / Why others rejected / Risk / Cost / Test plan / Rollback plan). Short inline for small projects; full ADR at `.bequite/decisions/ADR-XXX-<tool>-choice.md` for large / regulated work.
-
-See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.
-
----
-
-## When NOT to use this skill (alpha.15)
-
-- The task at hand doesn't touch this skill's domain — defer to the right specialist skill
-- A faster / simpler skill covers the same need — pick the simpler one and document why
-- The skill's core invariants don't apply to the current project (e.g. regulated-mode rules on a prototype)
-- The command that would activate this skill is already running with another specialist that fits better
-
-If unsure, surface the trade-off in the command's output and let the user decide.
-
-## Quality gate (alpha.15)
-
-Before claiming this skill's work complete:
-
-- [ ] Artifacts produced match the skill's expected outputs
-- [ ] All discipline rules in this skill were respected (not just glanced at)
-- [ ] No banned weasel words in any completion claim — `should`, `probably`, `seems to`, `appears to`, `might`, `hopefully`, `in theory`
-- [ ] Any tool / library / framework added during this run has a decision section per `.bequite/principles/TOOL_NEUTRALITY.md`
-- [ ] Acceptance criteria for the invoking command's task are met (or honestly reported as PARTIAL / FAIL)
-- [ ] `.bequite/state/MISTAKE_MEMORY.md` updated when a project-specific lesson surfaced
-- [ ] `.bequite/logs/AGENT_LOG.md` entry appended for the run
-- [ ] Memory state files (LAST_RUN, WORKFLOW_GATES, CURRENT_PHASE) updated when gate state changed
-
-If any item fails, do not claim done — report PARTIAL with the specific gap.
+- `references/scale-tiers.md`: tiers with architectural implications.
+- `references/adr-template.md`: the decision template and a filled example.

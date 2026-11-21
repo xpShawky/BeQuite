@@ -199,7 +199,7 @@ Design rule: **new safety needs go to the weakest sufficient surface.** Don't wr
 
 ## 10. Subagent delegation policy
 
-Subagents get **isolated context** and return results only. Use for: parallel fan-out reads, adversarial fresh-context verification (anti-hallucination), variant generation. Never for: decisions requiring accumulated session judgment, hard-gate approvals. The Delegate Mode cross-SESSION pattern (`bequite-delegate-planner`) is distinct from in-session subagents — task packs make the handoff explicit.
+Subagents get **isolated context** and return results only. Use for: parallel fan-out reads, adversarial fresh-context verification (anti-hallucination), variant generation. Never for: decisions requiring accumulated session judgment, hard-gate approvals. The Delegate Mode cross-SESSION pattern (`bequite-delegation`) is distinct from in-session subagents — task packs make the handoff explicit.
 
 ## 11. Failure-mode map
 

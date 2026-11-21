@@ -63,8 +63,8 @@ Full strategy: `.claude/bequite/docs/architecture/AUTO_MODE_STRATEGY.md`.
 | `security` | Security review + fix | security-reviewer |
 | `testing` | Test pass only | testing-gate |
 | `devops` | DevOps only (hard gates for prod) | devops-cloud |
-| `scraping` | Scraping workflow | scraping-automation |
-| `automation` | Workflow automation | scraping-automation + backend-architect |
+| `scraping` | Scraping workflow | automation |
+| `automation` | Workflow automation | automation + backend-architect |
 | `deploy` | Deploy workflow (multiple hard gates) | devops-cloud + release-gate |
 | `live-edit` | Dispatch to `/bq-live-edit` | live-edit |
 | `variants` | Dispatch to `/bq-uiux-variants` | ux-ui-designer + frontend-quality |
@@ -330,7 +330,7 @@ Three phases:
 2. **Phase 2 — Implement (cheaper model, separate session):** user switches Claude model (strong → balanced model, or a different account or host). Cheap model runs `/bq-implement delegate` and executes exactly per the task pack — no architectural decisions, no guessing
 3. **Phase 3 — Review (strong model, back here):** user switches back. Strong model runs `/bq-review delegate`; produces `.bequite/work/<id>/delegate/DELEGATE_REVIEW_REPORT.md` with per-task verdicts (✅ approved / ⚠ approved-with-comments / ❌ rejected). Strong model fixes or re-instructs the cheap model
 
-Full discipline: `.claude/skills/bequite-delegate-planner/SKILL.md`.
+Full discipline: `.claude/skills/bequite-delegation/SKILL.md`.
 
 **Use Delegate Mode when:**
 - A feature is large enough that strong-model end-to-end is expensive
@@ -370,7 +370,7 @@ The agent picks a sane default + tells the user; doesn't silently choose.
 
 ### Mode tracking
 
-Every `/bq-auto` run appends an entry to `.bequite/state/MODE_HISTORY.md` (mode used + outcome + cost approx + tests pass/total). `bequite-workflow-advisor` reads this to learn user's pattern.
+Every `/bq-auto` run appends an entry to `.bequite/state/MODE_HISTORY.md` (mode used + outcome + cost approx + tests pass/total). `bequite-orchestrator` reads this to learn user's pattern.
 
 ---
 
@@ -380,7 +380,7 @@ Every `/bq-auto` run appends an entry to `.bequite/state/MODE_HISTORY.md` (mode 
 
 After this command completes, if it surfaced a recurring mistake pattern, an unexpected root cause, or a project-specific lesson, append an entry to `.bequite/state/MISTAKE_MEMORY.md`.
 
-Also append a one-line entry to `.bequite/state/MODE_HISTORY.md` (mode used + outcome + approx cost + tests pass/total). This helps `bequite-workflow-advisor` recommend the right mode next time.
+Also append a one-line entry to `.bequite/state/MODE_HISTORY.md` (mode used + outcome + approx cost + tests pass/total). This helps `bequite-orchestrator` recommend the right mode next time.
 
 Append when:
 - A repeated bug pattern emerged (same root cause as a previous fix)
@@ -511,7 +511,7 @@ Internal workflow executed:
 - W0.3 /bq-discover
 - W1.2 /bq-research (3 dims, fast)
 - W1.4 /bq-plan
-- C5 /bq-course (curriculum)
+- C5 /bq-content course (curriculum)
 - C1 /bq-presentation (slides)
 - W4.1 /bq-verify — PASS
 ```

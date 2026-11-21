@@ -1,6 +1,6 @@
-# Local Business Digitizer — `/bq-local-business` (C13) — alpha.24
+# Local Business Digitizer — `/bq-offer local-business` (C13) — alpha.24
 
-Turn an offline/low-tech local business into a **practical minimum digital system** — not an enterprise build. Command: `bq-local-business.md`. Skills: automation-engineer + product-strategist + localization-rtl + make-money. Reuses C6/C11/C12 rather than duplicating them.
+Turn an offline/low-tech local business into a **practical minimum digital system** — not an enterprise build. Command: `bq-local-business.md`. Skills: automation + product-strategist + localization-rtl + make-money. Reuses C6/C11/C12 rather than duplicating them.
 
 ## Why a command
 

@@ -6,7 +6,7 @@
 
 **Related strategies (alpha.16 cross-refs):**
 - `AUTO_MODE_STRATEGY.md` §11 "Operating modes" — **Delegate Mode** is the operationalized form of multi-model planning across sessions (strong model architects in session 1; cheap model implements in session 2; strong model reviews in session 3)
-- `.claude/skills/bequite-delegate-planner/SKILL.md` — the skill that encodes Delegate Mode
+- `.claude/skills/bequite-delegation/SKILL.md` — the skill that encodes Delegate Mode
 - `RESEARCH_DEPTH_STRATEGY.md` — deep research feeds the task pack the cheap model reads
 - `MEMORY_FIRST_BEHAVIOR.md` — the cross-session handoff works because state lives in `.bequite/`; memory-first is what makes Delegate Mode safe
 - `WORKFLOW_GATES.md` § "Feature-addition workflow (alpha.14)" — multi-plan is recommended at step 4 (Create plan) for high-stakes features

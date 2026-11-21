@@ -11,7 +11,7 @@
 | 1 | **User-facing capability** | the user can DO a new valuable thing | Presentation Builder · Writing DNA · Live Edit · UI Variants · Job/Money Finders · Delegate Mode · Skill Audit |
 | 2 | **Internal reliability feature** | the agent fails less; user does nothing new | execution contract · file-risk tiers · evidence log · skill routing · confidence calibration mechanics |
 | 3 | **Workflow gate** | something is BLOCKED until a condition | 23 ledger gates · 17 hard human gates · design continuity gates · uncertain-scope/R3 |
-| 4 | **Skill-only capability** | deep procedure invoked by commands, never by users directly | all 27 `bequite-*` skills (incl. frontier-reasoning-coach) |
+| 4 | **Skill-only capability** | deep procedure invoked by commands, never by users directly | all 27 `bequite-*` skills (incl. orchestrator) |
 | 5 | **Command capability** | user-invokable slash command | the 46 commands |
 | 6 | **Memory pattern** | a file shape + update discipline | DNA files · CONTEXT_SUMMARY · MISTAKE_MEMORY · registries · logs |
 | 7 | **Documentation pattern** | knowledge with no runtime behavior | strategy docs · playbook · this taxonomy |
@@ -52,6 +52,6 @@ Ship command + skill + memory pack + docs per the 15-step workflow.
 | Guard Pass | **skill** + strategy doc | reactive procedure invoked by other commands, not a user destination |
 | Catalog IDs / Command Router | **docs + memory pattern** | navigation metadata, not behavior users invoke directly |
 | 3D site builder | **argument** (`style=` on reference/uiux-variants) | a direction within an existing surface, not a new workflow |
-| /bq-recording | **roadmap (parked)** | heavy media path unresearched; fails the lightweight test |
+| /bq-knowledge recording | **roadmap (parked)** | heavy media path unresearched; fails the lightweight test |
 
 Anti-bloat outcome: 11 capability requests → 6 commands, not 17. Use these as precedents in future shape decisions.

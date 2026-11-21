@@ -67,8 +67,8 @@ Ask the model (silently) to classify into one of:
 | 2 | **Backend API** | `bequite-backend-architect`, `bequite-security-reviewer` |
 | 3 | **Database** | `bequite-database-architect`, `bequite-backend-architect` |
 | 4 | **Auth** | `bequite-security-reviewer`, `bequite-backend-architect` |
-| 5 | **Automation** | `bequite-scraping-automation`, `bequite-backend-architect` |
-| 6 | **Scraping / Crawling** | `bequite-scraping-automation` |
+| 5 | **Automation** | `bequite-automation`, `bequite-backend-architect` |
+| 6 | **Scraping / Crawling** | `bequite-automation` |
 | 7 | **Cloud / Deployment** | `bequite-devops-cloud` |
 | 8 | **Admin panel** | `bequite-frontend-quality`, `bequite-security-reviewer` |
 | 9 | **Dashboard** | `bequite-frontend-quality`, `bequite-ux-ui-designer` |

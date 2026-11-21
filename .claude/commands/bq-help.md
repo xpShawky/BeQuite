@@ -9,10 +9,11 @@ Read-only. Never edits files.
 ## `/bq-help` (no argument)
 
 1. Read `commands.md` (project root). It is the single source for the catalog, so this help never drifts from it. If it is missing, read `.bequite/commands/COMMAND_ID_MAP.md` instead and say that `commands.md` is missing (fix: re-run the installer with `--force`).
-2. Print it condensed: the contract summary (skills first, work folders, gates, plan first, evidence, write back), the operating modes table, then each family (W0 Setup, W1 Framing, W2 Build, W3 Quality, W4 Release, W5 Memory, N Navigation, O Orchestrator, C Capabilities, M Maintenance) with ID, command and one line.
+2. Print it condensed: the contract summary (update check, skills first, work folders, gates, plan first, evidence, write back), the operating modes table, then each family (W0 Setup, W1 Framing, W2 Build, W3 Quality, W4 Release, W5 Memory, N Navigation, O Orchestrator, C Capabilities by pack: core, studio, business; M Maintenance) with ID, command and one line. Folded commands appear as modes of `/bq-knowledge`, `/bq-content` and `/bq-offer`.
 3. End with three starting points that fit the current state (read `.bequite/state/CURRENT_PHASE.md` and `.bequite/ACTIVE.md`), for example:
    - nothing set up yet → `/bq-init`, then `/bequite`
-   - an idea for a film or reel → `/bq-motion "<idea>"`
+   - an idea for a film or reel → `/bq-motion "<idea>"`; a post or a Short → `/bq-content radar "<niche>"`
+   - a video to understand → `/bq-watch "<link>"`; a team that works on its own → `/bq-team init`
    - not sure → `/bq-suggest "<what you want>"`
 
 ## `/bq-help <command>` (for example `/bq-help bq-motion`)

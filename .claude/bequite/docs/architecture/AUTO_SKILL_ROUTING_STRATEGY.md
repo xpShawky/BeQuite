@@ -16,7 +16,7 @@
 4. **Select skills** per the router's domain→skill map, applying mode sizing (below) and the cross-cutting auto-attach rules.
 5. **Report the selection** — every command output includes a `Skill Selection:` section listing selected skills WITH one-line reasons, and notable NOT-selected skills with reasons (so the user can correct the routing).
 6. **Load only selected** SKILL.md files (masters may pull their `references/` on demand).
-7. **Log** to `SKILL_USAGE_LOG.md` at writeback (selection + outcome) — feeds workflow-advisor pattern learning and `/bq-skill-audit` orphan detection.
+7. **Log** to `SKILL_USAGE_LOG.md` at writeback (selection + outcome) — feeds orchestrator pattern learning and `/bq-skill-audit` orphan detection.
 
 ## Mode sizing (don't over-trigger)
 
@@ -60,7 +60,7 @@ Eight routing domains added for the alpha.22 capability commands + cross-cutting
 
 ## Skills-first global rule + research-discovered skills (alpha.25)
 
-**Skills-first (global, every command).** Selecting + announcing skills is the FIRST substantive step of every command — workflow, capability (course/presentation/reference/offer/automation/brand-kit/community/recording/start/…), and maintenance alike. No plan, content, edit, or task-tool call happens for the task before the `Skill Selection:` block is emitted (contract step 4). Capability commands are not exempt: e.g. `/bq-course` announces researcher + writing-dna + presentation-builder (+localization-rtl/anti-hallucination as signalled) before touching the curriculum; `/bq-presentation` announces presentation-builder + ux-ui-designer first. Trivial reads (now/help/explain) are exempt.
+**Skills-first (global, every command).** Selecting + announcing skills is the FIRST substantive step of every command — workflow, capability (course/presentation/reference/offer/automation/brand-kit/community/recording/start/…), and maintenance alike. No plan, content, edit, or task-tool call happens for the task before the `Skill Selection:` block is emitted (contract step 4). Capability commands are not exempt: e.g. `/bq-content course` announces researcher + writing-dna + presentation-builder (+localization-rtl/anti-hallucination as signalled) before touching the curriculum; `/bq-presentation` announces presentation-builder + ux-ui-designer first. Trivial reads (now/help/explain) are exempt.
 
 **Per-phase / per-task skills (alpha.25).** `/bq-plan` records the selected skills for EACH phase inside `IMPLEMENTATION_PLAN.md`; `/bq-assign` records them per task in `TASK_LIST.md` (alongside the Execution Profile — model + effort + confidence, `TASK_EXECUTION_PROFILE.md`). So skills are chosen at plan time, refined at assign time, and confirmed at run time.
 

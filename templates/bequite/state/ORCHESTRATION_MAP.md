@@ -1,25 +1,29 @@
-# BeQuite Orchestration Map — source of truth (alpha.22 orchestration update)
+# BeQuite Orchestration Map: source of truth (v1)
 
-**When confused, conflicted, or capability-missing: come HERE first.** This is the compact brain index — one-liners + pointers; details live in the canonical files named. Model doc: `.claude/bequite/docs/architecture/BEQUITE_ORCHESTRATION_MODEL.md`. Used by: bequite · suggest · discover · plan · auto · implement · review · verify · skill-audit (+ both routers on conflict).
+**When confused, conflicted, or a capability is missing: come here first.** A compact index of one-liners and pointers; details live in the files named. Model doc: `.claude/bequite/docs/architecture/BEQUITE_ORCHESTRATION_MODEL.md`. Used by: bequite, suggest, discover, plan, auto, implement, review, verify, skill-audit (and both routers on a conflict).
 
-## 1–5. Commands (60 active + 1 alias — full map: `.bequite/commands/COMMAND_ID_MAP.md`)
+## 1-5. Commands (51 in three packs; full map: `.bequite/commands/COMMAND_ID_MAP.md`)
 
-- **W0 setup:** bequite(menu) · init · discover · doctor · mode · new · existing
-- **W1 framing:** clarify · research · scope(+from-interview,intake) · plan(+from-issues,migration,delegate) · spec · multi-plan
-- **W2 build:** assign(+delegate) · implement · feature(+demo-data) · fix · uiux-variants(+style=) · live-edit
-- **W3 quality:** test(+from-spec,fixtures) · audit(+client,a11y) · review(+delegate,persona) · red-team
-- **W4 release:** verify(+regressions,drift) · release(+readiness,announce,proof,demo-video) · changelog
-- **W5 memory:** memory · recover · handoff(+client)
-- **N navigation:** now · help · explain · suggest(MAIN navigation assistant)
-- **O orchestrators:** auto (18 intents incl. `motion`; `phase=P0..P5` replaces p0–p5; 15-step sequence)
-- **C capabilities:** presentation · writing-dna · reference · knowledge · course · pain-radar · integrate · proposal · job-finder · make-money · offer(C11) · automation(C12) · local-business(C13) · brand-kit(C14) · community(C15) · recording(C16) · start(C17) · motion(C18 v4: film director, plan-first, stops before paid credits/final render/posting) — C3-C18 not yet live-tested
-- **M maintenance:** update · skill-audit · hooks(M3, opt-in safety hooks: status/enable/disable/test) · **X:** add-feature(deprecated→feature)
+- **W0 setup:** bequite (update check + menu) · init · discover · doctor · mode · new · existing · work
+- **W1 framing:** clarify · research · scope (+from-interview, intake) · plan (+from-issues, delegate) · spec · multi-plan
+- **W2 build:** assign (+delegate) · implement · feature (+demo-data) · fix · uiux-variants · live-edit
+- **W3 quality:** test (+from-spec, fixtures) · audit (+client) · review (+delegate, persona) · red-team
+- **W4 release:** verify (+regressions, drift) · release (+readiness, announce, proof, demo-video) · changelog
+- **W5 memory:** memory · recover · handoff (+client)
+- **N navigation:** help · explain · suggest (main navigation assistant)
+- **O orchestrator:** auto (intents incl. `motion`; `phase=P0..P5`)
+- **C core capabilities:** writing-dna · knowledge (build, ask, rag-plan, export, recording, reference, integrate, automation) · team (command center) · operator (Telegram)
+- **C studio:** presentation · motion · content (radar, study, script, produce, package, queue, from-work, brand-kit, community, course) · watch · dna
+- **C business:** offer (offer, proposal, local-business, pain-radar, business-system) · make-money · job-finder · start · productize
+- **M maintenance:** update (also automatic at every command) · skill-audit · hooks
 
-**Near-miss boundaries (conflict killers):** audit=whole-project vs review=diff · spec=one-pager vs scope=boundaries vs plan=blueprint · now=1-line vs bequite=menu vs suggest=advisor · pain-radar=find problems vs make-money=find earning tracks · proposal=per-client pitch vs offer=standing productized package · verify="does it work" vs release readiness="should it ship".
+**Near-miss boundaries (conflict killers):** audit = whole project vs review = a diff · spec = one page vs scope = boundaries vs plan = blueprint · bequite = menu vs suggest = advisor · offer pain-radar = find problems vs make-money = find earning routes · offer proposal = one client vs offer = a standing package · content = one piece vs team = a standing team · watch = one video vs dna = a niche's format · verify = does it work vs release readiness = should it ship.
 
-## 6. Skills (31 — registry: `.bequite/skills/SKILL_REGISTRY.md`, router: `SKILL_ROUTER.md`)
+## 6. Skills (38 in three packs; registry: `.bequite/skills/SKILL_REGISTRY.md`, router: `SKILL_ROUTER.md`)
 
-orchestrator(this brain) · automation-engineer(tool-neutral automation+bots) · context-engineer(persisted context) · anti-hallucination(evidence-or-UNVERIFIED) · guard-pass(post-work AI-failure gates) · frontier-reasoning-coach(discipline for any model) · researcher(11-dim evidence) · project-architect(stack/ADR) · product-strategist(JTBD/MVP/pricing) · backend-architect · database-architect · security-reviewer(OWASP/supply-chain) · devops-cloud · testing-gate · release-gate · problem-solver(reproduce-first) · frontend-design-system(MASTER: Design DNA/continuity) · ux-ui-designer · frontend-quality(slop detection) · live-edit · localization-rtl(Arabic/MENA/RTL auto-attach) · scraping-automation(Article VIII, API-first) · presentation-builder · writing-dna · multi-model-planning · delegate-planner(strong plans/cheap implements/strong reviews) · workflow-advisor(suggest engine) · skill-auditor · updater · job-finder · make-money
+**core:** orchestrator (routes, operating card, subagent cost rule) · context-engineer · anti-hallucination · guard-pass · researcher · project-architect · product-strategist · backend-architect · database-architect · security-reviewer · devops-cloud · testing-gate · release-gate · problem-solver · frontend-design-system (master) · ux-ui-designer · frontend-quality · live-edit · localization-rtl (auto-attach) · automation (official API first, Scrapling default) · delegation (strong plans, cheap builds, second plans) · writing-dna · human-taste (reference-first, the human test) · agent-team · skill-auditor · updater
+**studio:** motion-director · kinetic-type (BQ Kinetic engine) · sound-voice · render-pipeline · presentation-builder · video-intel · trend-radar · format-dna · hooks-and-copy · publish-prep
+**business:** make-money · job-finder
 
 ## 7. Auto Mode rules → `.bequite/state/AUTO_MODE_RULES.md`
 15-step anti-skip sequence; `Not applicable — reason:` / `Blocked — reason:` markings; 17 hard gates unchanged; stop/ask/continue/compact rules.

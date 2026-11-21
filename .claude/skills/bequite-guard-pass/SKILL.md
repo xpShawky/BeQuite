@@ -36,7 +36,7 @@ Not for: style while writing (it is reactive); unchanged code; replacing `/bq-re
 
 **Docs:** every command, flag, file and function named exists · examples run as written · counts match the tree · the changelog matches the diff · install steps work in an empty folder.
 
-**Creative output:** defer to the human-taste skill (reference-first doctrine): side-by-side with the references exists, the tell sweep for the medium ran, the phone check or blind pick is recorded.
+**Creative output:** defer to `bequite-human-taste` (reference-first doctrine): side-by-side with the references exists, the tell sweep for the medium ran, the phone check or blind pick is recorded.
 
 ## Procedure
 
@@ -51,7 +51,7 @@ Not for: style while writing (it is reactive); unchanged code; replacing `/bq-re
 ```
 $ ls .claude/commands/*.md | wc -l        -> 55
 $ ls -d .claude/skills/*/ | wc -l          -> 35
-$ grep -n "55 commands\|35 skills" CLAUDE.md README.md commands.md
+$ grep -n -E "[0-9]+ (commands|skills)" CLAUDE.md README.md commands.md   # every count must match `python scripts/bq_check.py counts_match`
 CLAUDE.md:13, CLAUDE.md:14, README.md:9, README.md:10, commands.md:3
 ```
 

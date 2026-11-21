@@ -1,6 +1,6 @@
 # Low-Cost Model Execution Strategy
 
-Make weaker, cheaper, or local models perform **better** by forcing them through BeQuite workflows. **Honest claim, stated everywhere:** BeQuite does NOT make small models equal to frontier models — it **narrows the gap** with structure, memory, checklists, task decomposition, evidence requirements, and verification gates. Practical how-to: `.claude/bequite/docs/runbooks/USING_BEQUITE_WITH_SMALLER_MODELS.md` · operational rules `.bequite/state/LOW_COST_MODEL_RULES.md` · foundations: delegate mode (`bequite-delegate-planner`) + the 10-rule frontier card (`FRONTIER_REASONING_SUMMARY.md`).
+Make weaker, cheaper, or local models perform **better** by forcing them through BeQuite workflows. **Honest claim, stated everywhere:** BeQuite does NOT make small models equal to frontier models — it **narrows the gap** with structure, memory, checklists, task decomposition, evidence requirements, and verification gates. Practical how-to: `.claude/bequite/docs/runbooks/USING_BEQUITE_WITH_SMALLER_MODELS.md` · operational rules `.bequite/state/LOW_COST_MODEL_RULES.md` · foundations: delegate mode (`bequite-delegation`) + the 10-rule frontier card (`FRONTIER_REASONING_SUMMARY.md`).
 
 ## 1. Supported targets
 

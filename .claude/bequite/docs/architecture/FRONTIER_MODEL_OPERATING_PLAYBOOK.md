@@ -2,7 +2,7 @@
 
 > **Make any model — cheaper, smaller, or different — operate with frontier-model discipline by forcing the right workflow.** This captures the EXTERNAL operating patterns of a frontier-class pass (the alpha.14–21 lineage), not private chain-of-thought. These are checklists and execution patterns any model can follow.
 
-**Status:** active · **Adopted:** alpha.21 · **Companion skill:** `bequite-frontier-reasoning-coach` · **10-rule card:** `.bequite/state/FRONTIER_REASONING_SUMMARY.md`
+**Status:** active · **Adopted:** alpha.21 · **Companion skill:** `bequite-orchestrator` · **10-rule card:** `.bequite/state/FRONTIER_REASONING_SUMMARY.md`
 
 ---
 

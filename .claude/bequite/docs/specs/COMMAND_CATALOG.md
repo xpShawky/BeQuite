@@ -2,14 +2,14 @@
 
 **Status:** authored 2026-05-11; expanded across alpha.2–alpha.18; Writing DNA + Skill Audit + Execution Contract added 2026-06-11 (alpha.19 — Fable Strengthening Pass)
 **Total commands:** 60 active + 1 deprecated alias (M3 /bq-hooks added 2026-06-13) (`/bq-add-feature` removed in v4) — every command carries a stable display-only catalog ID (W0–W5 / N / O / C / M); canonical map `.bequite/commands/COMMAND_ID_MAP.md`
-**alpha.24:** 6 capability commands C12 /bq-automation · C13 /bq-local-business · C14 /bq-brand-kit · C15 /bq-community · C16 /bq-recording · C17 /bq-start (specs in .claude/bequite/docs/specs/); extensions: /bq-offer business-system|agency · /bq-handoff workflow-export · /bq-release template · Course Architect in /bq-course; +1 skill automation-engineer (31); P1 skill patches; legacy skill/ folder legacy-marked; built NOT live-tested
+**alpha.24:** 6 capability commands C12 /bq-knowledge automation · C13 /bq-offer local-business · C14 /bq-content brand-kit · C15 /bq-content community · C16 /bq-knowledge recording · C17 /bq-start (specs in .claude/bequite/docs/specs/); extensions: /bq-offer business-system|agency · /bq-handoff workflow-export · /bq-release template · Course Architect in /bq-content course; +1 skill automation-engineer (31); P1 skill patches; legacy skill/ folder legacy-marked; built NOT live-tested
 **alpha.23:** **C11 /bq-offer** — Offer Engine (idea/niche → sellable productized offer; 12 outputs in `.bequite/offers/`; honest-selling rules: no invented demand, no fake income claims, promise ≠ guarantee; completes the monetization chain C6→C10→C11→C8→proof; spec `.claude/bequite/docs/specs/OFFER_ENGINE.md`; built, not live-tested)
-**alpha.22:** Command Router layer (`.claude/bequite/docs/architecture/WORKFLOW_COMMAND_ROUTER.md` — contract step 12 = multi-command Next Command Recommendations; auto mode reports internal workflow by ID) · 6 new capability commands: **C3 /bq-reference** (screenshot|url|flow|style= → design extraction + clone-safe rebuild blueprint, `.bequite/reference/`) · **C4 /bq-knowledge** (build|ask|rag-plan|export, `.bequite/knowledge/`) · **C5 /bq-course** (Course Engine, `.bequite/courses/`, 15 outputs incl. SOURCE_INTAKE_REPORT — handles text/scanned/OCR/RTL PDFs via the 12-rule Source Intake) · **C6 /bq-pain-radar** (ethical public-pain mining, `.bequite/pain-radar/`) · **C7 /bq-integrate** (API blueprint, `.bequite/integrations/`) · **C8 /bq-proposal** (honest proposals, `.bequite/proposals/`) · skills 27 → **30** (localization-rtl + guard-pass; + orchestrator in the same-release orchestration update) · 11 argument workflows (verify regressions|drift · release readiness|announce|proof|demo-video · plan from-issues|migration · scope from-interview · test from-spec|fixtures · handoff client · audit client|a11y · uiux-variants style=)
+**alpha.22:** Command Router layer (`.claude/bequite/docs/architecture/WORKFLOW_COMMAND_ROUTER.md` — contract step 12 = multi-command Next Command Recommendations; auto mode reports internal workflow by ID) · 6 new capability commands: **C3 /bq-knowledge reference** (screenshot|url|flow|style= → design extraction + clone-safe rebuild blueprint, `.bequite/reference/`) · **C4 /bq-knowledge** (build|ask|rag-plan|export, `.bequite/knowledge/`) · **C5 /bq-content course** (Course Engine, `.bequite/courses/`, 15 outputs incl. SOURCE_INTAKE_REPORT — handles text/scanned/OCR/RTL PDFs via the 12-rule Source Intake) · **C6 /bq-offer pain-radar** (ethical public-pain mining, `.bequite/pain-radar/`) · **C7 /bq-knowledge integrate** (API blueprint, `.bequite/integrations/`) · **C8 /bq-offer proposal** (honest proposals, `.bequite/proposals/`) · skills 27 → **30** (localization-rtl + guard-pass; + orchestrator in the same-release orchestration update) · 11 argument workflows (verify regressions|drift · release readiness|announce|proof|demo-video · plan from-issues|migration · scope from-interview · test from-spec|fixtures · handoff client · audit client|a11y · uiux-variants style=)
 **Total skills:** 26 (7 baseline + 7 specialist + 1 live-edit + 3 opportunity + 1 updater + 1 delegate-planner + 1 presentation-builder + 1 frontend-design-system master (alpha.17) + 2 reliability/context (alpha.18) + **writing-dna + skill-auditor (alpha.19)**)
 **Execution contract (alpha.20):** every command follows the **12 steps** in `.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md` — including automatic skill routing (registry check → task classification → auto-selection, steps 2–4 per `AUTO_SKILL_ROUTING_STRATEGY.md`); risky file edits tiered per `.claude/bequite/docs/architecture/FILE_RISK_CLASSIFICATION.md`
 **Skill routing memory (alpha.20):** `.bequite/skills/{SKILL_REGISTRY,SKILL_ROUTER,SKILL_USAGE_LOG}.md` — users describe goals; BeQuite selects skills and explains why
 **Confidence Forecast (alpha.21):** banded calibrated % on every plan/task/feature (no new command — integrated into plan/assign/auto/feature/fix/implement/review/verify/release); rules `.bequite/state/CONFIDENCE_RULES.md`; trajectory `.bequite/work/<id>/tasks.md`; calibration `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`
-**Frontier discipline (alpha.21):** skills 26 → **27** (`bequite-frontier-reasoning-coach`); playbook `.claude/bequite/docs/architecture/FRONTIER_MODEL_OPERATING_PLAYBOOK.md`; 10-rule card `.bequite/state/FRONTIER_REASONING_SUMMARY.md` (embedded in delegate packs); **`expert`** documented as composition alias (deep + strict evidence + safety scope + domain checklist), not a 5th mode — see `FEATURE_TYPE_TAXONOMY.md`
+**Frontier discipline (alpha.21):** skills 26 → **27** (`bequite-orchestrator`); playbook `.claude/bequite/docs/architecture/FRONTIER_MODEL_OPERATING_PLAYBOOK.md`; 10-rule card `.bequite/state/FRONTIER_REASONING_SUMMARY.md` (embedded in delegate packs); **`expert`** documented as composition alias (deep + strict evidence + safety scope + domain checklist), not a 5th mode — see `FEATURE_TYPE_TAXONOMY.md`
 
 ### `/bq-writing-dna` (NEW in alpha.19)
 - **Purpose:** reusable writing profile (genre/audience/tone/rhythm/vocabulary/citations/forbidden patterns) from samples → generate or rewrite in that voice
@@ -169,7 +169,7 @@ Exemptions: hotfixes, doc-only changes, and skill additions activated only from 
 - **Required gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`, `CLARIFY_ANSWERED`, `RESEARCH_COMPLETE`, `SCOPE_LOCKED`
 - **Writes:** `.bequite/prompts/generated_prompts/*`, `.bequite/prompts/model_outputs/*`, `.bequite/plans/MULTI_MODEL_COMPARISON.md`, `IMPLEMENTATION_PLAN.md` (merged), `IMPLEMENTATION_PLAN_PRE_MERGE.md` (preserved)
 - **Quality gate sets:** `MULTI_PLAN_DECISION ✅` (optional)
-- **Skills activated:** bequite-multi-model-planning, bequite-project-architect
+- **Skills activated:** bequite-delegation, bequite-project-architect
 - **Next:** `/bq-assign`
 
 ---
@@ -355,7 +355,7 @@ Exemptions: hotfixes, doc-only changes, and skill additions activated only from 
 | `/bq-research` | researcher, security-reviewer, ux-ui-designer (if UI) |
 | `/bq-scope` | product-strategist |
 | `/bq-plan` | project-architect, backend-architect, database-architect, security-reviewer, devops-cloud, ux-ui-designer (if UI), frontend-quality, testing-gate |
-| `/bq-multi-plan` | multi-model-planning, project-architect |
+| `/bq-multi-plan` | delegation, project-architect |
 | `/bq-feature` | per 12-type router (frontend / backend / database / auth / automation / scraping / cloud / admin / dashboard / cli / integration / security) |
 | `/bq-fix` | per 15-type router (frontend / backend / database / auth / build / test / deploy / perf / security / dep / config / network / memory / race / cross-browser) — always plus problem-solver |
 | `/bq-audit` | security-reviewer, frontend-quality (if UI), testing-gate, devops-cloud |
@@ -376,7 +376,7 @@ Exemptions: hotfixes, doc-only changes, and skill additions activated only from 
 - **Required gates:** `BEQUITE_INITIALIZED`
 - **Reads:** `.bequite/state/*` (all)
 - **Writes:** `LAST_RUN.md`, `AGENT_LOG.md`
-- **Skills activated:** `bequite-workflow-advisor`
+- **Skills activated:** `bequite-orchestrator`
 - **Output:** structured recommendation — workflow / skills / mode / required gates / one next command + why NOT each alternative
 
 ### `/bq-job-finder`
@@ -474,9 +474,9 @@ New memory files (alpha.10):
 | Mode | Best for | Avoid when | Research depth | Testing depth | Output length | Driving skill |
 |---|---|---|---|---|---|---|
 | **deep** | Quality-critical · production · regulated (PCI / HIPAA / FedRAMP) · big new builds | Trivial prototype · throwaway spike · "rename a button" | Full 11-dim + community + competitors + non-English + failure stories | Full + red-team if warranted | Long, detailed | `bequite-researcher` + 11-dim depth across specialist skills |
-| **fast** | Small fix · scoped feature · prototype · trusted stack | Production-bound · security · new architecture decisions · regulated | 3 dims (stack / security / scale) + memory-first | Run tests for changed surface | Compact | `bequite-workflow-advisor` (mode controller) |
-| **token-saver** *(alias `lean`)* | Long sessions · cost-sensitive · partial work · revisit cached research | First-time research · architecture · production sign-off | Reuse prior research + targeted grep + summaries | Scoped | Compact | `bequite-workflow-advisor` (mode controller) |
-| **delegate** | Strong model designs → cheap model implements → strong model reviews | Trivial task (overhead) · no prior research (auto-compose with `deep`) | Strong model in Phase 1 | Cheap model runs task-pack tests; strong model verifies in Phase 3 | Variable | `bequite-delegate-planner` (alpha.12) |
+| **fast** | Small fix · scoped feature · prototype · trusted stack | Production-bound · security · new architecture decisions · regulated | 3 dims (stack / security / scale) + memory-first | Run tests for changed surface | Compact | `bequite-orchestrator` (mode controller) |
+| **token-saver** *(alias `lean`)* | Long sessions · cost-sensitive · partial work · revisit cached research | First-time research · architecture · production sign-off | Reuse prior research + targeted grep + summaries | Scoped | Compact | `bequite-orchestrator` (mode controller) |
+| **delegate** | Strong model designs → cheap model implements → strong model reviews | Trivial task (overhead) · no prior research (auto-compose with `deep`) | Strong model in Phase 1 | Cheap model runs task-pack tests; strong model verifies in Phase 3 | Variable | `bequite-delegation` (alpha.12) |
 
 ### Composition rules
 

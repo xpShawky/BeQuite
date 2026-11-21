@@ -1,4 +1,4 @@
-# Course Engine — `/bq-course` (C5) — alpha.22
+# Course Engine — `/bq-content course` (C5) — alpha.22
 
 A serious Course Engine — not an outline generator. Runs validation → persona → promise → offer → curriculum → lessons → assessment → production → marketing → launch.
 

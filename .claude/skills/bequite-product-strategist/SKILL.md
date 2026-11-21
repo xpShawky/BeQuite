@@ -20,7 +20,7 @@ The most expensive bug is building the wrong thing. This skill makes the product
 - `/bq-clarify` (generate the questions), `/bq-scope` (cut), `/bq-plan` (confirm the case), `/bq-audit` (product signals), `/bq-handoff` ("what this product is").
 - Any pricing question.
 
-Not for: marketing copy (the human-taste skill and the writing DNA); financial models or legal opinions (say so).
+Not for: marketing copy (`bequite-human-taste` and `bequite-writing-dna`); financial models or legal opinions (say so).
 
 ## The six answers (write them in `work/<id>/spec.md`)
 

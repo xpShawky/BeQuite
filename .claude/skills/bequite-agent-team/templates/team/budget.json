@@ -1,0 +1,14 @@
+{
+  "period": "",
+  "unit": "tokens (subagent_tokens in a session run; input+output+cache-write in a claude -p run)",
+  "warn_ratio": 0.8,
+  "heartbeat_max_jobs": 8,
+  "roles": {
+    "analyst":  {"cap_tokens": 300000,  "used_tokens": 0, "used_usd_estimate": 0.0, "paused": false},
+    "chief":    {"cap_tokens": 200000,  "used_tokens": 0, "used_usd_estimate": 0.0, "paused": false},
+    "scout":    {"cap_tokens": 1500000, "used_tokens": 0, "used_usd_estimate": 0.0, "paused": false},
+    "writer":   {"cap_tokens": 600000,  "used_tokens": 0, "used_usd_estimate": 0.0, "paused": false},
+    "editor":   {"cap_tokens": 900000,  "used_tokens": 0, "used_usd_estimate": 0.0, "paused": false},
+    "producer": {"cap_tokens": 300000,  "used_tokens": 0, "used_usd_estimate": 0.0, "paused": false}
+  }
+}

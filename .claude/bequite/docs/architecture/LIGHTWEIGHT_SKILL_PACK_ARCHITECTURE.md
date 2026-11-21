@@ -163,8 +163,8 @@ allowed-tools: ["Read", "Glob", "Grep", ...]
 | `bequite-frontend-quality` | `/bq-audit`, `/bq-feature` (UI), `/bq-review` (UI) | 10 design principles, 15 AI-slop patterns, component sourcing order, axe-core, tokens.css |
 | `bequite-testing-gate` | `/bq-test`, `/bq-feature`, `/bq-fix` | Test pyramid, contract tests, snapshot rules, per-stack starter tests |
 | `bequite-release-gate` | `/bq-verify`, `/bq-release`, `/bq-changelog` | Release matrix, CI parity, semver, CHANGELOG hygiene, signing, one-way doors |
-| `bequite-scraping-automation` | `/bq-clarify` (when scraping in scope) | Article VIII discipline, polite-mode default, 2026 tool catalog, watch-and-trigger |
-| `bequite-multi-model-planning` | `/bq-multi-plan` | 5 collaboration modes, prompt templates, merge procedure, tie-break order |
+| `bequite-automation` | `/bq-clarify` (when scraping in scope) | Article VIII discipline, polite-mode default, 2026 tool catalog, watch-and-trigger |
+| `bequite-delegation` | `/bq-multi-plan` | 5 collaboration modes, prompt templates, merge procedure, tie-break order |
 
 ### Why skills are separate from commands
 

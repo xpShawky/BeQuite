@@ -72,7 +72,7 @@ Motion: `SCRIPT_APPROVED` · `STYLE_LOCKED` · `RENDER_PLAN_APPROVED` · `PICTUR
 | `/bq-changelog` | none |
 | `/bq-auto` | `BEQUITE_INITIALIZED` + `MODE_SELECTED` |
 | `/bq-auto phase=P0..P5` | the previous phase's gates |
-| Capability commands (`/bq-presentation`, `/bq-course`, `/bq-offer`, ...) | `BEQUITE_INITIALIZED` (each creates its own work item) |
+| Capability commands (`/bq-presentation`, `/bq-content course`, `/bq-offer`, ...) | `BEQUITE_INITIALIZED` (each creates its own work item) |
 
 ### Frontend design continuity (when a frontend exists)
 

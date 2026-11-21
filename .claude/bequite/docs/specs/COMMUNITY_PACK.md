@@ -1,4 +1,4 @@
-# Community Pack — `/bq-community` (C15) — alpha.24
+# Community Pack — `/bq-content community` (C15) — alpha.24
 
 Plan a community for a course, brand, creator, or launch. Command: `bq-community.md`. Skills: product-strategist + writing-dna + localization-rtl.
 

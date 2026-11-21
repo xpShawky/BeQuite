@@ -1,4 +1,4 @@
-# Skill Router (alpha.20; domains extended alpha.22)
+# Skill Router (v1)
 
 > The domain map + selection algorithm. Read AFTER `SKILL_REGISTRY.md`. Strategy: `.claude/bequite/docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.
 
@@ -12,14 +12,14 @@
 | presentation | **presentation-builder** | ux-ui-designer · writing-dna (speaker notes) · researcher (sources) · frontend-design-system (HTML decks) |
 | writing / content / brand voice | **writing-dna** | anti-hallucination (strict) · researcher (factual claims) |
 | academic writing | **writing-dna (strict)** + **researcher** | anti-hallucination · EVIDENCE_LOG mandatory |
-| automation / workflow / bot / "make X happen automatically" | **automation-engineer** (via C12 /bq-automation, C13 local-business) | scraping-automation (web triggers) · backend-architect (services/queues) · security-reviewer (secrets/webhooks) |
+| automation / workflow / bot / "make X happen automatically" | **automation** (via C12 /bq-knowledge automation, C13 local-business) | backend-architect (services/queues) · security-reviewer (secrets/webhooks) |
 | Arabic / MENA / RTL / bilingual | **localization-rtl** (auto-attach) | frontend-design-system (UI) · writing-dna (content) · ux-ui-designer |
-| visual reference / competitor style / screenshot-to-design | **frontend-design-system** + **ux-ui-designer** (via C3 /bq-reference) | frontend-quality · researcher (url mode) · localization-rtl (Arabic UI) |
+| visual reference / competitor style / screenshot-to-design | **frontend-design-system** + **ux-ui-designer** (via C3 /bq-knowledge reference) | frontend-quality · researcher (url mode) · localization-rtl (Arabic UI) |
 | knowledge pack / FAQ / RAG / chatbot KB | **researcher** + **anti-hallucination** (via C4 /bq-knowledge) | context-engineer · writing-dna (strict prose) |
-| course / teaching / curriculum | **researcher** + **writing-dna** (via C5 /bq-course) | presentation-builder · product-strategist (paid) · localization-rtl (Arabic) · anti-hallucination (academic) |
-| niche pain / market mining | **researcher** + **make-money** (via C6 /bq-pain-radar) | scraping-automation (public, polite) · anti-hallucination |
-| API integration | **backend-architect** (via C7 /bq-integrate) | security-reviewer · testing-gate · anti-hallucination |
-| proposal / RFP / client pitch | **writing-dna** + **product-strategist** (via C8 /bq-proposal) | job-finder/make-money safety intake · anti-hallucination |
+| course / teaching / curriculum | **researcher** + **writing-dna** (via C5 /bq-content course) | presentation-builder · product-strategist (paid) · localization-rtl (Arabic) · anti-hallucination (academic) |
+| niche pain / market mining | **researcher** + **make-money** (via C6 /bq-offer pain-radar) | automation (public, polite) · anti-hallucination |
+| API integration | **backend-architect** (via C7 /bq-knowledge integrate) | security-reviewer · testing-gate · anti-hallucination |
+| proposal / RFP / client pitch | **writing-dna** + **product-strategist** (via C8 /bq-offer proposal) | job-finder/make-money safety intake · anti-hallucination |
 | productized offer / "package my skill into a product" | **product-strategist** + **make-money** (via C11 /bq-offer) | writing-dna (outreach voice) · anti-hallucination (no invented demand) · researcher (market claims) · localization-rtl (Arabic/MENA) |
 | post-work quality gate / AI-diff review | **guard-pass** (auto-attach after implement/test, before verify/release) | anti-hallucination · testing-gate |
 | security / auth review | **security-reviewer** | anti-hallucination · testing-gate · FILE_RISK rules · devops-cloud (if infra) |
@@ -27,7 +27,7 @@
 | backend / API | **backend-architect** | database-architect · security-reviewer · testing-gate |
 | database | **database-architect** | backend-architect · devops-cloud (migrations = R3 gate) |
 | devops / deploy / release-ship | **devops-cloud** + **release-gate** | testing-gate · security-reviewer |
-| automation / scraping / crawling / browser automation | **scraping-automation** | backend-architect · security-reviewer (politeness + legality) |
+| automation / scraping / crawling / browser automation | **automation** | backend-architect · security-reviewer (politeness + legality) |
 | data analysis | **researcher** + **database-architect** (data modeling) | product-strategist (data-to-insight) |
 | research | **researcher** | anti-hallucination · domain specialist for the topic |
 | business / make-money | **make-money** | product-strategist · researcher |
@@ -39,7 +39,16 @@
 | new feature | per 12-type router in `/bq-feature` | testing-gate · context-engineer |
 | existing project audit | researcher + security-reviewer + frontend-quality (if UI) | anti-hallucination |
 | new project build | **project-architect** + product-strategist | per-discovery specialists |
-| delegation / cost control | **delegate-planner** | researcher (phase 1) |
+| delegation / cost control / second independent plan | **delegation** (via W1.6 /bq-multi-plan and `delegate` arguments) | researcher (phase 1) · orchestrator (subagent cost rule) |
+| any creative output that must not look machine-made | **human-taste** (references first, the human test) | writing-dna · frontend-design-system · motion-director |
+| understand a video (YouTube, Shorts, TikTok, Reels, a file) | **video-intel** (via C20 /bq-watch) | format-dna · sound-voice (audio) · localization-rtl (Arabic captions) |
+| what is trending in a niche / what to post | **trend-radar** (via C19 /bq-content radar) | video-intel · anti-hallucination (every item sourced) |
+| the format of a niche's winning videos | **format-dna** (via C21 /bq-dna, /bq-content study) | video-intel · trend-radar |
+| hooks, titles, captions, script beats | **hooks-and-copy** (via /bq-content script) | writing-dna · human-taste |
+| package, schedule, publish a piece | **publish-prep** (via /bq-content package, queue) | agent-team (approved outbox) · anti-hallucination |
+| a standing agent team / phone control | **agent-team** (via C23 /bq-team, C24 /bq-operator) | publish-prep · writing-dna · security-reviewer (operator) |
+| kinetic type directed by a chat model, no Claude credits | **kinetic-type** (`kinetic-engine/`: BQ Kinetic panel + director pack) | motion-director · render-pipeline |
+| turning finished work into a product | **product-strategist** + **make-money** (via C22 /bq-productize) | human-taste (landing, demo) · writing-dna |
 | BeQuite self-maintenance | **updater** / **skill-auditor** | anti-hallucination |
 
 ## Selection algorithm
@@ -92,7 +101,7 @@ Skill Selection:
 
 | Domain | Primary skill(s) | Usual companions |
 |---|---|---|
-| pricing / "how much to charge" | **product-strategist** (pricing extension, V3 #11) | make-money (market rates) · writing-dna (negotiation script) — surfaces via `/bq-proposal price` |
+| pricing / "how much to charge" | **product-strategist** (pricing extension, V3 #11) | make-money (market rates) · writing-dna (negotiation script) — surfaces via `/bq-offer proposal price` |
 | persona usability simulation | **ux-ui-designer** (persona-walkthrough checklist) | frontend-quality · localization-rtl (Arabic persona) — surfaces via `/bq-review persona` |
 | demo data / "app looks empty" | **frontend-design-system** + **database-architect** (realistic shapes) | testing-gate (fixtures profile) — surfaces via `/bq-feature demo-data` |
 

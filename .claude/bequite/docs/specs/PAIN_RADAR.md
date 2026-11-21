@@ -1,4 +1,4 @@
-# Pain Radar — `/bq-pain-radar` (C6) — alpha.22
+# Pain Radar — `/bq-offer pain-radar` (C6) — alpha.22
 
 Mine **public** pain and turn it into buildable opportunities: MVPs, services, automations, bots, course ideas. Distinct from C10 `/bq-make-money` (which finds earning tracks); pain-radar finds *problems worth building for* — they chain naturally (pain → opportunity → proposal/course).
 
@@ -16,4 +16,4 @@ PAIN_MAP · SOURCE_LOG · OPPORTUNITY_BRIEFS · MVP_IDEAS · SERVICE_IDEAS · CO
 
 ## Routing
 
-Skills: researcher + make-money (opportunity verification discipline) + scraping-automation (polite-mode, only when scraping public sources is actually needed) + anti-hallucination (every pain claim cites a source or is struck). Next: C10 make-money → C8 proposal → C5 course (see COMMAND_ROUTER "monetize a niche" journey).
+Skills: researcher + make-money (opportunity verification discipline) + automation (polite-mode, only when scraping public sources is actually needed) + anti-hallucination (every pain claim cites a source or is struck). Next: C10 make-money → C8 proposal → C5 course (see COMMAND_ROUTER "monetize a niche" journey).

@@ -1,4 +1,4 @@
-# Integration Blueprint — `/bq-integrate` (C7) — alpha.22
+# Integration Blueprint — `/bq-knowledge integrate` (C7) — alpha.22
 
 Turn API docs / OpenAPI specs / SDK docs + integration requirements into a working integration blueprint for the target stack.
 

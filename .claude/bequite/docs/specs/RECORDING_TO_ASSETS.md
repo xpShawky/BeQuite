@@ -1,4 +1,4 @@
-# Recording-to-Assets — `/bq-recording` (C16) — alpha.24
+# Recording-to-Assets — `/bq-knowledge recording` (C16) — alpha.24
 
 Turn long videos/lectures/webinars/meetings into structured knowledge. Command: `bq-recording.md`. Skills: researcher + (C4 knowledge) + anti-hallucination + localization-rtl. **Workflow/spec-first; heavy tools OPTIONAL + tool-dependent; nothing installed by default; no ToS-violating downloads.**
 

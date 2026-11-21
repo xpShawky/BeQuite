@@ -1,10 +1,10 @@
-# Automation Engine — `/bq-automation` (C12) — alpha.24
+# Automation Engine — `/bq-knowledge automation` (C12) — alpha.24
 
-Turn a workflow or bot idea into a **tool-neutral automation blueprint**. Command: `bq-automation.md`. Skill: `bequite-automation-engineer` (distilled from the retired v2 automation-architect + ai-automation references; see LEGACY_SKILL_FOLDER_AUDIT). **Installs nothing — designs only.**
+Turn a workflow or bot idea into a **tool-neutral automation blueprint**. Command: `bq-automation.md`. Skill: `bequite-automation` (distilled from the retired v2 automation-architect + ai-automation references; see LEGACY_SKILL_FOLDER_AUDIT). **Installs nothing — designs only.**
 
 ## Why a command (not an argument)
 
-Distinct recurring workflow (triggers→actions→reliability→security), its own 10-artifact set, its own skill, reusable across projects and by `/bq-local-business`. Bots are a **profile** (`bot`), not a separate command — same engine, extra safety section.
+Distinct recurring workflow (triggers→actions→reliability→security), its own 10-artifact set, its own skill, reusable across projects and by `/bq-offer local-business`. Bots are a **profile** (`bot`), not a separate command — same engine, extra safety section.
 
 ## Outputs — `.bequite/automation/`
 

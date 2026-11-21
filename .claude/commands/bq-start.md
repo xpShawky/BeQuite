@@ -47,8 +47,8 @@ Don't push many accounts without a clear reason · don't force personal-brand if
 
 ## Next Command Recommendations (typical, route by chosen direction)
 
-- Content/brand → **C14 `/bq-brand-kit`** (identity) + C2 `/bq-writing-dna` (tone).
-- Course → **C5 `/bq-course`** (+ C15 `/bq-community`).
-- Service/business → **C11 `/bq-offer`** (+ C6 `/bq-pain-radar`).
-- Career/freelance → **C9 `/bq-job-finder`** + C8 `/bq-proposal` (+ C10 `/bq-make-money`).
+- Content/brand → **C14 `/bq-content brand-kit`** (identity) + C2 `/bq-writing-dna` (tone).
+- Course → **C5 `/bq-content course`** (+ C15 `/bq-content community`).
+- Service/business → **C11 `/bq-offer`** (+ C6 `/bq-offer pain-radar`).
+- Career/freelance → **C9 `/bq-job-finder`** + C8 `/bq-offer proposal` (+ C10 `/bq-make-money`).
 Do not run yet: building anything before the account/positioning decision is made — starting wrong is the failure this command prevents.

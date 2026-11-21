@@ -23,7 +23,7 @@ Not for: projects with no Arabic or RTL requirement.
 ## Procedure
 
 1. **Decide once, record in `DESIGN_DNA.md` (or `PROJECT_DNA.md`):**
-   - register: Egyptian colloquial, Gulf, or Modern Standard Arabic. For anything a person reads as content, take it from the reference voice (the human-taste skill and writing DNA), never a default;
+   - register: Egyptian colloquial, Gulf, or Modern Standard Arabic. For anything a person reads as content, take it from the reference voice (`bequite-human-taste` and `bequite-writing-dna`), never a default;
    - digits: Arabic-Indic (٠١٢٣) or Latin (0123), pinned in code with the locale extension (`ar-EG-u-nu-latn` or `ar-EG-u-nu-arab`), because defaults differ by locale (measured below);
    - calendar (Gregorian, or Hijri where it matters), currency code and symbol placement, and how technical terms appear (always English, or always transliterated; not mixed).
 2. **Direction in markup, not CSS:** `<html dir="rtl" lang="ar">` (or `lang="ar-EG"`). `lang` alone does not set direction. Change direction below the root only where a block really changes (an English code sample, a quote).

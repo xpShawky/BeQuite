@@ -61,6 +61,8 @@ Connected scripts are animated by **word** or whole glyph cluster, never by sing
 
 Study references at 4 fps contact sheets and write per line: entrance, emphasis, exit, duration (`.claude/skills/bequite-motion-director/references/studying-references.md`). A measured study of whole-word kinetic type (the push, the following camera with blur, moderate zoom, the owner's corrections): `references/kinetic-study.md`.
 
+**A route that spends no Claude credits: BQ Kinetic** (`kinetic-engine/`, read its `README.md`). A chat model (ChatGPT, Gemini or Claude) directs the film as a small JSON scene description using the six files in `kinetic-engine/director/`; the After Effects panel (`kinetic-engine/dist/BQ Kinetic.jsx`) checks it, builds it (whole words, the push, a following camera with motion blur, slams, exits, three presets), makes a contact sheet with three frames per scene, and copies a report back for the director's next round. Tested 2026-11-21: ChatGPT wrote five rounds of a 15 s film, every JSON built without edits, and it closed with "Ready to render." Use it for type-only pieces; films with footage or 3D stay on the routes above.
+
 ## Files this skill writes
 
 Into the active work folder `.bequite/work/<id>/`: the **treatment column** of the beat sheet in `spec.md` (one treatment + timing per line), type tokens in `spec.md` § Motion DNA, test stills/contact sheets of type moments in `outputs/previews/`, and a note per type change in `log.md`.

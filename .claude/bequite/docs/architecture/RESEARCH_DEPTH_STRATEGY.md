@@ -7,7 +7,7 @@
 **Related strategies (alpha.16 cross-refs):**
 - `AUTO_MODE_STRATEGY.md` §11 "Operating modes" — **Deep Mode** activates the full 11-dim research; **Fast Mode** scopes to 3 dims (stack / security / scale)
 - `MEMORY_FIRST_BEHAVIOR.md` — research outputs live in `.bequite/research/` and are reused by Token Saver / Delegate flows
-- `MULTI_MODEL_PLANNING_STRATEGY.md` + `bequite-delegate-planner` skill — Delegate Mode's Phase 1 starts with deep research (often the strong-model output becomes the cached evidence the cheap model reads later)
+- `MULTI_MODEL_PLANNING_STRATEGY.md` + `bequite-delegation` skill — Delegate Mode's Phase 1 starts with deep research (often the strong-model output becomes the cached evidence the cheap model reads later)
 - `WORKFLOW_GATES.md` § "Feature-addition workflow (alpha.14)" — step 2 is "Run targeted research"; this doc defines the depth ladder
 
 ---

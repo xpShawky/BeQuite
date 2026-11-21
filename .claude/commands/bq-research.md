@@ -385,7 +385,7 @@ Print a short summary in chat (see above). Full evidence goes in the report file
 - `bequite-project-architect` (for stack architecture)
 - `bequite-security-reviewer` (for dimension 8)
 - `bequite-ux-ui-designer` (for dimension 7, when UI involved)
-- `bequite-scraping-automation` (only if scraping is in scope)
+- `bequite-automation` (only if scraping is in scope)
 
 ## Usual next command
 

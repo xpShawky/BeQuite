@@ -1,4 +1,4 @@
-# Reference Engine — `/bq-reference` (C3) — alpha.22
+# Reference Engine — `/bq-knowledge reference` (C3) — alpha.22
 
 Turn visual/product inspiration into an original, buildable design direction. **Clone-safe by charter**: the command is named *reference*, never "clone-style"; language throughout is reference / inspiration / design extraction / rebuild plan / originality guardrails.
 
@@ -11,7 +11,7 @@ Turn visual/product inspiration into an original, buildable design direction. **
 | `flow` | app flow description/screens | flow analysis + a *better* version proposal |
 | `style=<name>` | named direction (e.g. `cinematic-3d`) | curated direction brief fed to frontend-design-system (V1 #10 lives here) |
 
-Examples: `/bq-reference screenshot "extract a design system from this"` · `/bq-reference url "clone-safe rebuild blueprint for this competitor"` · `/bq-reference flow "analyze this onboarding and improve it"`.
+Examples: `/bq-knowledge reference screenshot "extract a design system from this"` · `/bq-knowledge reference url "clone-safe rebuild blueprint for this competitor"` · `/bq-knowledge reference flow "analyze this onboarding and improve it"`.
 
 ## Originality guardrails (hard rules)
 

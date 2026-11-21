@@ -16,7 +16,7 @@ A skill pack rots in predictable ways: descriptions bloat past activation-matchi
 - Body: 60–400 lines; depth beyond that goes to `references/` (master-skill pattern, alpha.17)
 - Required sections present: purpose · when to use · when NOT to use · procedure/checklist · output format (artifact-producing skills) · quality gate · common mistakes · failure handling · memory/log rules (where relevant)
 - Tool neutrality language present where tools are named
-- Referenced by ≥1 command; reflected in workflow-advisor's knowledge + repo counts
+- Referenced by ≥1 command; reflected in orchestrator's knowledge + repo counts
 
 ## The skill-tier model
 
@@ -53,7 +53,7 @@ Project-code audits (`/bq-audit`) · single-skill quick fix the user already spe
 
 ## Common mistakes
 
-Auditing from memory instead of reading files · proposing merges that erase a distinct activation trigger · "improving" prose style instead of structure (churn) · fixing findings inline in report-only mode · forgetting to update counts in workflow-advisor/README/CLAUDE.md after an approved merge
+Auditing from memory instead of reading files · proposing merges that erase a distinct activation trigger · "improving" prose style instead of structure (churn) · fixing findings inline in report-only mode · forgetting to update counts in orchestrator/README/CLAUDE.md after an approved merge
 
 ## Failure handling
 

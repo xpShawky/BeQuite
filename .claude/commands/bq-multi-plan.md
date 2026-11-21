@@ -326,11 +326,11 @@ Step-by-step narration. User confirms each tie-break that requires their pick.
 - **Preserve the pre-merge plan** as `IMPLEMENTATION_PLAN_PRE_MERGE.md` so users can diff.
 - **Cost: $0** (uses subscription plans, not API tokens).
 
-See `.claude/skills/bequite-multi-model-planning/SKILL.md` for the deep procedure (5 collaboration modes: Parallel / Specialist / Debate / Judge / Red-Team).
+See `.claude/skills/bequite-delegation/SKILL.md` for the deep procedure (5 collaboration modes: Parallel / Specialist / Debate / Judge / Red-Team).
 
 ## Skills activated
 
-- `bequite-multi-model-planning` (the core procedure)
+- `bequite-delegation` (the core procedure)
 - `bequite-project-architect` (for architecture reconciliation)
 
 ## Usual next command

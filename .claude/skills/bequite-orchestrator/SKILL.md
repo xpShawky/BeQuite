@@ -1,48 +1,87 @@
 ---
 name: bequite-orchestrator
-description: BeQuite's global orchestration brain — knows all command families, all 35 skills, work folders, gates, routers, auto-mode rules, context compaction, and system-design risk rules. Activates on /bequite, /bq-suggest, /bq-discover, /bq-plan, /bq-auto, /bq-implement, /bq-review, /bq-verify, /bq-skill-audit, and whenever there is command/skill conflict, confusion, duplicated workflow, unclear next step, or a task no existing capability covers (missing-capability detection).
+description: Use at the start of any BeQuite command that has to choose a route (/bequite, /bq-suggest, /bq-auto, /bq-plan, /bq-discover, /bq-implement, /bq-review, /bq-verify, /bq-skill-audit), whenever two commands or skills both seem right, when the next step is unclear, when the user asks "which command" or "where do I start", or when nothing in the pack fits the task. Holds the map, the routing rules, the operating card every model follows, and the rule for when a subagent is worth its cost. Replaces the former workflow-advisor and frontier-reasoning-coach skills.
+last_verified: 2026-11-21
+sources:
+  - https://www.anthropic.com/engineering/building-effective-agents
+  - https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents
+  - https://www.anthropic.com/engineering/multi-agent-research-system
+  - https://code.claude.com/docs/en/sub-agents
+  - https://code.claude.com/docs/en/costs
 ---
 
-# bequite-orchestrator — the global brain
+# bequite-orchestrator: the map, the routes, the card
 
-## Purpose
+One skill that knows what BeQuite can do, so every route is chosen from the map and not from habit, and a gap is admitted instead of stretched over. It reads the catalogs at run time (`.bequite/state/ORCHESTRATION_MAP.md`, `templates/bequite/commands/COMMAND_ID_MAP.md` as installed in `.bequite/commands/`, `.bequite/skills/SKILL_REGISTRY.md`, the gates files) and never repeats their counts.
 
-One skill that holds the map of everything BeQuite can do, so major workflows choose commands and skills from the **Orchestration Map** instead of vibes — and admit it when nothing fits. Source of truth: `.bequite/state/ORCHESTRATION_MAP.md` · model: `.claude/bequite/docs/architecture/BEQUITE_ORCHESTRATION_MODEL.md`. Markdown only — this is a map + protocol, not a runtime.
+## When to use / when not
 
-## When this skill activates
+Use: at a decision point (which command, which skill, which mode, does a subagent pay, is this new work), on any conflict between commands, skills or routers, and when the request matches nothing.
+Not: inside a step whose route is already fixed, or for read-only commands with fixed behaviour (`/bq-help`, `/bq-explain`). Do not re-derive the map on every message.
 
-- The 9 orchestration-consulting commands: bequite · suggest · discover · plan · auto · implement · review · verify · skill-audit
-- ANY conflict: two commands seem right · skills overlap · routers disagree · duplicated workflow suspected
-- ANY confusion about next step, or a task that matches no existing command/skill/workflow
+## The operating card (every model, strong or cheap)
+
+1. Recover before acting: read the active work and what the session-start block points to; restate the goal and what "done" means.
+2. Audit before adding: look for a command, skill or file that already does it; extend it instead of making a second source of truth.
+3. Decompose into artifact-shaped tasks, about five files at most each, in dependency order.
+4. Label claims verified, inferred or assumed; write `UNVERIFIED:` for gaps.
+5. At real uncertainty ask one question with a default, or run a small spike; never promise through it.
+6. At review, re-run the evidence yourself and look for drift: invented paths, stale counts, flat confidence, banned words.
+7. If a rule would be broken, stop and fix before going on.
 
 ## Procedure
 
-1. **Read the map first** (`ORCHESTRATION_MAP.md`) — it's a compact index; never load the full corpus to orient.
-2. **Resolve the work, then locate the task.** Read `.bequite/ACTIVE.md`: does the request belong to the active work or is it new work (`/bq-work new`)? Route media requests by kind: film / video / ad / reel / promo → C18 `/bq-motion`; website scroll / 3D motion → `bequite-frontend-design-system` (`references/web-motion.md`); slides → C1 `/bq-presentation`. Creative work is always plan-first (options → approval → output). Then locate the task in the pipeline: intent → command router → skill router → risk check → confidence → plan → implement → guard → verify → evidence → writeback → next.
-3. **Resolve conflicts by boundary, not preference** — apply the map's near-miss distinctions (audit≠review · scope≠spec≠plan · pain-radar≠make-money · proposal≠offer · verify≠release-readiness). Still ambiguous → ask ONE high-value question.
-4. **Detect missing capability honestly.** Nothing fits ⇒ emit:
+1. **Resolve the work.** `.bequite/ACTIVE.md`: does the request belong to the active work, or is it new work (`/bq-work new`)? Say which in one line.
+2. **Route the situation** (one to five commands, never the full lifecycle for a small job):
+
+| Situation | Route |
+|---|---|
+| a new idea or empty folder | `/bq-new` or `/bq-auto new` |
+| an existing project | `/bq-discover`, then `/bq-doctor`, then `/bq-audit` |
+| something is broken | `/bq-fix` |
+| a feature | `/bq-feature` |
+| a redesign / one section looks wrong | `/bq-uiux-variants` then `/bq-live-edit` / `/bq-live-edit` |
+| back after a break | `/bq-recover` |
+| ready to ship | `/bq-verify` then `/bq-release` |
+| slides | `/bq-presentation` |
+| a film, ad or reel | `/bq-motion`; website motion goes to `bequite-frontend-design-system` |
+| content to post | `/bq-content`; a standing team: `/bq-team` |
+| a video to understand | `/bq-watch`; a niche's winning format: `/bq-dna` |
+| income / jobs / turning work into a product | `/bq-make-money` / `/bq-job-finder` / `/bq-productize` |
+
+3. **Pick the mode.** Trivial or a spike: fast. Production, regulated, security or a new build: deep. Long or cost-sensitive: token-saver. A large feature with a clear shape: delegate (`bequite-delegation`). Conflicts: fast with deep asks one question and defaults to deep for new, security, release and deploy work; delegate on a tiny task is refused in favour of fast; delegate with no research composes with deep.
+4. **Respect the gates.** Never recommend a command whose gate is open; name the prerequisite (`/bq-implement` needs `PLAN_APPROVED`, `/bq-release` needs `VERIFY_PASSED`). If the user insists, state the consequence.
+5. **Prefer the lighter route.** Avoid the full lifecycle for a small fix, multi-plan for low stakes, red-team for a trivial change, deep mode for a prototype. Offer the heavier route as "if this is higher stakes than I assume".
+6. **Resolve conflicts by boundary, not preference**: audit is not review; scope is not spec is not plan; verify is not release readiness; `/bq-content` makes a piece, `/bq-team` runs a standing team. Still ambiguous: one question.
+7. **Admit a missing capability.** When nothing fits, write:
 
 ```
-Missing Capability Detected:
-- Needed capability:
-- Why existing commands/skills are not enough:
-- Temporary workaround:
-- Recommended new skill/command/spec:
-- Should this be built now or parked?
-- Confidence:
+Missing capability: <what is needed>
+Why existing commands/skills are not enough: <one line>
+Workaround now: <safe or none>
+Proposal: <skill / command / spec>, build now or park
 ```
 
-…log to `OPEN_QUESTIONS.md` / `FEATURE_EXPANSION_ROADMAP.md`; proceed with the workaround only if safe. Never stretch a wrong command to fake coverage.
-5. **Enforce the sequence guards:** auto mode follows the 15-step anti-skip sequence (`AUTO_MODE_RULES.md`); risky domains get the System Design Risk Check; context pressure triggers compaction (`CONTEXT_COMPACTION_RULES.md`); smaller models get tiered per `LOW_COST_MODEL_RULES.md`.
+Log it to `.bequite/state/OPEN_QUESTIONS.md`; go on only with a safe workaround. Never stretch a wrong command to fake coverage.
 
-## What this skill reads / writes
+## When a subagent pays
 
-Reads: ORCHESTRATION_MAP · COMMAND_ID_MAP · SKILL_REGISTRY (+ routers on demand) · gates · phase/mode. Writes: nothing of its own — it directs other layers' writes (NEXT_COMMAND_LOG entries, OPEN_QUESTIONS for missing capabilities).
+- Allowed when the reading is wider than five sources, when a check must be independent of the builder, or when the output would flood the main context. Otherwise work inline.
+- Effort scaling: one fact is inline (3 to 10 tool calls); a comparison of two to four options gets two to four readers; never more readers than distinct questions. Sweeps run on the fast model.
+- The shipped subagents: `bq-researcher` (wide reading with cited findings), `bq-verifier` (re-runs the evidence), `bq-red-team` (attacks a plan or a diff), `bq-scout` (fast sweeps of trends and sources).
 
-## When NOT to use
+## Output of a recommendation
 
-Trivial single-step reads (now/help/explain) — they have fixed behavior. Don't re-derive the map per message; consult it at decision points.
+The route (commands in order), the skills each loads, the mode, the gates it needs, at most one missing piece of information, the next command, and one line on why not each main alternative.
+
+## Worked example (2026-11-21, this repo)
+
+Request: "check that BeQuite is the latest before every task, and set up my agent folder." Routed as two works: a pack change (installers + command contract, deep mode because it runs code from GitHub on users' machines; plan stated, then built and tested in a sandbox) and a workspace setup outside the repo (no command fits "set up a folder for my team" end to end: `/bq-team init` covers the team, the rest was done inline and logged). The team's first heartbeat was not run: the owner's gate.
 
 ## Quality gate
 
-An orchestration decision must name the map section it used (category boundary, signal row, journey route, or missing-capability ruling). "I picked X" without a cited boundary is vibes — redo it. Conflicts resolved without consulting the map = drift violation (skill-audit checks NEXT_COMMAND_LOG for this).
+A route names the row, boundary or rule it used. "I picked X" with no cited rule is redone. "Done" means exercised the way a user would (the browser for UI, the real command for a CLI) with the evidence pasted.
+
+## Boundaries
+
+Writes nothing of its own except `OPEN_QUESTIONS.md` entries for missing capabilities and the routing line in the work log. Hard human gates (`CLAUDE.md`) are never routed around.

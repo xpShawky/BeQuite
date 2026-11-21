@@ -30,4 +30,4 @@ T3  Update docs + changelog        skills: anti-hallucination · recommended: cl
 
 ## Where it's written
 
-`/bq-plan` → an execution profile per **phase** inside `IMPLEMENTATION_PLAN.md`. `/bq-assign` → an execution profile per **task** inside `TASK_LIST.md` (+ `TASK_CONFIDENCE.md` for the confidence trajectory). Delegate mode (`bequite-delegate-planner`) consumes the per-task model recommendation: tier-A model writes the pack, the recommended tier-B/C model executes each task, tier-A reviews.
+`/bq-plan` → an execution profile per **phase** inside `IMPLEMENTATION_PLAN.md`. `/bq-assign` → an execution profile per **task** inside `TASK_LIST.md` (+ `TASK_CONFIDENCE.md` for the confidence trajectory). Delegate mode (`bequite-delegation`) consumes the per-task model recommendation: tier-A model writes the pack, the recommended tier-B/C model executes each task, tier-A reviews.

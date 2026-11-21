@@ -1,73 +1,61 @@
-# Skill Registry (alpha.22 + orchestration update)
+# Skill Registry (v1)
 
-> **The compact routing index over all BeQuite skills.** Loaded FIRST by the Skill Router (token-cheap); full SKILL.md files load only after selection. **Single-source-of-truth rule:** detailed "when to use / when not / inputs / outputs / procedure" live in each SKILL.md — this registry holds ROUTING METADATA + terse pointers, never duplicated prose.
+> **The compact routing index over all BeQuite skills.** The Skill Router reads this first; a full SKILL.md loads only after selection. Each skill's own file is the source of truth for when to use it, its procedure and its sources; this registry holds routing metadata only.
 >
-> **Refreshed by:** `/bq-skill-audit` (registry refresh is now step 1 of every audit run). **Last refreshed:** 2026-06-12 (alpha.22 — **31 skills** indexed; automation-engineer added in alpha.24; orchestrator added in the orchestration update; localization-rtl + guard-pass added earlier in alpha.22).
->
-> **Discovery scope:** project `.claude/skills/bequite-*/` ✅ (31 found) · global `~/.claude/skills/` checked 2026-06-11 → **empty/not present on this machine**; only project skills indexed. Re-probe at each refresh.
+> **Refreshed:** 2026-11-21 (v1 integration) · **38 skills** in three packs: core 26 · studio 10 · business 2. Refreshed by `/bq-skill-audit`; adding or removing a skill without updating this file in the same commit is a drift violation.
 
-Legend — **Cost** (token weight when fully loaded): L < 150 lines · M 150–300 · H > 300 or has references/. **Risk** (what damage misuse can do): L docs/advice · M writes project files · H touches security/prod/money domains. **Q** (quality status from last `/bq-skill-audit`): ✓ PASS · ~ improve-backlogged.
+Legend: **Cost** (weight when loaded): L under 80 lines · M 80-150 · H has `references/` or scripts. **Risk**: L docs and advice · M writes project files · H touches security, production or money.
 
-## Routing table (primary lookup)
+## Routing table
 
-| Skill | Domains | Trigger keywords / intents | Usual commands | Compatible with | Conflicts | Cost | Risk | Q |
-|---|---|---|---|---|---|---|---|---|
-| `anti-hallucination` | verification, claims, evidence | verify, prove, "is this true", done-claims, package check | review, verify, audit, red-team, writing strict | all (cross-cutting) | — | M | L | ✓ |
-| `backend-architect` | backend, API | API, endpoint, queue, cache, rate limit, idempotency | plan, feature, fix | database-architect, security-reviewer | — | M | M | ✓ |
-| `context-engineer` | context, memory, long tasks | multi-step, resume, compaction, "lost context", session | plan, implement, auto, recover | all (cross-cutting) | — | M | L | ✓ |
-| `database-architect` | database, schema | schema, migration, index, N+1, transaction, RLS data | plan, feature, fix | backend-architect | — | M | **H** (migrations) | ✓ |
-| `delegate-planner` | delegation, cost | delegate, cheap model, task pack, cross-session | auto/plan/assign/review delegate | researcher, frontier-coach | — | M | M | ✓ |
-| `devops-cloud` | devops, deploy, infra | deploy, CI/CD, VPS, nginx, rollback, env vars, monitoring | plan, feature, verify, release | release-gate, security-reviewer | — | M | **H** (prod) | ✓ |
-| `frontend-design-system` | frontend, UI/UX, visual identity | website, landing page, UI, redesign, cinematic, sections, design system | feature, fix, auto, uiux-variants, live-edit, audit, verify | ux-ui-designer, frontend-quality, live-edit (coordinates them) | — | **H** (master + references/) | M | ✓ |
-| `frontend-quality` | UI slop detection | AI-looking, dead buttons, hidden text, contrast, mock data | audit, review, verify (UI present) | frontend-design-system (member) | — | L | L | ✓ |
-| `frontier-reasoning-coach` | operating discipline (cross-cutting) | deep mode, delegate packs, drift symptoms, "be rigorous" | auto/plan deep, assign/review delegate, red-team, verify, skill-audit | all (governs HOW, not WHAT) | — | M | L | ✓ |
-| `job-finder` | jobs, career | job, freelance, gig, remote work, apply | job-finder | make-money | — | M | L | ✓ |
-| `live-edit` | frontend section edits | "make X less crowded", section, spacing, live edit | live-edit, auto live-edit | frontend-design-system (member) | — | M | M | ✓ |
-| `make-money` | earning, business | make money, income, earning, side hustle, hidden gems | make-money | job-finder, product-strategist | — | M | L | ✓ |
-| `multi-model-planning` | planning, second opinion | multi-model, second opinion, ChatGPT compare, debate | multi-plan | project-architect | — | M | L | ~ |
-| `motion-director` | motion films, promos, ads, reels, launch films | video, film, promo, ad, reel, trailer, explainer, motion, "like the Apple/Starbucks/Spotify ad" | motion, auto motion | kinetic-type, sound-voice, render-pipeline, writing-dna, localization-rtl | frontend-design-system (web motion is not film) | **H** | M | ✓ |
-| `kinetic-type` | moving text in films and HTML | kinetic typography, text animation, write-on, captions, Arabic/RTL type motion | motion | motion-director, render-pipeline | — | M | L | ✓ |
-| `sound-voice` | voice-over, music, SFX, mix, master | voice-over, TTS, music, SFX, mix, loudness, robotic voice | motion, recording | motion-director, render-pipeline | — | **H** | M | ✓ |
-| `render-pipeline` | engine choice + render + QC + delivery | After Effects, aerender, Remotion, HyperFrames, Blender, DaVinci Resolve, ffmpeg, render, QC, recut | motion | motion-director, devops-cloud | — | **H** | M | ✓ |
-| `presentation-builder` | presentation, slides | slides, deck, PPTX, keynote, lecture, PDF→slides | presentation, auto presentation | ux-ui-designer, writing-dna (notes), researcher | — | **H** | M | ✓ |
-| `problem-solver` | debugging | bug, broken, error, reproduce, root cause, bisect | fix | testing-gate, domain specialist | — | L | L | ~ |
-| `product-strategist` | product, scope | MVP, persona, JTBD, scope, pricing, differentiation | clarify, scope, plan | project-architect | — | M | L | ✓ |
-| `project-architect` | architecture, stack | stack choice, ADR, architecture, scale | plan, research, scope | all specialists | — | M | M | ✓ |
-| `release-gate` | release, ship | release, version, tag, changelog, publish, ship | verify, release, changelog | devops-cloud, testing-gate | — | L | M | ✓ |
-| `researcher` | research, evidence | research, compare, "what's best", competitors, verify package | research, plan (deep) | all (feeds everyone) | — | M | L | ✓ |
-| `scraping-automation` | scraping, crawling, browser automation | scrape, crawl, automate site, monitor page | auto scraping/automation | backend-architect | — | M | M | ✓ |
-| `security-reviewer` | security, prompt injection | vulnerability, auth review, OWASP, injection, secrets, CVE | plan, feature, fix, audit, review, red-team | anti-hallucination, devops-cloud | — | M | **H** | ✓ |
-| `skill-auditor` | skill maintenance | skill audit, stale skills, pack health | skill-audit | anti-hallucination | — | M | L | ✓ |
-| `testing-gate` | testing | test, coverage, pyramid, regression | test, feature, fix | all build skills | — | L | L | ✓ |
-| `updater` | BeQuite maintenance | update BeQuite, refresh pack | update | — | — | M | M | ✓ |
-| `ux-ui-designer` | UI/UX design, accessibility | design principles, typography, color, WCAG, a11y | plan, feature, audit (UI) | frontend-design-system (member) | — | M | L | ✓ |
-| `workflow-advisor` | routing, orientation | "which command", "where to start", what next | suggest | — (read-only) | — | M | L | ✓ |
-| `writing-dna` | writing, content, academic, brand voice | write in my style, human-quality, rewrite, blog, academic, voice | writing-dna, presentation (notes) | anti-hallucination (strict), researcher | — | M | L | ✓ |
-| `localization-rtl` | Arabic, MENA, RTL, i18n | Arabic, Egypt, MENA, RTL, bilingual, translate app/course/site | course, feature, presentation, reference, live-edit, uiux-variants (auto-attach) | frontend-design-system, writing-dna, ux-ui-designer | — | M | L | ✓ |
-| `guard-pass` | post-work quality gates, AI failure modes | after implementation/tests, before verify/release, AI-generated diff review | implement, feature, fix, test, review, verify, release (auto-attach) | anti-hallucination, testing-gate, skill-auditor | — | M | L | ✓ |
-| `orchestrator` | global brain, conflict resolution, missing-capability | command/skill conflict, unclear next step, duplicated workflow, no capability fits | bequite, suggest, discover, plan, auto, implement, review, verify, skill-audit (auto-attach) | workflow-advisor, context-engineer | — | L | L | ✓ |
-| `automation-engineer` | automation & bots, tool-neutral platform selection | workflow/bot/trigger-action, n8n/Make/Zapier/cron, idempotency/retry | automation, local-business, integrate | scraping-automation, backend-architect, security-reviewer | — | M | L | ✓ |
+| Skill | Pack | Domains | Trigger keywords / intents | Usual commands | Pairs with | Cost | Risk |
+|---|---|---|---|---|---|---|---|
+| `orchestrator` | core | routing, conflicts, missing capability, subagent cost | which command, where to start, conflict, nothing fits | bequite, suggest, auto, plan, discover, implement, review, verify, skill-audit | context-engineer, all | M | L |
+| `context-engineer` | core | context, memory, long tasks | multi-step, resume, compaction, lost context | plan, implement, auto, recover | all | M | L |
+| `anti-hallucination` | core | evidence, claims | verify, prove, is this true, done claims, package check | review, verify, audit, red-team | all | M | L |
+| `guard-pass` | core | second pass on generated work | after implementation or tests, before verify or release | implement, feature, fix, test, review, verify, release | anti-hallucination, testing-gate | M | L |
+| `researcher` | core | research, sources | research, compare, what's best, competitors, versions, prices | research, plan, knowledge | all | H | L |
+| `project-architect` | core | architecture, stack | stack choice, ADR, options board, scale tier | plan, research, scope | all specialists | M | M |
+| `product-strategist` | core | product, scope, price | MVP, persona, job to be done, differentiation, pricing | clarify, scope, plan, offer | project-architect | M | L |
+| `backend-architect` | core | server code | API, errors, retries, queues, idempotency, webhooks | plan, feature, fix, knowledge integrate | database-architect, security-reviewer | M | M |
+| `database-architect` | core | data | schema, migration, index, N+1, transactions, pooling | plan, feature, fix | backend-architect | M | H |
+| `security-reviewer` | core | security, agents, supply chain | auth, input, secrets, OWASP, prompt injection, MCP, CI | plan, feature, fix, audit, review, red-team | devops-cloud, anti-hallucination | M | H |
+| `devops-cloud` | core | CI, deploy, infra | CI, deploy, env vars, secrets, VPS, rollback | plan, feature, verify, release | release-gate, security-reviewer | M | H |
+| `testing-gate` | core | tests | test, coverage, regression, flaky, fail-first | test, feature, fix | all build skills | M | L |
+| `release-gate` | core | release | version, tag, changelog, publish, ready to ship | verify, release, changelog | devops-cloud, testing-gate | M | M |
+| `problem-solver` | core | debugging | bug, error, crash, regression, bisect, root cause | fix | testing-gate | M | L |
+| `frontend-design-system` | core | multi-section UI | page, landing, app screen, redesign, AI-looking | feature, fix, auto, uiux-variants, live-edit, audit | ux-ui-designer, frontend-quality, live-edit | H | M |
+| `ux-ui-designer` | core | design tokens | type scale, colour, spacing, states, motion, tokens | plan, feature, audit | frontend-design-system | M | L |
+| `frontend-quality` | core | UI checks | AI tells, WCAG, Web Vitals, dead buttons, fake data | audit, review, verify | frontend-design-system | H | L |
+| `live-edit` | core | measured UI edits | fix this section, spacing, button does nothing | live-edit, auto live-edit | frontend-design-system | M | M |
+| `localization-rtl` | core | Arabic, MENA, RTL | Arabic, Egypt, RTL, bilingual | any (auto-attach) | writing-dna, human-taste | M | L |
+| `automation` | core | scraping, bots, workflows | scrape, crawl, bot, webhook, schedule, n8n, Telegram | knowledge automation, offer local-business, feature | backend-architect, security-reviewer | M | M |
+| `delegation` | core | strong plans, cheap builds, second plans | delegate, task pack, second opinion, parallel tracks | auto/plan/assign/review delegate, multi-plan | orchestrator | H | M |
+| `writing-dna` | core | voice | write like me, posts, captions, human writing | writing-dna, content script, offer, presentation notes | human-taste, localization-rtl | H | L |
+| `human-taste` | core | reference-first, the human test | not AI-looking, from references, taste | every creative command | writing-dna, frontend-design-system, motion-director | M | L |
+| `agent-team` | core | standing agent team, phone operator | team, heartbeat, budget per agent, approvals, Telegram | team, operator | publish-prep, writing-dna | H | M |
+| `skill-auditor` | core | pack health | skill audit, stale skills, sources | skill-audit | anti-hallucination | M | L |
+| `updater` | core | BeQuite updates | update BeQuite | update | - | M | M |
+| `motion-director` | studio | films, promos, ads, reels | video, film, promo, ad, reel, trailer, like the Apple ad | motion, auto motion | kinetic-type, sound-voice, render-pipeline | H | M |
+| `kinetic-type` | studio | moving type; BQ Kinetic engine | kinetic typography, text animation, captions, chat-directed AE film | motion | motion-director, render-pipeline | H | L |
+| `sound-voice` | studio | voice-over, music, mix | voice-over, TTS, music, SFX, loudness | motion, knowledge recording | motion-director | H | M |
+| `render-pipeline` | studio | engines, render, QC, delivery | After Effects, aerender, Remotion, Blender, Resolve, ffmpeg | motion | motion-director | H | M |
+| `presentation-builder` | studio | decks | slides, deck, PPTX, keynote | presentation, content course | ux-ui-designer, writing-dna | H | M |
+| `video-intel` | studio | understanding videos | watch, YouTube, TikTok, Reels, transcript, breakdown | watch, dna, content study, motion | format-dna, trend-radar | H | L |
+| `trend-radar` | studio | what is moving in a niche | trend, trending, radar, outlier, what to post | content radar | video-intel, format-dna | H | L |
+| `format-dna` | studio | the form of winning videos | format, top videos, shorts format, what works | dna, content study | video-intel | H | L |
+| `hooks-and-copy` | studio | openings, titles, captions | hook, first 3 seconds, title, caption, script beats | content script | writing-dna | H | L |
+| `publish-prep` | studio | packages and approvals | post, publish, schedule, package, can we auto-post | content package, content queue | agent-team | H | M |
+| `make-money` | business | earning routes | make money, income, which platform pays in Egypt | make-money, offer | job-finder, product-strategist | M | L |
+| `job-finder` | business | jobs, freelance | job, freelance, remote work | job-finder | make-money | M | L |
 
-## Per-skill detail pointers
+## Memory-write hotspots
 
-For every skill: **when to use / when NOT to use / required inputs / expected outputs / memory reads / memory writes** are canonical in `.claude/skills/bequite-<name>/SKILL.md` (§When-to-use, §When-NOT, §Quality-gate sections — present in all 27 per the alpha.15 repair, verified alpha.19 seed audit). The router loads the routing table above for selection; it opens SKILL.md only for SELECTED skills.
+- frontend-design-system: `design/DESIGN_DNA.md`, continuity and visual QA reports · writing-dna: `writing/WRITING_DNA.md` · presentation-builder: `presentations/`
+- guard-pass: `audits/GUARD_PASS_REPORT.md` · researcher: `research/` · anti-hallucination: evidence entries
+- job-finder / make-money: `jobs/`, `money/` · skill-auditor: `audits/` and this registry · context-engineer: `state/{PROJECT_DNA,WORKING_NOTES,CONTEXT_SUMMARY}.md`
+- agent-team: the team folder (`.bequite/team/` by default) · publish-prep: `work/<id>/package/` and `APPROVAL.md`
 
-Memory-write hotspots worth knowing at routing time (so writeback step plans correctly):
-- frontend-design-system → `design/DESIGN_DNA`, `DESIGN_CONTINUITY_REPORT`, `uiux/SECTION_MAP`, `state/FRONTEND_CONTEXT_SUMMARY`, `audits/VISUAL_QA_REPORT`
-- writing-dna → `writing/*` (5 files) · presentation-builder → `presentations/*` (9 files)
-- guard-pass → `audits/GUARD_PASS_REPORT.md` · localization-rtl → writes into the active workflow's artifacts (no own dir)
-- delegate-planner → `tasks/DELEGATE_*` + `audits/DELEGATE_REVIEW_REPORT`
-- researcher → `research/<DOMAIN>_RESEARCH_REPORT` · anti-hallucination → `research/EVIDENCE_LOG`
-- job-finder / make-money → `jobs/*` / `money/*` · skill-auditor → `audits/SKILL_QUALITY_AUDIT` + **this registry**
-- context-engineer → `state/{PROJECT_DNA,WORKING_NOTES,CONTEXT_SUMMARY}`
+## Retired in v1
 
-## Review metadata
-
-| Field | Value |
-|---|---|
-| Skills indexed | 27 |
-| Last full review | 2026-06-11 (alpha.19 seed audit + alpha.21 registry refresh) |
-| Quality summary | 31 ✓ PASS (alpha.24: problem-solver + multi-model-planning patched to PASS via P1_SKILL_PATCH_AUDIT.md; automation-engineer added; live-invocation validation pending for the newest skills) |
-| Next refresh due | next `/bq-skill-audit` run, or when a skill is added/removed |
-
-**Maintainer rule:** adding or removing a skill without updating this registry in the same commit is a drift violation (caught by `/bq-skill-audit`).
+delegate-planner and multi-model-planning became `delegation`; scraping-automation and automation-engineer became `automation`; frontier-reasoning-coach and workflow-advisor folded into `orchestrator`. Updates move the old folders to `.bequite/backups/`.

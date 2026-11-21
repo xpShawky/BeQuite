@@ -7,6 +7,12 @@ Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANG
 ## [Unreleased]
 
 ### Added
+- **Content studio (studio pack):** `/bq-content` (radar, study, script, produce, package, queue, from-work, plus brand-kit, community and course), `/bq-watch` (a video at the lowest cost that answers the question), `/bq-dna` (the format of a niche's top five), and the skills `bequite-video-intel`, `bequite-trend-radar`, `bequite-format-dna`, `bequite-hooks-and-copy`, `bequite-publish-prep`.
+- **Command center (core):** `/bq-team` (role agents on heartbeats, per-role budgets, an editor that can reject, approvals before any post or spend) and `/bq-operator` (Telegram bridge: allow-listed bot, read-only runs, Approve/Decline), skill `bequite-agent-team` with its ledger and tests.
+- **`bequite-human-taste`** (core): creative work starts from studied human references and passes the human test; owns the `REFERENCES_STUDIED` and `HUMAN_TEST_PASSED` gates.
+- **`/bq-productize`** (business): finished work into a sellable asset built from its own evidence.
+- **BQ Kinetic** inside `bequite-kinetic-type`: a chat model directs kinetic type as JSON; an After Effects panel checks, builds and makes the contact sheet (no Claude credits per film).
+- Three packs named in the catalogs: core, studio, business (`COMMAND_ID_MAP.md`, `SKILL_REGISTRY.md`).
 - Automatic updates: step 1 of every command contract (and `/bequite`) runs `.claude/bequite/bin/bq-update.sh`. At most once an hour it compares the `VERSION` published at the update source with the installed version; when they differ and **Auto update** is on (`.bequite/state/UPDATE_SOURCE.md`), it backs up the pack files, re-runs the installer and the command carries on. Offline it continues; `.bequite/` memory is never overwritten.
 - `VERSION` at the repo root: the single published version. Both installers read it, rewrite `BEQUITE_VERSION.md` on every install, remember a local source on a first local install, and move pack files listed in `.claude/bequite/REMOVED.txt` into `.bequite/backups/` instead of leaving them behind.
 - `bq_check.py`: `VERSION` must match the installers; the update script must stay bash, ASCII and LF.
@@ -18,6 +24,8 @@ Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANG
 - `bq_check.py`: new checks for stale model names and for gates named in docs; warnings for size budgets and skill sources.
 
 ### Removed
+- Folded into modes (v1): `/bq-knowledge` reference, integrate, automation, recording; `/bq-content` course, brand-kit, community; `/bq-offer` pain-radar, proposal, local-business. The old command files move to `.bequite/backups/` on update.
+- Merged skills: `bequite-delegation` (from delegate-planner + multi-model-planning), `bequite-automation` (from scraping-automation + automation-engineer); frontier-reasoning-coach and workflow-advisor folded into `bequite-orchestrator` (rewritten: routing table, operating card, subagent cost rule).
 - The 7 deprecated redirects (`bq-now`, `bq-p0` to `bq-p5`): use `/bequite short` and `/bq-auto phase=P0..P5`.
 
 ## [4.0.0] - 2026-11-12 - "Titan"

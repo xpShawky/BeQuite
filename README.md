@@ -6,8 +6,8 @@
 
 **Latest:** `v4.0.0` "Titan" · MIT · by [@xpShawky](https://github.com/xpShawky)
 
-<a href="commands.md"><img alt="55 commands" src="https://img.shields.io/badge/slash_commands-55-7c3aed?style=flat-square"></a>
-<a href="#skills"><img alt="35 skills" src="https://img.shields.io/badge/skills-35-10b981?style=flat-square"></a>
+<a href="commands.md"><img alt="51 commands" src="https://img.shields.io/badge/slash_commands-51-7c3aed?style=flat-square"></a>
+<a href="#skills"><img alt="38 skills" src="https://img.shields.io/badge/skills-38-10b981?style=flat-square"></a>
 <img alt="zero runtime deps" src="https://img.shields.io/badge/runtime_deps-0-0ea5e9?style=flat-square">
 <img alt="markdown only" src="https://img.shields.io/badge/install-markdown_only-f59e0b?style=flat-square">
 
@@ -20,7 +20,7 @@
 BeQuite turns a coding agent into a disciplined senior team. You describe a goal; BeQuite supplies:
 
 - **the workflow:** research → scope → plan → build → test → verify → release;
-- **the expertise:** 35 specialist skills the agent selects and announces before it acts;
+- **the expertise:** 38 specialist skills the agent selects and announces before it acts;
 - **the memory:** a `.bequite/` folder with **one folder per piece of work**, so nothing is lost between sessions;
 - **the brakes:** gates, hard human approval points, plan-first approval, and evidence rules that ban "should probably work" as a completion claim.
 
@@ -81,7 +81,7 @@ Every command follows one **contract**: announce the skills it will use → reso
 
 Two routers, two questions:
 
-- The **Skill Router** answers *"which expert procedures should load?"* You describe the goal; BeQuite selects from 35 skills and says what it picked and why.
+- The **Skill Router** answers *"which expert procedures should load?"* You describe the goal; BeQuite selects from 38 skills and says what it picked and why.
 - The **Command Router** answers *"what should happen next?"* Every non-trivial command ends with the required next step, a short recommended set, and "do not run yet" warnings with the blocking gate named.
 
 For risky domains (payments, inventory, bookings, auth, concurrency), a **System Design Risk Check** answers questions like "one item in stock, two buyers at once: what happens?" before any code is written. A **Guard Pass** hunts AI-specific failure modes (hallucinated APIs, hardcoded success, over-mocked tests, stale docs) before anything ships.
@@ -104,7 +104,7 @@ Every command has a stable catalog ID: workflow (`W`), navigation (`N`), orchest
 | **W5 Memory** | `/bq-memory` · `/bq-recover` · `/bq-handoff` |
 | **N Navigation** | `/bq-help` · `/bq-explain` · `/bq-suggest` |
 | **O Orchestrator** | `/bq-auto` (18 intents, `phase=P0..P5`) |
-| **C Capabilities** | `/bq-presentation` · `/bq-writing-dna` · `/bq-reference` · `/bq-knowledge` · `/bq-course` · `/bq-pain-radar` · `/bq-integrate` · `/bq-proposal` · `/bq-job-finder` · `/bq-make-money` · `/bq-offer` · `/bq-automation` · `/bq-local-business` · `/bq-brand-kit` · `/bq-community` · `/bq-recording` · `/bq-start` · `/bq-motion` |
+| **C Capabilities** | `/bq-presentation` · `/bq-writing-dna` · `/bq-knowledge reference` · `/bq-knowledge` · `/bq-content course` · `/bq-offer pain-radar` · `/bq-knowledge integrate` · `/bq-offer proposal` · `/bq-job-finder` · `/bq-make-money` · `/bq-offer` · `/bq-knowledge automation` · `/bq-offer local-business` · `/bq-content brand-kit` · `/bq-content community` · `/bq-knowledge recording` · `/bq-start` · `/bq-motion` |
 | **M Maintenance** | `/bq-update` · `/bq-skill-audit` · `/bq-hooks` |
 
 Many commands take argument workflows instead of new commands (`/bq-verify drift`, `/bq-release readiness`, `/bq-plan migration`, `/bq-handoff client`, `/bq-spec export=speckit`, ...). BeQuite grows arguments, not command count.
@@ -131,22 +131,22 @@ Beyond software workflows, BeQuite ships engines for the work *around* building:
 
 - **`/bq-presentation`**: premium PPTX or HTML decks (design variants, strict source fidelity or creative mode, motion planning).
 - **`/bq-writing-dna`**: a reusable writing profile from your samples; content in *your* voice (no fabricated citations, no detector evasion).
-- **`/bq-reference`**: a screenshot, competitor URL or app flow → design extraction plus an original, clone-safe rebuild blueprint.
+- **`/bq-knowledge reference`**: a screenshot, competitor URL or app flow → design extraction plus an original, clone-safe rebuild blueprint.
 - **`/bq-knowledge`**: a pile of docs → a searchable knowledge pack, FAQ, glossary, troubleshooting trees and a tool-neutral RAG blueprint.
-- **`/bq-course`**: market-gap validation → learner persona → curriculum → lessons and quizzes → slides → launch plan; handles scanned/OCR PDFs; Arabic/MENA/RTL-aware.
-- **`/bq-pain-radar`**: public complaints in a niche → ranked MVP / service / course / automation opportunities (official APIs and public sources only).
-- **`/bq-integrate`**: API docs → integration blueprint; never invents endpoints (unknowns are marked `UNVERIFIED`).
-- **`/bq-proposal`**: a job post or RFP → an honest, tailored proposal with milestones, pricing options and scope boundaries.
+- **`/bq-content course`**: market-gap validation → learner persona → curriculum → lessons and quizzes → slides → launch plan; handles scanned/OCR PDFs; Arabic/MENA/RTL-aware.
+- **`/bq-offer pain-radar`**: public complaints in a niche → ranked MVP / service / course / automation opportunities (official APIs and public sources only).
+- **`/bq-knowledge integrate`**: API docs → integration blueprint; never invents endpoints (unknowns are marked `UNVERIFIED`).
+- **`/bq-offer proposal`**: a job post or RFP → an honest, tailored proposal with milestones, pricing options and scope boundaries.
 - **`/bq-offer`**: a skill, niche or pain → a sellable productized offer; `business-system` / `agency` modes build a whole service business. No invented demand, no income hype.
-- **`/bq-automation`**: a workflow or bot idea → a tool-neutral automation blueprint (official API first, idempotency, retries, secrets, bot safety). Installs nothing.
-- **`/bq-local-business`** (offline business → minimum digital system) · **`/bq-brand-kit`** (non-generic identity) · **`/bq-community`** (community plan) · **`/bq-recording`** (long video → structured knowledge) · **`/bq-start`** (choose how to start).
+- **`/bq-knowledge automation`**: a workflow or bot idea → a tool-neutral automation blueprint (official API first, idempotency, retries, secrets, bot safety). Installs nothing.
+- **`/bq-offer local-business`** (offline business → minimum digital system) · **`/bq-content brand-kit`** (non-generic identity) · **`/bq-content community`** (community plan) · **`/bq-knowledge recording`** (long video → structured knowledge) · **`/bq-start`** (choose how to start).
 - **`/bq-job-finder`** / **`/bq-make-money`**: verified work opportunities and legitimate earning tracks, safety-first.
 
 Honest status: the capability commands are complete playbooks but most have not yet run on a real project; the first live runs will tune them.
 
 ## Skills
 
-35 specialist skills encode senior-practitioner procedure: project architecture, verified research, product strategy, UX/UI and AI-slop detection, a frontend design-system master (Design DNA, section-by-section continuity, web motion with a performance budget), backend / database / security / DevOps review, testing discipline, scraping and automation, localization/RTL for Arabic/MENA, delegate planning, anti-hallucination, context engineering, the Guard Pass, and the motion team (director, kinetic type, sound and voice, render pipeline). Registry: [SKILL_REGISTRY.md](templates/bequite/skills/SKILL_REGISTRY.md).
+38 specialist skills encode senior-practitioner procedure: project architecture, verified research, product strategy, UX/UI and AI-slop detection, a frontend design-system master (Design DNA, section-by-section continuity, web motion with a performance budget), backend / database / security / DevOps review, testing discipline, scraping and automation, localization/RTL for Arabic/MENA, delegate planning, anti-hallucination, context engineering, the Guard Pass, and the motion team (director, kinetic type, sound and voice, render pipeline). Registry: [SKILL_REGISTRY.md](templates/bequite/skills/SKILL_REGISTRY.md).
 
 ## Scenarios
 
@@ -158,8 +158,8 @@ Honest status: the capability commands are complete playbooks but most have not 
 | Build a feature | `/bq-feature "<title>"` | its own work folder: spec → plan → build → test → verify |
 | Make a launch film or reel | `/bq-motion "<idea>"` | reference options, script, styleframes, render plan, film, recuts, posts |
 | Explore UI directions | `/bq-uiux-variants 5 "<task>"` | 5 isolated design directions; you pick the winner |
-| Create a course | `/bq-course "<idea>"` | validation → curriculum → lessons → slide briefs → launch plan |
-| Turn a job post into a proposal | `/bq-proposal "<post>"` | honest proposal, milestones, pricing options |
+| Create a course | `/bq-content course "<idea>"` | validation → curriculum → lessons → slide briefs → launch plan |
+| Turn a job post into a proposal | `/bq-offer proposal "<post>"` | honest proposal, milestones, pricing options |
 | Prepare a release | `/bq-verify` → `/bq-release readiness` | verification evidence and a ship / no-ship scorecard |
 | Use BeQuite outside Claude Code | [outside-Claude-Code runbook](.claude/bequite/docs/runbooks/USING_BEQUITE_OUTSIDE_CLAUDE_CODE.md) | the same playbooks and memory with other agents |
 

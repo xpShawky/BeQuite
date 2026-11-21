@@ -10,7 +10,7 @@ Used by `/bq-research` for a product or stack decision. Each dimension ends in a
 | 4 | Failures | What was tried and died, and the specific lesson | Archived repos, post-mortems with numbers |
 | 5 | Success | Which reference implementations work, and why here? | Open repos, case studies with numbers |
 | 6 | User journey | Trigger, first five minutes, the "why I pay" and "why I cancel" moments | Interviews (past behaviour, not opinions), support forums |
-| 7 | UX and UI | Which measured references to follow | The human-taste skill; the live reference sites in the browser |
+| 7 | UX and UI | Which measured references to follow | `bequite-human-taste`; the live reference sites in the browser |
 | 8 | Security | Which risks apply | OWASP Top 10, OWASP LLM Top 10, OSV per dependency |
 | 9 | Scale | What load is real now, and in a year? | The user's numbers; never design for 50,000 users when there are 50 |
 | 10 | Deployment | Where it runs, limits and price | The host's own limits and pricing pages, read today |

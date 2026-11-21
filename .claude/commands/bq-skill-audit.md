@@ -59,7 +59,7 @@ Before per-skill checks, refresh `.bequite/skills/SKILL_REGISTRY.md`:
 | **Frontmatter** | valid `name` + `description` + `allowed-tools`; description ≤ ~300 chars, trigger-focused |
 | **Required sections** | When to use · When NOT to use · Quality gate · failure handling · output format (where the skill produces artifacts) · memory/log rules (where relevant) |
 | **Tool neutrality** | named tools framed as candidates |
-| **Cross-listing** | skill referenced by ≥1 command; counts in workflow-advisor / CLAUDE.md / README / catalog match reality |
+| **Cross-listing** | skill referenced by ≥1 command; counts in orchestrator / CLAUDE.md / README / catalog match reality |
 | **Staleness** | references to gone files, old counts, superseded modes |
 
 ### 8. Verification

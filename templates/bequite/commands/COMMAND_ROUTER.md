@@ -30,19 +30,19 @@ FAIL reroutes: verify FAIL → W2.4 fix (with `regressions` note) · review find
 | job post / client / RFP / bid | C8 proposal |
 | find work | C9 job-finder · earn money | C10 make-money |
 | Arabic / MENA / RTL / Egypt | localization-rtl **skill** (auto-attach; no command) |
-| scrape / crawl / monitor a site / price-stock watch / automate a workflow | **scraping-automation skill** via W2.3 feature or O7 `/bq-auto scraping|automation` (API-first, Article VIII; future `/bq-automation` is parked V2) |
+| scrape / crawl / monitor a site / price-stock watch / automate a workflow | **automation skill** via W2.3 feature or O7 `/bq-auto scraping|automation` (API-first, Article VIII; future `/bq-knowledge automation` is parked V2) |
 
 ## 3. Journey routes (multi-command sets for /bq-suggest)
 
-**"Monetize a niche"** → 1. C6 `/bq-pain-radar` (verified pain first) → 2. C10 `/bq-make-money` (match to earning tracks) → 3. **C11 `/bq-offer`** (package the standing product) → 4. C8 `/bq-proposal` (pitch it per-client) → 5. C5 `/bq-course` *only if* an education product is viable → 6. W4.2 `/bq-release proof` once something ships. Order matters: evidence → opportunity → offer → pitch → proof.
+**"Monetize a niche"** → 1. C6 `/bq-offer pain-radar` (verified pain first) → 2. C10 `/bq-make-money` (match to earning tracks) → 3. **C11 `/bq-offer`** (package the standing product) → 4. C8 `/bq-offer proposal` (pitch it per-client) → 5. C5 `/bq-content course` *only if* an education product is viable → 6. W4.2 `/bq-release proof` once something ships. Order matters: evidence → opportunity → offer → pitch → proof.
 
 **"Make a video / ad / reel / launch film about X"** → 1. C18 `/bq-motion "<idea>"` (brief → 2-3 reference options from `motion-library/` → ✋ script, style, render plan) → 2. C2 `/bq-writing-dna` for the script voice if a profile exists → 3. C18 `/bq-motion post` for launch posts + making-of guide → 4. W2.3 `/bq-feature` with the web-motion layer if a matching website is needed. Do not run yet: any paid voice/AI-video credit before `PICTURE_LOCKED`.
 
-**"Create a course"** → 1. C5 `/bq-course` (validation + curriculum first, never slides first) → 2. C4 `/bq-knowledge build` if source docs exist → 3. C1 `/bq-presentation` when slides are needed → 4. C2 `/bq-writing-dna` for scripts/narration voice → 5. localization-rtl skill (or proposed `/bq-localize`) if Arabic/MENA.
+**"Create a course"** → 1. C5 `/bq-content course` (validation + curriculum first, never slides first) → 2. C4 `/bq-knowledge build` if source docs exist → 3. C1 `/bq-presentation` when slides are needed → 4. C2 `/bq-writing-dna` for scripts/narration voice → 5. localization-rtl skill (or proposed `/bq-localize`) if Arabic/MENA.
 
-**"I like this website style"** → 1. C3 `/bq-reference screenshot|url` (extraction + originality guardrails) → 2. W2.5 `/bq-uiux-variants` if multiple directions wanted → 3. W2.3 `/bq-feature` once a direction is approved → 4. W4.1 `/bq-verify` (visual QA + continuity gate) → 5. W4.2 `/bq-release proof` if it should become a case study.
+**"I like this website style"** → 1. C3 `/bq-knowledge reference screenshot|url` (extraction + originality guardrails) → 2. W2.5 `/bq-uiux-variants` if multiple directions wanted → 3. W2.3 `/bq-feature` once a direction is approved → 4. W4.1 `/bq-verify` (visual QA + continuity gate) → 5. W4.2 `/bq-release proof` if it should become a case study.
 
-**"Integrate an API"** → 1. C7 `/bq-integrate` (blueprint; UNVERIFIED markings) → 2. W1.4 `/bq-plan` to slot into the codebase → 3. W2.3 `/bq-feature` build → 4. W3.1 `/bq-test` (error matrix → tests) → 5. W4.1 `/bq-verify`. Skills: backend-architect + security-reviewer + testing-gate.
+**"Integrate an API"** → 1. C7 `/bq-knowledge integrate` (blueprint; UNVERIFIED markings) → 2. W1.4 `/bq-plan` to slot into the codebase → 3. W2.3 `/bq-feature` build → 4. W3.1 `/bq-test` (error matrix → tests) → 5. W4.1 `/bq-verify`. Skills: backend-architect + security-reviewer + testing-gate.
 
 ## 4. Output template (contract step 12)
 
@@ -75,7 +75,7 @@ Auto mode instead reports: `Internal workflow executed: <ID list>` then the same
 | "app looks empty" / demo day / portfolio screenshots | `/bq-feature demo-data` (demo profile) |
 | "can users actually use this?" / usability doubt / non-technical audience | `/bq-review persona` |
 | new client / project kickoff / "what should I ask the client?" | `/bq-scope intake` (before the call) → `/bq-scope from-interview` (after) |
-| "how much should I charge?" | `/bq-proposal price` (+ product-strategist pricing) |
+| "how much should I charge?" | `/bq-offer proposal price` (+ product-strategist pricing) |
 | "record a walkthrough" / live demo | `/bq-release demo-video` (demo-script profile) |
 | "package this project for resale" | `/bq-release template` (V2 — not yet built; say so) |
 | "build me a sellable offer" / productize my skill | **C11 `/bq-offer`** (built alpha.23 — needs an idea/niche; without one, C6 pain-radar or C10 make-money first) |

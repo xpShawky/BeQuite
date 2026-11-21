@@ -1,6 +1,6 @@
 # Skill Usage Log
 
-> Append-only record of router selections + outcomes. Written at memory-writeback (contract step 11). Read by `bequite-workflow-advisor` (pattern learning) and `/bq-skill-audit` (orphan + over-trigger detection).
+> Append-only record of router selections + outcomes. Written at memory-writeback (contract step 11). Read by `bequite-orchestrator` (pattern learning) and `/bq-skill-audit` (orphan + over-trigger detection).
 
 ## Entry format
 

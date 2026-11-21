@@ -175,14 +175,14 @@ DevOps-only work.
 ### `scraping`
 
 Scraping / automation work.
-- Activate `bequite-scraping-automation`
+- Activate `bequite-automation`
 - Polite-mode defaults, robots.txt respect
 - Article VIII discipline
 
 ### `automation`
 
 Workflow automation.
-- Activate `bequite-scraping-automation` + `bequite-backend-architect`
+- Activate `bequite-automation` + `bequite-backend-architect`
 - n8n / Inngest / cron pattern as candidates (per tool neutrality)
 
 ### `deploy`
@@ -454,7 +454,7 @@ Three phases:
 2. **Phase 2 (cheaper model, separate session):** implements per task pack
 3. **Phase 3 (strong model, back):** review at `.bequite/work/<id>/delegate/DELEGATE_REVIEW_REPORT.md`
 
-Full skill: `bequite-delegate-planner`. Use when: large features with clear shape; willing to do two-session handoff.
+Full skill: `bequite-delegation`. Use when: large features with clear shape; willing to do two-session handoff.
 
 ### Mode composition (composable)
 

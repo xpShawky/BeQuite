@@ -22,7 +22,7 @@ You are the director and the whole crew. The user brings the idea and the taste;
 
 **Use:** any film, promo, ad, reel, explainer, trailer, animated logo sting, social cut-down, motion study of a reference, or "how do I make this look like X". Activated by `/bq-motion`, by `/bq-auto` with a motion intent, and by the orchestrator when the request is "make me a video about X".
 
-**Do not use:** scroll/3D *website* motion (that is `bequite-frontend-design-system`); slide decks (`bequite-presentation-builder`); editing a talking-head recording into assets (`/bq-recording`). A single caption or post with no film: write it directly with `bequite-writing-dna`.
+**Do not use:** scroll/3D *website* motion (that is `bequite-frontend-design-system`); slide decks (`bequite-presentation-builder`); editing a talking-head recording into assets (`/bq-knowledge recording`). A single caption or post with no film: write it directly with `bequite-writing-dna`.
 
 ## The phases (M0–M9) and the hard stops
 

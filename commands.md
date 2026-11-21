@@ -1,17 +1,18 @@
-# BeQuite commands (v4.0.0)
+# BeQuite commands (v1)
 
-55 commands. Each command is a markdown playbook in `.claude/commands/`; run it in Claude Code as `/<name>`. Catalog IDs: `.bequite/commands/COMMAND_ID_MAP.md` (in the BeQuite repo: `templates/bequite/commands/COMMAND_ID_MAP.md`). Detailed walkthroughs: `.claude/bequite/docs/runbooks/USING_BEQUITE_COMMANDS.md`.
+51 commands in three packs (core, studio, business). Each command is a markdown playbook in `.claude/commands/`; run it in Claude Code as `/<name>`. Catalog IDs: `.bequite/commands/COMMAND_ID_MAP.md` (in the BeQuite repo: `templates/bequite/commands/COMMAND_ID_MAP.md`). Detailed walkthroughs: `.claude/bequite/docs/runbooks/USING_BEQUITE_COMMANDS.md`.
 
 ## How every command behaves
 
 Every action command follows the same contract (`.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md`):
 
-1. **Skills first:** it announces the skills it selected and why, before doing anything.
-2. **Resolve the work:** it uses the active work folder (`.bequite/ACTIVE.md` → `.bequite/work/<id>/`) or creates a new one for new work.
-3. **Gates:** project gates (`.bequite/state/WORKFLOW_GATES.md`) and work gates (`work/<id>/gates.md`); a missing gate stops the command and names the prerequisite.
-4. **Plan first:** non-trivial work gets a plan you approve before output. Hard human gates (destructive ops, production, secrets, paid services, releases, and for films the script / style / render plan) always wait for your yes.
-5. **Evidence:** every check is recorded with command + exit code + output, or marked `UNVERIFIED:`.
-6. **Write back** to the work log and project memory, then **recommend the next commands**.
+1. **Up to date:** it first runs the update check (`.claude/bequite/bin/bq-update.sh`, at most once an hour) and updates BeQuite when a newer version is published.
+2. **Skills first:** it announces the skills it selected and why, before doing anything.
+3. **Resolve the work:** it uses the active work folder (`.bequite/ACTIVE.md` → `.bequite/work/<id>/`) or creates a new one for new work.
+4. **Gates:** project gates (`.bequite/state/WORKFLOW_GATES.md`) and work gates (`work/<id>/gates.md`); a missing gate stops the command and names the prerequisite.
+5. **Plan first:** non-trivial work gets a plan you approve before output. Hard human gates (destructive ops, production, secrets, paid services, releases, and for films the script / style / render plan) always wait for your yes.
+6. **Evidence:** every check is recorded with command + exit code + output, or marked `UNVERIFIED:`.
+7. **Write back** to the work log and project memory, then **recommend the next commands**.
 
 ## Operating modes (any command)
 
@@ -99,31 +100,51 @@ Combine them (`/bq-auto deep delegate "..."`). If two conflict (deep + fast), Be
 
 ## C Capabilities
 
+Folded in v1: the ten small capability commands are now modes of `/bq-knowledge`, `/bq-content` and `/bq-offer` (the old names move to `.bequite/backups/` on update).
+
+### core
+
 | ID | Command | What it does |
 |---|---|---|
-| C1 | `/bq-presentation <request>` (`format=pptx\|html\|both`, `variants=N`, `strict=true`) | premium decks |
-| C2 | `/bq-writing-dna <request>` | writing profile from your samples; write in your voice |
-| C3 | `/bq-reference screenshot\|url\|flow "<goal>"` | design extraction + original, clone-safe rebuild blueprint |
-| C4 | `/bq-knowledge build\|faq\|qa\|rag "<docs>"` | knowledge pack, FAQ, grounded Q&A, RAG blueprint |
-| C5 | `/bq-course "<idea>"` | validated course: persona → curriculum → lessons → slides → launch |
-| C6 | `/bq-pain-radar "<niche>" [country=…]` | public pain → ranked opportunities |
-| C7 | `/bq-integrate "<API docs>"` | integration blueprint (auth, endpoints, errors, retries, tests) |
-| C8 | `/bq-proposal "<job post>"` | honest tailored proposal |
-| C9 | `/bq-job-finder [worldwide_hidden=true]` | real work opportunities |
-| C10 | `/bq-make-money [track=…]` | legitimate earning tracks |
-| C11 | `/bq-offer "<idea>"` (`business-system`, `agency`) | sellable productized offer |
-| C12 | `/bq-automation "<workflow or bot>"` | tool-neutral automation blueprint |
-| C13 | `/bq-local-business "<business>"` | minimum digital system for an offline business |
-| C14 | `/bq-brand-kit "<niche + audience>"` | non-generic brand identity |
-| C15 | `/bq-community "<who + purpose>"` | community plan |
-| C16 | `/bq-recording "<video \| transcript>"` | long video → structured knowledge |
+| C2 | `/bq-writing-dna <request>` | a voice learned from real samples; write in it, checked by a blind pick |
+| C4 | `/bq-knowledge build\|ask\|rag-plan\|export "<docs>"` | knowledge pack, FAQ, grounded Q&A, retrieval blueprint |
+| C3 | `/bq-knowledge reference screenshot\|url\|flow "<goal>"` | design extraction + an original, clone-safe rebuild blueprint |
+| C7 | `/bq-knowledge integrate "<API docs>"` | integration blueprint (auth, endpoints, errors, retries, tests) |
+| C12 | `/bq-knowledge automation "<workflow>"` · `bot` · `workflow` | tool-neutral automation blueprint (official API first) |
+| C16 | `/bq-knowledge recording "<video \| transcript>"` | a long video or meeting into structured knowledge |
+| C23 | `/bq-team init\|ask\|beat\|board\|approve\|decline\|schedule\|status` | command center in a folder: role agents on heartbeats, budgets, an editor that can reject, approvals before any post or spend |
+| C24 | `/bq-operator options\|setup\|check\|start\|audit` | text your own computer from Telegram: allow-listed bot, read-only runs, Approve/Decline for changes, audit log |
+
+### studio
+
+| ID | Command | What it does |
+|---|---|---|
+| C1 | `/bq-presentation <request>` (`format=pptx\|html\|both`, `variants=N`, `strict=true`) | decks from studied references |
+| C18 | `/bq-motion "<idea>"` · `M<n>` · `study <path>` · `lab <technique>` · `recut <platform>` · `post` · `status` | direct a film: references, script, style, render plan, build, sound, QC, recuts, posts |
+| C19 | `/bq-content radar\|study\|script\|produce\|package\|queue\|from-work` | the content studio: from what is moving to a packaged draft that waits for your yes |
+| C5 | `/bq-content course "<idea>"` (`validate`, `curriculum`, `launch`) | a course from validation to launch |
+| C14 | `/bq-content brand-kit "<niche + audience>"` | a non-generic brand identity |
+| C15 | `/bq-content community "<who + purpose>"` | a community plan |
+| C20 | `/bq-watch "<video>"` (`breakdown`, `steps`, `claims`, `measure`, `test`) | watch a video at the lowest cost that answers the question |
+| C21 | `/bq-dna "<niche>"` (`shorts`, `reels`, `tiktok`, `long`) | the format sheet of a niche's top five outliers |
+
+### business
+
+| ID | Command | What it does |
+|---|---|---|
+| C11 | `/bq-offer "<idea>"` (`refine`, `business-system`, `agency`, `service-business`) | an honest, sellable offer pack |
+| C6 | `/bq-offer pain-radar "<niche>" [country=…]` | public pain into ranked opportunities |
+| C8 | `/bq-offer proposal "<job post>"` | a tailored, honest proposal |
+| C13 | `/bq-offer local-business "<business>"` | a minimum digital system for an offline business |
+| C9 | `/bq-job-finder [worldwide_hidden=true]` | real work opportunities, scam-checked |
+| C10 | `/bq-make-money [track=…]` | legitimate earning routes checked for your country |
 | C17 | `/bq-start "<what you want to start>"` | choose how to start |
-| C18 | `/bq-motion "<idea>"` · `M<n>` · `study <path>` · `lab <technique>` · `recut <platform>` · `post` · `status` | direct a film: references → script → style → render plan → build → sound → QC → recuts, posts, making-of guide |
+| C22 | `/bq-productize <work-id>` | finished work into a sellable asset, built from its own evidence |
 
 ## M Maintenance
 
 | ID | Command | What it does |
 |---|---|---|
-| M1 | `/bq-update` (`check`, `source=local path=…`) | safe self-update; never touches project memory |
+| M1 | `/bq-update` (`check`, `source=local path=…`) | update BeQuite by hand; every command already checks automatically; never touches project memory |
 | M2 | `/bq-skill-audit` | skill-pack quality audit |
 | M3 | `/bq-hooks status\|enable\|disable\|test` | opt-in safety hooks (off by default) |

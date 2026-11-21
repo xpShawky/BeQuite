@@ -447,7 +447,7 @@ Auto-mode does **not** auto-install presentation tools. New deps require a decis
 
 ## Mistake memory + mode history update
 
-After completion, if the run surfaced a pattern (e.g. "this codebase needs Arabic + RTL slide direction → use `mena-bilingual` doctrine"), append to `.bequite/state/MISTAKE_MEMORY.md`. Append the mode + outcome line to `.bequite/state/MODE_HISTORY.md` so `bequite-workflow-advisor` learns the user's preferred presentation patterns.
+After completion, if the run surfaced a pattern (e.g. "this codebase needs Arabic + RTL slide direction → use `mena-bilingual` doctrine"), append to `.bequite/state/MISTAKE_MEMORY.md`. Append the mode + outcome line to `.bequite/state/MODE_HISTORY.md` so `bequite-orchestrator` learns the user's preferred presentation patterns.
 
 ## Quality gate
 

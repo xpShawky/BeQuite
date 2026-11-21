@@ -307,4 +307,4 @@ See `.bequite/principles/TOOL_NEUTRALITY.md`.
 
 ## Style directions (alpha.22)
 
-`style=<direction>` seeds all variants from a named direction — e.g. `/bq-uiux-variants 3 style=3d "<task>"` or `style=cinematic-3d` (V1 candidate #10 lives here + in `/bq-reference style=...`; reference knowledge in `bequite-frontend-design-system`). Variants must still be distinct *directions* within the style, not color swaps.
+`style=<direction>` seeds all variants from a named direction — e.g. `/bq-uiux-variants 3 style=3d "<task>"` or `style=cinematic-3d` (V1 candidate #10 lives here + in `/bq-knowledge reference style=...`; reference knowledge in `bequite-frontend-design-system`). Variants must still be distinct *directions* within the style, not color swaps.

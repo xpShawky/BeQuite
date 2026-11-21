@@ -130,24 +130,23 @@ Command map (55 active commands — catalog IDs per .bequite/commands/COMMAND_ID
     O7 /bq-auto         scoped autonomous runner (18 intents incl. motion; phase=P0..P5 walks one phase)
 
   C — Capability commands
-    C1 /bq-presentation premium PPTX or HTML decks (variants, strict/creative, motion)
-    C2 /bq-writing-dna  reusable writing profile → writing in YOUR voice (ethics-bound)
-    C3 /bq-reference    screenshot/URL/flow → design extraction + clone-safe rebuild blueprint
-    C4 /bq-knowledge    docs → knowledge pack / FAQ / RAG blueprint (build/ask/rag-plan/export)
-    C5 /bq-course       Course Engine — validation → curriculum → launch (Arabic/MENA aware)
-    C6 /bq-pain-radar   public pain mining → MVP/service/course/automation ideas (ethical sources only)
-    C7 /bq-integrate    API docs → integration blueprint (UNVERIFIED markings, invents nothing)
-    C8 /bq-proposal     job post → honest tailored proposal (Writing DNA, no overpromising)
-    C9 /bq-job-finder   find real work opportunities (+ hidden gems)
-    C10 /bq-make-money  legitimate earning tracks (10 tracks + hidden gems)
-    C11 /bq-offer       idea/niche -> sellable productized offer (+ business-system/agency modes)
-    C12 /bq-automation  workflow/bot -> tool-neutral automation blueprint (installs nothing)
-    C13 /bq-local-business  offline business -> minimum digital system (MENA-aware)
-    C14 /bq-brand-kit   niche -> non-generic brand identity (research-driven)
-    C15 /bq-community   course/brand/launch -> community plan
-    C16 /bq-recording   video/recording -> structured knowledge (transcript-first)
-    C17 /bq-start       choose how to start (profile/brand/platform/niche/career)
-    C18 /bq-motion      direct a film: references → script → style → render plan → build → sound → QC → recuts + posts
+    core
+    C2 /bq-writing-dna   a voice learned from real samples; writing in it
+    C4 /bq-knowledge     sources into knowledge and blueprints: build/ask/rag-plan/export, recording, reference, integrate, automation
+    C23 /bq-team         command center in a folder: role agents, heartbeats, budgets, editor, approvals
+    C24 /bq-operator     text your own computer from Telegram (the owner creates the bot)
+    studio
+    C1 /bq-presentation  decks from studied references (PPTX or HTML)
+    C18 /bq-motion       direct a film: references, script, style, render plan, build, sound, QC, recuts, posts
+    C19 /bq-content      the content studio: radar, study, script, produce, package, queue, from-work, brand-kit, community, course
+    C20 /bq-watch        watch a video at the lowest cost that answers the question
+    C21 /bq-dna          the format sheet of a niche's top five outliers
+    business
+    C11 /bq-offer        an honest offer pack: offer, proposal, local-business, pain-radar, business-system
+    C9 /bq-job-finder    real work opportunities, scam-checked
+    C10 /bq-make-money   legitimate earning routes checked for your country
+    C17 /bq-start        choose how to start (profile, brand, platforms, niche, career)
+    C22 /bq-productize   finished work into a sellable asset, built from its evidence
 
   M — Maintenance
     M1 /bq-update       update BeQuite itself (safe + non-destructive)

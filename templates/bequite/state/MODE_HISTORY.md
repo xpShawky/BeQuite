@@ -1,6 +1,6 @@
 # Mode History
 
-Tracks which BeQuite operating mode was used per command run, plus outcome. Append-only. Used by `/bq-suggest` and `bequite-workflow-advisor` to learn what works for this project.
+Tracks which BeQuite operating mode was used per command run, plus outcome. Append-only. Used by `/bq-suggest` and `bequite-orchestrator` to learn what works for this project.
 
 ---
 
@@ -29,7 +29,7 @@ Tracks which BeQuite operating mode was used per command run, plus outcome. Appe
 ## How this file is used
 
 - `/bq-suggest` reads recent entries to learn user's mode preferences
-- `bequite-workflow-advisor` uses outcomes to refine recommendations ("fast mode failed last 2 times for security tasks — recommend deep next")
+- `bequite-orchestrator` uses outcomes to refine recommendations ("fast mode failed last 2 times for security tasks — recommend deep next")
 - User reads occasionally to see what cost/time pattern matches their work
 - Re-evaluated on repeat searches; entries can be marked: 🆕 / ✅ / ❌ / ⚠
 

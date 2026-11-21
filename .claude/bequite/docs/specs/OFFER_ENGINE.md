@@ -1,6 +1,6 @@
 # Offer Engine — `/bq-offer` (C11) — alpha.23
 
-Turn a skill, service, automation, product idea, course idea, niche, or pain point into a **sellable productized offer** — the standing package a buyer can say yes to, distinct from C8 `/bq-proposal` (the per-client pitch of that package).
+Turn a skill, service, automation, product idea, course idea, niche, or pain point into a **sellable productized offer** — the standing package a buyer can say yes to, distinct from C8 `/bq-offer proposal` (the per-client pitch of that package).
 
 ## Position in the monetization chain
 

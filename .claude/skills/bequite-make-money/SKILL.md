@@ -24,7 +24,7 @@ Legitimate income routes, checked for the user's country on the platform's own p
 - `/bq-make-money`, and any "how do I earn from ..." request.
 - Before recommending any platform, programme or marketplace to a user in a specific country.
 
-Not for: jobs with an employer (`bequite-job-finder`); packaging one offer (`/bq-offer`); turning finished work into a product (`/bq-productize`, proposed for v1); tax or legal advice (say so and suggest an accountant).
+Not for: jobs with an employer (`bequite-job-finder`); packaging one offer (`/bq-offer`); turning finished work into a product (`/bq-productize`); tax or legal advice (say so and suggest an accountant).
 
 ## Inputs (from `.bequite/money/MONEY_PROFILE.md`, else ask once)
 

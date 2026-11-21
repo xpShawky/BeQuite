@@ -195,6 +195,9 @@ def references_exist():
         if r.startswith(".claude/bequite/docs/decisions/"):
             continue  # ADRs are immutable history; they may cite removed paths
         operational = not r.startswith(".claude/bequite/docs/")  # docs may discuss proposed/rejected names
+        # a skill cites its own files relative to its folder (`scripts/watch.py` inside bequite-video-intel)
+        sk = re.match(r"(\.claude/skills/bequite-[a-z0-9-]+)/", r)
+        skill_root = os.path.join(ROOT, sk.group(1)) if sk else None
         text = read(path)
         in_fence = False
         for n, line in enumerate(text.splitlines(), 1):
@@ -211,6 +214,8 @@ def references_exist():
                 ref = m.group(1).rstrip("./")
                 nxt = span[m.end():m.end() + 2]
                 if nxt[:1] in ("*", "{", "<", "-") or nxt in (".{", ".*") or any(ch in ref for ch in "<>*{}") or "..." in span or "/NNNN" in ref:
+                    continue
+                if skill_root and os.path.exists(os.path.join(skill_root, ref)):
                     continue
                 if not os.path.exists(os.path.join(ROOT, ref)) and not git_ignored(ref):
                     errors.append("%s:%d: missing path `%s`" % (rel(path), n, ref))

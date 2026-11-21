@@ -207,7 +207,7 @@ Bands: 90–100 routine · 75–89 likely · 50–74 needs exploration · 25–4
 
 - **`/bq-release readiness`** — Ship-readiness Scorecard (V1 #4): verify status · open P0/P1s · docs/install accuracy · rollback path · support plan · honest GO / NO-GO with reasons. Answers "should this ship?", complementing `/bq-verify`'s "does it work?".
 - **`/bq-release announce`** — CHANGELOG → announcement kit: X thread, LinkedIn/Facebook post, email, in-app banner, YouTube short/TikTok script, release notes. **Drafts only — publishing is a hard human gate; BeQuite never posts.**
-- **`/bq-release proof`** — finished project → case study / before-after / evidence pack / metrics / walkthrough script / portfolio copy (feeds C8 `/bq-proposal`).
+- **`/bq-release proof`** — finished project → case study / before-after / evidence pack / metrics / walkthrough script / portfolio copy (feeds C8 `/bq-offer proposal`).
 - **`/bq-release demo-video`** — Product Movie plan (V1 #11): product story, script, scene list, demo flow, voiceover lines, thumbnail ideas, launch-video plan. **Planning artifacts only — no video rendering.**
 
 ## Next Command Recommendations (alpha.22)

@@ -42,7 +42,7 @@ BeQuite is uniquely positioned for all four: they're **orchestration + checklist
 
 | Command | Gap it fills (demand) | BeQuite shape | Leverage · Effort |
 |---|---|---|---|
-| **`/bq-proposal`** | RFP volume up (166/yr avg); "bandwidth is proposal teams' #1 challenge for the first time in 5 years"; market $3.66B→$9.19B; SaaS targets mid-market, not freelancers | skill `bequite-proposal-builder` (parse RFP → compliance matrix → draft from a reusable **answer library** → gap flags) · memory `.bequite/proposals/` | **High** · M |
+| **`/bq-offer proposal`** | RFP volume up (166/yr avg); "bandwidth is proposal teams' #1 challenge for the first time in 5 years"; market $3.66B→$9.19B; SaaS targets mid-market, not freelancers | skill `bequite-proposal-builder` (parse RFP → compliance matrix → draft from a reusable **answer library** → gap flags) · memory `.bequite/proposals/` | **High** · M |
 | **`/bq-client-report`** | agencies waste 8–15 hrs/wk turning a data export into a client-ready narrative; ChatGPT lacks persistent formatting memory | skill `bequite-report-narrator` (user pastes export + saved template → narrative + exception list) · memory `.bequite/reports/<client>/` | **High** · S–M |
 | **`/bq-audit-site`** | productized SEO + accessibility + **AI-readiness** (GPTBot/ClaudeBot crawlability) audits are in demand but generic; AI-readiness auditing is brand-new | skill reuse `bequite-frontend-quality` + `security-reviewer` → sellable audit markdown/PDF · memory `.bequite/site-audits/` · *flags* where a real crawler is needed | **Med-High** · M |
 

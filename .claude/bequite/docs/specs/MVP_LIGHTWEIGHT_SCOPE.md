@@ -42,8 +42,8 @@ This spec defines exactly what v3.0.0-alpha.1 ships. Out-of-scope items are defe
 | `.claude/skills/bequite-frontend-quality/SKILL.md` | ✅ | 10 principles + 15 AI-slop patterns + Impeccable |
 | `.claude/skills/bequite-testing-gate/SKILL.md` | ✅ | Test pyramid + contract tests + snapshot rules |
 | `.claude/skills/bequite-release-gate/SKILL.md` | ✅ | CI parity + semver + CHANGELOG + signing |
-| `.claude/skills/bequite-scraping-automation/SKILL.md` | ✅ | Article VIII + polite mode + 2026 tool catalog |
-| `.claude/skills/bequite-multi-model-planning/SKILL.md` | ✅ | 5 modes + manual paste + tie-break order |
+| `.claude/skills/bequite-automation/SKILL.md` | ✅ | Article VIII + polite mode + 2026 tool catalog |
+| `.claude/skills/bequite-delegation/SKILL.md` | ✅ | 5 modes + manual paste + tie-break order |
 | `.bequite/state/PROJECT_STATE.md` (template) | ✅ | |
 | `.bequite/state/CURRENT_PHASE.md` (template) | ✅ | |
 | `.bequite/state/LAST_RUN.md` (template) | ✅ | |

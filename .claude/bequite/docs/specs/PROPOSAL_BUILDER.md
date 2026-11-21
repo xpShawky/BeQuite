@@ -1,4 +1,4 @@
-# Proposal Builder — `/bq-proposal` (C8) — alpha.22
+# Proposal Builder — `/bq-offer proposal` (C8) — alpha.22
 
 Turn a job post, client request, RFP, or discovered opportunity (C6/C9 output) into a tailored, honest proposal.
 

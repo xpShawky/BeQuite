@@ -1,65 +1,70 @@
-# BeQuite Command ID Map (canonical) — alpha.22
+# BeQuite Command ID Map (canonical, v1)
 
-Display-only catalog IDs (Option A — files never renamed). Strategy: `.claude/bequite/docs/architecture/COMMAND_NUMBERING_AND_ORDERING_STRATEGY.md`.
-**55 commands.** Shapes: WF = workflow · CAP = capability · NAV = navigation · ORC = orchestrator · MNT = maintenance · ARG noted where argument workflows exist.
+Display-only catalog IDs (files are never renamed). Strategy: `.claude/bequite/docs/architecture/COMMAND_NUMBERING_AND_ORDERING_STRATEGY.md`.
+**51 commands** in three packs: core 41 · studio 5 · business 5. Shapes: WF workflow · CAP capability · NAV navigation · ORC orchestrator · MNT maintenance; ARG marks argument modes. Folded commands live on as modes (rows with a `·` after the parent).
 
-| ID | Command | Category | Phase | Purpose | Usually follows | Usually next | Auto-run? | Hidden? | Shape |
-|---|---|---|---|---|---|---|---|---|---|
-| W0.1 | `/bequite` | setup/entry | P0 | gate-aware menu + next 3 | (entry) | per menu | yes | no | NAV/WF |
-| W0.2 | `/bq-init` | setup | P0 | initialize memory | /bequite | W0.5 mode / W0.3 | yes | no | WF |
-| W0.3 | `/bq-discover` | setup | P0 | inspect repo | init | W0.4 doctor | yes | no | WF |
-| W0.4 | `/bq-doctor` | setup | P0 | env health check | discover | W1.1 clarify | yes | no | WF |
-| W0.5 | `/bq-mode` | setup | P0 | select workflow mode | init | per mode | yes | no | WF |
-| W0.6 | `/bq-new` | setup | P0 | start new project | init | W0.3 | yes | no | WF |
-| W0.7 | `/bq-existing` | setup | P0 | start existing-audit | init | W0.3 | yes | no | WF |
-| W0.8 | `/bq-work` | setup | any | work folders: new / list / switch / status / close (converge + archive) | any new work | W1.1 clarify / C18 motion | yes | no | WF (v4) |
-| W1.1 | `/bq-clarify` | framing | P1 | 3–5 high-value questions | doctor | W1.2 research | no (needs user) | no | WF |
-| W1.2 | `/bq-research` | framing | P1 | 11-dim verified evidence | clarify | W1.3 scope | yes | no | WF |
-| W1.3 | `/bq-scope` | framing | P1 | lock in/out/non-goals | research | W1.4 plan | yes | no | WF · ARG `from-interview`, `intake` |
-| W1.4 | `/bq-plan` | framing | P1 | implementation plan + file map | scope | W2.1 assign | yes | no | WF · ARG `from-issues`, `delegate` |
-| W1.5 | `/bq-spec` | framing | P1 | one-page Spec Kit spec | scope | W1.4 plan | yes | no | WF |
-| W1.6 | `/bq-multi-plan` | framing | P1 | multi-model planning (paste) | plan | W2.1 | no (manual paste) | no | WF |
-| W2.1 | `/bq-assign` | build | P2 | atomic task list | plan | W2.2 implement | yes | no | WF · ARG `delegate` |
-| W2.2 | `/bq-implement` | build | P2 | one task at a time | assign | W3.1 test | yes | no | WF |
-| W2.3 | `/bq-feature` | build | P2 | add-feature mini-cycle | plan | W3.1 test | yes | no | WF · ARG `demo-data` |
-| W2.4 | `/bq-fix` | build | P2 | reproduce-first fix | (bug) | W4.1 verify | yes | no | WF |
-| W2.5 | `/bq-uiux-variants` | build/UI | P2 | 1–10 design directions | plan | gate-16 winner pick | partial (gate 16) | no | WF |
-| W2.6 | `/bq-live-edit` | build/UI | P2 | section-by-section UI edits | (running FE) | W4.1 verify | yes | no | WF |
-| W3.1 | `/bq-test` | quality | P3 | run + write tests | implement | W3.3 review | yes | no | WF · ARG `from-spec`, `fixtures` |
-| W3.2 | `/bq-audit` | quality | P3 | full project audit | discover/test | W3.3 review | yes | no | WF · ARG `client` |
-| W3.3 | `/bq-review` | quality | P3 | spec-then-quality diff review | test | W4.1 verify | yes | no | WF · ARG `delegate`, `persona` |
-| W3.4 | `/bq-red-team` | quality | P3 | 10-angle adversarial review | review | W4.1 verify | yes | no | WF |
-| W4.1 | `/bq-verify` | release | P4 | full local verification | review | W4.2 release | yes | no | WF · ARG `regressions`, `drift` |
-| W4.2 | `/bq-release` | release | P4 | release prep (never pushes) | verify | W4.3 + user push (gate 17) | partial (gate 17) | no | WF · ARG `readiness`, `announce`, `proof`, `demo-video` (launch-video/demo-script profiles); `template` approved V2 |
-| W4.3 | `/bq-changelog` | release | P4 | changelog entry | verify | W4.2 | yes | no | WF |
-| W5.1 | `/bq-memory` | memory | P5 | snapshot / inspect memory | release | W5.3 handoff | yes | no | WF |
-| W5.2 | `/bq-recover` | memory | P5 | resume after break | (new session) | per checkpoint | yes | no | WF |
-| W5.3 | `/bq-handoff` | memory | P5 | handoff package | memory | done | yes | no | WF · ARG `client` |
-| N2 | `/bq-help` | navigation | any | full reference | any | per need | yes | no | NAV |
-| N3 | `/bq-explain` | navigation | any | plain-English explainer | any | — | yes | no | NAV |
-| N4 | `/bq-suggest` | navigation | any | **main navigation assistant** (commands + skills + mode + gates + confidence) | any | per advice | yes | no | NAV |
-| O7 | `/bq-auto` | orchestrator | all | scoped autonomous runner (18 intents) | any | per intent | yes (17 hard gates) | no | ORC |
-| C1 | `/bq-presentation` | capability | any | premium PPTX/HTML decks | (content need) | W4.1 if built | yes (variant gate) | no | CAP |
-| C2 | `/bq-writing-dna` | capability | any | reusable writing profile | (writing need) | C1 / C5 / C8 | yes | no | CAP |
-| C3 | `/bq-reference` | capability | any | inspiration → design extraction + clone-safe rebuild blueprint | (visual ref) | W2.5 / W2.3 | yes | no | CAP (alpha.22) |
-| C4 | `/bq-knowledge` | capability | any | docs → knowledge pack / FAQ / RAG blueprint | (docs exist) | C5 / export | yes | no | CAP (alpha.22) · modes `build/ask/rag-plan/export` |
-| C5 | `/bq-course` | capability | any | Course Engine — validation → curriculum → launch | (course idea) | C1 slides / C4 | yes | no | CAP (alpha.22) |
-| C6 | `/bq-pain-radar` | capability | any | public pain mining → product/service/course ideas | (niche idea) | C10 / C8 / C5 | yes | no | CAP (alpha.22) |
-| C7 | `/bq-integrate` | capability | any | API docs → integration blueprint | (API need) | W2.3 feature | yes | no | CAP (alpha.22) |
-| C8 | `/bq-proposal` | capability | any | job post → honest tailored proposal | C9 / C6 | (user sends) | yes | no | CAP (alpha.22) |
-| C9 | `/bq-job-finder` | capability | any | real work opportunities | (profile) | C8 proposal | yes | no | CAP |
-| C10 | `/bq-make-money` | capability | any | legitimate earning tracks | (profile) | C6 / C8 | yes | no | CAP |
-| C11 | `/bq-offer` | capability | any | idea/niche/pain → sellable productized offer (12-file pack; no overpromise, no fake income claims) | C6 / C10 / C8 / C5 / user idea | C8 proposal / W4.2 proof / C1 / C2 / W1.3 intake / W2.3 landing | yes | no | CAP (alpha.23) · ARG `refine`, `lang=`, `business-system`/`agency`/`service-business` |
-| C12 | `/bq-automation` | capability | any | workflow/bot → tool-neutral automation blueprint (official-API-first; idempotency/retry/secrets) | C6 / C7 / C13 / user idea | W1.4 plan / W2.3 feature / C7 / C11 | yes | no | CAP (alpha.24) · ARG `bot`, `workflow`, `local-business` |
-| C13 | `/bq-local-business` | capability | any | offline business → minimum digital system (MENA-aware) | C6 / user idea | C11 / W2.3 / C12 | yes | no | CAP (alpha.24) |
-| C14 | `/bq-brand-kit` | capability | any | niche → non-generic brand identity (research-driven, reference-safe) | C17 / user idea | C3 / W2.3 landing / C2 | yes | no | CAP (alpha.24) |
-| C15 | `/bq-community` | capability | any | course/brand/launch → community plan | C5 / W4.2 / C14 | C2 / C12 | yes | no | CAP (alpha.24) |
-| C16 | `/bq-recording` | capability | any | video/recording → structured knowledge (transcript-first, dedup) | user video/transcript | C4 / C5 / C2 | yes | no | CAP (alpha.24) · tools optional |
-| C17 | `/bq-start` | capability | any | choose how to start (profile/brand/platform/niche/career) | user goal | C14 / C5 / C11 / C9 | yes | no | CAP (alpha.24) |
-| C18 | `/bq-motion` | capability | any | direct a film: references → script → style → render plan → build → sound → QC → recuts + posts | idea / product / references | C1 presentation / C2 posts / W2.3 web | partial (stops at M2-M4 plan, paid credits, final render, posting) | no | CAP (v4) |
-| M1 | `/bq-update` | maintenance | any | self-update from source | (new release) | W0.4 doctor | yes (backup-gated) | no | MNT |
-| M2 | `/bq-skill-audit` | maintenance | any | skill-pack quality audit | (drift sign) | fixes on approval | yes (report-only) | no | MNT |
-| M3 | `/bq-hooks` | maintenance | any | manage opt-in safety hooks (status/enable/disable/test) | (want enforcement) | reload + test | partial (enable/disable = R3 hard gate) | no | MNT (alpha.24) |
-| X1 | ~~`/bq-add-feature`~~ | removed in v4 | — | use W2.3 `/bq-feature` | — | — | — | removed | — |
+| ID | Command | Pack | Category | Phase | Purpose | Usually next | Auto-run? | Shape |
+|---|---|---|---|---|---|---|---|---|
+| W0.1 | `/bequite` | core | setup/entry | P0 | update check + gate-aware menu + next 3 | per menu | yes | NAV/WF |
+| W0.2 | `/bq-init` | core | setup | P0 | initialize memory | W0.5 mode | yes | WF |
+| W0.3 | `/bq-discover` | core | setup | P0 | inspect repo | W0.4 doctor | yes | WF |
+| W0.4 | `/bq-doctor` | core | setup | P0 | environment health check | W1.1 clarify | yes | WF |
+| W0.5 | `/bq-mode` | core | setup | P0 | select workflow mode | per mode | yes | WF |
+| W0.6 | `/bq-new` | core | setup | P0 | start a new project | W0.3 | yes | WF |
+| W0.7 | `/bq-existing` | core | setup | P0 | start an existing-project audit | W0.3 | yes | WF |
+| W0.8 | `/bq-work` | core | setup | any | work folders: new / list / switch / status / close | W1.1 / C18 | yes | WF |
+| W1.1 | `/bq-clarify` | core | framing | P1 | 3-5 high-value questions | W1.2 research | no (needs user) | WF |
+| W1.2 | `/bq-research` | core | framing | P1 | verified evidence | W1.3 scope | yes | WF |
+| W1.3 | `/bq-scope` | core | framing | P1 | lock in / out / non-goals | W1.4 plan | yes | WF · ARG `from-interview`, `intake` |
+| W1.4 | `/bq-plan` | core | framing | P1 | implementation plan + file map | W2.1 assign | yes | WF · ARG `from-issues`, `delegate` |
+| W1.5 | `/bq-spec` | core | framing | P1 | one-page spec | W1.4 plan | yes | WF |
+| W1.6 | `/bq-multi-plan` | core | framing | P1 | independent plans from other models (paste) | W2.1 | no (manual paste) | WF |
+| W2.1 | `/bq-assign` | core | build | P2 | atomic task list | W2.2 implement | yes | WF · ARG `delegate` |
+| W2.2 | `/bq-implement` | core | build | P2 | one task at a time | W3.1 test | yes | WF |
+| W2.3 | `/bq-feature` | core | build | P2 | add-feature mini-cycle | W3.1 test | yes | WF · ARG `demo-data` |
+| W2.4 | `/bq-fix` | core | build | P2 | reproduce-first fix | W4.1 verify | yes | WF |
+| W2.5 | `/bq-uiux-variants` | core | build/UI | P2 | 1-10 design directions | winner pick (gate) | partial | WF |
+| W2.6 | `/bq-live-edit` | core | build/UI | P2 | measured section edits in a real browser | W4.1 verify | yes | WF |
+| W3.1 | `/bq-test` | core | quality | P3 | run + write tests | W3.3 review | yes | WF · ARG `from-spec`, `fixtures` |
+| W3.2 | `/bq-audit` | core | quality | P3 | full project audit | W3.3 review | yes | WF · ARG `client` |
+| W3.3 | `/bq-review` | core | quality | P3 | spec-then-quality diff review | W4.1 verify | yes | WF · ARG `delegate`, `persona` |
+| W3.4 | `/bq-red-team` | core | quality | P3 | adversarial review | W4.1 verify | yes | WF |
+| W4.1 | `/bq-verify` | core | release | P4 | full local verification | W4.2 release | yes | WF · ARG `regressions`, `drift` |
+| W4.2 | `/bq-release` | core | release | P4 | release prep (never pushes) | user push (gate) | partial | WF · ARG `readiness`, `announce`, `proof`, `demo-video` |
+| W4.3 | `/bq-changelog` | core | release | P4 | changelog entry | W4.2 | yes | WF |
+| W5.1 | `/bq-memory` | core | memory | P5 | snapshot / inspect memory | W5.3 handoff | yes | WF |
+| W5.2 | `/bq-recover` | core | memory | P5 | resume after a break | per checkpoint | yes | WF |
+| W5.3 | `/bq-handoff` | core | memory | P5 | hand-off package | done | yes | WF · ARG `client` |
+| N2 | `/bq-help` | core | navigation | any | full reference | per need | yes | NAV |
+| N3 | `/bq-explain` | core | navigation | any | plain-language explainer | - | yes | NAV |
+| N4 | `/bq-suggest` | core | navigation | any | main navigation assistant (orchestrator skill) | per advice | yes | NAV |
+| O7 | `/bq-auto` | core | orchestrator | all | scoped autonomous runner | per intent | yes (hard gates stop it) | ORC |
+| C2 | `/bq-writing-dna` | core | capability | any | a voice learned from real samples | C19 / C11 | yes | CAP |
+| C4 | `/bq-knowledge` | core | capability | any | sources into knowledge and blueprints | per mode | yes | CAP · modes `build/ask/rag-plan/export` |
+| C3 | · `/bq-knowledge reference` | core | mode | any | screenshot / URL / flow into a clone-safe design blueprint | W2.5 / W2.3 | yes | mode |
+| C7 | · `/bq-knowledge integrate` | core | mode | any | API docs into an integration blueprint | W2.3 feature | yes | mode |
+| C12 | · `/bq-knowledge automation` | core | mode | any | workflow or bot into a tool-neutral automation blueprint | W1.4 / W2.3 | yes | mode · ARG `bot`, `workflow` |
+| C16 | · `/bq-knowledge recording` | core | mode | any | a recording into structured knowledge (transcript first) | C4 / C19 course | yes | mode |
+| C23 | `/bq-team` | core | capability | any | command center in a folder: roles, heartbeats, budgets, editor, approvals | approvals | partial (owner approves publish and spend) | CAP (v1) · modes `init/ask/beat/board/approve/decline/schedule/status` |
+| C24 | `/bq-operator` | core | capability | any | text your own computer from Telegram (allow-listed, read-only runs, approvals) | - | no (owner creates the bot) | CAP (v1) · modes `options/setup/check/start/audit` |
+| M1 | `/bq-update` | core | maintenance | any | update BeQuite (also automatic at every command) | W0.4 doctor | yes (backup first) | MNT |
+| M2 | `/bq-skill-audit` | core | maintenance | any | skill-pack quality audit | fixes on approval | yes (report only) | MNT |
+| M3 | `/bq-hooks` | core | maintenance | any | manage the safety hooks | reload + test | partial | MNT |
+| C1 | `/bq-presentation` | studio | capability | any | PPTX / HTML decks from references | W4.1 if built | yes (variant gate) | CAP |
+| C18 | `/bq-motion` | studio | capability | any | direct a film: references, script, style, render plan, build, sound, QC, recuts | C19 package | partial (plan, credits, final render, posting) | CAP |
+| C19 | `/bq-content` | studio | capability | any | the content studio: radar, study, script, produce, package, queue, from-work | approval per post | partial (owner approves each post) | CAP (v1) |
+| C5 | · `/bq-content course` | studio | mode | any | a course from validation to launch | C1 slides / C4 | yes | mode · ARG `validate`, `curriculum`, `launch` |
+| C14 | · `/bq-content brand-kit` | studio | mode | any | a non-generic brand identity from the niche | C3 / W2.3 landing | yes | mode |
+| C15 | · `/bq-content community` | studio | mode | any | a community plan | C2 / C12 | yes | mode |
+| C20 | `/bq-watch` | studio | capability | any | watch a video at the lowest cost that answers the question | C21 / C19 | yes | CAP (v1) · modes `breakdown/steps/claims/measure/test` |
+| C21 | `/bq-dna` | studio | capability | any | the format sheet of a niche's top five outliers | C19 script | yes | CAP (v1) |
+| C11 | `/bq-offer` | business | capability | any | an honest, sellable offer pack | C8 proposal | yes | CAP · ARG `refine`, `lang=`, `business-system`, `agency`, `service-business` |
+| C6 | · `/bq-offer pain-radar` | business | mode | any | public pain into opportunities | C10 / C8 | yes | mode · ARG `from-exports` |
+| C8 | · `/bq-offer proposal` | business | mode | any | a tailored, honest proposal for one client | (user sends) | yes | mode |
+| C13 | · `/bq-offer local-business` | business | mode | any | an offline business into a minimum digital system | C11 / W2.3 | yes | mode |
+| C9 | `/bq-job-finder` | business | capability | any | real work opportunities, scam-checked | C8 proposal | yes | CAP |
+| C10 | `/bq-make-money` | business | capability | any | legitimate earning routes checked for the country | C6 / C11 | yes | CAP |
+| C17 | `/bq-start` | business | capability | any | choose how to start (profile, brand, platforms, niche, career) | C14 / C5 / C11 / C9 | yes | CAP |
+| C22 | `/bq-productize` | business | capability | any | finished work into a sellable asset with its evidence | C11 / C19 | yes | CAP (v1) |
 
-**Proposed only (not built):** `/bq-localize` — localization/RTL is skill-first (`bequite-localization-rtl`, auto-attached); command added only if demand proves it.
+Folded in v1 (modes now; the old files move to `.bequite/backups/` on update): `/bq-knowledge reference`, `integrate`, `automation`, `recording`; `/bq-content course`, `brand-kit`, `community`; `/bq-offer pain-radar`, `proposal`, `local-business`. Removed in v1: the seven phase redirects (`/bequite short` and `/bq-auto phase=P0..P5` replace them).

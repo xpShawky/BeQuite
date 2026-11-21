@@ -169,6 +169,21 @@ NOT_BUILT_RE = re.compile(r"not built|removed in v4|proposed|proposal only|optio
 REF_RE = re.compile(r"(?<![\w./-])((?:scripts|templates|motion-library|\.claude/bequite|\.claude/commands|\.claude/skills|\.github)/[\w./-]*[\w/])")
 
 
+_IGNORED = {}
+
+
+def git_ignored(ref):
+    """True when .gitignore excludes the path: a local-only folder (like motion-library/inbox/New) never exists in a clone or in CI."""
+    if ref not in _IGNORED:
+        try:
+            import subprocess
+            r = subprocess.run(["git", "-C", ROOT, "check-ignore", "-q", "--no-index", ref], capture_output=True)
+            _IGNORED[ref] = r.returncode == 0
+        except OSError:
+            _IGNORED[ref] = False
+    return _IGNORED[ref]
+
+
 @check
 def references_exist():
     """Paths to repo files (docs/, scripts/, templates/, .claude/...) and /bq-* commands and bequite-* skills must exist."""
@@ -197,7 +212,7 @@ def references_exist():
                 nxt = span[m.end():m.end() + 2]
                 if nxt[:1] in ("*", "{", "<", "-") or nxt in (".{", ".*") or any(ch in ref for ch in "<>*{}") or "..." in span or "/NNNN" in ref:
                     continue
-                if not os.path.exists(os.path.join(ROOT, ref)):
+                if not os.path.exists(os.path.join(ROOT, ref)) and not git_ignored(ref):
                     errors.append("%s:%d: missing path `%s`" % (rel(path), n, ref))
             if not operational:
                 continue

@@ -1,271 +1,75 @@
 ---
 name: bequite-make-money
-description: Earning opportunity discovery + verification. 10 tracks (highest-payout / easiest-start / fastest-first-dollar / AI-assisted / no-calls / remote / local / beginner / skilled / long-term). Local + global + hidden platforms. Strict safety (no fraud / scams / VPN misrepresentation / upfront-fee). Invoked by /bq-make-money.
-allowed-tools: Read, Glob, Grep, WebFetch, WebSearch, Write
+description: Use when someone asks how to earn money from their skills, time, AI tools or audience, in their country, through /bq-make-money or in plain words ("how can I make money from X", "which platform pays in Egypt"). Finds legitimate routes, checks each one on the platform's own pages for that country (eligibility, payout method, fees, minimums), and turns the best two or three into a seven-day plan. Refuses scams and terms violations.
+last_verified: 2026-11-21
+sources:
+  - https://support.upwork.com/hc/en-us/articles/211062538-Learn-about-the-Freelancer-Service-Fee
+  - https://help.fiverr.com/hc/en-us/articles/360010530058-Withdrawing-your-earnings-managing-payout-methods
+  - https://support.mostaql.com/how-to-withdraw-profits
+  - https://support.khamsat.com/withdraw-profits
+  - https://support.google.com/youtube/answer/7101720
+  - https://support.google.com/youtube/answer/72851
+  - https://www.paypal.com/eg/digital-wallet/paypal-consumer-fees
+  - https://core.telegram.org/api/revenue
+  - https://gumroad.com/pricing
+  - https://consumer.ftc.gov/articles/job-scams
 ---
 
-# bequite-make-money — earning opportunity discovery
-
-## Purpose
-
-Be the BeQuite expert on **legitimate** earning opportunities — country-specific, language-specific, AI-assisted, task-based, hidden, and worldwide. Apply track-based filtering. Live web research at runtime. Strict safety rules.
-
-Invoked by `/bq-make-money`.
-
----
-
-## The 10 tracks
-
-| Track | Code | Optimization |
-|---|---|---|
-| Highest payout | `highest-payout` | $/hour or $/task — top of range |
-| Easiest start | `easiest-start` | No portfolio, instant signup, fast verify |
-| Fastest first dollar | `fastest-first-payout` | Get paid this week |
-| Long-term stable | `long-term-stable` | Recurring monthly income, not one-offs |
-| AI-assisted | `ai-assisted` | Use user's AI tools as multiplier |
-| No client calls | `no-calls` | Async-only, text-based |
-| Remote global | `remote-global` | Works regardless of user's location |
-| Local country only | `local-only` | Tied to country + language |
-| Beginner-friendly | `beginner` | No prior experience needed |
-| Skilled work | `skilled` | Premium rate; expertise required |
-
----
-
-## Platform categories
-
-### AI training + data labeling
-Outlier, Mercor, Data Annotation, Surge AI, Mindrift, Scale AI, Labelbox, Toloka, Appen, Clickworker, Microworkers
-- **Trust:** generally high for the named platforms
-- **Payout:** $5-40/hour depending on skill match
-- **Eligibility:** varies; some require US/EU residency
-- **Track fit:** ai-assisted, beginner-friendly to skilled
-
-### Microtask
-Amazon MTurk (US restricted), Premise, Field Agent, Streetbees (location-based, legitimate)
-- **Trust:** high for established names; verify newer
-- **Payout:** $0.10-5 per task
-- **Track fit:** easiest-start, fastest-first-payout
-
-### Research panels (well-paid)
-Prolific, User Interviews, Respondent, dscout, Wynter
-- **Trust:** high; reputable academic / UX research
-- **Payout:** $15-100+ per study; quality > quantity
-- **Track fit:** highest-payout, easiest-start, no-calls (mostly)
-
-### Testing
-UserTesting, UserBrain, Userlytics, Lookback, PlaybookUX, TryMyUI
-- **Trust:** high (established)
-- **Payout:** $5-60 per test
-- **Track fit:** easiest-start, ai-assisted (talk-aloud good for AI users)
-
-### Freelance
-Upwork, Fiverr, Toptal (high-bar), Contra, Freelancer.com, PeoplePerHour
-- **Trust:** platform-dependent; verify per-client
-- **Payout:** $5-100+/hour
-- **Track fit:** skilled, long-term-stable, remote-global
-
-### AI-assisted services (sell to clients)
-- AI image editing (Photoshop + Midjourney + Topaz)
-- AI video editing (Runway, CapCut + AI)
-- AI content writing (with human review)
-- AI automation (n8n / Make / Zapier for SMBs — per tool neutrality)
-- AI research / market reports
-- **Track fit:** ai-assisted, skilled, highest-payout
-
-### Country-specific
-Per user's country — search live.
-- Egypt: Wuzzuf, Forsa, Shoghlonline
-- India: Naukri, Internshala
-- LatAm: Worki, GetonBoard
-- Europe: StepStone, Welcome-to-the-Jungle
-
-### Translation / localization
-Gengo, ProZ, OneHourTranslation, Unbabel, MotionSpot
-- **Trust:** generally high
-- **Payout:** $0.03-0.10 per word (varies by pair)
-- **Track fit:** ai-assisted, remote-global, skilled (per language pair)
-
-### Content + creator economy
-- Substack / Beehiiv (newsletters with subscriptions)
-- YouTube + AdSense + sponsorships (long-term)
-- Selling templates: Gumroad, Etsy, Creative Market
-- Stock content: Adobe Stock, Shutterstock, iStock
-- **Track fit:** long-term-stable, skilled, ai-assisted
-
-### Local business automation (AI services)
-- Booking automation (clinics, salons, gyms)
-- Lead generation (per country regulations)
-- Social media management
-- Ad creative generation
-- **Track fit:** ai-assisted, skilled, local-only
-
-### Hidden / overlooked (`worldwide_hidden=true`)
-- Country-specific microtask platforms (Yandex Toloka, Allegro-PL, Subito-IT)
-- Regional freelance (Witmart-CN, MEEM-AR, Bourhane-MA)
-- Niche platforms by skill (search live)
-- Small companies hiring globally (Wellfound, RemoteRocketship)
-- AI training task platforms (some restricted; verify)
+# bequite-make-money
 
----
+Legitimate income routes, checked for the user's country on the platform's own pages today. A route that cannot pay the user out is not a route.
 
-## Research methodology — Claude does the search work
+## When to use
 
-⚠ **The user does NOT search.** Claude runs the full discovery loop using whichever research tools are available in the active host.
+- `/bq-make-money`, and any "how do I earn from ..." request.
+- Before recommending any platform, programme or marketplace to a user in a specific country.
 
-**Tool tiers (in order of preference):**
+Not for: jobs with an employer (`bequite-job-finder`); packaging one offer (`/bq-offer`); turning finished work into a product (`/bq-productize`, proposed for v1); tax or legal advice (say so and suggest an accountant).
 
-1. **WebFetch + WebSearch** (built-in) — default; fast; works on any host
-2. **Chrome MCP** (`mcp__claude-in-chrome__*`) — JS-rendered pages, scroll-to-load, DOM inspection. Auto-detected if loaded.
-3. **Computer Use MCP** (`mcp__computer-use__*`) — last resort for native interactions / anti-bot sites. Requires user `request_access` permission.
+## Inputs (from `.bequite/money/MONEY_PROFILE.md`, else ask once)
 
-The user invokes the command + answers intake. Claude:
+Country of residence · languages · skills and tools (including AI tools they already pay for) · hours per week · devices · payout methods they already have (bank, PayPal, Payoneer, wallet) · risk tolerance · track. Tracks: `highest-payout`, `easiest-start`, `fastest-first-payout`, `long-term-stable`, `ai-assisted`, `no-calls`, `remote-global`, `local-only`, `beginner`, `skilled`.
 
-1. **Reads** `MONEY_PROFILE.md` + track preference
-2. **Queries** the chosen research tools per track + country + languages
-3. **Cross-references** Reddit / Trustpilot / payout-proof communities
-4. **Verifies** per trust-check criteria below
-5. **Ranks** by 10 categories + Hidden Gems if `worldwide_hidden=true`
-6. **Writes** `OPPORTUNITIES.md`, `TRUST_CHECKS.md`, `ACTION_PLAN.md`
+## Procedure
 
-**Failure handling:**
+1. **Shortlist by track** from the families in `references/route-families.md` (freelance marketplaces, Arab freelance platforms, creator programmes, digital products, AI training and data work, research and testing panels, local services). Pick 6 to 10 candidates, not 50.
+2. **Verify each candidate for this country** (`bequite-researcher` ladder; open help pages in the browser when they refuse scripts). Record in `TRUST_CHECKS.md`, one row per platform:
+   - accepts residents of the country (eligibility list, not a forum);
+   - payout path that ends in money the user can use (method, minimum, fee, days);
+   - the platform's fee or commission;
+   - ID and tax documents required; VPN or location rules;
+   - scam and payout complaints (search "<platform> payout problem", read the dates);
+   - realistic first payout date.
+   Every cell carries the URL and date read, or `UNVERIFIED:`.
+3. **Exclude** anything that fails a safety rule (below) or has no verified payout path for the country. Log the reason.
+4. **Rank** the rest for the track: time to first payout, pay range reported by the platform itself, fit with skills, risk. Hidden gems (`worldwide_hidden=true`): search in the user's languages plus regional boards; each gem gets the same full check and a line on why it is overlooked.
+5. **Write** `OPPORTUNITIES.md` (ranked, each with its check row), and `ACTION_PLAN.md`: at most three sign-ups on days 1 and 2, a concrete deliverable per day ("publish one gig with three portfolio samples", not "work on profile"), a first-payout target by day 7, and the acceptance test for each day.
+6. **Repeat runs:** compare with the previous `OPPORTUNITIES.md`; mark new, still active, expired, risk increased, better alternative, needs manual check; append "Changes since <date>".
 
-- Rate-limited → degrade gracefully; mark items "needs manual verification"
-- Captcha walls → **never** solve; flag + skip
-- Login walls → ask user; never auto-login
-- ToS conflicts → respect platform terms
-- All tiers fail for a platform → write what we have + flag for manual verification
+## Safety rules (refuse, and say why)
 
-## Trust check criteria
+No fraud, fake accounts, fake reviews or bought engagement · no CAPTCHA farms or bypassing · no VPN or false location to pass eligibility · no account renting or someone else's identity · no upfront fee to get work (the FTC's first scam sign) · no MLM, pump-and-dump or "guaranteed income" · no mass unsolicited outreach · no adult content unless the user opted in · no income promise: give the platform's own figures and say they are not a guarantee.
 
-Per opportunity:
+## Worked example (verified 2026-11-21, user in Egypt, track `fastest-first-payout`, skills: Arabic writing + AI tools)
 
-- Legitimacy (Trustpilot, Reddit, payout-proof communities)
-- Country eligibility
-- Required documents (passport, tax ID)
-- Payout methods (PayPal / Payoneer / Wise / bank / crypto / mobile money)
-- VPN policy
-- ID verification requirement
-- Upfront payment (red flag if yes)
-- Payout complaints (search "<platform> payout problems")
-- Scam reports (search "<platform> scam")
-- Realistic pay range (vs. marketed)
-- Time to first payout
-- Required skills + language
-- For hidden: why hidden / overlooked
+| Route | Verified for Egypt | Payout | Verdict |
+|---|---|---|---|
+| Khamsat (Arabic micro-services) | Bank withdrawal lists Egypt | Bank from $250, up to 14 working days, Khamsat pays the fee; PayPal from $25 within 48 h; 14-working-day hold | Rank 1 for Arabic services |
+| Mostaql (Arabic projects) | Bank withdrawal lists Egypt | Same thresholds; commission 15% or 20% by membership | Rank 2 |
+| Fiverr | Payout via PayPal, or bank via Payoneer | PayPal $1 min, Payoneer bank $1 fee, $20 min | Rank 3; PayPal withdrawal from Egypt is `UNVERIFIED:` (the Egypt fee page says bank withdrawal "may not be possible in all markets") |
+| YouTube Partner Program | Egypt in the availability list | 1,000 subs + 4,000 watch hours (12 months) or 10M Shorts views (90 days) | Long-term track, not week one |
+| TikTok Creator Rewards | Not in any list found; official page did not load | - | `UNVERIFIED:` check TikTok Studio in the app |
+| Lemon Squeezy | Egypt in payout list | - | Excluded: closed to new sign-ups, shuts down 31 March 2027 |
 
-Save trust check to `TRUST_CHECKS.md` per platform.
+Day 1 to 2: Khamsat profile and three services with real samples. Day 3: Mostaql profile and five proposals. Day 7 target: first delivered order (the 14-day hold means cash arrives after the week; the plan says so).
 
----
+## Quality gate
 
-## Safety rules (strict)
+- Each recommended route has a verified payout path for the user's country, with URL and date.
+- No pay figure without the platform's own source; others are `UNVERIFIED:`.
+- At most three sign-ups in the plan; each day has a deliverable and a test.
+- Excluded routes are listed with the reason.
 
-❌ NO fraud / fake accounts / fake reviews / fake engagement
-❌ NO CAPTCHA bypass / CAPTCHA farms
-❌ NO spam / mass cold outreach
-❌ NO platform terms violations
-❌ NO VPN to misrepresent location
-❌ NO identity misuse
-❌ NO upfront-fee scams
-❌ NO unrealistic income promises
-❌ NO crypto pump-and-dump
-❌ NO MLM
-❌ NO adult / NSFW unless user explicitly opts in
-❌ Mark **uncertainty** clearly — never claim payout guarantees
+## Boundaries
 
-When in doubt, exclude + log to `TRUST_CHECKS.md` with reason.
-
----
-
-## Worldwide hidden mode
-
-(Same protocol as `bequite-job-finder` skill §"Worldwide hidden mode".)
-
-When `worldwide_hidden=true`:
-- Expand beyond user's country / language
-- Search multilingual (Portuguese / Spanish / German / French / Italian / Turkish / Polish / Romanian / Indonesian / Hindi / Arabic / English)
-- Surface Hidden Gems with full trust check
-- Look for overlooked country-specific platforms, regional boards, niche communities
-
----
-
-## Repeat-search behavior
-
-If `OPPORTUNITIES.md` exists from previous run:
-
-- Read previous results
-- Mark each in new list: 🆕 / ✅ / ❌ / ⚠ / ⬆ / 🔍
-- Append `## Changes since <last date>` section
-- Update `TRUST_CHECKS.md` with new scam reports / payout complaints
-- Refresh `ACTION_PLAN.md` if priorities shifted
-
----
-
-## 7-day action plan philosophy
-
-A good action plan:
-
-- 1-3 platform signups in Day 1-2 (no more — overload causes inaction)
-- First payout target in Day 3-7
-- Concrete deliverables (not "work on profile" — "complete profile, take 3 sample tasks")
-- Realistic expected payout per platform
-- Per-platform acceptance criteria
-
-Refresh weekly on repeat searches.
-
----
-
-## Anti-patterns
-
-- ❌ Recommending too many opportunities (overload + no action)
-- ❌ Recommending platforms with payout complaints
-- ❌ Hidden gems without trust check (defeats the point)
-- ❌ Suggesting CAPTCHA farms / fake review services (banned)
-- ❌ Optimistic income claims without uncertainty markers
-- ❌ Ignoring repeat-search comparison
-- ❌ Recommending a platform that requires the user to bypass its terms
-
----
-
-## What this skill does NOT do
-
-- Sign up the user on platforms (out of scope)
-- Apply to gigs for the user (out of scope)
-- Generate fake accounts / fake reviews / fake engagement (refused)
-- Provide financial / tax advice (out of scope — recommend consulting an accountant)
-- Replace `/bq-job-finder` (that's primary jobs; this is earning ops)
-
----
-
-## See also
-
-- `.claude/commands/bq-make-money.md` — the command spec
-- `.bequite/money/` — memory templates
-- `bequite-job-finder` skill — overlapping but jobs-focused
-- `bequite-researcher` skill — applies the same evidence rigor
-- `.bequite/principles/TOOL_NEUTRALITY.md` — platforms named here are candidates, not endorsements
-
----
-
-## When NOT to use this skill (alpha.15)
-
-- The task at hand doesn't touch this skill's domain — defer to the right specialist skill
-- A faster / simpler skill covers the same need — pick the simpler one and document why
-- The skill's core invariants don't apply to the current project (e.g. regulated-mode rules on a prototype)
-- The command that would activate this skill is already running with another specialist that fits better
-
-If unsure, surface the trade-off in the command's output and let the user decide.
-
-## Quality gate (alpha.15)
-
-Before claiming this skill's work complete:
-
-- [ ] Artifacts produced match the skill's expected outputs
-- [ ] All discipline rules in this skill were respected (not just glanced at)
-- [ ] No banned weasel words in any completion claim — `should`, `probably`, `seems to`, `appears to`, `might`, `hopefully`, `in theory`
-- [ ] Any tool / library / framework added during this run has a decision section per `.bequite/principles/TOOL_NEUTRALITY.md`
-- [ ] Acceptance criteria for the invoking command's task are met (or honestly reported as PARTIAL / FAIL)
-- [ ] `.bequite/state/MISTAKE_MEMORY.md` updated when a project-specific lesson surfaced
-- [ ] `.bequite/logs/AGENT_LOG.md` entry appended for the run
-- [ ] Memory state files (LAST_RUN, WORKFLOW_GATES, CURRENT_PHASE) updated when gate state changed
-
-If any item fails, do not claim done — report PARTIAL with the specific gap.
+BeQuite does not sign up, apply, accept terms or move money for the user. Platform names are candidates, not endorsements. Country facts age fast: re-check anything older than 30 days before advising.

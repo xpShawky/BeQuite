@@ -1,0 +1,10 @@
+# Pack files that later versions removed. On install or update, the installer moves any of these it
+# finds in a project into .bequite/backups/<time>-removed/ (it never deletes them).
+# One path per line, relative to the project's .claude/ folder. No "..".
+commands/bq-now.md
+commands/bq-p0.md
+commands/bq-p1.md
+commands/bq-p2.md
+commands/bq-p3.md
+commands/bq-p4.md
+commands/bq-p5.md

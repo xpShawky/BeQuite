@@ -9,6 +9,9 @@
 
 ## The 12 steps
 
+### 0. Up to date (v1)
+Before anything else, run `bash .claude/bequite/bin/bq-update.sh` and report its one line. It reads the `VERSION` file at the update source (`.bequite/state/UPDATE_SOURCE.md`; GitHub `xpShawky/BeQuite` main by default) and compares it with `.bequite/state/BEQUITE_VERSION.md`, at most once an hour (`.bequite/state/UPDATE_CHECK.md`). When they differ and **Auto update** is `on`, it backs up `.claude/commands`, the BeQuite skills, `.claude/bequite`, `CLAUDE.md` and `commands.md` to `.bequite/backups/<time>-v<old>/`, re-runs the installer from the source (memory is never overwritten; removed pack files are moved aside, listed in `.claude/bequite/REMOVED.txt`), and the command carries on. "Different", not "higher": the v4 to v1 relaunch counts as an update. Offline or on any error it says "skipped" and the command goes on; it never blocks work. With **Auto update** `off` or a pinned tag it only reports that a new version exists (`/bq-update` applies it).
+
 ### 1. Memory preflight
 Read core state first, focused reads only: `PROJECT_STATE` · `CURRENT_MODE` · `CURRENT_PHASE` · `WORKFLOW_GATES` · `LAST_RUN` · `MISTAKE_MEMORY` (top entries) · `PROJECT_DNA` + `WORKING_NOTES` for multi-step work · `CONTEXT_SUMMARY` when resuming. Domain memory (design/, writing/, presentations/, jobs/, money/, skills/) only when the task touches it. Never load all of `.bequite/`.
 

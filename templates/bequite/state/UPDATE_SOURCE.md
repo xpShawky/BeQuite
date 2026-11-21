@@ -1,6 +1,6 @@
 # BeQuite update source configuration
 
-Used by `/bq-update` to know where to fetch updates from.
+Used by the automatic update check (`.claude/bequite/bin/bq-update.sh`, step 1 of every BeQuite command) and by `/bq-update`.
 
 ---
 
@@ -8,6 +8,13 @@ Used by `/bq-update` to know where to fetch updates from.
 **Repo URL or local path:** https://github.com/xpShawky/BeQuite.git
 **Default branch:** main
 **Default strategy:** safe (backup + merge; no overwrite of local edits)
+**Auto update:** on
+
+## Automatic updates
+
+Every BeQuite command first runs the update check (at most once an hour). It reads the `VERSION` file at the source above and compares it with `.bequite/state/BEQUITE_VERSION.md`. When they differ and **Auto update** is `on`, it backs up `.claude/commands`, the BeQuite skills, `.claude/bequite`, `CLAUDE.md` and `commands.md` into `.bequite/backups/<time>-v<old>/`, re-runs the installer from the source, and the command carries on. Your `.bequite/` memory is never overwritten. Offline, it says "skipped" and the work goes on.
+
+Set **Auto update** to `off` to be told about new versions instead (then run `/bq-update` yourself). A pinned tag below also stops automatic updates.
 
 ## Pinned tag (optional)
 

@@ -6,6 +6,11 @@ Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANG
 
 ## [Unreleased]
 
+### Added
+- Automatic updates: step 1 of every command contract (and `/bequite`) runs `.claude/bequite/bin/bq-update.sh`. At most once an hour it compares the `VERSION` published at the update source with the installed version; when they differ and **Auto update** is on (`.bequite/state/UPDATE_SOURCE.md`), it backs up the pack files, re-runs the installer and the command carries on. Offline it continues; `.bequite/` memory is never overwritten.
+- `VERSION` at the repo root: the single published version. Both installers read it, rewrite `BEQUITE_VERSION.md` on every install, remember a local source on a first local install, and move pack files listed in `.claude/bequite/REMOVED.txt` into `.bequite/backups/` instead of leaving them behind.
+- `bq_check.py`: `VERSION` must match the installers; the update script must stay bash, ASCII and LF.
+
 ### Changed (v1 cleanup, task A1)
 - Model names replaced by roles (strong, balanced, fast); the one mapping lives in `.claude/bequite/docs/reference/MODEL_ROLES.md`.
 - Duplicate docs merged: auto-mode orchestration into `AUTO_MODE_STRATEGY.md`, the context strategy into `CONTEXT_ENGINEERING.md`, the harness strategy into `HARNESS_AND_PROMPT_QUALITY.md`; the architecture gates doc now points to the ledger.

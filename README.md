@@ -62,6 +62,8 @@ Then, in Claude Code:
 
 The installer copies `.claude/commands/`, `.claude/skills/`, BeQuite's reference docs (`.claude/bequite/`), the opt-in safety hooks, and a clean `.bequite/` scaffold. Re-running with `--force` (`$env:BEQUITE_FORCE=1` on Windows) refreshes commands and skills; **your project memory is never overwritten.**
 
+**Staying up to date.** Every BeQuite command starts with a short update check (`.claude/bequite/bin/bq-update.sh`, at most once an hour). When the `VERSION` published on GitHub differs from yours, it backs up the pack files, updates them, and the command carries on; your `.bequite/` memory is never touched, and offline it simply continues. To be asked instead, set `**Auto update:** off` in `.bequite/state/UPDATE_SOURCE.md` and run `/bq-update` when you want.
+
 ## How it works
 
 ```

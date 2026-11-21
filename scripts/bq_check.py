@@ -63,6 +63,20 @@ def installer():
     sh = os.path.join(ROOT, "scripts", "install-bequite.sh")
     if read_bytes(sh)[:3] == b"\xef\xbb\xbf":
         errors.append("scripts/install-bequite.sh: starts with a UTF-8 BOM")
+    # the update check every command runs first: bash, ASCII, LF line endings (CRLF breaks bash), body inside main()
+    upd = os.path.join(ROOT, ".claude", "bequite", "bin", "bq-update.sh")
+    if not os.path.isfile(upd):
+        errors.append(".claude/bequite/bin/bq-update.sh missing (step 1 of the command contract runs it)")
+    else:
+        data = read_bytes(upd)
+        if not data.startswith(b"#!/usr/bin/env bash"):
+            errors.append(".claude/bequite/bin/bq-update.sh: must start with #!/usr/bin/env bash")
+        if b"\r" in data:
+            errors.append(".claude/bequite/bin/bq-update.sh: has CR line endings (bash fails on them)")
+        if any(b > 127 for b in data):
+            errors.append(".claude/bequite/bin/bq-update.sh: non-ASCII byte")
+        if b"\nmain \"$@\"\nexit 0" not in data:
+            errors.append(".claude/bequite/bin/bq-update.sh: must end with main \"$@\" then exit 0 (so an update can replace the file while it runs)")
     return errors
 
 
@@ -243,6 +257,15 @@ def version_consistent():
         return ["could not read the version from both installers"]
     if ps1.group(1) != sh.group(1):
         errors.append("installer versions differ: ps1 %s vs sh %s" % (ps1.group(1), sh.group(1)))
+    vfile = os.path.join(ROOT, "VERSION")
+    if not os.path.isfile(vfile):
+        errors.append("VERSION missing (the update check compares installs against it)")
+    else:
+        v = read(vfile).strip()
+        if not re.match(r"^\d+\.\d+\.\d+([.+-][0-9A-Za-z.-]+)?$", v):
+            errors.append("VERSION: %r is not a version like 4.0.0" % v)
+        elif "v" + v != sh.group(1):
+            errors.append("VERSION says %s but the installers' fallback says %s" % (v, sh.group(1)))
     rel_sec = re.search(r"^## \[(\d+\.\d+\.\d+[^\]]*)\]", read(os.path.join(ROOT, "CHANGELOG.md")), re.M)
     if rel_sec and "v" + rel_sec.group(1) != sh.group(1):
         errors.append("installers say %s but the newest released CHANGELOG section is [%s]" % (sh.group(1), rel_sec.group(1)))
@@ -255,13 +278,14 @@ CONTRACT_OPEN = "<!-- bq:contract -->"
 CONTRACT_CLOSE = "<!-- /bq:contract -->"
 CONTRACT_BODY = (
     "> **Every run follows the contract** (`.claude/bequite/docs/architecture/COMMAND_EXECUTION_CONTRACT.md`):\n"
-    "> 1. **Skills first:** announce the `Skill Selection:` block before any plan, edit or tool call for the task.\n"
-    "> 2. **Resolve the work:** read `.bequite/ACTIVE.md`; use `.bequite/work/<id>/`, or create the next work folder if this is new work (`/bq-work`).\n"
-    "> 3. **Gates:** project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `work/<id>/gates.md`. Refuse and name the missing gate.\n"
-    "> 4. **Plan first:** non-trivial work gets a plan the user approves before output. Hard human gates always wait for a yes.\n"
-    "> 5. **Evidence:** every check goes to `work/<id>/evidence.md` (command + exit code + output) or is marked `UNVERIFIED:`.\n"
-    "> 6. **Write back:** `work/<id>/log.md`, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, and `.bequite/state/MISTAKE_MEMORY.md` when a lesson surfaced.\n"
-    "> 7. **Finish** with the Next Command Recommendations block.\n"
+    "> 1. **Up to date:** first run `bash .claude/bequite/bin/bq-update.sh` (hourly; it updates BeQuite when a newer version is published, backs up first, never touches `.bequite/` memory, never blocks) and say its one line.\n"
+    "> 2. **Skills first:** announce the `Skill Selection:` block before any plan, edit or tool call for the task.\n"
+    "> 3. **Resolve the work:** read `.bequite/ACTIVE.md`; use `.bequite/work/<id>/`, or create the next work folder if this is new work (`/bq-work`).\n"
+    "> 4. **Gates:** project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `work/<id>/gates.md`. Refuse and name the missing gate.\n"
+    "> 5. **Plan first:** non-trivial work gets a plan the user approves before output. Hard human gates always wait for a yes.\n"
+    "> 6. **Evidence:** every check goes to `work/<id>/evidence.md` (command + exit code + output) or is marked `UNVERIFIED:`.\n"
+    "> 7. **Write back:** `work/<id>/log.md`, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, and `.bequite/state/MISTAKE_MEMORY.md` when a lesson surfaced.\n"
+    "> 8. **Finish** with the Next Command Recommendations block.\n"
 )
 CONTRACT_BLOCK = CONTRACT_OPEN + "\n" + CONTRACT_BODY + CONTRACT_CLOSE
 

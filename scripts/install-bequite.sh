@@ -60,6 +60,9 @@ else
   SOURCE="$TMP"
 fi
 [[ -d "$SOURCE/templates/bequite" ]] || { echo "$(red "FATAL:") $SOURCE has no templates/bequite (old or wrong source)." >&2; exit 1; }
+# the source's VERSION file is the version being installed (the constant above is only the fallback)
+if [[ -f "$SOURCE/VERSION" ]]; then BEQUITE_VERSION="v$(tr -d ' \r\n' < "$SOURCE/VERSION" | sed 's/^v//')"; fi
+STAMP="$(date +%Y%m%d-%H%M%S)"
 
 # --- 3. Commands, skills, hooks ---------------------------------------------
 section "Installing commands and skills"
@@ -72,7 +75,20 @@ for skill in "$SOURCE"/.claude/skills/bequite-*/; do
 done
 rm -rf ./.claude/bequite
 cp -r "$SOURCE/.claude/bequite" ./.claude/bequite
+# files a newer version removed: move them aside, never delete
+moved=0
+if [[ -f "$SOURCE/.claude/bequite/REMOVED.txt" ]]; then
+  while IFS= read -r p || [[ -n "$p" ]]; do
+    p="$(printf '%s' "$p" | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+    [[ -z "$p" || "$p" == \#* || "$p" == *..* ]] && continue
+    if [[ -e "./.claude/$p" ]]; then
+      mkdir -p "$(dirname "./.bequite/backups/$STAMP-removed/.claude/$p")"
+      mv "./.claude/$p" "./.bequite/backups/$STAMP-removed/.claude/$p" && moved=$((moved + 1))
+    fi
+  done < "$SOURCE/.claude/bequite/REMOVED.txt"
+fi
 echo "  $(green "$(ls -1 ./.claude/commands/*.md | wc -l | tr -d ' ') commands, $(ls -d ./.claude/skills/bequite-*/ | wc -l | tr -d ' ') skills, reference docs in .claude/bequite/docs")"
+[[ $moved -gt 0 ]] && echo "  $moved removed command or skill file(s) moved to .bequite/backups/$STAMP-removed/"
 
 if [[ -d "$SOURCE/.claude/hooks" ]]; then
   mkdir -p ./.claude/hooks
@@ -85,6 +101,7 @@ fi
 
 # --- 4. Memory scaffold (never overwrites) ----------------------------------
 section "Preparing .bequite/ memory"
+had_source_md=false; [[ -f ./.bequite/state/UPDATE_SOURCE.md ]] && had_source_md=true
 added=0
 while IFS= read -r -d '' src; do
   rel="${src#"$SOURCE/templates/bequite/"}"
@@ -96,6 +113,24 @@ while IFS= read -r -d '' src; do
   fi
 done < <(find "$SOURCE/templates/bequite" -type f -print0)
 echo "  $added files added (existing memory left untouched)"
+
+# version metadata is not memory: it always says what is installed now
+vf=./.bequite/state/BEQUITE_VERSION.md
+if [[ -f "$vf" ]]; then
+  old_v="$(sed -n 's/^\*\*Version:\*\* *//p' "$vf" | head -n 1 | tr -d '\r' | sed 's/[[:space:]]*$//')"
+  if [[ "$old_v" != "$BEQUITE_VERSION" ]]; then
+    sed -e "s/^\*\*Version:\*\*.*/**Version:** $BEQUITE_VERSION/" -e "s/^\*\*Previous version:\*\*.*/**Previous version:** $old_v/" -e '/^(none yet)\r\{0,1\}$/d' "$vf" > "$vf.bqtmp" && mv "$vf.bqtmp" "$vf"
+    printf -- '- %s: %s -> %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$old_v" "$BEQUITE_VERSION" >> "$vf"
+    echo "  version metadata: $old_v -> $BEQUITE_VERSION"
+  fi
+fi
+# a first install from a local clone keeps updating from that clone (change it in UPDATE_SOURCE.md)
+sf=./.bequite/state/UPDATE_SOURCE.md
+if [[ "$had_source_md" == false && -n "$FROM_LOCAL" && -f "$sf" ]]; then
+  esc="$(printf '%s' "$SOURCE" | sed 's/[&#]/\\&/g')"
+  sed -e "s#^\*\*Source type:\*\*.*#**Source type:** local#" -e "s#^\*\*Repo URL or local path:\*\*.*#**Repo URL or local path:** $esc#" "$sf" > "$sf.bqtmp" && mv "$sf.bqtmp" "$sf"
+  echo "  updates will come from $SOURCE (UPDATE_SOURCE.md)"
+fi
 
 if [[ -f "$SOURCE/commands.md" ]]; then cp "$SOURCE/commands.md" ./commands.md; fi
 
@@ -124,4 +159,5 @@ echo "  In Claude Code, start with:"
 echo "    /bequite        menu: project state + next recommended commands"
 echo "    /bq-help        full command reference (also commands.md)"
 echo "    /bq-auto \"..\"   autonomous runner; stops only at hard gates"
+echo "  Every BeQuite command first checks for a newer version and updates itself (off switch: .bequite/state/UPDATE_SOURCE.md)."
 echo

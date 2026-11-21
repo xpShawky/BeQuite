@@ -59,6 +59,10 @@ function Install-BeQuite([string]$FromLocal, [bool]$Force) {
   }
   $TplRoot = Join-Path $Source "templates\bequite"
   if (-not (Test-Path $TplRoot)) { Fail "$Source has no templates\bequite (old or wrong source)."; return }
+  # the source's VERSION file is the version being installed (the constant above is only the fallback)
+  $VerFile = Join-Path $Source "VERSION"
+  if (Test-Path $VerFile) { $Version = "v" + [System.IO.File]::ReadAllText($VerFile).Trim().TrimStart('v') }
+  $Stamp = Get-Date -Format "yyyyMMdd-HHmmss"
 
   try {
     # --- 3. Commands, skills, hooks ----------------------------------------
@@ -72,9 +76,26 @@ function Install-BeQuite([string]$FromLocal, [bool]$Force) {
     }
     if (Test-Path ".\.claude\bequite") { Remove-Item ".\.claude\bequite" -Recurse -Force }
     Copy-Item -Path (Join-Path $Source ".claude\bequite") -Destination ".\.claude\bequite" -Recurse -Force
+    # files a newer version removed: move them aside, never delete
+    $moved = 0
+    $removedList = Join-Path $Source ".claude\bequite\REMOVED.txt"
+    if (Test-Path $removedList) {
+      foreach ($line in [System.IO.File]::ReadAllLines($removedList)) {
+        $p = $line.Trim()
+        if ($p -eq "" -or $p.StartsWith("#") -or $p.Contains("..")) { continue }
+        $old = Join-Path ".\.claude" $p
+        if (Test-Path $old) {
+          $dst = Join-Path ".\.bequite\backups\$Stamp-removed\.claude" $p
+          New-Item -ItemType Directory -Force (Split-Path $dst -Parent) | Out-Null
+          Move-Item $old $dst -Force
+          $moved++
+        }
+      }
+    }
     $nCmd = (Get-ChildItem ".\.claude\commands" -Filter *.md).Count
     $nSkill = (Get-ChildItem ".\.claude\skills" -Directory -Filter "bequite-*").Count
     Write-Host "  $nCmd commands, $nSkill skills, reference docs in .claude\bequite\docs" -ForegroundColor Green
+    if ($moved -gt 0) { Write-Host "  $moved removed command or skill file(s) moved to .bequite\backups\$Stamp-removed\" }
 
     $hooks = Join-Path $Source ".claude\hooks"
     if (Test-Path $hooks) {
@@ -89,6 +110,7 @@ function Install-BeQuite([string]$FromLocal, [bool]$Force) {
 
     # --- 4. Memory scaffold (never overwrites) ------------------------------
     Section "Preparing .bequite memory"
+    $hadSourceMd = Test-Path ".\.bequite\state\UPDATE_SOURCE.md"
     $added = 0
     Get-ChildItem $TplRoot -Recurse -File -Force | ForEach-Object {
       $rel = $_.FullName.Substring($TplRoot.Length).TrimStart('\', '/')
@@ -103,6 +125,31 @@ function Install-BeQuite([string]$FromLocal, [bool]$Force) {
       }
     }
     Write-Host "  $added files added (existing memory left untouched)"
+
+    # version metadata is not memory: it always says what is installed now
+    $vf = Join-Path $Target ".bequite\state\BEQUITE_VERSION.md"
+    if (Test-Path $vf) {
+      $vt = [System.IO.File]::ReadAllText($vf)
+      $m = [regex]::Match($vt, '(?m)^\*\*Version:\*\* *([^\r\n]*)')
+      $oldV = if ($m.Success) { $m.Groups[1].Value.Trim() } else { "" }
+      if ($oldV -ne $Version) {
+        $vt = [regex]::Replace($vt, '(?m)^\*\*Version:\*\*[^\r\n]*', "**Version:** $Version")
+        $vt = [regex]::Replace($vt, '(?m)^\*\*Previous version:\*\*[^\r\n]*', "**Previous version:** $oldV")
+        $vt = [regex]::Replace($vt, '(?m)^\(none yet\)\r?\n', "")
+        $vt = $vt.TrimEnd() + "`n- " + (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ") + ": $oldV -> $Version`n"
+        [System.IO.File]::WriteAllText($vf, $vt, $Utf8NoBom)
+        Write-Host "  version metadata: $oldV -> $Version"
+      }
+    }
+    # a first install from a local clone keeps updating from that clone (change it in UPDATE_SOURCE.md)
+    $sf = Join-Path $Target ".bequite\state\UPDATE_SOURCE.md"
+    if (-not $hadSourceMd -and $FromLocal -ne "" -and (Test-Path $sf)) {
+      $st = [System.IO.File]::ReadAllText($sf)
+      $st = [regex]::Replace($st, '(?m)^\*\*Source type:\*\*[^\r\n]*', "**Source type:** local")
+      $st = [regex]::Replace($st, '(?m)^\*\*Repo URL or local path:\*\*[^\r\n]*', ("**Repo URL or local path:** " + $Source.Replace('\', '/')))
+      [System.IO.File]::WriteAllText($sf, $st, $Utf8NoBom)
+      Write-Host "  updates will come from $Source (UPDATE_SOURCE.md)"
+    }
 
     $cmdRef = Join-Path $Source "commands.md"
     if (Test-Path $cmdRef) { Copy-Item $cmdRef ".\commands.md" -Force }
@@ -137,6 +184,7 @@ function Install-BeQuite([string]$FromLocal, [bool]$Force) {
     Write-Host "    /bequite        menu: project state + next recommended commands"
     Write-Host "    /bq-help        full command reference (also commands.md)"
     Write-Host "    /bq-auto `"..`"   autonomous runner; stops only at hard gates"
+    Write-Host "  Every BeQuite command first checks for a newer version and updates itself (off switch: .bequite\state\UPDATE_SOURCE.md)."
     Write-Host ""
   } finally {
     if ($Tmp -and (Test-Path $Tmp)) { Remove-Item $Tmp -Recurse -Force -ErrorAction SilentlyContinue }

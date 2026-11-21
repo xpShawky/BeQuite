@@ -1,144 +1,72 @@
 ---
 name: bequite-anti-hallucination
-description: Use when verifying work, reviewing/auditing, recommending a package, or making any factual claim — forces evidence over assertion and an explicit UNVERIFIED label over confident guessing.
-allowed-tools: Read, Glob, Grep, Bash, WebFetch, WebSearch
+description: Use before any completion claim, review finding, package install, API call from memory, or factual statement in a report. Forces every claim to carry a source or a run from this session, and an explicit UNVERIFIED label otherwise. The Stop hook enforces the same rule at the end of a turn.
+last_verified: 2026-11-21
+sources:
+  - https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations
+  - https://code.claude.com/docs/en/hooks
+  - https://arxiv.org/abs/2406.10279
+  - https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents
+  - https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents
+  - https://google.github.io/osv.dev/api/
+  - https://docs.pypi.org/api/json/
 ---
 
 # bequite-anti-hallucination
 
-Turn assertion into evidence. Every claim BeQuite makes either ships with proof or ships with an explicit `UNVERIFIED:` label. No confident guessing.
+One rule: **a claim needs a source or a run.** If neither exists in this session, the claim is written `UNVERIFIED:` or "I don't know: <the gap>". A labelled gap is a valid answer; a confident guess is not.
 
-## The 6 rules (top = most load-bearing)
+## When to use
 
-| # | Rule | One-line enforcement |
+- Any "done", "fixed", "passes", "works" (completion reports, `/bq-verify`, `/bq-implement`, `/bq-fix`).
+- Any review, audit or red-team finding.
+- Before installing or importing a package, or writing a call to an API you did not read this session.
+- Any number, price, limit, version or availability claim in a report.
+
+Not for: brainstorming that claims nothing; quoting the user back to themselves.
+
+## The checks
+
+| # | Claim | Required evidence |
 |---|---|---|
-| 1 | Evidence over claims | Paste the command + exit code + output. Never a bare "done" / "it works". |
-| 2 | Citation-or-strike | Every finding carries a `file:line` quote of the real code, or you RETRACT it. |
-| 3 | Forced fork | Each uncertain claim → concrete evidence OR an explicit `UNVERIFIED:` / "I don't know". |
-| 4 | Package verification | Verify a package is real IN-SESSION before importing/installing it. |
-| 5 | Version-pinned API grounding | Pin the version; ground every non-trivial call on docs fetched this session. |
-| 6 | Fresh-context verifier | A blind sub-agent refutes the diff; severity-gated; escalate only LOW-confidence claims. |
+| 1 | "Done / passes / works" | `$ command` -> `exit N` -> the lines of output that prove it, in `work/<id>/evidence.md` |
+| 2 | "It looks right" (UI, page, slide, film) | A screenshot or a browser read taken this session, saved or quoted |
+| 3 | A finding in a review | `path:line` and the quoted code. No quote: retract the finding |
+| 4 | A package | Registry check this session (exists, latest version, upload date, licence, repo matches); OSV for the pinned version |
+| 5 | An API signature | Docs for the pinned version read this session, unless the call is common and stable (over-fetching stale docs adds error) |
+| 6 | A fact or number | URL + date read (`bequite-researcher`); else `UNVERIFIED:` |
+| 7 | A risky action | Confidence (high / medium / low, with the reason) and the single biggest unknown |
 
-Plus: confidence calibration (rule 7) before risky actions.
+Low confidence on a load-bearing claim goes to a fresh verifier (`bequite-guard-pass`, run by the `bq-verifier` subagent): it sees the diff and the acceptance criteria, not your reasoning.
 
----
+## Procedure
 
-### Rule 1 — Evidence over claims (Anthropic reduce-hallucinations; Claude Code best-practices)
+1. Before writing the report, list every claim it makes.
+2. For each, attach the evidence from the table, or rewrite it as `UNVERIFIED:` with what would settle it.
+3. Remove the banned words when they stand in for evidence: should, probably, seems to, appears to, I think it works, might, hopefully, in theory.
+4. Write the evidence entries in `work/<id>/evidence.md` before saying "done". The Stop hook (when enabled) blocks a completion claim that has no evidence entry for this turn; do not fight it, add the evidence.
 
-> "Show evidence rather than asserting success — the test output, the command run and what it returned, or a screenshot."
+## Worked example (real runs, 2026-11-21)
 
-The **trust-then-verify gap**: an agent reports success, the human trusts it, nobody re-runs the check. Close it at the source.
-
-- A completion report is INVALID without: the exact command run, its exit code, and its output (or a screenshot for UI).
-- "Done" / "it works" / "tests pass" with no pasted proof = retract and re-run.
-- Format every completion line as: `$ <command>` → `exit <N>` → `<relevant output>`.
-
-Strengthens: **/bq-verify**, **/bq-implement**, **/bq-fix**, **/bq-test**.
-
-### Rule 2 — Citation-or-strike (Anthropic citation-verification)
-
-Every review / audit / red-team finding MUST carry a `path:line` quote of the ACTUAL code it describes. If you cannot find the supporting quote in the file right now, the claim is unsupported — **RETRACT it**, do not soften it.
+Plan draft said: "Add `scrapling-pro-stealth` for hard sites; jinja2 3.1.4 is safe."
 
 ```
-FINDING (HIGH): unbounded loop on user input
-  src/api/handler.ts:142  → `while (req.body.items.length) {`
+$ curl -s -o /dev/null -w "%{http_code}" https://pypi.org/pypi/scrapling-pro-stealth/json
+404
+$ curl -s -X POST https://api.osv.dev/v1/query -d '{"package":{"name":"jinja2","ecosystem":"PyPI"},"version":"3.1.4"}'
+6 advisories: GHSA-cpwx-vrp4-4pq7, GHSA-gmj6-6f8f-6699, GHSA-q2x7-8rv6-6q7h, PYSEC-2026-1471, -1472, -1475
 ```
 
-No quote → no finding. This kills "the code probably does X" review noise.
-
-Strengthens: **/bq-review**, **/bq-audit**, **/bq-red-team**.
-
-### Rule 3 — Forced fork (Anthropic reduce-hallucinations)
-
-Anthropic's #1 anti-hallucination move: **give the model permission to say "I don't know."** Banning hedge words (should / probably / seems to) WITHOUT an escape valve just manufactures false confidence. So the rule is a fork, not a ban:
-
-On any uncertain claim, do EXACTLY ONE:
-- **A — Evidence:** produce the concrete proof (command output, file:line quote, fetched doc), OR
-- **B — Label:** emit `UNVERIFIED: <claim>` or "I don't know — <the gap>".
-
-`UNVERIFIED:` is a first-class, acceptable output. A labeled unknown beats a confident wrong answer every time.
-
-Strengthens: every command. Most visible in **/bq-research**, **/bq-plan**, **/bq-verify**.
-
-### Rule 4 — Package / dependency verification (Anthropic PhantomRaven defense; USENIX slopsquatting research)
-
-5–22% of LLM package suggestions are hallucinated; ~58% of those fakes recur across runs (slopsquatting / PhantomRaven). Before importing or installing ANY package, verify IN THIS SESSION:
-
-- [ ] Exists on the real registry (npm / PyPI / crates.io — fetch it)
-- [ ] Package age (brand-new + critical = suspect)
-- [ ] Weekly downloads — **< 1,000 on a critical dep = red flag**
-- [ ] Publisher identity matches the expected maintainer
-- [ ] Repo link resolves and matches the package
-- [ ] Already present in the lockfile
-
-Install from **pinned lockfiles**, not model-suggested names. Iron Law 8 (PhantomRaven defense) is enforced here.
-
-Strengthens: **/bq-research**, **/bq-plan**, **/bq-feature**, **/bq-implement**.
-
-### Rule 5 — Version-pinned API grounding (Anthropic reduce-hallucinations)
-
-For any non-trivial library/API call: pin the version, then ground the call on **version-matched docs fetched this session**. Never quote a method signature from memory.
-
-Caveat (do not over-retrieve): retrieve docs only when the API is unfamiliar or version-sensitive. **A bad retriever HURTS familiar APIs** — pulling stale or mismatched docs for a well-known call adds error, not safety.
-
-Strengthens: **/bq-implement**, **/bq-feature**, **/bq-fix**.
-
-### Rule 6 — Fresh-context adversarial verifier (Anthropic effective-harnesses; information asymmetry)
-
-A verifier sub-agent sees ONLY the diff + the acceptance criteria — NOT the implementer's reasoning — and tries to refute the work. Information asymmetry stops the verifier from rubber-stamping the implementer's own story.
-
-Two guardrails so the verifier stays useful and cheap:
-- **Severity-gate:** "tell the reviewer to flag only gaps that affect correctness or the stated requirements." A reviewer told to "find gaps" will manufacture them. (Anthropic effective-harnesses.)
-- **Cost-aware escalation:** escalate to a second model / sub-agent ONLY on LOW-confidence claims. High-confidence, evidence-backed claims do not need a second pass.
-
-Strengthens: **/bq-review**, **/bq-red-team**, **/bq-verify**, **/bq-auto** (verifier step).
-
-### Rule 7 — Confidence calibration (Anthropic demystifying-evals)
-
-Agents are systematically overconfident — measured success ~22% against self-predicted ~77%. Before any risky action, surface:
-
-- **Confidence:** high / medium / low (with the reason)
-- **The single biggest unknown** that could make this wrong
-
-Low confidence is the trigger for Rule 3-B (label it) and Rule 6 (escalate).
-
-Strengthens: **/bq-plan**, **/bq-fix**, **/bq-auto**, **/bq-release**.
-
----
-
-## When this skill activates
-
-- Any completion / verification report (Rules 1, 3, 7)
-- Any review, audit, or red-team finding (Rules 2, 6)
-- Recommending, importing, or installing a package (Rule 4)
-- Writing a non-trivial library/API call (Rule 5)
-- Before a hard-human-gate action or any one-way door (Rule 7)
-
-## Effort-awareness
-
-- **Fast / token-saver mode:** Rules 1–4 are mandatory (cheap, high-value). Rule 6 escalation fires only on declared LOW-confidence claims.
-- **Deep mode:** all 7 rules; fresh-context verifier runs on every diff that touches correctness-critical paths.
-- Match verification depth to risk — a one-line doc fix does not need a second model; an auth change does.
-
-## Tool-neutrality note
-
-Registry names (npm / PyPI / crates.io) and fetch tools here are EXAMPLES, not commands. Use the verification source that fits the project's actual ecosystem. This skill installs nothing and adds no dependency — it only inspects and verifies (per ADR-003 + do-not-auto-install).
-
-## When NOT to use this skill
-
-- Pure brainstorming / ideation where nothing is being claimed as factual or shipped.
-- Quoting the user's own input back to them (no external claim to verify).
-- Casual orientation reads (`/bequite short`, `/bequite` menu) — read-only, no factual assertions to ground.
-- When evidence is already inline and current (do not re-fetch familiar, version-matched docs — Rule 5 caveat).
+Both claims struck. The package does not exist (a slopsquatting target: the study of 16 models found 5.2% to 21.7% of suggested packages were invented), and the pinned jinja2 has six known advisories. The plan now names the real package (`scrapling` 0.5.1) and asks for a jinja2 upgrade.
 
 ## Quality gate
 
-This skill's output is acceptable only when:
+- Every success claim has command, exit code and output, or a screenshot for visuals.
+- Every finding has a real `path:line` quote.
+- No package without a registry check from this session.
+- Every uncertain claim is evidence-backed or labelled `UNVERIFIED:`.
+- No banned word stands in for evidence.
 
-- [ ] Every success claim carries command + exit code + output (or screenshot). (Rule 1)
-- [ ] Every review/audit/red-team finding carries a real `file:line` quote, or is retracted. (Rule 2)
-- [ ] Every uncertain claim is either evidence-backed OR labeled `UNVERIFIED:` / "I don't know". (Rule 3)
-- [ ] No package is imported/installed without in-session registry + downloads + publisher + lockfile checks. (Rule 4)
-- [ ] Every non-trivial API call is version-pinned and grounded on docs fetched this session. (Rule 5)
-- [ ] Low-confidence claims were escalated to a fresh-context, severity-gated verifier. (Rules 6, 7)
-- [ ] No banned weasel word stands alone — each is replaced by evidence or an explicit `UNVERIFIED:` label.
+## Boundaries
+
+This skill inspects and verifies; it installs nothing. It never edits a test or a check to make a claim true. Numbers about models or vendors from memory are `UNVERIFIED:` until a page is read.

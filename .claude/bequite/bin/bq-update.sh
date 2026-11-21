@@ -50,13 +50,18 @@ main() {
     } > "$chk_md"
   }
 
-  # 1. checked within the hour and nothing was pending: done
+  # 1. checked within the hour: repeat that answer (an offline machine must not wait on every command)
   last="$(field "$chk_md" "Last check epoch")"; result="$(word "$(field "$chk_md" "Result")")"
+  cached_pub="$(field "$chk_md" "Published")"
   if [ "$force_now" = false ] && [ "$mode" = "auto" ] && [ -n "$last" ] && [ "$last" -eq "$last" ] 2>/dev/null; then
     age=$(( (now - last) / 60 ))
-    if [ "$age" -lt 60 ] && { [ "$result" = "current" ] || [ "$result" = "updated" ]; }; then
-      echo "BeQuite v$installed is current (checked $age min ago)."
-      return 0
+    if [ "$age" -lt 60 ] && [ "$age" -ge 0 ]; then
+      case "$result" in
+        current|updated) echo "BeQuite v$installed is current (checked $age min ago)."; return 0 ;;
+        skipped) echo "BeQuite update check skipped $age min ago (no published version reachable). Continuing with v$installed."; return 0 ;;
+        available) echo "BeQuite $cached_pub is available (installed: v$installed; checked $age min ago). Run /bq-update."; return 0 ;;
+        failed) echo "The last BeQuite update failed $age min ago (see .bequite/logs/UPDATE_LOG.md). Continuing with v$installed."; return 0 ;;
+      esac
     fi
   fi
 

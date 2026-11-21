@@ -2,7 +2,7 @@
 
 > The architectural strategy behind `/bq-presentation` (alpha.13) — promised in the alpha.14 audit, delivered here. Operational detail lives in `.claude/commands/bq-presentation.md` + `.claude/skills/bequite-presentation-builder/SKILL.md`; this doc records the DESIGN DECISIONS so future changes don't re-litigate them.
 
-**Status:** active · **Reviewed:** 2026-06-11 (Fable pass — capability re-verified complete: PPTX/HTML/both · variants 1–10 · strict/creative · references · speaker notes · brand assets · motion plan · morph-like planning ✅)
+**Status:** active · **Reviewed:** 2026-06-11 (review pass — capability re-verified complete: PPTX/HTML/both · variants 1–10 · strict/creative · references · speaker notes · brand assets · motion plan · morph-like planning ✅)
 
 ---
 

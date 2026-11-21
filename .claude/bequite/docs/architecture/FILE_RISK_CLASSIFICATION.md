@@ -2,7 +2,7 @@
 
 > **Third enforcement surface for file-edit safety.** Hooks catch destructive SHELL ops + secret strings; hard human gates catch named risky ACTIONS; this classification catches risky FILE EDITS that would otherwise pass through the Edit/Write tools silently. Tunable per-project rules live in `.bequite/state/FILE_RISK_RULES.md`.
 
-**Status:** active · **Adopted:** alpha.19 (Fable Strengthening Pass)
+**Status:** active · **Adopted:** alpha.19 (strengthening pass)
 **Enforced at:** execution contract step 7 · `/bq-auto` continuation logic · `/bq-review` + `/bq-red-team` (flag high-tier diffs for extra scrutiny)
 
 ---

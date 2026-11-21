@@ -10,8 +10,8 @@ allowed-tools: Read, Glob, Grep, Edit, Write
 
 Encode the **Delegate Mode** workflow:
 
-1. **Strong model** (Opus, GPT-5, similar) does architecture, research, splits work into atomic tasks with exact instructions, acceptance criteria, and test commands.
-2. **Cheaper model** (Sonnet, Haiku, or a smaller open model) implements **exactly** from the task pack — no architectural decisions, no guessing.
+1. **Strong model** does architecture, research, splits work into atomic tasks with exact instructions, acceptance criteria, and test commands.
+2. **Balanced or fast model** implements **exactly** from the task pack — no architectural decisions, no guessing.
 3. **Strong model** reviews the implementation diff. Fixes or asks for fixes. Final verify runs.
 
 The intent: **cost savings** without **quality loss**. The strong model's expensive tokens are concentrated on the thinking parts; the cheap model's tokens carry the mechanical work.
@@ -62,7 +62,7 @@ Strong model exits + writes to `LAST_RUN.md`:
 
 ### Phase 2 — Implement (cheaper model)
 
-User switches Claude model (Sonnet → Haiku, or different host/account).
+User switches to the balanced or fast model (or another host or account).
 
 Cheaper model runs `/bq-implement delegate` (mode flag triggers delegate-implementer behavior):
 - Reads task pack
@@ -113,8 +113,8 @@ After approval: run `/bq-verify` for full gate matrix.
 # Delegate Tasks — <feature name>
 
 **Generated:** <ISO 8601 UTC>
-**Strong model:** <e.g. Claude Opus 4.7>
-**Recommended implementer:** Claude Sonnet 4.5 or similar
+**Strong model:** <the strong model in use>
+**Recommended implementer:** the balanced model (see MODEL_ROLES)
 **Total tasks:** <N>
 **Estimated cheap-model tokens:** <range>
 
@@ -216,8 +216,8 @@ Expected: <output>
 # Delegate Review Report
 
 **Generated:** <ISO 8601 UTC>
-**Reviewer (strong model):** <e.g. Claude Opus 4.7>
-**Implementer:** <e.g. Claude Sonnet 4.5>
+**Reviewer (strong model):** <the strong model in use>
+**Implementer:** <the balanced model in use>
 **Tasks reviewed:** <N>
 
 ## Verdict

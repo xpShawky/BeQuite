@@ -5,8 +5,8 @@ Strong-model review of the cheaper model's implementation work. Written in Phase
 ---
 
 **Generated:** <ISO 8601 UTC>
-**Reviewer (strong model):** <e.g. Claude Opus 4.7>
-**Implementer model:** <e.g. Claude Sonnet 4.5 / Haiku>
+**Reviewer (strong model):** <the strong model in use>
+**Implementer model:** <the balanced or fast model>
 **Tasks reviewed:** <N>
 **Time span:** <ISO start> → <ISO end>
 

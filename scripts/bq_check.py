@@ -5,19 +5,27 @@ Standard library only (no installs). Run from anywhere:
     python3 scripts/bq_check.py            # all checks
     python3 scripts/bq_check.py --list     # list checks
     python3 scripts/bq_check.py installer  # run named checks only
+    python3 scripts/bq_check.py --strict   # warnings fail too (release gate)
 
-Exit code 0 = all checks pass, 1 = at least one failure.
+Exit code 0 = all checks pass, 1 = at least one failure. Warn-only checks
+(size budgets, skill sources) print but do not fail unless --strict.
 """
 import os
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CHECKS = []
+WARN_ONLY = set()  # checks that report without failing, unless --strict
 
 
 def check(fn):
     CHECKS.append(fn)
     return fn
+
+
+def warn_check(fn):
+    WARN_ONLY.add(fn.__name__)
+    return check(fn)
 
 
 def rel(path):
@@ -242,7 +250,7 @@ def version_consistent():
 
 
 # ---------------------------------------------------------------- contract block
-READ_ONLY = {"bequite", "bq-help", "bq-now", "bq-explain"}
+READ_ONLY = {"bequite", "bq-help", "bq-explain"}
 CONTRACT_OPEN = "<!-- bq:contract -->"
 CONTRACT_CLOSE = "<!-- /bq:contract -->"
 CONTRACT_BODY = (
@@ -310,11 +318,80 @@ def gates_defined():
         defined |= set(GATE_RE.findall(read(src)))
     errors = []
     files = commands() + glob.glob(os.path.join(SKILL_DIR, "bequite-*", "**", "*.md"), recursive=True)
+    files += [p for p in glob.glob(os.path.join(ROOT, ".claude", "bequite", "docs", "**", "*.md"), recursive=True)
+              if "decisions" not in rel(p)]  # ADRs are history
+    files += glob.glob(os.path.join(ROOT, "templates", "**", "*.md"), recursive=True)
     for path in files:
         for n, line in enumerate(read(path).splitlines(), 1):
             for g in GATE_RE.findall(line):
                 if g not in defined:
                     errors.append("%s:%d: gate `%s` is not defined in WORKFLOW_GATES.md or work/_template/gates.md" % (rel(path), n, g))
+    return errors
+
+
+# ---------------------------------------------------------------- model names
+MODEL_RE = re.compile(r"\b(?:Opus|Sonnet|Haiku|Fable)[ -]?\d|\bGPT-?\d|\bGemini \d|\bo[34](?:-mini)?\b(?= model)")
+MODEL_ROLES = ".claude/bequite/docs/reference/MODEL_ROLES.md"
+
+
+@check
+def no_stale_models():
+    """No versioned model names outside MODEL_ROLES.md: say strong / balanced / fast model instead."""
+    errors = []
+    for path in public_docs():
+        r = rel(path)
+        if r == MODEL_ROLES or r.startswith((".claude/bequite/docs/decisions/", "motion-library/")):
+            continue  # ADRs are history; motion-library studies ads that are named after models
+        for n, line in enumerate(read(path).splitlines(), 1):
+            m = MODEL_RE.search(line)
+            if m:
+                errors.append("%s:%d: model name `%s` (use a role; the mapping lives in %s)" % (r, n, m.group(0), MODEL_ROLES))
+    return errors
+
+
+# ---------------------------------------------------------------- size budgets (warn until the v1 rewrites land)
+BUDGETS = (("command", ".claude/commands/*.md", 200), ("skill", ".claude/skills/bequite-*/SKILL.md", 150),
+           ("doc", ".claude/bequite/docs/**/*.md", 250))
+
+
+@warn_check
+def size_budgets():
+    """Commands <= 200 lines, SKILL.md <= 150, reference docs <= 250 (long material goes to references/)."""
+    errors = []
+    for kind, pat, limit in BUDGETS:
+        for path in sorted(glob.glob(os.path.join(ROOT, pat), recursive=True)):
+            if "decisions" in rel(path):
+                continue
+            n = len(read(path).splitlines())
+            if n > limit:
+                errors.append("%s: %d lines (%s budget %d)" % (rel(path), n, kind, limit))
+    return errors
+
+
+# ---------------------------------------------------------------- skill sources (warn until track C lands, then fail)
+FRESH_DAYS = 120
+
+
+@warn_check
+def skill_sources():
+    """Every SKILL.md has `last_verified:` (<= 120 days old) and `sources:` with at least 5 entries."""
+    import datetime
+    errors = []
+    today = datetime.date.today()
+    for d in skills():
+        path = os.path.join(d, "SKILL.md")
+        fm = frontmatter(read(path)) or ""
+        m = re.search(r"^last_verified:\s*['\"]?(\d{4}-\d{2}-\d{2})", fm, re.M)
+        if not m:
+            errors.append("%s: no `last_verified:`" % rel(path))
+        else:
+            age = (today - datetime.date.fromisoformat(m.group(1))).days
+            if age > FRESH_DAYS:
+                errors.append("%s: last_verified %s is %d days old (limit %d)" % (rel(path), m.group(1), age, FRESH_DAYS))
+        src = re.search(r"^sources:\s*\n((?:[ \t]+-[^\n]*\n?)+)", fm + "\n", re.M)
+        count = len(re.findall(r"^[ \t]+-", src.group(1), re.M)) if src else 0
+        if count < 5:
+            errors.append("%s: %d sources (need 5)" % (rel(path), count))
     return errors
 
 
@@ -329,18 +406,29 @@ def main(argv):
             print("%-14s %s" % (fn.__name__, (fn.__doc__ or "").strip()))
         return 0
     wanted = [a for a in argv if not a.startswith("-")]
+    strict = "--strict" in argv
+    verbose = "--verbose" in argv or bool(wanted)
     selected = [fn for fn in CHECKS if not wanted or fn.__name__ in wanted]
-    failed = 0
+    failed = warned = 0
     for fn in selected:
         errors = fn()
-        if errors:
-            failed += 1
-            print("FAIL  %s (%d)" % (fn.__name__, len(errors)))
-            for e in errors:
-                print("      - " + e)
-        else:
+        if not errors:
             print("ok    %s" % fn.__name__)
-    print("\n%d/%d checks passed" % (len(selected) - failed, len(selected)))
+            continue
+        if fn.__name__ in WARN_ONLY and not strict:
+            warned += 1
+            print("warn  %s (%d)" % (fn.__name__, len(errors)))
+            for e in errors if verbose else errors[:3]:
+                print("      - " + e)
+            if not verbose and len(errors) > 3:
+                print("      ... %d more (run with --verbose or name the check)" % (len(errors) - 3))
+            continue
+        failed += 1
+        print("FAIL  %s (%d)" % (fn.__name__, len(errors)))
+        for e in errors:
+            print("      - " + e)
+    print("\n%d/%d checks passed%s" % (len(selected) - failed - warned, len(selected),
+                                       ", %d warning(s)" % warned if warned else ""))
     return 1 if failed else 0
 
 

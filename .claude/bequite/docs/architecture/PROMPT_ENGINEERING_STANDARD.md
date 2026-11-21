@@ -2,7 +2,7 @@
 
 > How BeQuite writes prompts — both the prompts INSIDE command/skill files and the prompts BeQuite GENERATES (multi-plan packets, delegate task packs, research queries). Skeletons live in `.bequite/prompts/PROMPT_PATTERNS.md`; authoring depth in `HARNESS_AND_PROMPT_QUALITY.md`.
 
-**Status:** active · **Adopted:** alpha.19 (Fable Strengthening Pass)
+**Status:** active · **Adopted:** alpha.19 (strengthening pass)
 
 ---
 

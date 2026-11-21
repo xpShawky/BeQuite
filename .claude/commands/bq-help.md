@@ -17,7 +17,7 @@ Read-only. Never edits files.
 
 ## `/bq-help <command>` (for example `/bq-help bq-motion`)
 
-Read `.claude/commands/<command>.md` and summarise in under 25 lines: what it is for, when not to use it, syntax and arguments, required gates (from `.bequite/state/WORKFLOW_GATES.md` → "Required gates by command"), what it reads and writes (work folder files), the skills it usually selects, and the usual next command. Deprecated redirects (`/bq-p0`…`/bq-p5`, `/bq-now`) are explained as "use `<new command>` instead".
+Read `.claude/commands/<command>.md` and summarise in under 25 lines: what it is for, when not to use it, syntax and arguments, required gates (from `.bequite/state/WORKFLOW_GATES.md` → "Required gates by command"), what it reads and writes (work folder files), the skills it usually selects, and the usual next command.
 
 ## Related
 

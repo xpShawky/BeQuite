@@ -235,11 +235,11 @@ Next: /bq-fix <highest-severity-finding>
 - All 9 attack angles addressed (security / architecture / testing / deployment / scalability / UX / token-waste / hidden assumptions / tool-choice)
 - Each finding severity-tagged + kill-shot question + (for security) exploit example
 - Mistake-memory entries for BLOCKER + HIGH findings
-- Marks `RED_TEAM_DONE ⚪ optional ✅`
+- Marks `RED_TEAM_RESOLVED ⚪ optional ✅`
 **Failure behavior:**
 - "Nothing found" verdict → look harder; red-team's job is to find. If truly clean, document why.
 - Conflicts with prior reviewer verdict (review = Approved, red-team = Blocked) → red-team wins; loop back to `/bq-fix`
-**Memory updates:** Sets `RED_TEAM_DONE ⚪ optional ✅`. Appends BLOCKER+HIGH entries to `MISTAKE_MEMORY.md` with attack-angle tags.
+**Memory updates:** Sets `RED_TEAM_RESOLVED ⚪ optional ✅`. Appends BLOCKER+HIGH entries to `MISTAKE_MEMORY.md` with attack-angle tags.
 **Log updates:** `AGENT_LOG.md`.
 
 ## Memory files this command reads

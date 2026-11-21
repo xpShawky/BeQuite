@@ -20,7 +20,7 @@ Works in **all** contexts: manual + auto mode; deep / fast / token-saver / deleg
 
 ## 3. Output contract — Next Command Recommendations
 
-Every **non-trivial** command (trivial = `/bq-now`, `/bq-explain`, `/bq-help` reads) ends with this block (contract step 12):
+Every **non-trivial** command (trivial = `/bequite short`, `/bq-explain`, `/bq-help` reads) ends with this block (contract step 12):
 
 ```
 Next Command Recommendations:

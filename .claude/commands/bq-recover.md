@@ -129,7 +129,7 @@ Other options:
 ## Standardized command fields (alpha.6)
 
 **Phase:** P5 — Memory and Handoff (or anytime resuming)
-**When NOT to use:** fresh session in a fresh repo where you remember context (run `/bq-now` for one-line orientation instead).
+**When NOT to use:** fresh session in a fresh repo where you remember context (run `/bequite short` for one-line orientation instead).
 **Preconditions:** `BEQUITE_INITIALIZED`
 **Required previous gates:** `BEQUITE_INITIALIZED`
 **Quality gate:**

@@ -86,7 +86,7 @@ Recommended sequence:
   /bq-fix         fix the first blocker (if audit finds any)
   /bq-implement   workhorse for planned changes
 
-Or run /bq-p0 to walk Phase 0 automatically.
+Or run /bq-auto phase=P0 to walk Phase 0 automatically.
 ```
 
 ## Quality gate
@@ -101,4 +101,4 @@ Or run /bq-p0 to walk Phase 0 automatically.
 
 ## Usual next command
 
-`/bq-discover` (or `/bq-p0`)
+`/bq-discover` (or `/bq-auto phase=P0`)

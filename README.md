@@ -35,7 +35,7 @@ It installs into any project as markdown. No server, no database, no daemon, no 
 - **Web motion that stays fast on phones.** Scroll stories, frame sequences, depth and 3D with a mobile performance budget, full / lite / static device tiers, and a `PERF_BUDGET_PASS` gate.
 - **Rules that are checked, not just written.** Every action command carries the same contract block (skills first, resolve the work, gates, plan first, evidence, write back), and `scripts/bq_check.py` runs in CI.
 - **Clean installs.** Your project gets a clean memory scaffold (earlier versions leaked BeQuite's own logs into it), plus BeQuite's reference docs, so every pointer in a command resolves.
-- **Leaner.** v2 leftovers removed (kept on the `archive/v2` branch), `/bq-p0`…`/bq-p5` folded into `/bq-auto phase=…`, `/bq-now` folded into `/bequite short`.
+- **Leaner.** v2 leftovers removed (kept on the `archive/v2` branch).
 
 Full notes: [CHANGELOG.md](CHANGELOG.md).
 

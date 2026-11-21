@@ -252,9 +252,9 @@ The agent enforces mandatory workflow gates **scoped to the task type**. Not eve
 | Intent | Required gates |
 |---|---|
 | `new` | BEQUITE_INITIALIZED, MODE_SELECTED, CLARIFY_ANSWERED, RESEARCH_COMPLETE, SCOPE_LOCKED, PLAN_APPROVED, all P2/P3/P4 gates |
-| `existing` | BEQUITE_INITIALIZED, MODE_SELECTED, DISCOVERY_COMPLETE, AUDIT_DONE |
-| `feature` | BEQUITE_INITIALIZED, MODE_SELECTED, FEATURE_DONE |
-| `fix` | BEQUITE_INITIALIZED, MODE_SELECTED, FIX_DONE |
+| `existing` | BEQUITE_INITIALIZED, MODE_SELECTED, DISCOVERY_COMPLETE, AUDIT_COMPLETE |
+| `feature` | BEQUITE_INITIALIZED, MODE_SELECTED, FEATURE_TESTED |
+| `fix` | BEQUITE_INITIALIZED, MODE_SELECTED, FIX_VERIFIED |
 | `uiux` | BEQUITE_INITIALIZED, frontend exists; PLAN_APPROVED only if changing design system |
 | `frontend` | BEQUITE_INITIALIZED, frontend exists |
 | `backend` | BEQUITE_INITIALIZED, backend exists |
@@ -267,7 +267,7 @@ The agent enforces mandatory workflow gates **scoped to the task type**. Not eve
 | `deploy` | BEQUITE_INITIALIZED, VERIFY_PASSED; **multiple hard gates** during execution |
 | `live-edit` | BEQUITE_INITIALIZED, frontend exists |
 | `variants` | BEQUITE_INITIALIZED, frontend exists |
-| `release` | BEQUITE_INITIALIZED, VERIFY_PASSED, CHANGELOG_READY |
+| `release` | BEQUITE_INITIALIZED, VERIFY_PASSED, CHANGELOG_UPDATED |
 
 Scoped gates: e.g. `uiux` fix doesn't force full competitor research; `fix` doesn't restart the project lifecycle; `feature` doesn't require new SCOPE.md unless it expands scope.
 
@@ -504,6 +504,41 @@ Where `${CLAUDE_EFFORT}` is available it composes with the operating mode: low/m
 - **Not** a substitute for `/bq-plan` for new projects (it runs `/bq-plan` itself, then continues without asking)
 - **Not** a way to bypass tool neutrality (every new tool still requires a decision section)
 
-## Orchestration upgrade (alpha.22 orchestration update)
+## 13. The orchestration layer
 
-Auto Mode is now formally an orchestration layer: 15-step anti-skip sequence, System Design Risk Check, context-pressure compaction, Guard Pass placement, and Missing Capability protocol — see AUTO_MODE_ORCHESTRATION_STRATEGY.md (strategy) + .bequite/state/AUTO_MODE_RULES.md (operational card) + BEQUITE_ORCHESTRATION_MODEL.md (the global brain, used beyond auto mode). Intents, modes, and the 17 hard gates in THIS doc remain canonical and unchanged.
+Auto mode is not a "continue automatically" switch; it is BeQuite's orchestration layer. Shallow continuation is the biggest quality risk in a large pack: skipped steps, lost context, forgotten skills, ignored system-design risks, work that looks finished and is not. The operational card is `.bequite/state/AUTO_MODE_RULES.md`; the global brain is `BEQUITE_ORCHESTRATION_MODEL.md`.
+
+### 13.1 What the orchestrator must know before acting
+
+Current phase · current command · operating mode · available commands (`COMMAND_ID_MAP.md`) · available skills (`SKILL_REGISTRY.md`) · memory state (preflight files) · gate states · file-risk tier of likely-touched paths · current confidence + what would move it · likely failure modes for the domain · required tests · the next workflow step · relevant capability commands · **when to stop, ask, continue, compact context, run Guard Pass, and write memory**. All of this is readable from files — an orchestrator that "doesn't know" didn't read.
+
+### 13.2 The 15-step internal sequence (anti-skip)
+
+```
+1 Memory preflight          6 Context budget check        11 Guard Pass
+2 Command router check      7 Confidence forecast         12 Verification
+3 Skill router check        8 Task plan                   13 Evidence log
+4 System design risk check  9 Implementation              14 Memory writeback
+5 File risk classification 10 Tests                       15 Next command recommendations
+```
+
+**No silent skips.** Irrelevant step ⇒ output `Not applicable — reason: …`. Impossible step ⇒ `Blocked — reason: …` (and decide stop-vs-ask per hard-gate rules). This maps onto the 12-step execution contract (steps 4–6 here expand contract steps 6–8); the contract remains the per-command law, this sequence is the auto-run traversal of it.
+
+### 13.3 "Continue coding" vs orchestrated build — the canonical example
+
+User: *"Build an e-commerce store feature."* A shallow continuation builds a nice product grid. The orchestrator must reason across: product flow · frontend · backend · database · **inventory** · concurrency · payments · order states · security · idempotency · race conditions · tests · release readiness.
+
+**The one-item-two-buyers test:** one unit in stock, two users order simultaneously. The orchestrated workflow must answer — inventory reservation? transaction locking (optimistic vs pessimistic)? payment-before-stock vs stock-before-payment? idempotency keys? order status transitions? retry behavior? refund/cancel flows? audit log? what each user *sees*? race-condition tests? If the plan can't answer these, the System Design Risk Check (step 4) failed and implementation must not start. Full domain libraries: `SYSTEM_DESIGN_REASONING_STANDARD.md`.
+
+### 13.4 Stop / ask / continue / compact rules
+
+- **Stop** at the 17 hard human gates — unchanged, the orchestrator never routes around them.
+- **Ask** (one high-value question) when scope is inferred on a risky action, when a risk-check unknown blocks safe implementation, or when Missing Capability is detected (`BEQUITE_ORCHESTRATION_MODEL.md` §missing-capability).
+- **Continue** when the step is safe, scoped, and gated-through — never pause for "should I continue?".
+- **Compact** at the context thresholds in `CONTEXT_COMPACTION_STRATEGY.md` (40/60/75/85%); auto mode checks pressure at every task boundary (step 6).
+- **Guard Pass** after implementation/tests (step 11), before verify/release — always in auto mode; report-only findings escalate per severity.
+- **Write memory** at every step boundary that produced a durable fact (step 14 + compaction rules) — chat memory is never the only copy of a critical fact.
+
+### 13.5 Mode interaction
+
+fast/token-saver compress step *size*, never step *sequence* (same law as the contract). delegate mode runs this sequence twice: the strong model owns steps 1–8 + 11–15; the cheap model executes step 9–10 from the task pack (see `LOW_COST_MODEL_EXECUTION_STRATEGY.md` tiers). `expert` alias = deep + strict evidence on every step.

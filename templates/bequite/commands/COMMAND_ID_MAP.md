@@ -1,7 +1,7 @@
 # BeQuite Command ID Map (canonical) — alpha.22
 
 Display-only catalog IDs (Option A — files never renamed). Strategy: `.claude/bequite/docs/architecture/COMMAND_NUMBERING_AND_ORDERING_STRATEGY.md`.
-**55 active commands + 7 deprecated redirects (v4).** Shapes: WF = workflow · CAP = capability · NAV = navigation · ORC = orchestrator · MNT = maintenance · ARG noted where argument workflows exist.
+**55 commands.** Shapes: WF = workflow · CAP = capability · NAV = navigation · ORC = orchestrator · MNT = maintenance · ARG noted where argument workflows exist.
 
 | ID | Command | Category | Phase | Purpose | Usually follows | Usually next | Auto-run? | Hidden? | Shape |
 |---|---|---|---|---|---|---|---|---|---|
@@ -61,7 +61,5 @@ Display-only catalog IDs (Option A — files never renamed). Strategy: `.claude/
 | M2 | `/bq-skill-audit` | maintenance | any | skill-pack quality audit | (drift sign) | fixes on approval | yes (report-only) | no | MNT |
 | M3 | `/bq-hooks` | maintenance | any | manage opt-in safety hooks (status/enable/disable/test) | (want enforcement) | reload + test | partial (enable/disable = R3 hard gate) | no | MNT (alpha.24) |
 | X1 | ~~`/bq-add-feature`~~ | removed in v4 | — | use W2.3 `/bq-feature` | — | — | — | removed | — |
-| X2 | `/bq-p0` … `/bq-p5` | deprecated alias | — | use O7 `/bq-auto phase=P0..P5` | — | — | — | redirect | alias |
-| X3 | `/bq-now` | deprecated alias | — | use W0.1 `/bequite short` | — | — | — | redirect | alias |
 
 **Proposed only (not built):** `/bq-localize` — localization/RTL is skill-first (`bequite-localization-rtl`, auto-attached); command added only if demand proves it.

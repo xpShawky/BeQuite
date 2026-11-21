@@ -65,7 +65,7 @@ ToS-clean — manual paste only, no provider API, costs $0 (uses your subscripti
 - `.bequite/plans/MULTI_MODEL_COMPARISON.md`
 - `.bequite/work/<id>/plan.md` (rewritten — merged version)
 - `.bequite/work/<id>/plan-pre-merge.md` (the single-model plan, preserved)
-- `.bequite/state/WORKFLOW_GATES.md` (`MULTI_PLAN_DONE ✅` once user picks: yes-merged / no-skipped)
+- `.bequite/state/WORKFLOW_GATES.md` (`MULTI_PLAN_DECISION ✅` once user picks: yes-merged / no-skipped)
 - `.bequite/state/DECISIONS.md`
 - `.bequite/state/LAST_RUN.md`
 - `.bequite/logs/AGENT_LOG.md`
@@ -274,7 +274,7 @@ For sections where models disagreed, note which model proposed what + why we pic
 ### 8. Update state
 
 - Append "Multi-model plan merged on <date>" to `DECISIONS.md`
-- Mark `MULTI_PLAN_DONE ✅` in `WORKFLOW_GATES.md`
+- Mark `MULTI_PLAN_DECISION ✅` in `WORKFLOW_GATES.md`
 - `LAST_RUN.md` updated
 - `AGENT_LOG.md` appended
 

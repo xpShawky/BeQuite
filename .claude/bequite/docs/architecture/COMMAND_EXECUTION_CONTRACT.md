@@ -57,7 +57,7 @@ Optional accelerators: <cmd> — why it may help now
 Do not run yet:        <cmd> — missing gate / artifact / order reason
 ```
 
-Gate-aware — a command whose gates aren't met may only appear under "Do not run yet" with the missing gate named. Capability commands (C#) appear only on task signals — never pad the set. **Auto mode** doesn't invoke slash commands literally; it runs the equivalent internal workflow and reports `Internal workflow executed: <ID list>`, then emits this block for what follows. Non-trivial routing decisions append one line to `NEXT_COMMAND_LOG.md`. Trivial reads (`/bq-now`, `/bq-help`, `/bq-explain`) keep the old single-next form. Full spec: `.claude/bequite/docs/architecture/WORKFLOW_COMMAND_ROUTER.md`.
+Gate-aware — a command whose gates aren't met may only appear under "Do not run yet" with the missing gate named. Capability commands (C#) appear only on task signals — never pad the set. **Auto mode** doesn't invoke slash commands literally; it runs the equivalent internal workflow and reports `Internal workflow executed: <ID list>`, then emits this block for what follows. Non-trivial routing decisions append one line to `NEXT_COMMAND_LOG.md`. Trivial reads (`/bequite short`, `/bq-help`, `/bq-explain`) keep the old single-next form. Full spec: `.claude/bequite/docs/architecture/WORKFLOW_COMMAND_ROUTER.md`.
 
 ---
 
@@ -75,7 +75,7 @@ Gate-aware — a command whose gates aren't met may only appear under "Do not ru
 
 ## Compressions allowed
 
-- **Read-only commands** (`/bequite`, `/bq-now`, `/bq-help`, `/bq-explain`, `/bq-suggest`): steps 1–5 + 10 + 12 only (suggest still runs routing steps 2–4 to recommend skills)
+- **Read-only commands** (`/bequite`, `/bequite short`, `/bq-help`, `/bq-explain`, `/bq-suggest`): steps 1–5 + 10 + 12 only (suggest still runs routing steps 2–4 to recommend skills)
 - **Hotfixes / doc-only:** may compress 6–8 plan/research portions; never 9 or 11
 - **Token-saver mode:** compresses the SIZE of each step (registry summary instead of skill files; focused reads; compact report), never the SEQUENCE
 - **Trivial one-file tasks:** skill selection capped at 2 skills (over-triggering is a routing defect)

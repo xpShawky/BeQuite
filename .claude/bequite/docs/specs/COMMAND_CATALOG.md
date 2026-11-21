@@ -69,15 +69,6 @@ Exemptions: hotfixes, doc-only changes, and skill additions activated only from 
 - **Writes:** none
 - **Next:** any command from the list
 
-### `/bq-now` (NEW in alpha.5)
-- **Purpose:** one-line orientation; faster than `/bequite`
-- **Phase:** any
-- **Required gates:** none
-- **Reads:** `.bequite/state/{CURRENT_PHASE,CURRENT_MODE,LAST_RUN,WORKFLOW_GATES,OPEN_QUESTIONS}.md`
-- **Writes:** nothing (read-only)
-- **Output:** single line, e.g. `P2 build · mode: Add Feature · last: /bq-implement T-2.3 ✓ · next: /bq-test`
-- **Next:** command in the `next:` field
-
 ### `/bq-spec "<feature>"` (NEW in alpha.7)
 - **Purpose:** write a one-page Spec Kit-compatible spec at `specs/<slug>/spec.md`
 - **Phase:** P1 / P2 (framing-shaped or feature-shaped)
@@ -116,7 +107,7 @@ Exemptions: hotfixes, doc-only changes, and skill additions activated only from 
 - **Purpose:** New Project workflow entry; only for empty folders
 - **Required gates:** `BEQUITE_INITIALIZED`
 - **Writes:** `CURRENT_MODE.md` → New Project; pre-queues 3 foundational questions in OPEN_QUESTIONS.md
-- **Next:** `/bq-p0` or `/bq-clarify`
+- **Next:** `/bq-auto phase=P0` or `/bq-clarify`
 
 ### `/bq-existing`
 - **Purpose:** Existing Project Audit workflow entry
@@ -136,7 +127,7 @@ Exemptions: hotfixes, doc-only changes, and skill additions activated only from 
 - **Required gates:** `BEQUITE_INITIALIZED`
 - **Writes:** `.bequite/audits/DOCTOR_REPORT.md`
 - **Quality gate sets:** `DOCTOR_COMPLETE ✅`
-- **Next:** `/bq-clarify` or `/bq-p1`
+- **Next:** `/bq-clarify` or `/bq-auto phase=P1`
 
 ---
 
@@ -177,7 +168,7 @@ Exemptions: hotfixes, doc-only changes, and skill additions activated only from 
 - **Purpose:** unbiased multi-model planning via manual paste
 - **Required gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`, `CLARIFY_ANSWERED`, `RESEARCH_COMPLETE`, `SCOPE_LOCKED`
 - **Writes:** `.bequite/prompts/generated_prompts/*`, `.bequite/prompts/model_outputs/*`, `.bequite/plans/MULTI_MODEL_COMPARISON.md`, `IMPLEMENTATION_PLAN.md` (merged), `IMPLEMENTATION_PLAN_PRE_MERGE.md` (preserved)
-- **Quality gate sets:** `MULTI_PLAN_DONE ✅` (optional)
+- **Quality gate sets:** `MULTI_PLAN_DECISION ✅` (optional)
 - **Skills activated:** bequite-multi-model-planning, bequite-project-architect
 - **Next:** `/bq-assign`
 
@@ -196,7 +187,7 @@ Exemptions: hotfixes, doc-only changes, and skill additions activated only from 
 - **Purpose:** implement ONE approved task at a time
 - **Required gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`, `PLAN_APPROVED`, `TASKS_ASSIGNED`
 - **Writes:** source files, `.bequite/work/<id>/tasks.md` updated `[x]`, CHANGELOG `[Unreleased]`
-- **Quality gate sets:** `IMPLEMENT_DONE ✅` when TASK_LIST empty
+- **Quality gate sets:** `IMPLEMENTATION_DONE ✅` when TASK_LIST empty
 - **Skills activated:** depends on task type
 - **Next:** `/bq-implement` (next task) or `/bq-test`
 
@@ -204,7 +195,7 @@ Exemptions: hotfixes, doc-only changes, and skill additions activated only from 
 - **Purpose:** Add Feature workflow with 12-type router
 - **Required gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`
 - **Writes:** `.bequite/work/<id>/spec.md`, source files, tests
-- **Quality gate sets:** `FEATURE_DONE ✅`
+- **Quality gate sets:** `FEATURE_TESTED ✅`
 - **Skills activated:** per 12-type router (see bq-feature.md)
 - **Next:** `/bq-review`
 
@@ -229,7 +220,7 @@ Exemptions: hotfixes, doc-only changes, and skill additions activated only from 
 - **Purpose:** Fix workflow with 15-type router; reproduce-first
 - **Required gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`
 - **Writes:** source fix, regression test, `.bequite/work/<id>/log.md`, `.bequite/audits/FIX_<slug>.md`, CHANGELOG if user-visible
-- **Quality gate sets:** `FIX_DONE ✅`
+- **Quality gate sets:** `FIX_VERIFIED ✅`
 - **Skills activated:** per 15-type router (see bq-fix.md); always plus bequite-problem-solver
 - **Next:** `/bq-test`
 
@@ -252,7 +243,7 @@ Exemptions: hotfixes, doc-only changes, and skill additions activated only from 
 - **Purpose:** 10-area full project audit
 - **Required gates:** `BEQUITE_INITIALIZED`
 - **Writes:** `.bequite/audits/FULL_PROJECT_AUDIT.md`
-- **Quality gate sets:** `AUDIT_DONE ✅` (optional unless Release Readiness mode)
+- **Quality gate sets:** `AUDIT_COMPLETE ✅` (optional unless Release Readiness mode)
 - **Skills activated:** bequite-security-reviewer, bequite-frontend-quality (if UI), bequite-testing-gate, bequite-devops-cloud
 - **Next:** `/bq-fix` (per findings) or `/bq-verify`
 
@@ -268,7 +259,7 @@ Exemptions: hotfixes, doc-only changes, and skill additions activated only from 
 - **Purpose:** adversarial Skeptic review (8 attack angles)
 - **Required gates:** `BEQUITE_INITIALIZED`
 - **Writes:** `.bequite/audits/RED_TEAM_<date>.md`
-- **Quality gate sets:** `RED_TEAM_DONE ⚪ optional ✅`
+- **Quality gate sets:** `RED_TEAM_RESOLVED ⚪ optional ✅`
 - **Skills activated:** bequite-security-reviewer, bequite-problem-solver
 - **Next:** `/bq-fix` per findings
 
@@ -288,15 +279,15 @@ Exemptions: hotfixes, doc-only changes, and skill additions activated only from 
 - **Purpose:** categorize commits into Added / Changed / Fixed / Deprecated / Removed / Security (Keep a Changelog v1.1)
 - **Required gates:** `BEQUITE_INITIALIZED`
 - **Writes:** `CHANGELOG.md`
-- **Quality gate sets:** `CHANGELOG_READY ✅`
+- **Quality gate sets:** `CHANGELOG_UPDATED ✅`
 - **Skills activated:** bequite-release-gate
 - **Next:** `/bq-release`
 
 ### `/bq-release`
 - **Purpose:** version bump + final CHANGELOG; print git commands (never auto-pushes)
-- **Required gates:** `VERIFY_PASSED`, `CHANGELOG_READY`
+- **Required gates:** `VERIFY_PASSED`, `CHANGELOG_UPDATED`
 - **Writes:** version files (package.json etc.), CHANGELOG entry
-- **Quality gate sets:** `RELEASE_READY ✅` (after user runs git commands)
+- **Quality gate sets:** `RELEASE_PREPPED ✅` (after user runs git commands)
 - **Skills activated:** bequite-release-gate
 - **Next:** `/bq-memory snapshot`
 
@@ -321,48 +312,8 @@ Exemptions: hotfixes, doc-only changes, and skill additions activated only from 
 - **Purpose:** generate HANDOFF.md (engineer + vibe sections + receiver checklist)
 - **Required gates:** `BEQUITE_INITIALIZED`
 - **Writes:** `HANDOFF.md` at repo root
-- **Quality gate sets:** `HANDOFF_DONE ⚪ optional ✅`
+- **Quality gate sets:** `HANDOFF_GENERATED ⚪ optional ✅`
 - **Next:** end of cycle
-
----
-
-## Phase orchestrators
-
-### `/bq-p0`
-- **Purpose:** walk Phase 0 in order (`/bq-init` → `/bq-mode` → `/bq-discover` → `/bq-doctor`)
-- **Required gates:** none
-- **Quality gate sets:** all P0 gates `✅`
-- **Next:** `/bq-p1`
-
-### `/bq-p1`
-- **Purpose:** walk Phase 1 in order (`/bq-clarify` → `/bq-research` → `/bq-scope` → optional `/bq-multi-plan` → `/bq-plan`)
-- **Required gates:** P0 complete
-- **Quality gate sets:** all P1 gates `✅`
-- **Next:** `/bq-p2`
-
-### `/bq-p2`
-- **Purpose:** walk Phase 2 (`/bq-assign` → `/bq-implement` loop, OR `/bq-feature`, OR `/bq-fix`)
-- **Required gates:** per mode (P1 complete for New Project; `MODE_SELECTED` only for Feature/Fix)
-- **Quality gate sets:** mode-specific gate `✅`
-- **Next:** `/bq-p3`
-
-### `/bq-p3`
-- **Purpose:** walk Phase 3 (`/bq-test` → `/bq-audit` if applicable → `/bq-review` → optional `/bq-red-team`)
-- **Required gates:** code exists OR Existing Audit mode
-- **Quality gate sets:** all P3 gates `✅`
-- **Next:** `/bq-p4`
-
-### `/bq-p4`
-- **Purpose:** walk Phase 4 (`/bq-verify` → `/bq-changelog` → `/bq-release` instructions)
-- **Required gates:** P3 complete OR Release Readiness mode
-- **Quality gate sets:** all P4 gates `✅`
-- **Next:** `/bq-p5`
-
-### `/bq-p5`
-- **Purpose:** walk Phase 5 (`/bq-memory snapshot` → optional `/bq-handoff`)
-- **Required gates:** `BEQUITE_INITIALIZED`
-- **Quality gate sets:** `MEMORY_SNAPSHOT ✅`
-- **Next:** cycle complete
 
 ---
 

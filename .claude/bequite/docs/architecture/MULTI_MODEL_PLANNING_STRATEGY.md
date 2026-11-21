@@ -28,7 +28,7 @@ Get two or more AI models to think through a project plan **independently**, the
 Single-model planning fails predictably:
 
 1. **Confirmation bias** — once a model commits to a stack or pattern, it rarely contradicts itself within the same plan.
-2. **Per-model blind spots** — Claude over-engineers edge cases; GPT-5 under-engineers security; Gemini over-trusts user intent. Each model has signature failure modes.
+2. **Per-model blind spots** — every model family has failure modes of its own, and a second family catches some of them. Observe them in your own runs; BeQuite does not rank vendors.
 3. **Veracode 2025: ~45% of AI-generated code has OWASP Top-10 issues.** Many of those are plan-stage decisions (e.g. "store passwords in DB" vs "use Better-Auth"). A second model reviewing catches a meaningful share.
 
 A second model reading the first's plan exposes assumptions the first didn't realize it made. Merging the two preserves what they agree on + surfaces what they disagree on for human resolution.
@@ -159,17 +159,17 @@ Each role can be assigned to any model. Default assignments below; users overrid
 
 | Role | Default Model | What it does |
 |---|---|---|
-| Lead Architect | Claude Opus 4.7 | Owns overall architecture + cross-cutting decisions. |
-| Product Strategist | GPT-5 | Owns product scope, user value, competitive positioning. |
-| Frontend Architect | Claude Sonnet 4.6 | UI / state management / component sourcing. |
-| Backend Architect | Claude Sonnet 4.6 | API design / data flow / integration boundaries. |
-| Database Architect | Claude Opus 4.7 | Data model / RLS / indexing / migration discipline. |
-| Security Reviewer | Claude Opus 4.7 (xhigh effort) | OWASP Top 10 / Article IV compliance / secrets discipline. |
-| Testing Architect | Claude Sonnet 4.6 | Test pyramid / Playwright walks / coverage strategy. |
-| DevOps Architect | Claude Sonnet 4.6 | CI / deployment / observability / cost discipline. |
-| UX/UI Reviewer | GPT-5 + Impeccable bundled skill | Anti-patterns walk / accessibility / copy. |
-| Scraping/Automation Architect | Claude Opus 4.7 | If Doctrine `ai-automation` loaded; n8n / Make patterns. |
-| Cost & Token Optimizer | Claude Haiku 4.5 | Reads receipts; recommends cost reductions. |
+| Lead Architect | strong model | Owns overall architecture + cross-cutting decisions. |
+| Product Strategist | a second vendor's strong model | Owns product scope, user value, competitive positioning. |
+| Frontend Architect | balanced model | UI / state management / component sourcing. |
+| Backend Architect | balanced model | API design / data flow / integration boundaries. |
+| Database Architect | strong model | Data model / RLS / indexing / migration discipline. |
+| Security Reviewer | strong model, highest effort | OWASP Top 10 / Article IV compliance / secrets discipline. |
+| Testing Architect | balanced model | Test pyramid / Playwright walks / coverage strategy. |
+| DevOps Architect | balanced model | CI / deployment / observability / cost discipline. |
+| UX/UI Reviewer | a second vendor's strong model + Impeccable bundled skill | Anti-patterns walk / accessibility / copy. |
+| Scraping/Automation Architect | strong model | If Doctrine `ai-automation` loaded; n8n / Make patterns. |
+| Cost & Token Optimizer | fast model | Reads receipts; recommends cost reductions. |
 | Final Judge | Configurable (default Opus) | Reviews all role outputs; produces final plan. |
 
 Most planning runs use a subset (typically Lead Architect + Product Strategist + Security Reviewer for an MVP project).
@@ -383,9 +383,9 @@ $ ANTHROPIC_API_KEY=... OPENAI_API_KEY=... \
     --direct-api
 
 [1/4] Claude drafting plan ........................... ✓ (12s, $0.054)
-[2/4] GPT-5 drafting plan ............................ ✓ ( 9s, $0.041)
+[2/4] model B drafting plan .......................... ✓ ( 9s, $0.041)
 [3/4] Claude reviewing GPT's plan .................... ✓ ( 8s, $0.039)
-[4/4] GPT-5 reviewing Claude's plan .................. ✓ ( 7s, $0.033)
+[4/4] model B reviewing model A's plan ............... ✓ ( 7s, $0.033)
 [5/5] Claude as judge producing final ................ ✓ (15s, $0.072)
 
 Total: 5 calls, $0.239, 51 seconds

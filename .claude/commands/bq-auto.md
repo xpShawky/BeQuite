@@ -234,7 +234,7 @@ If paused at a hard gate:
   Resume: /bq-auto <same args>
 ```
 
-## Phase mode - `/bq-auto phase=P0..P5` (replaces `/bq-p0` ... `/bq-p5` in v4)
+## Phase mode - `/bq-auto phase=P0..P5`
 
 Walk exactly one phase, in order, inside the active work (`.bequite/ACTIVE.md`). The usual hard human gates and the plan-first rule still apply. Gates marked (work) live in `work/<id>/gates.md`.
 
@@ -326,7 +326,7 @@ A two-session workflow where a **strong model architects + reviews** and a **che
 Three phases:
 
 1. **Phase 1 — Architect (strong model, this session):** strong model does research + writes a detailed task pack at `.bequite/work/<id>/delegate/DELEGATE_TASKS.md`, `DELEGATE_INSTRUCTIONS.md`, `DELEGATE_ACCEPTANCE_CRITERIA.md`, `DELEGATE_TEST_PLAN.md`
-2. **Phase 2 — Implement (cheaper model, separate session):** user switches Claude model (e.g. Opus → Sonnet, or to a different account/host). Cheap model runs `/bq-implement delegate` and executes exactly per the task pack — no architectural decisions, no guessing
+2. **Phase 2 — Implement (cheaper model, separate session):** user switches Claude model (strong → balanced model, or a different account or host). Cheap model runs `/bq-implement delegate` and executes exactly per the task pack — no architectural decisions, no guessing
 3. **Phase 3 — Review (strong model, back here):** user switches back. Strong model runs `/bq-review delegate`; produces `.bequite/work/<id>/delegate/DELEGATE_REVIEW_REPORT.md` with per-task verdicts (✅ approved / ⚠ approved-with-comments / ❌ rejected). Strong model fixes or re-instructs the cheap model
 
 Full discipline: `.claude/skills/bequite-delegate-planner/SKILL.md`.
@@ -519,7 +519,7 @@ New intents route to the capability commands when signaled: course/teaching → 
 
 ## Orchestration rules (alpha.22 orchestration update — anti-skip)
 
-Auto Mode is an orchestrator, never "continue coding" (`.claude/bequite/docs/architecture/AUTO_MODE_ORCHESTRATION_STRATEGY.md` + `.bequite/state/AUTO_MODE_RULES.md`; global brain: `bequite-orchestrator` skill + `.bequite/state/ORCHESTRATION_MAP.md`). Internal sequence per task — **no silent skips**:
+Auto Mode is an orchestrator, never "continue coding" (`.claude/bequite/docs/architecture/AUTO_MODE_STRATEGY.md` + `.bequite/state/AUTO_MODE_RULES.md`; global brain: `bequite-orchestrator` skill + `.bequite/state/ORCHESTRATION_MAP.md`). Internal sequence per task — **no silent skips**:
 
 1 Memory preflight · 2 Command router check · 3 Skill router check · 4 **System design risk check** (mandatory for payments/inventory/bookings/auth/concurrency/webhooks/etc. — `SYSTEM_DESIGN_REASONING_STANDARD.md`) · 5 File risk classification · 6 Context budget check (compaction thresholds 40/60/75/85% — `CONTEXT_COMPACTION_RULES.md`) · 7 Confidence forecast · 8 Task plan · 9 Implementation · 10 Tests · 11 Guard Pass · 12 Verification · 13 Evidence log · 14 Memory writeback · 15 Next command recommendations
 

@@ -38,21 +38,9 @@
 
 ---
 
-## Gate name aliases (alpha.14)
+## One name per gate
 
-Both spellings are valid; commands may use either. The shorter `_DONE` form is more common in `COMMAND_CATALOG.md`; the longer `_COMPLETE` form is more common in this strategy doc.
-
-| Canonical (this doc) | Short alias (COMMAND_CATALOG) |
-|---|---|
-| `DISCOVERY_COMPLETE` | `DISCOVERY_COMPLETE` |
-| `RESEARCH_COMPLETE` | `RESEARCH_COMPLETE` |
-| `IMPLEMENTATION_DONE` | `IMPLEMENT_DONE` |
-| `TASKS_ASSIGNED` | `TASKS_ASSIGNED` |
-| `TESTS_PASS` | `TESTS_PASS` |
-| `AUDIT_COMPLETE` | `AUDIT_DONE` |
-| `REVIEW_APPROVED` | `REVIEW_APPROVED` |
-| `VERIFY_PASSED` | `VERIFY_PASSED` |
-| `RELEASE_PREPPED` | `RELEASE_READY` |
+Each gate has exactly one name: the one in the project ledger (`templates/bequite/state/WORKFLOW_GATES.md`) or in the work template (`templates/bequite/work/_template/gates.md`). `scripts/bq_check.py` fails on any other spelling.
 
 ---
 
@@ -64,7 +52,7 @@ The following commands operate **outside the 6 dev lifecycle modes**. They don't
 - `/bq-job-finder` — opportunity discovery
 - `/bq-make-money` — earning discovery
 - `/bq-suggest` — workflow advisor (read-only)
-- `/bq-now` — orientation (read-only)
+- `/bequite short` — orientation (read-only)
 - `/bq-explain` — explainer (read-only)
 - `/bq-help` — reference (read-only)
 - `/bq-update` — BeQuite self-maintenance
@@ -101,50 +89,9 @@ BeQuite:  Blocked — PLAN_APPROVED is ❌ pending.
           Run /bq-plan first.
 ```
 
-## The 23 workflow gates
+## The gates
 
-Per phase:
-
-### P0 — Setup and Discovery
-- `BEQUITE_INITIALIZED`
-- `MODE_SELECTED`
-- `DISCOVERY_COMPLETE`
-- `DOCTOR_COMPLETE`
-
-### P1 — Product Framing and Research
-- `CLARIFY_ANSWERED`
-- `RESEARCH_COMPLETE`
-- `SCOPE_LOCKED`
-- `PLAN_APPROVED`
-- `MULTI_PLAN_DONE` (optional)
-
-### P2 — Planning and Build
-- `TASKS_ASSIGNED`
-- `IMPLEMENT_DONE`
-- `FEATURE_DONE` (mode-specific)
-- `FIX_DONE` (mode-specific)
-
-### P3 — Quality and Review
-- `TESTS_PASS`
-- `AUDIT_DONE` (optional unless Release Readiness mode)
-- `REVIEW_APPROVED`
-- `RED_TEAM_DONE` (optional)
-
-### Frontend Design Continuity (alpha.17 — conditional, only when a frontend exists)
-- `DESIGN_DNA_LOCKED` — `.bequite/design/DESIGN_DNA.md` filled + locked before first UI code
-- `DESIGN_CONTINUITY_PASS` (alias `DESIGN_CONTINUITY_OK`) — every section consistent with the DNA; `DESIGN_CONTINUITY_REPORT.md` clean of BLOCKER/HIGH
-- `VISUAL_QA_DONE` — `VISUAL_QA_REPORT.md` exists (browser tier or honest tier-3)
-
-These are quality gates owned by `bequite-frontend-design-system`; they apply only to frontend projects, never block non-frontend work, and never bypass the 17 hard human gates. Full spec: [`DESIGN_CONTINUITY_GATE.md`](DESIGN_CONTINUITY_GATE.md); context-engineering rationale: [`FRONTEND_CONTEXT_ENGINEERING.md`](FRONTEND_CONTEXT_ENGINEERING.md).
-
-### P4 — Release
-- `VERIFY_PASSED`
-- `CHANGELOG_READY`
-- `RELEASE_READY`
-
-### P5 — Memory and Handoff
-- `MEMORY_SNAPSHOT`
-- `HANDOFF_DONE` (optional)
+The list lives in one place: project gates in the ledger (`templates/bequite/state/WORKFLOW_GATES.md`), per-work gates in `templates/bequite/work/_template/gates.md`. Phases: P0 setup and discovery, P1 framing and research, P2 build, P3 quality and review, P4 release, P5 memory and handoff. The design-continuity gates apply only when a frontend exists ([`DESIGN_CONTINUITY_GATE.md`](DESIGN_CONTINUITY_GATE.md)); creative work adds the motion gates in the work template.
 
 ## Mode-specific overrides
 
@@ -154,8 +101,8 @@ Not every gate applies to every mode:
 |---|---|---|---|---|---|---|
 | New Project | All | All | All | All | All | All |
 | Existing Audit | All | CLARIFY + RESEARCH | (none; audit only) | TEST + REVIEW | (none) | MEMORY_SNAPSHOT |
-| Add Feature | BEQUITE + MODE | (none; self-contained) | FEATURE_DONE | TEST + REVIEW | (optional) | MEMORY_SNAPSHOT |
-| Fix Problem | BEQUITE + MODE | (none; reproduce-first) | FIX_DONE | TEST + REVIEW | (optional) | MEMORY_SNAPSHOT |
+| Add Feature | BEQUITE + MODE | (none; self-contained) | FEATURE_TESTED | TEST + REVIEW | (optional) | MEMORY_SNAPSHOT |
+| Fix Problem | BEQUITE + MODE | (none; reproduce-first) | FIX_VERIFIED | TEST + REVIEW | (optional) | MEMORY_SNAPSHOT |
 | Research Only | BEQUITE + MODE | CLARIFY + RESEARCH | (none) | (none) | (none) | MEMORY_SNAPSHOT |
 | Release Readiness | BEQUITE + MODE | (none) | (none) | All + AUDIT | All | MEMORY_SNAPSHOT |
 

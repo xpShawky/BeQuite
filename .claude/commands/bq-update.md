@@ -220,7 +220,7 @@ Print to `.bequite/logs/UPDATE_LOG.md`:
 **Backup:** .bequite/backups/<timestamp>/
 
 **Next:**
-- /bq-now to verify state intact
+- /bequite short to verify state intact
 - review .bequite-update.md files if any
 - /bq-update force to re-run if conflicts resolved
 ```
@@ -299,7 +299,7 @@ Logs:
   .bequite/logs/UPDATE_LOG.md
 
 Next:
-  /bq-now           verify state intact
+  /bequite short           verify state intact
   /bq-help          see new commands (if any)
   /bequite          gate-aware menu
 ```
@@ -355,6 +355,6 @@ See `.bequite/principles/TOOL_NEUTRALITY.md`.
 
 ## Usual next command
 
-- `/bq-now` — verify state is intact after update
+- `/bequite short` — verify state is intact after update
 - `/bq-help` — discover any new commands
 - `/bequite` — gate-aware menu reflecting new commands

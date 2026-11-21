@@ -49,7 +49,7 @@ Fix **one specific broken behavior**. The command classifies the problem into on
 - `CHANGELOG.md` (appended if user-visible)
 - `.bequite/audits/FIX_<slug>.md` (mini-spec for the fix)
 - `.bequite/work/<id>/tasks.md`
-- `.bequite/state/WORKFLOW_GATES.md` (`FIX_DONE ✅`)
+- `.bequite/state/WORKFLOW_GATES.md` (`FIX_VERIFIED ✅`)
 - `.bequite/logs/AGENT_LOG.md`
 - `.bequite/state/LAST_RUN.md`
 
@@ -240,7 +240,7 @@ If the bug was user-visible, append to `CHANGELOG.md` under `[Unreleased]`:
 
 ### 12. Update state + report
 
-- Mark `FIX_DONE ✅` in `WORKFLOW_GATES.md`
+- Mark `FIX_VERIFIED ✅` in `WORKFLOW_GATES.md`
 - `LAST_RUN.md` updated
 - `AGENT_LOG.md` appended
 

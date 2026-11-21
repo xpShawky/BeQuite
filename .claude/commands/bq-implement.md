@@ -139,7 +139,7 @@ Next: /bq-fix or /bq-clarify (or just answer the blocker question yourself, then
 - Test red after change → roll back via `git stash`; log to `ERROR_LOG.md`; retry once; if still red, mark task `[!]` blocked and pause
 - 3 consecutive failures on the same task → pause; ask user
 - Blocker discovered → mark `[!]` blocked with one-line reason; pick next non-dependent task
-**Memory updates:** Updates `TASK_LIST.md` (`[ ]` → `[x]`). Marks `IMPLEMENT_DONE ✅` when list empty. Updates `LAST_RUN.md`.
+**Memory updates:** Updates `TASK_LIST.md` (`[ ]` → `[x]`). Marks `IMPLEMENTATION_DONE ✅` when list empty. Updates `LAST_RUN.md`.
 **Log updates:** `AGENT_LOG.md` entry per task. `CHANGELOG.md` `[Unreleased]` per user-visible change.
 
 ## Memory files this command reads

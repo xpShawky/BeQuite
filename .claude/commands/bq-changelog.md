@@ -143,11 +143,11 @@ Next: /bq-release  (if you were prepping a release)
 - Sections: Added / Changed / Deprecated / Removed / Fixed / Security (each present if applicable)
 - Entries are user-visible (no "Refactored lib/csv.ts" — that's internal)
 - No banned weasel words in entries
-- Marks `CHANGELOG_READY ✅`
+- Marks `CHANGELOG_UPDATED ✅`
 **Failure behavior:**
 - Commits have weak messages → suggest user re-message via `git commit --amend` (don't auto-edit)
 - Breaking change detected but not in CHANGELOG under `### Removed` / `### Changed` → flag as quality issue
-**Memory updates:** Sets `CHANGELOG_READY ✅`. Updates `CHANGELOG.md`.
+**Memory updates:** Sets `CHANGELOG_UPDATED ✅`. Updates `CHANGELOG.md`.
 **Log updates:** `AGENT_LOG.md`.
 
 ## Memory files this command reads

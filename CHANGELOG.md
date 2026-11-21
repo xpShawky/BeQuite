@@ -4,6 +4,17 @@ Format: [Keep a Changelog v1.1](https://keepachangelog.com/en/1.1.0/) · Version
 
 Legacy (v0.x → v2.0.0-alpha.6 heavy-direction) archived at [`docs/legacy/CHANGELOG-legacy.md`](../legacy/CHANGELOG-legacy.md) after Phase B cleanup.
 
+## [Unreleased]
+
+### Changed (v1 cleanup, task A1)
+- Model names replaced by roles (strong, balanced, fast); the one mapping lives in `.claude/bequite/docs/reference/MODEL_ROLES.md`.
+- Duplicate docs merged: auto-mode orchestration into `AUTO_MODE_STRATEGY.md`, the context strategy into `CONTEXT_ENGINEERING.md`, the harness strategy into `HARNESS_AND_PROMPT_QUALITY.md`; the architecture gates doc now points to the ledger.
+- One name per gate: old aliases (`RELEASE_READY`, `AUDIT_DONE`, `IMPLEMENT_DONE` and others) replaced by the ledger names.
+- `bq_check.py`: new checks for stale model names and for gates named in docs; warnings for size budgets and skill sources.
+
+### Removed
+- The 7 deprecated redirects (`bq-now`, `bq-p0` to `bq-p5`): use `/bequite short` and `/bq-auto phase=P0..P5`.
+
 ## [4.0.0] - 2026-11-12 - "Titan"
 
 The biggest release since the lightweight rewrite: per-work folders, rules enforced by checks, a motion studio, web motion with a performance budget, clean installs, and a leaner public repo. Breaking changes: `/bq-add-feature` removed; `/bq-p0`-`/bq-p5` and `/bq-now` are redirects; per-work artifacts moved from the flat `.bequite/plans|tasks|audits` files to `.bequite/work/<id>/` (old files are migrated on first use).

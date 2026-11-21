@@ -196,11 +196,11 @@ Next: /bq-fix <first-blocker-id>  (or /bq-red-team for adversarial review)
 - Each finding severity-tagged (BLOCKER / HIGH / MEDIUM / LOW)
 - Each finding cites file:line + suggested fix
 - Mistake-memory entries appended for systemic patterns
-- Marks `AUDIT_DONE ✅`
+- Marks `AUDIT_COMPLETE ✅`
 **Failure behavior:**
 - Audit reveals a critical missing capability (e.g. no tests, no auth) → flag as BLOCKER + recommend `/bq-feature` for that domain
 - No file:line cite-able → finding is too vague; refine or drop
-**Memory updates:** Sets `AUDIT_DONE ✅` (optional gate unless Release Readiness mode). Appends systemic-pattern entries to `MISTAKE_MEMORY.md`.
+**Memory updates:** Sets `AUDIT_COMPLETE ✅` (optional gate unless Release Readiness mode). Appends systemic-pattern entries to `MISTAKE_MEMORY.md`.
 **Log updates:** `AGENT_LOG.md`.
 
 ## Memory files this command reads

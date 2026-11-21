@@ -260,7 +260,7 @@ Example:
 - Run shell commands
 - Make decisions (the user picks from recommendations)
 
-## `/bequite short` - one-line orientation (replaces `/bq-now` in v4)
+## `/bequite short` - one-line orientation
 
 Read only. Read `PROJECT_STATE`, `CURRENT_MODE`, `CURRENT_PHASE`, `LAST_RUN`, `WORKFLOW_GATES` and `.bequite/ACTIVE.md` (+ that work's `gates.md`), work out the next command with the Step 4 logic, and print exactly one line:
 

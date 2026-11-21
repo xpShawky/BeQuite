@@ -6,8 +6,8 @@ Atomic task list for the implementer model. Written by the strong model in Phase
 
 **Generated:** <ISO 8601 UTC>
 **Feature:** <name>
-**Strong model (planner):** <e.g. Claude Opus 4.7>
-**Recommended implementer model:** <e.g. Claude Sonnet 4.5>
+**Strong model (planner):** <the strong model in use>
+**Recommended implementer model:** <the balanced model>
 **Total tasks:** <N>
 **Estimated cheap-model tokens:** <range>
 **Estimated total cost (Phase 1 + 2 + 3):** $<estimate>

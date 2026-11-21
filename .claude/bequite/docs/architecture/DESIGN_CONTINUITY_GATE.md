@@ -2,7 +2,7 @@
 
 **Status:** active (v3.0.0-alpha.17)
 **Owner skill:** `bequite-frontend-design-system`
-**Gate name:** `DESIGN_CONTINUITY_PASS` (alias `DESIGN_CONTINUITY_OK`)
+**Gate name:** `DESIGN_CONTINUITY_PASS`
 **Report:** `.bequite/design/DESIGN_CONTINUITY_REPORT.md`
 
 ---

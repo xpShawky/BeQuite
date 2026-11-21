@@ -1,6 +1,6 @@
 # BeQuite commands (v4.0.0)
 
-55 active commands (plus 7 deprecated redirects kept for one release). Each command is a markdown playbook in `.claude/commands/`; run it in Claude Code as `/<name>`. Catalog IDs: `.bequite/commands/COMMAND_ID_MAP.md` (in the BeQuite repo: `templates/bequite/commands/COMMAND_ID_MAP.md`). Detailed walkthroughs: `.claude/bequite/docs/runbooks/USING_BEQUITE_COMMANDS.md`.
+55 commands. Each command is a markdown playbook in `.claude/commands/`; run it in Claude Code as `/<name>`. Catalog IDs: `.bequite/commands/COMMAND_ID_MAP.md` (in the BeQuite repo: `templates/bequite/commands/COMMAND_ID_MAP.md`). Detailed walkthroughs: `.claude/bequite/docs/runbooks/USING_BEQUITE_COMMANDS.md`.
 
 ## How every command behaves
 
@@ -127,7 +127,3 @@ Combine them (`/bq-auto deep delegate "..."`). If two conflict (deep + fast), Be
 | M1 | `/bq-update` (`check`, `source=local path=…`) | safe self-update; never touches project memory |
 | M2 | `/bq-skill-audit` | skill-pack quality audit |
 | M3 | `/bq-hooks status\|enable\|disable\|test` | opt-in safety hooks (off by default) |
-
-## Deprecated redirects (removed in the next major release)
-
-`/bq-p0` … `/bq-p5` → `/bq-auto phase=P0..P5` · `/bq-now` → `/bequite short`. `/bq-add-feature` was removed in v4; use `/bq-feature`.

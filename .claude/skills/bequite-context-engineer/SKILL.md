@@ -115,7 +115,7 @@ Every tool / mechanism named here (`/compact`, JSON state, path-scoped rules, su
 
 - A single-shot, single-file change that finishes in one turn → no context engineering needed; just do it.
 - Pure UI continuity across sections → use `bequite-frontend-design-system` (this skill defers to it for design identity).
-- Read-only orientation only → `/bq-now` or `/bq-recover` already apply the relevant slice.
+- Read-only orientation only → `/bequite short` or `/bq-recover` already apply the relevant slice.
 - The task fits entirely in one short window with no decisions worth persisting → skip the ceremony.
 
 ## Quality gate

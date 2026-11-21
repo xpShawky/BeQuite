@@ -67,7 +67,7 @@ These commands read only what they need; not all core memory:
 | Command | Reads |
 |---|---|
 | `/bq-help` | Nothing — static reference |
-| `/bq-now` | Core memory only — one-line output |
+| `/bequite short` | Core memory only — one-line output |
 | `/bq-explain` | Target file + 1-2 related files |
 | `/bequite` | Core memory + gate state |
 
@@ -211,7 +211,7 @@ Standard writeback template:
 - ❌ Loading all 18 skills when only 1 is needed
 - ❌ Loading the full `commands.md` when the agent already knows commands from skill descriptions
 - ❌ Writing to memory files outside the documented matrix (creates drift)
-- ❌ Forgetting `LAST_RUN.md` update (next `/bq-now` and `/bequite` lie about state)
+- ❌ Forgetting `LAST_RUN.md` update (the next `/bequite` lies about state)
 - ❌ Updating `WORKFLOW_GATES.md` manually outside command success paths (corrupts gate enforcement)
 
 ---

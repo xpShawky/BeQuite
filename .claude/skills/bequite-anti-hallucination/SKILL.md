@@ -128,7 +128,7 @@ Registry names (npm / PyPI / crates.io) and fetch tools here are EXAMPLES, not c
 
 - Pure brainstorming / ideation where nothing is being claimed as factual or shipped.
 - Quoting the user's own input back to them (no external claim to verify).
-- Casual orientation reads (`/bq-now`, `/bequite` menu) — read-only, no factual assertions to ground.
+- Casual orientation reads (`/bequite short`, `/bequite` menu) — read-only, no factual assertions to ground.
 - When evidence is already inline and current (do not re-fetch familiar, version-matched docs — Rule 5 caveat).
 
 ## Quality gate

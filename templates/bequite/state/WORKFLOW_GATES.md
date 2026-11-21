@@ -40,7 +40,7 @@ Commands update gates only after their own checks pass, and record the evidence.
 Core: `CLARIFY_ANSWERED` · `RESEARCH_COMPLETE` · `SCOPE_LOCKED` · `PLAN_APPROVED` · `MULTI_PLAN_DECISION` (optional) · `TASKS_ASSIGNED` · `IMPLEMENTATION_STARTED` · `IMPLEMENTATION_DONE` · `TESTS_PASS` · `REVIEW_APPROVED` · `RED_TEAM_RESOLVED` (optional) · `VERIFY_PASSED` · `CONVERGED`
 Fix: `BUG_REPRODUCED` · `ROOT_CAUSE_IDENTIFIED` · `FIX_APPLIED` · `FIX_VERIFIED`
 Feature: `FEATURE_TYPE_IDENTIFIED` · `FEATURE_SPEC_APPROVED` · `FEATURE_IMPLEMENTED` · `FEATURE_TESTED`
-Web / UI: `DESIGN_CONTINUITY_PASS` (alias `DESIGN_CONTINUITY_OK`) · `VISUAL_QA_DONE` · `PERF_BUDGET_PASS`
+Web / UI: `DESIGN_CONTINUITY_PASS` · `VISUAL_QA_DONE` · `PERF_BUDGET_PASS`
 Motion: `SCRIPT_APPROVED` · `STYLE_LOCKED` · `RENDER_PLAN_APPROVED` · `PICTURE_LOCKED` · `AUDIO_APPROVED` · `FINAL_QC_PASS` · `DELIVERY_APPROVED`
 
 ---
@@ -51,7 +51,7 @@ Motion: `SCRIPT_APPROVED` · `STYLE_LOCKED` · `RENDER_PLAN_APPROVED` · `PICTUR
 
 | Command | Required gates |
 |---|---|
-| `/bequite`, `/bq-help`, `/bq-now`, `/bq-explain`, `/bq-init` | none |
+| `/bequite` (incl. `short`), `/bq-help`, `/bq-explain`, `/bq-init` | none |
 | `/bq-mode`, `/bq-discover`, `/bq-doctor`, `/bq-memory`, `/bq-recover`, `/bq-work` | `BEQUITE_INITIALIZED` |
 | `/bq-new` | `BEQUITE_INITIALIZED` + `MODE_SELECTED = New Project` |
 | `/bq-existing` | `BEQUITE_INITIALIZED` + `MODE_SELECTED = Existing Project Audit` |
@@ -71,7 +71,7 @@ Motion: `SCRIPT_APPROVED` · `STYLE_LOCKED` · `RENDER_PLAN_APPROVED` · `PICTUR
 | `/bq-handoff` | `VERIFY_PASSED` (work) |
 | `/bq-changelog` | none |
 | `/bq-auto` | `BEQUITE_INITIALIZED` + `MODE_SELECTED` |
-| `/bq-p0` ... `/bq-p5` | the previous phase's gates |
+| `/bq-auto phase=P0..P5` | the previous phase's gates |
 | Capability commands (`/bq-presentation`, `/bq-course`, `/bq-offer`, ...) | `BEQUITE_INITIALIZED` (each creates its own work item) |
 
 ### Frontend design continuity (when a frontend exists)

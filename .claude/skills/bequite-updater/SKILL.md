@@ -197,7 +197,7 @@ After a successful update:
 1. Check `.claude/commands/bequite.md` parses (YAML frontmatter intact)
 2. Check `.claude/skills/bequite-*/SKILL.md` files all have valid frontmatter
 3. Check `BEQUITE_VERSION.md` reflects the new version
-4. Print a summary; suggest `/bq-now` to verify state
+4. Print a summary; suggest `/bequite short` to verify state
 
 If anything looks corrupted → recommend rollback path.
 

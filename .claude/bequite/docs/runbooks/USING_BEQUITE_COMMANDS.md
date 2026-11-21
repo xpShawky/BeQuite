@@ -504,7 +504,7 @@ Reads core memory only; summaries before full files; reuses prior research; targ
 
 Two-session workflow. Strong model architects + reviews; cheap model implements. 40–70% cost savings on large features.
 
-Session 1 (strong model — Opus / GPT-5 class):
+Session 1 (strong model):
 
 ```
 /bq-auto deep delegate "Build the e-commerce checkout module"

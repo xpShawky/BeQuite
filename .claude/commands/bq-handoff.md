@@ -232,11 +232,11 @@ Suggest the receiver:
 - `HANDOFF.md` at repo root with both sections (engineer + vibe-handoff)
 - Receiver checklist included
 - No secrets in the doc (env vars referenced by name only)
-- Marks `HANDOFF_DONE ⚪ optional ✅`
+- Marks `HANDOFF_GENERATED ⚪ optional ✅`
 **Failure behavior:**
 - Critical missing info (e.g. no DISCOVERY_REPORT) → run `/bq-discover` first; do not produce a partial handoff
 - Secret pattern detected in draft → strip + redact; flag for user re-review
-**Memory updates:** Sets `HANDOFF_DONE ⚪ optional ✅`. Writes `HANDOFF.md`.
+**Memory updates:** Sets `HANDOFF_GENERATED ⚪ optional ✅`. Writes `HANDOFF.md`.
 **Log updates:** `AGENT_LOG.md`.
 
 ## Memory files this command reads

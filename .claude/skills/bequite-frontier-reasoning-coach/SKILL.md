@@ -31,7 +31,7 @@ Frontier-model output quality comes less from raw capability than from OPERATING
 ## When NOT to use this skill
 
 - Trivial one-file tasks in fast mode (the contract alone suffices; coach adds overhead)
-- Pure read-only orientation (`/bq-now`, `/bequite`)
+- Pure read-only orientation (`/bequite short`, `/bequite`)
 - As a replacement for domain specialists — the coach governs HOW work proceeds, never WHAT the domain answer is
 
 ## Quality gate

@@ -90,7 +90,7 @@ Recommended sequence:
   /bq-assign      (break plan into atomic tasks)
   /bq-implement   (workhorse)
 
-Or run /bq-p0 to walk Phase 0 automatically.
+Or run /bq-auto phase=P0 to walk Phase 0 automatically.
 ```
 
 ## Quality gate
@@ -106,4 +106,4 @@ Or run /bq-p0 to walk Phase 0 automatically.
 
 ## Usual next command
 
-`/bq-discover` (or `/bq-p0` to orchestrate Phase 0)
+`/bq-discover` (or `/bq-auto phase=P0` to orchestrate Phase 0)

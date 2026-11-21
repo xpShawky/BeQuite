@@ -288,7 +288,7 @@ For v0.10.5 to ship:
 | Should manual-paste mode poll the filesystem or watch via inotify/fsevents? | Polling (simplest; cross-platform) | Override per OS later |
 | Should comparison-table be HTML or Markdown? | Markdown (consistent with rest of BeQuite) | HTML export in v0.13.0 (vibe-handoff) |
 | Should models see each other's output in Mode 1 (Parallel)? | NO — independence is the point of Parallel | Mode 3 (Debate) is the "see each other" mode |
-| Default judge model when `--judge` omitted? | Claude Opus 4.7 (analytical) | User config in `bequite.config.toml::multi_model.default_judge` |
+| Default judge model when `--judge` omitted? | the strong model (see `.claude/bequite/docs/reference/MODEL_ROLES.md`) | User config in `bequite.config.toml::multi_model.default_judge` |
 | What happens if user runs `bequite plan` (without `--multi-model`)? | Single-model mode (existing behavior) | Documented in `docs/HOW-IT-WORKS.md` (v0.14.0) |
 
 ## 12. Cross-references

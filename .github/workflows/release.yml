@@ -19,7 +19,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Checks must pass before a release
-        run: python3 scripts/bq_check.py
+        run: python3 scripts/bq_check.py --strict
       - name: Extract this version's notes from CHANGELOG.md
         run: |
           ver="${GITHUB_REF_NAME#v}"

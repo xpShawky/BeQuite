@@ -33,7 +33,7 @@ You have 59 active commands and 31 skills. You may not know which to run. `/bq-s
 
 - Single obvious task (just run the command — e.g. `/bq-fix "..."` for a bug)
 - You already know the workflow (just run it)
-- Live status check — use `/bq-now`
+- Live status check — use `/bequite short`
 - Gate-aware menu — use `/bequite`
 
 ## Syntax
@@ -154,8 +154,8 @@ Decision tree (high-level):
 | "PowerPoint about X" | `/bq-presentation format=pptx` |
 | "Cinematic browser slides" | `/bq-presentation format=html` |
 | "Pre-release verify" | `/bq-verify` → `/bq-release` |
-| "Returning after break" | `/bq-recover` first; then `/bq-now` to confirm |
-| "Where do I stand right now" | `/bq-now` (faster than `/bequite`) |
+| "Returning after break" | `/bq-recover` first; then `/bequite short` to confirm |
+| "Where do I stand right now" | `/bequite short` (faster than `/bequite`) |
 | "What should I do next" | `/bequite` for full menu |
 
 ### 3. Identify gate state
@@ -176,9 +176,9 @@ Based on situation + gate state:
 | Regulated / production / high-stakes | `--mode deep` |
 | Long session / cost-sensitive | `--mode token-saver` |
 | Multi-domain audit + fix | scoped auto (`/bq-auto "..."`) |
-| Single phase end-to-end | phase orchestrator (`/bq-p0`..`/bq-p5`) |
+| Single phase end-to-end | phase mode (`/bq-auto phase=P0..P5`) |
 | Full lifecycle new build | `/bq-auto new "..." --mode deep` |
-| Just orientation | `/bq-now` or `/bequite` (no mode) |
+| Just orientation | `/bequite short` or `/bequite` (no mode) |
 
 ### 5. Identify missing information
 
@@ -274,7 +274,7 @@ See `.bequite/principles/TOOL_NEUTRALITY.md`.
 ## Standardized command fields (alpha.8)
 
 **Phase:** Any (advisory; read-only)
-**When NOT to use:** single obvious task; gate-aware menu (use `/bequite`); one-line status (use `/bq-now`)
+**When NOT to use:** single obvious task; gate-aware menu (use `/bequite`); one-line status (use `/bequite short`)
 **Preconditions:** `BEQUITE_INITIALIZED`
 **Required previous gates:** `BEQUITE_INITIALIZED`
 **Quality gate:** recommendation cites specific commands; respects gate state; matches mode to situation; no banned weasel words

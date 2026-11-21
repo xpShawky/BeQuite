@@ -25,14 +25,14 @@ Invoked by `/bq-suggest`.
 
 | Phase | Commands |
 |---|---|
-| Root | `/bequite`, `/bq-help`, `/bq-now`, `/bq-explain` |
+| Root | `/bequite` (incl. `short`), `/bq-help`, `/bq-explain` |
 | P0 Setup | `/bq-init`, `/bq-mode`, `/bq-new`, `/bq-existing`, `/bq-discover`, `/bq-doctor` |
 | P1 Framing | `/bq-clarify`, `/bq-research`, `/bq-scope`, `/bq-spec`, `/bq-plan`, `/bq-multi-plan` |
 | P2 Build | `/bq-assign`, `/bq-implement`, `/bq-feature`, `/bq-fix` |
 | P3 Quality | `/bq-test`, `/bq-audit`, `/bq-review`, `/bq-red-team` |
 | P4 Release | `/bq-verify`, `/bq-release`, `/bq-changelog` |
 | P5 Memory | `/bq-memory`, `/bq-recover`, `/bq-handoff` |
-| Orchestrators | `/bq-p0`..`/bq-p5`, `/bq-auto` |
+| Orchestrators | `/bq-auto` (`phase=P0..P5` walks one phase) |
 | UI | `/bq-uiux-variants`, `/bq-live-edit` |
 | Advisor | `/bq-suggest` (you are here when invoked) |
 | Opportunities | `/bq-job-finder`, `/bq-make-money` |
@@ -45,11 +45,11 @@ researcher, product-strategist, ux-ui-designer, frontend-quality, backend-archit
 ### The 23 workflow gates
 
 P0: BEQUITE_INITIALIZED · MODE_SELECTED · DISCOVERY_COMPLETE · DOCTOR_COMPLETE
-P1: CLARIFY_ANSWERED · RESEARCH_COMPLETE · SCOPE_LOCKED · PLAN_APPROVED · MULTI_PLAN_DONE
-P2: TASKS_ASSIGNED · IMPLEMENT_DONE · FEATURE_DONE · FIX_DONE
-P3: TESTS_PASS · AUDIT_DONE · REVIEW_APPROVED · RED_TEAM_DONE
-P4: VERIFY_PASSED · CHANGELOG_READY · RELEASE_READY
-P5: MEMORY_SNAPSHOT · HANDOFF_DONE
+P1: CLARIFY_ANSWERED · RESEARCH_COMPLETE · SCOPE_LOCKED · PLAN_APPROVED · MULTI_PLAN_DECISION
+P2: TASKS_ASSIGNED · IMPLEMENTATION_DONE · FEATURE_TESTED · FIX_VERIFIED
+P3: TESTS_PASS · AUDIT_COMPLETE · REVIEW_APPROVED · RED_TEAM_RESOLVED
+P4: VERIFY_PASSED · CHANGELOG_UPDATED · RELEASE_PREPPED
+P5: MEMORY_SNAPSHOT · HANDOFF_GENERATED
 
 ### The 6 modes (CURRENT_MODE.md)
 
@@ -77,7 +77,7 @@ Video / ad / reel / launch-film requests → `/bq-auto motion "..."` or `/bq-mot
 
 | User says | Recommend |
 |---|---|
-| "I have a project idea, where to start?" | `/bq-new` → `/bq-p0`, or `/bq-auto new "..."` |
+| "I have a project idea, where to start?" | `/bq-new` → `/bq-auto phase=P0`, or `/bq-auto new "..."` |
 | "Existing project, audit what's there" | `/bq-existing` → `/bq-discover` → `/bq-doctor` → `/bq-audit` |
 | "I have a bug in X" | `/bq-fix "X"` (15-type router) or `/bq-auto fix "X"` |
 | "Add feature Y" | `/bq-feature "Y"` (12-type router) or `/bq-auto feature "Y"` |
@@ -88,7 +88,7 @@ Video / ad / reel / launch-film requests → `/bq-auto motion "..."` or `/bq-mot
 | "Understand inherited code" | `/bq-explain "<file>"` |
 | "Pre-release verify" | `/bq-verify` → if PASS → `/bq-release` |
 | "Returning after break" | `/bq-recover` (single most useful command after a break) |
-| "Where am I now" | `/bq-now` |
+| "Where am I now" | `/bequite short` |
 | "Show me the menu" | `/bequite` |
 | "Find work" | `/bq-job-finder` |
 | "Find income" | `/bq-make-money` |
@@ -143,7 +143,7 @@ The advisor recommends a default + explains; never silently picks.
 |---|---|
 | Full new project, you want to drive | `/bq-auto new "..."` — agent runs P0→P5 |
 | Scoped task | `/bq-auto fix "..."` / `feature "..."` / `uiux "..."` — agent runs only relevant scope |
-| One phase end-to-end | `/bq-p0`..`/bq-p5` |
+| One phase end-to-end | `/bq-auto phase=P0..P5` |
 | You want fine control | individual commands |
 
 ### Multi-domain combinations
@@ -243,7 +243,7 @@ The advisor produces structured recommendation:
 - Critique the user's project (`/bq-red-team` does that)
 - Pick tools (tool neutrality; commands pick tools when run)
 - Replace `/bequite` (that's the gate-aware menu — this is the situation-aware advisor)
-- Replace `/bq-now` (that's one-line orientation)
+- Replace `/bequite short` (that's one-line orientation)
 
 ---
 
@@ -260,7 +260,7 @@ The advisor produces structured recommendation:
 
 - A specific command is already obviously the right one (just run it)
 - Mid-flow inside `/bq-auto` (it's already gate-aware + routes itself)
-- Asking for one-line orientation — use `/bq-now`
+- Asking for one-line orientation — use `/bequite short`
 - Looking at gate state — use `/bequite`
 
 The advisor exists to bridge user-situation → BeQuite-surface. If the surface is already obvious, skip the advisor and act.

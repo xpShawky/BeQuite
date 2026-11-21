@@ -167,7 +167,7 @@ Append to `.bequite/state/DECISIONS.md`:
 ```markdown
 ## <date> — Multi-model plan resolved
 
-Models consulted: Claude (Opus 4.7), ChatGPT
+Models consulted: Claude (strong model), ChatGPT
 Mode: Parallel
 
 Decisions made via tie-break:
@@ -182,7 +182,7 @@ Decisions made via tie-break:
 - Time cost: ~10 minutes per round (write prompt, paste, get responses, paste back)
 - Quality: very high — two frontier models thinking independently catches MUCH more than one alone
 
-For comparison: a Claude Code session for this same planning round might burn $5-$15 in Opus 4.7 tokens.
+For comparison: a Claude Code session for this same planning round might burn $5-$15 in strong-model tokens (UNVERIFIED: estimate).
 
 ## Output discipline
 

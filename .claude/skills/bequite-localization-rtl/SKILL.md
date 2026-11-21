@@ -1,40 +1,58 @@
 ---
 name: bequite-localization-rtl
-description: Localization + RTL discipline — Arabic-first localization, RTL layout rules, i18n audit, string extraction, translation memory, number/date/currency formatting, MENA UX tone, font readability, icon mirroring. Auto-attaches on Arabic / MENA / Egypt / RTL / bilingual signals in any workflow (course, feature, presentation, reference, live-edit).
+description: Use whenever output is in Arabic or for an Arabic-speaking or MENA audience - a page, an app, a deck, a post, a course, an email - or is bilingual Arabic and English, or mentions Egypt, the Gulf or RTL. Gets direction, mixed-script text, digits, dates, currency, plurals and the Arabic register right, and checks them in a real browser rather than by reading the code.
+last_verified: 2026-11-21
+sources:
+  - https://www.w3.org/International/questions/qa-html-dir
+  - https://www.w3.org/International/articles/inline-bidi-markup/
+  - https://www.unicode.org/reports/tr9/
+  - https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_logical_properties_and_values
+  - https://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html
 ---
 
-# bequite-localization-rtl — Arabic / MENA / RTL discipline
+# bequite-localization-rtl
 
-## Purpose
+Arabic done properly is not translated English in a mirrored box. The right register, direction set in markup, mixed text isolated, numbers chosen on purpose, all looked at in a browser.
 
-Make any BeQuite output genuinely usable in Arabic/MENA contexts — not literal translation pasted into an LTR layout. Skill-first by design: there is **no `/bq-localize` command** (optional proposal only, see `.claude/bequite/docs/specs/LOCALIZATION_RTL.md`); this skill auto-attaches via the Skill Router.
+## When to use
 
-## When this skill activates
+- Any workflow (feature, live-edit, presentation, content, course) with Arabic, MENA, Egypt, Gulf, RTL or bilingual signals. Skill-first: there is no separate command.
 
-Signals (any workflow): Arabic · MENA · Egypt/Gulf/Saudi/UAE market · RTL · bilingual Arabic/English · "Arabic course / app / presentation / website" · `mena-bilingual` doctrine in DECISIONS.md.
+Not for: projects with no Arabic or RTL requirement.
 
-## When NOT to use
+## Procedure
 
-Pure-LTR projects with no MENA/Arabic requirement; generic i18n for non-RTL languages (basic i18n hygiene lives in frontend skills).
+1. **Decide once, record in `DESIGN_DNA.md` (or `PROJECT_DNA.md`):**
+   - register: Egyptian colloquial, Gulf, or Modern Standard Arabic. For anything a person reads as content, take it from the reference voice (the human-taste skill and writing DNA), never a default;
+   - digits: Arabic-Indic (٠١٢٣) or Latin (0123), pinned in code with the locale extension (`ar-EG-u-nu-latn` or `ar-EG-u-nu-arab`), because defaults differ by locale (measured below);
+   - calendar (Gregorian, or Hijri where it matters), currency code and symbol placement, and how technical terms appear (always English, or always transliterated; not mixed).
+2. **Direction in markup, not CSS:** `<html dir="rtl" lang="ar">` (or `lang="ar-EG"`). `lang` alone does not set direction. Change direction below the root only where a block really changes (an English code sample, a quote).
+3. **Isolate mixed text:** wrap each Latin phrase inside Arabic (and the reverse) in an element with `dir`; text of unknown direction (user names, inserted data) in `<bdi>` or `dir="auto"`; user input fields `dir="auto"` (and `dirname` if the server needs to know). Where markup is impossible (`<title>`, attributes), use RLI/LRI/FSI ... PDI (U+2067 / U+2066 / U+2068 ... U+2069). The cases that break without isolation: a phrase that starts with a number, ends in punctuation, or is followed by a number.
+4. **Layout with logical CSS:** `margin-inline-start`, `padding-inline`, `inset-inline`, `text-align: start` (widely available since January 2020). No `left`/`right` for things that should follow direction. A `dir` on a table reverses its column order.
+5. **Mirror what points, not what is:** mirror back and forward arrows, progress and sliders, list indents; do not mirror logos, media play controls, clocks, checkmarks, or images of real objects.
+6. **Plurals and formatting through the platform:** `Intl.PluralRules` / ICU MessageFormat with all six Arabic categories (zero, one, two, few, many, other); `Intl.NumberFormat` and `Intl.DateTimeFormat` with the pinned locale. Never concatenate number + noun.
+7. **Type:** an Arabic face chosen for reading (body) and one for display, each with its source; generous line height (start near 1.6 for body and adjust by eye); measure label widths in the browser instead of assuming a percentage.
+8. **Check in a real browser** at desktop and phone width: screenshot the page in `ar` and, if bilingual, `en`; look for reversed punctuation, numbers jumping sides, truncated labels, mirrored logos. Record the screenshots in `evidence.md`.
 
-## Language discipline
+## Worked example (measured, Node v24.12.0, 2026-11-21)
 
-1. **Tone localization over literal translation** — Arabic UX copy follows local register (formal MSA vs Egyptian/Gulf colloquial — ask which); never machine-literal phrasing.
-2. **Mixed Arabic/English rules** — technical terms either consistently transliterated or consistently English; bidi isolation for inline Latin (`dir`/`bdi`), no broken bracket/punctuation mirroring.
-3. **Numbers** — decide once per project: Arabic-Indic (٠١٢٣) vs Western (0123) digits; record in PROJECT_DNA/DESIGN_DNA. Dates: Gregorian vs Hijri awareness. Currency: EGP/SAR/AED placement conventions.
+```
+ar-EG            EGP 1234.5 -> ‏١٬٢٣٤٫٥٠ ج.م.‏    date 2026-11-21 -> ٢١ نوفمبر ٢٠٢٦
+ar-EG-u-nu-latn  EGP 1234.5 -> ‏1,234.50 ج.م.‏    date -> 21 نوفمبر 2026
+ar-AE            EGP 1234.5 -> ‏1,234.50 ج.م.‏    (Latin digits by default)
+PluralRules('ar-EG'): 3 -> few, 11 -> many, 100 -> other   (CLDR: few = n%100 3..10, many = 11..99)
+```
 
-## RTL engineering discipline
-
-1. **Layout:** logical CSS properties (`margin-inline-start`, not `margin-left`); `dir="rtl"` at the root; test both directions when bilingual.
-2. **Icon mirroring:** mirror directional icons (arrows, back, progress); **never** mirror logos, media controls, clocks, or checkmarks.
-3. **Width expansion:** Arabic labels run +20–40% wider — buttons/navs sized for it; no truncation-by-default.
-4. **Typography:** Arabic body fonts chosen for readability (never Latin-display-only stacks); line-height ≥1.6 for Arabic body; font pairing recorded in DESIGN_DNA.
-5. **i18n audit:** hardcoded strings extracted; translation memory table maintained where a translation workflow exists; pluralization uses CLDR Arabic rules (6 plural forms).
-
-## Memory rules
-
-Write localization decisions into the active workflow's artifacts: DESIGN_DNA gains an RTL/Arabic section; courses gain language plans (COURSE_BRIEF/RECORDING_PLAN); presentations gain RTL slide rules. No dedicated memory dir.
+Lesson: `ar-EG` and `ar-AE` default to different digit systems in the same runtime, so a bilingual Egyptian site that wants Latin digits must say `-u-nu-latn` explicitly, and a price string must never be built by hand.
 
 ## Quality gate
 
-Before claiming Arabic/RTL work complete: root `dir` correct · no mirrored logo/media icons · no truncated Arabic labels · digits/dates decision recorded · body font readability verified (visual check when browser tooling available) · bidi text renders correctly with inline Latin. Findings carry file:line evidence per anti-hallucination rules.
+- Root `dir` and `lang` set; no base direction set in CSS.
+- Mixed-script strings isolated; a screenshot shows numbers and punctuation in the right place.
+- Digits, calendar, currency and register decisions recorded.
+- No mirrored logo or media control; no truncated Arabic label at phone width.
+- Plurals cover all six categories.
+
+## Boundaries
+
+No machine-literal translation for anything a person reads: Arabic copy follows a studied reference voice. Findings carry `file:line` or a screenshot (anti-hallucination rule).

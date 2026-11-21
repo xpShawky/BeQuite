@@ -52,3 +52,9 @@ Each gate: state (pending / done / n/a - reason) and evidence (file or command).
 | `AUDIO_APPROVED` | n/a | voice + music + mix approved |
 | `FINAL_QC_PASS` | n/a | QC commands + output in evidence.md |
 | `DELIVERY_APPROVED` | n/a | deliverables approved; posting is user-run |
+
+## Creative (any output a person reads, watches or looks at)
+| Gate | State | Evidence |
+|---|---|---|
+| `REFERENCES_STUDIED` | n/a | references.md: 3+ named human references, measured (numbers, not adjectives) |
+| `HUMAN_TEST_PASSED` | n/a | evidence.md: side by side, tell sweep, blind pick (writing) or phone check (visuals), the owner's verdict |

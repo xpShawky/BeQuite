@@ -1,70 +1,55 @@
 ---
 name: bequite-writing-dna
-description: Writing DNA discipline — extract an explicit style profile (genre, audience, tone, rhythm, vocabulary, citation style, forbidden patterns) from user samples, then generate or rewrite content constrained by it. Human-quality, source-faithful, ethical. Invoked by /bq-writing-dna; consumed by /bq-presentation speaker notes.
-allowed-tools: Read, Glob, Grep, Edit, Write, WebFetch, WebSearch
+description: Use before writing or rewriting anything a person will read as someone's voice (posts, captions, scripts, emails, a page's copy, the owner's own posts), when the user asks to "write like me / like this page", and when output reads as machine-made. Learns a voice from 30-50 real samples, measures it, writes in it, and proves it with a tell sweep and a blind pick. Owns WRITING_DNA.md. Used by /bq-writing-dna, /bq-presentation speaker notes, the content studio's script step and the human-taste gate.
+last_verified: 2026-11-21
+sources:
+  - https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing  # tells by family; word lists drift per model generation (mid-2026: shorter sentences in an 8-20 word band); "ineffective indicators"; signs of human writing (read 2026-11-21)
+  - https://github.com/blader/humanizer/blob/main/SKILL.md  # 26 patterns in 6 families; structure outlasts vocabulary; match a sample's own rates, even for dashes (MIT, 71,920 stars, read 2026-11-21)
+  - https://arxiv.org/abs/2505.23276  # The Arabic AI Fingerprint: LLM Arabic repeats top words more, narrower vocabulary; social-media posts 25-72% of human length; detection weakest on social media (read 2026-11-21)
+  - https://arxiv.org/abs/2510.03502  # ALHD: 400K Arabic human/LLM samples, news + social + reviews, MSA and dialects; detectors fail to generalise across genres (abstract read 2026-11-21)
+  - https://arxiv.org/abs/2412.11385  # Juzek & Ward, COLING 2025: 21 overused focal words; RLHF a likely cause, so word lists drift (abstract read 2026-11-21)
+  - .claude/bequite/docs/architecture/REFERENCE_FIRST.md  # doctrine: collect, measure, extract, produce, human test, learn
+  - references/tells-ar.md  # 47 human vs 12 default-model Arabic posts, measured 2026-11-21
 ---
 
-# bequite-writing-dna — voice as an explicit artifact
+# bequite-writing-dna
 
-## Purpose
+A voice is a set of measurable habits: how long, how punctuated, which dialect, which openers, what it never does. This skill learns those habits from real samples, writes inside them, and tests the result against the samples. It never "makes text sound human" by adjectives.
 
-Generic AI text is median text. This skill replaces "write like a human" prompting with the pattern that actually works: **corpus analysis → explicit profile → constrained generation → review against profile**. The profile (`WRITING_DNA.md`) is a durable artifact — built once, reused everywhere, corrected over time.
+## When to use
 
-## Ethical boundary (binding)
+- A new voice: the owner's, a client's, a genre ("Egyptian football fan pages"), a page the user names.
+- Any writing in an existing voice: load `WRITING_DNA.md` first.
+- A rewrite of text that reads as machine-made.
 
-Improve clarity / rhythm / specificity / fidelity / voice. **Never:** fabricate sources, invent citations, assist academic dishonesty, promise AI-detector evasion. When sources are strict, no unsupported claims — `UNVERIFIED:` marks gaps honestly.
+Not for: code docs (repo conventions), slide layout (`bequite-presentation-builder`), anything meant to pass as a real person or to beat AI detectors (refuse).
 
-## The WRITING_DNA.md profile shape
+## Procedure
 
-| Section | Captures | Evidence rule |
-|---|---|---|
-| Genre + audience | what kind of writing, for whom, assumed knowledge | from intake |
-| Tone register | formal↔casual, warm↔neutral, confident↔hedged — as a POSITION, not adjectives | quote 2+ sample lines per claim |
-| Sentence rhythm | length distribution (short/medium/long %), fragment tolerance, question use, opener variety | measured from samples |
-| Paragraph architecture | typical length, topic-sentence habit, transition style | measured |
-| Vocabulary | level, signature words/phrases, words this voice NEVER uses | listed with sample evidence |
-| Citation style | APA/MLA/Chicago/Vancouver/none + in-text vs footnote habits | academic only |
-| Structural habits | headings? lists? anecdote openers? callback endings? | from samples |
-| Forbidden patterns | generic-AI tells + user bans + anti-patterns this voice never produces | → FORBIDDEN_PATTERNS.md |
+1. **Collect** 30-50 posts (or 3-5 long texts) from the named source, with date and reactions. In the user's browser only with their yes, read only. Save to `work/<id>/research/voice/<source>.json` (private, never committed). A post that looks templated (same opener, same emoji, numbered lists every time) is marked; in AI niches many top posts are machine-assisted.
+2. **Measure** with `.claude/skills/bequite-writing-dna/scripts/voice_stats.py <posts.json>`: length and its spread, sentence length, punctuation per 100 words, line breaks, emoji, links, lists, calls to action, particles, dialect mix, digits, openers. Read the numbers next to the posts.
+3. **Extract** `WRITING_DNA.md` with `references/voice-dna-template.md`: each rule carries its number and one real example; ten exemplar posts (the top by reactions plus typical ones); the never-list (what the samples never do).
+4. **Write** with the DNA open. Match rates, not just words: if the samples break lines four times a post and use one emoji, so does the draft. A deliberate deviation is written down.
+5. **Tell sweep**: `references/tells-ar.md` or `references/tells-en.md`. Fix every hit or justify it in one line. Then `voice_stats.py samples.json --vs drafts.json` (same script): any measure more than 2x off the samples is a fix.
+6. **Blind pick** (`references/blind-pick.md`): 3 drafts mixed with 7 real posts; a fresh fast-model subagent with no context picks the generated ones and says why. Pass: it finds one or none. Its reasons become rules.
+7. **Owner's verdict**, logged. Each correction becomes a DNA rule with its example.
 
-**Profile rule:** every inference cites sample evidence ("samples average 14-word sentences with 30% under 8 words — see STYLE_SAMPLES §2"). No evidence → mark `[Provisional]`.
+## Worked example (2026-11-21, Arabic AI posts, real numbers)
 
-## Default forbidden patterns (apply to every profile)
-
-"delve / tapestry / landscape (metaphorical) / navigate (metaphorical)" · "in today's fast-paced world" · "it's important to note that" · furthermore/moreover/additionally chains · uniform sentence lengths (the metronome tell) · triple-adjective stacks · hedging stacks ("could potentially perhaps") · every-paragraph-summarizes endings · rhetorical-question openers used more than once · exclamation marks in formal registers · em-dash density >1 per ~80 words
-
-## Generation discipline
-
-1. Load DNA before drafting; the profile is a CONSTRAINT SET, not inspiration
-2. Strict mode → Pattern 4 (PROMPT_PATTERNS.md): claims trace to sources, no additions
-3. Draft → self-review against the profile table row by row → fix → grep output for forbidden patterns → only then deliver
-4. Rewrites preserve meaning exactly; flag any place where applying the voice would change a claim
-5. Multiple profiles supported: name them (`WRITING_DNA.md` holds the active one; archived profiles at `WRITING_DNA-<name>.md`)
-
-## Genre quick-guides
-
-- **Academic:** citation fidelity is the prime constraint; hedge only where evidence hedges; methodology = precise + reproducible; discussion = claims ranked by evidence strength. Help users improve THEIR work — never produce work to be misrepresented as theirs.
-- **Brand/marketing:** voice consistency beats cleverness; one idea per piece; CTA matches funnel stage.
-- **Lecture/teaching:** spoken rhythm (shorter sentences than prose), signposting, one concept per beat — pairs with `/bq-presentation` speaker notes.
-- **Scripts (YouTube):** hook in first 2 lines; written for the EAR; pattern interrupts every ~45s of speech.
-- **Email:** subject = the ask; first line = context; ≤150 words unless justified.
-
-## When NOT to use this skill
-
-- Repo conventions for code/docs (PROJECT_DNA) · slide visual design (presentation-builder) · one-line tweaks · any detector-evasion or dishonesty framing (refuse)
+- Collected 47 top Arabic AI posts on X (Nov 1-21, 100+ likes). Asked a fresh fast model for 12 posts on the same topics, no style guidance.
+- Measured: the model used 2.25x the Arabic commas (5.67 vs 2.52 per 100 words) and 2.3x the full stops, no line breaks (human median 4), no emoji (humans: 49% of posts), a post-length spread 2.9x narrower, and ended 42% of posts on a call or moral (humans 17%).
+- Not a tell here: formal Arabic (the model chose Egyptian colloquial on its own) and missing particles (same rate as humans).
+- Rules written: break lines like the samples; commas only where the samples put them; no closing moral; open on the claim, not on a "label:".
 
 ## Quality gate
 
-- [ ] WRITING_DNA inferences carry sample evidence (or `[Provisional]`)
-- [ ] Output greps clean against FORBIDDEN_PATTERNS.md
-- [ ] Strict mode: zero invented citations; `UNVERIFIED:` marks present where sources were silent
-- [ ] OUTPUT_REVIEW.md written for non-trivial pieces
-- [ ] No banned weasel words in completion claims; memory writeback done (LAST_RUN / AGENT_LOG)
+- `WRITING_DNA.md` has numbers for every rule and ten real exemplars; a rule with no evidence is marked `[provisional]`.
+- `voice_stats.py --vs` table is in `evidence.md`, with no measure more than 2x off unless justified.
+- Blind-pick record (picks, reasons, pass or fail) is in `evidence.md`.
+- No claim that a text "sounds human": the evidence is the measurements, the blind pick and the owner's verdict.
 
-## Common mistakes
+## Boundaries
 
-Adjective-soup profiles ("witty yet professional") instead of measured constraints · applying blog DNA to academic work because it's the active profile (genre-check first) · "humanizing" by adding errors (the goal is QUALITY, not noise) · letting the rewrite drift meaning · building the profile from ONE sample (ask for 3+ or mark Provisional)
-
-## Failure handling
-
-No samples → provisional profile from intake, labeled · samples in conflicting voices → ask which voice wins, or build named profiles · request crosses ethics line → refuse that part + offer the legitimate adjacent help · profile contradicts an explicit user instruction → user instruction wins, log to WRITING_RULES
+- Learn a manner; never copy posts, pose as a real page or person, or promise to pass AI detectors.
+- Collected posts and screenshots stay in the work folder and never enter git. The owner's own voice: no limit beyond the owner's approval.
+- Strict-source writing (academic, legal, news): no claim without its source; gaps are `UNVERIFIED:`.

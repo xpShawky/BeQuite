@@ -31,6 +31,12 @@ Order matters: **scratch voice → picture approved (`PICTURE_LOCKED`) → paid 
 - **Master: −14 LUFS integrated, ≤ −1 dBTP** (two-pass loudnorm + limiter); re-measure after the AAC encode. Listen on a phone and earphones, not only PC speakers.
 - Captions: an `.srt` from the voice's word timings — feeds autoplay muted.
 
+## Measured references
+
+- `references/sound-study-apple-2026.md`: 10 Apple product films measured (tempo, kicks and snares per second, where the music ends, the silent tail).
+- `.claude/skills/bequite-sound-voice/scripts/sound_profile.py <film>`: tempo, drum hits, loudness thirds, silences, cuts on the beat (numpy, scipy, ffmpeg).
+- `.claude/skills/bequite-sound-voice/scripts/sound_arc.py out.png film1 label1 ...`: loudness, kick band and hats band over time, one row per film.
+
 ## Licences (detail: `references/licences.md`)
 
 Save proof for every asset (track page, plan, date) in the licence ledger. Free tiers of many TTS and AI-music tools are non-commercial; stock-music "free for commercial use" can still trigger Content ID claims; subscriptions usually license the subscriber, not a client's paid ads; some TTS providers require telling listeners the voice is AI.

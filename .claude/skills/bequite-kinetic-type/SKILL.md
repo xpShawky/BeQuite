@@ -59,7 +59,7 @@ Connected scripts are animated by **word** or whole glyph cluster, never by sing
 | Browser / HTML-to-video (Remotion, HyperFrames, frame capture) | `assets/kinetic.js` (dependency-free Web Animations API; RTL-safe) + `assets/kinetic-demo.html` |
 | GSAP, CSS-only, Remotion `interpolate`/`spring`, Blender, Resolve | `references/engine-recipes.md` |
 
-Study references at 4 fps contact sheets and write per line: entrance, emphasis, exit, duration (`.claude/skills/bequite-motion-director/references/studying-references.md`).
+Study references at 4 fps contact sheets and write per line: entrance, emphasis, exit, duration (`.claude/skills/bequite-motion-director/references/studying-references.md`). A measured study of whole-word kinetic type (the push, the following camera with blur, moderate zoom, the owner's corrections): `references/kinetic-study.md`.
 
 ## Files this skill writes
 

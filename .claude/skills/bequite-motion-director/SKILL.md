@@ -31,7 +31,7 @@ Every phase writes into the active work folder (read `.bequite/ACTIVE.md`; type 
 | Phase | What happens | Writes | Gate / stop |
 |---|---|---|---|
 | M0 Brief | goal, audience, the one feeling, platforms, length, deadline, budget/credit ceiling, assets, privacy list (what must never appear), what the product really does today, tools on this machine (ask `bequite-render-pipeline` to detect) | `brief.md` | — |
-| M1 References | read `motion-library/INDEX.md` first, offer 2–3 fitting references as options; study new ones as frames; research only when nothing fits | `research.md`, `assets/refs/` | — |
+| M1 References | read `references/film-index.md` first (69 studied films; full breakdowns in the BeQuite repo's `motion-library/`), offer 2–3 fitting references as options; study new ones as frames; research only when nothing fits | `research.md`, `assets/refs/` | — |
 | M2 Script + beats | real sentences, a story shape, a beat sheet (each beat ≤ 3 s), per-line treatment, honesty check of every claim | `spec.md` | ✋ `SCRIPT_APPROVED` |
 | M3 Style lock | 2–3 styleframe variants of the same key frame → user picks → Motion DNA (stage, ONE accent, type, grid, shadow, camera, transition grammar, banned list) | `spec.md` § Motion DNA, `assets/styleframes/` | ✋ `STYLE_LOCKED` |
 | M4 Tool decision + render plan | engine per shot with the 10 decision questions, render plan, disk/GPU budget, every paid credit priced | `plan.md`, `tasks.md` | ✋ `RENDER_PLAN_APPROVED` |
@@ -55,8 +55,12 @@ Full phase playbook, artefact templates and checklists: `references/phases-and-a
 
 ## Craft references (load on demand)
 
-- `references/studying-references.md` — motion-library first, frame study, what to write, model-assisted video analysis.
-- `references/learning-orchestra.md` — the director's crew (editor, sound designer, voice director, designer, typographer, DP/3D, AI generalist, QA), the study loop, the lab loop (try it, measure it, log worked/failed), and how plans draw on `motion-library/TECHNIQUES.md`.
+- `references/film-index.md` — the 69 studied films: story in one line, signature technique, grade.
+- `references/techniques.md` — every technique seen, where (`slug@mm:ss`), how to make it, lab status.
+- `references/craft-lessons.md` and `references/craft-research.md` — editing and AI-film playbook (hooks, cutting on sound, J/L cuts, AI-video tells and fixes, sound for launch films), sourced.
+- `references/lessons-film-0001.md` — what the owner corrected and what broke on the BeQuite hero film (generic looks, measured type, credits, AE and Blender gotchas).
+- `references/studying-references.md` — film index first, frame study, what to write, model-assisted video analysis.
+- `references/learning-orchestra.md` — the director's crew (editor, sound designer, voice director, designer, typographer, DP/3D, AI generalist, QA), the study loop, the lab loop (try it, measure it, log worked/failed), and how plans draw on `references/techniques.md`.
 - `.claude/skills/bequite-motion-director/scripts/film_study.py` — measure a film: cuts (incl. colour swaps), shot lengths, pacing curve, camera moves, match-cut candidates (graphic / position-locked / motion carried), loudness, tempo, onsets, silences, what the sound does at each cut; writes summary.md, metrics.json, shots.jpg, matches.jpg, timeline.png.
 - `.claude/skills/bequite-motion-director/scripts/transcribe.py` — timestamped voice-over transcript with faster-whisper (GPU when available; uses an existing install).
 - `.claude/skills/bequite-motion-director/scripts/director_sheet.py` — joins picture, cuts, sound and voice (words per minute, pauses, pitch, cuts in pauses vs mid-line) into one shot-by-shot table.

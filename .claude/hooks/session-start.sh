@@ -4,10 +4,14 @@
 # Prints nothing outside a BeQuite project (no .bequite/ folder). Never blocks, never fails the session.
 # Plugin installs run it from ${CLAUDE_PLUGIN_ROOT}; script installs enable it through /bq-hooks.
 set -u
-INPUT="$(cat 2>/dev/null || true)"
+INPUT=""; [ -t 0 ] || INPUT="$(cat 2>/dev/null || true)"   # run by hand in a terminal: no input
 PROJECT="${CLAUDE_PROJECT_DIR:-$(pwd)}"
 cd "$PROJECT" 2>/dev/null || exit 0
-[ -d .bequite ] || exit 0
+if [ ! -d .bequite ]; then
+  # a plugin install in a project with no memory yet: one line, so /bequite:bq-init knows where the scaffold is
+  [ -n "${CLAUDE_PLUGIN_ROOT:-}" ] && echo "BeQuite plugin: this project has no .bequite/ memory yet. /bequite:bq-init creates it from $CLAUDE_PLUGIN_ROOT/templates/bequite (nothing is written until you run it)."
+  exit 0
+fi
 
 HOME_DIR="${CLAUDE_PLUGIN_ROOT:-$PROJECT}"
 first() { [ -f "$1" ] && head -n "$2" "$1" | tr -d '\r' | grep -v '^[[:space:]]*$'; }

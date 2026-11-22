@@ -52,7 +52,7 @@ Refuse unknown or archived ids. Update `ACTIVE.md`; log the switch in both work 
 4. Fill `README.md` -> Outcome. Move the folder to `.bequite/archive/<YYYY-MM-DD>-<id>-<slug>/`. Clear `ACTIVE.md` (or point it at another open item if the user names one).
 5. Append to `.bequite/logs/AGENT_LOG.md` and `.bequite/state/LAST_RUN.md`; add a lesson to `.bequite/state/MISTAKE_MEMORY.md` if the work taught one.
 
-## Migration from flat files (pre-v4 projects)
+## Migration from flat files (older projects)
 
 If `work/` does not exist but old flat files do (`.bequite/plans/SCOPE.md`, `IMPLEMENTATION_PLAN.md`, `.bequite/tasks/TASK_LIST.md`, `.bequite/audits/VERIFY_REPORT.md` ...), `new` first creates `work/0001-<inferred-title>/`, copies the old files into the new names (table in the spec), leaves the originals untouched, and logs it.
 

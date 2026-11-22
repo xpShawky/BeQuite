@@ -7,9 +7,10 @@ BeQuite is markdown plus a few small scripts. A change is done when the self-che
 ```bash
 python3 scripts/bq_check.py          # must end with no FAIL (warnings are allowed on branches)
 bash scripts/test_update.sh          # only when bq-update.sh or an installer changed
+bash scripts/test_hooks.sh           # only when a hook changed
 ```
 
-CI runs both, plus an install with each installer. A `v*.*.*` tag runs `bq_check.py --strict` (warnings fail too) and creates the GitHub Release. Only the owner pushes tags. Every BeQuite install updates itself to a new release, so a release goes out to everyone.
+CI runs all three, plus an install with each installer. A `v*.*.*` tag runs `bq_check.py --strict` (warnings fail too) and creates the GitHub Release. Only the owner pushes tags. Every BeQuite install updates itself to a new release, so a release goes out to everyone.
 
 ## The rules the check enforces
 

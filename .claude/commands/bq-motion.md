@@ -26,7 +26,7 @@ The director brain is the skill `bequite-motion-director` (phases M0-M9, hard st
 /bq-motion status              phase, motion gates, open notes, next step
 ```
 
-Examples: `/bq-motion "Launch film for BeQuite v4, Apple-style, 45s, 16:9 + 9:16"` · `/bq-motion "Reel for our clinic booking app in Arabic" lang=ar` · `/bq-motion study motion-library/inbox/New/` · `/bq-motion lab "position-locked colour-swap cut"`. Study and lab follow `bequite-motion-director/references/learning-orchestra.md` (the crew, the study loop, the lab loop, write-back).
+Examples: `/bq-motion "Launch film for our app, Apple-style, 45s, 16:9 + 9:16"` · `/bq-motion "Reel for our clinic booking app in Arabic" lang=ar` · `/bq-motion study motion-library/inbox/New/` · `/bq-motion lab "position-locked colour-swap cut"`. Study and lab follow `bequite-motion-director/references/learning-orchestra.md` (the crew, the study loop, the lab loop, write-back).
 
 ## Steps
 

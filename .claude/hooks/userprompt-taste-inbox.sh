@@ -4,7 +4,7 @@
 # Never blocks and adds no context: it only appends one row. Fails soft on anything unexpected.
 # Plugin installs run it from ${CLAUDE_PLUGIN_ROOT}; script installs enable it through /bq-hooks.
 set -u
-INPUT="$(cat 2>/dev/null || true)"
+INPUT=""; [ -t 0 ] || INPUT="$(cat 2>/dev/null || true)"   # run by hand in a terminal: no input
 PROJECT="${CLAUDE_PROJECT_DIR:-$(pwd)}"
 [ -d "$PROJECT/.bequite/state" ] || exit 0
 

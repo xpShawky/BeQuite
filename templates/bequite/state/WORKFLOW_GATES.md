@@ -2,7 +2,7 @@
 
 The gate system. Every BeQuite command checks gates on entry; if a required gate is not done, the command stops, names the missing gate, and recommends the command that satisfies it.
 
-Gates live in two places (v4):
+Gates live in two places:
 - **Project gates** - this file. Things true for the whole project.
 - **Work gates** - `.bequite/work/<id>/gates.md` for the active work (see `.bequite/ACTIVE.md`). Everything from clarify to verify, plus fix / feature / web / motion gates. Each new piece of work starts with fresh gates.
 
@@ -53,8 +53,6 @@ Motion: `SCRIPT_APPROVED` · `STYLE_LOCKED` · `RENDER_PLAN_APPROVED` · `PICTUR
 |---|---|
 | `/bequite` (incl. `short`), `/bq-help`, `/bq-explain`, `/bq-init` | none |
 | `/bq-mode`, `/bq-discover`, `/bq-doctor`, `/bq-memory`, `/bq-recover`, `/bq-work` | `BEQUITE_INITIALIZED` |
-| `/bq-new` | `BEQUITE_INITIALIZED` + `MODE_SELECTED = New Project` |
-| `/bq-existing` | `BEQUITE_INITIALIZED` + `MODE_SELECTED = Existing Project Audit` |
 | `/bq-clarify`, `/bq-research` | `DISCOVERY_COMPLETE` (starts or uses the active work) |
 | `/bq-scope` | `RESEARCH_COMPLETE` (work) |
 | `/bq-plan` | `SCOPE_LOCKED` (work); fast mode: `RESEARCH_COMPLETE` (work) |

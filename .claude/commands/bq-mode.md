@@ -1,8 +1,8 @@
 ---
-description: Select or display the current BeQuite mode. Six modes — New / Existing Audit / Add Feature / Fix Problem / Research Only / Release Readiness. Determines workflow + which gates apply.
+description: Select or show the workflow mode (New Project, Existing Project Audit, Add Feature, Fix Problem, Research Only, Release Readiness). The mode decides which gates apply and what the menu recommends. `new` and `existing` also set the project up for that route.
 ---
 
-# /bq-mode — select the working mode
+# /bq-mode: say what kind of work this is
 
 <!-- bq:contract -->
 > **This command runs inside the BeQuite pipeline** (`.claude/bequite/docs/architecture/PIPELINE.md`):
@@ -11,98 +11,57 @@ description: Select or display the current BeQuite mode. Six modes — New / Exi
 > 3. **Prove and write back:** plan first for non-trivial work and stop at hard human gates; every check goes to `work/<id>/evidence.md` or is `UNVERIFIED:`; write back (work log, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, `.bequite/state/MISTAKE_MEMORY.md` on a lesson) and end with the Next Command Recommendations.
 <!-- /bq:contract -->
 
-## Purpose
+The mode is the workflow (which gates apply). It is separate from the operating modes of `/bq-auto` (`fast`, `deep`, `token-saver`, `delegate`), which set depth and cost.
 
-Set the operating mode for the current BeQuite session. Mode determines which gates are required, which are skipped, and which commands the next-3 menu recommends.
+## Syntax
 
-## When to use it
+```
+/bq-mode                     show the current mode, or ask which one
+/bq-mode new                 New Project: an empty or near-empty folder
+/bq-mode existing            Existing Project Audit: a repo that already has code
+/bq-mode feature | fix | research | release
+```
 
-- Just after `/bq-init` on a fresh BeQuite install
-- When pivoting from one kind of work to another (e.g. you finished a fix; now you want to add a feature)
+A sentence works too ("something is broken in checkout"): one question if it is ambiguous.
 
-## Preconditions
+## Gates
 
-- `BEQUITE_INITIALIZED` gate done (i.e., `.bequite/state/PROJECT_STATE.md` exists)
-
-## Required previous gates
-
-- `BEQUITE_INITIALIZED`
-
-## Files to read
-
-- `.bequite/state/CURRENT_MODE.md`
-- `.bequite/state/PROJECT_STATE.md`
-- `.bequite/state/WORKFLOW_GATES.md`
-
-## Files to write
-
-- `.bequite/state/CURRENT_MODE.md` (mode written)
-- `.bequite/state/WORKFLOW_GATES.md` (`MODE_SELECTED` gate set to `✅ done`)
-- `.bequite/state/LAST_RUN.md`
-- `.bequite/logs/AGENT_LOG.md`
+Needs `BEQUITE_INITIALIZED` (run `/bq-init` first). Sets `MODE_SELECTED`.
 
 ## Steps
 
-1. Read current mode from `.bequite/state/CURRENT_MODE.md`. If a mode is already selected, ask: "Current mode: `<X>`. Change it? (y/N)" — exit on N.
-2. Present the six modes:
+1. **Read** `.bequite/state/CURRENT_MODE.md`, `PROJECT_STATE.md`, `WORKFLOW_GATES.md`. If a mode is already set and no argument was given, show it and ask whether to change it. Changing mode mid-work is allowed; say which artifacts may no longer apply, and log the change.
+2. **Offer the six modes** when none was named:
 
-   ```
-   Select a BeQuite mode:
+   | Mode | For | Next |
+   |---|---|---|
+   | New Project | starting from scratch | `/bq-clarify`, or `/bq-auto new "<idea>"` |
+   | Existing Project Audit | understanding or improving a repo | `/bq-discover`, `/bq-doctor`, `/bq-audit` |
+   | Add Feature | one feature in an existing repo | `/bq-feature "<title>"` |
+   | Fix Problem | something is broken | `/bq-fix "<symptom>"` |
+   | Research Only | facts before any plan | `/bq-discover`, then `/bq-research` |
+   | Release Readiness | built; verify and ship | `/bq-verify` |
 
-     1. New Project              — starting from scratch in an empty folder
-     2. Existing Project Audit   — work with an existing repo
-     3. Add Feature              — existing repo; add one feature
-     4. Fix Problem              — something is broken
-     5. Research Only            — pre-planning; no implementation
-     6. Release Readiness        — built; verify + ship
+3. **Check the folder against the choice.** New Project in a folder with a manifest and source: say it does not look empty and ask whether Existing was meant. Existing in an empty folder: the reverse.
+4. **Set the project up for `new` and `existing`:**
+   - `PROJECT_STATE.md`: the project type; the stack as "not decided (pending research and plan)" for new, "to be detected by `/bq-discover`" for existing.
+   - `CURRENT_PHASE.md`: P0.
+   - `OPEN_QUESTIONS.md`, three questions with recommended defaults. New: what is this project in one sentence; who is the primary user; what scale is expected. Existing: what is the goal (understand, fix, improve, add); is it in production; who owns the repo.
+5. **Write** the mode with a one-line reason to `CURRENT_MODE.md`, set `MODE_SELECTED` in `WORKFLOW_GATES.md` with the gates this mode skips (table in `.claude/bequite/docs/architecture/WORKFLOW_GATES.md`), and append the decision to `DECISIONS.md`.
 
-   Pick a number (1-6) or describe in one sentence.
-   ```
-3. Wait for user input. Accept number, name, or sentence.
-4. If ambiguous, ask one clarifying question.
-5. Write the mode to `.bequite/state/CURRENT_MODE.md` with a one-line rationale.
-6. Update `WORKFLOW_GATES.md` — set `MODE_SELECTED = ✅ done` + add a mode-specific gate-override note.
-7. Append a Decision entry to `.bequite/state/DECISIONS.md`.
-8. Update `LAST_RUN.md` + `AGENT_LOG.md`.
-
-## Output format
-
-Print to chat:
+## Output
 
 ```
-✓ Mode set: <Mode Name>
-
-What this mode does:
-  <one-line description of the workflow>
-
-Recommended next 3 commands:
-  1. /<command>
-  2. /<command>
-  3. /<command>
+Mode: <name>   (<why>)
+Folder: <empty | existing code: <stack if known>>   Phase: P0
+Queued questions: <n>
+Next: <the mode's first command>, or /bq-auto phase=P0
 ```
 
 ## Quality gate
 
-- `.bequite/state/CURRENT_MODE.md` contains exactly one of the six allowed modes
-- `WORKFLOW_GATES.md::MODE_SELECTED` is `✅ done`
+`CURRENT_MODE.md` holds exactly one of the six modes; the gate is set; for `new` and `existing` the project state and the three questions are written.
 
-## Failure behavior
+## Next Command Recommendations (typical)
 
-- If the user picks something not in the six modes → ask again, listing the six options
-- If `BEQUITE_INITIALIZED` is not done → refuse + suggest `/bq-init` first
-- If the user wants to change mode mid-work → allow it, warn that some artifacts may not apply to the new mode, log the change
-
-## Usual next command
-
-| Mode picked | Next |
-|---|---|
-| New Project | `/bq-new` |
-| Existing Project Audit | `/bq-existing` |
-| Add Feature | `/bq-feature` (with feature title argument) |
-| Fix Problem | `/bq-fix` (with symptom argument) |
-| Research Only | `/bq-discover` (then `/bq-research`) |
-| Release Readiness | `/bq-verify` |
-
-## Mode-decision matrix
-
-Workflow modes (New / Existing / Add Feature / Fix / Research-only / Release) set which gates apply. Orthogonal **operating** modes (deep / fast / token-saver / delegate) set depth+cost — see `.claude/bequite/docs/architecture/AUTO_MODE_STRATEGY.md` for the full matrix (best-for / avoid-when / research-depth / testing-depth / output-length). On any conflict about what to run next, defer to `.bequite/state/ORCHESTRATION_MAP.md`.
+The mode's "Next" column. `/bq-auto phase=P0` walks the rest of setup in one pass.

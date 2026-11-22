@@ -36,7 +36,7 @@ Not: inside a step whose route is already fixed, or for read-only commands with 
 
 | Situation | Route |
 |---|---|
-| a new idea or empty folder | `/bq-new` or `/bq-auto new` |
+| a new idea or empty folder | `/bq-mode new` or `/bq-auto new` |
 | an existing project | `/bq-discover`, then `/bq-doctor`, then `/bq-audit` |
 | something is broken | `/bq-fix` |
 | a feature | `/bq-feature` |

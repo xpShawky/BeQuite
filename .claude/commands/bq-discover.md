@@ -15,7 +15,7 @@ Read-only. Discovery exists to make later context smaller: later commands read i
 
 ## Gates
 
-Needs `BEQUITE_INITIALIZED`. Sets `DISCOVERY_COMPLETE`. An empty folder has nothing to discover: use `/bq-new`.
+Needs `BEQUITE_INITIALIZED`. Sets `DISCOVERY_COMPLETE`. An empty folder has nothing to discover: use `/bq-mode new`.
 
 ## Steps
 

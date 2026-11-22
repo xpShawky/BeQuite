@@ -45,6 +45,13 @@ jobs:
       - uses: actions/checkout@v4
       - run: bash scripts/test_update.sh
 
+  hooks:
+    name: hook behaviour (offline)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash scripts/test_hooks.sh
+
   install-powershell:
     name: installer smoke test (irm | iex path)
     runs-on: windows-latest

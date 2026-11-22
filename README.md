@@ -6,7 +6,7 @@
 
 **Version:** `1.0.0` · MIT · by [@xpShawky](https://github.com/xpShawky)
 
-<a href="commands.md"><img alt="55 commands" src="https://img.shields.io/badge/slash_commands-55-7c3aed?style=flat-square"></a>
+<a href="commands.md"><img alt="53 commands" src="https://img.shields.io/badge/slash_commands-53-7c3aed?style=flat-square"></a>
 <a href="#skills"><img alt="38 skills" src="https://img.shields.io/badge/skills-38-10b981?style=flat-square"></a>
 <img alt="zero runtime deps" src="https://img.shields.io/badge/runtime_deps-0-0ea5e9?style=flat-square">
 <img alt="markdown only" src="https://img.shields.io/badge/install-markdown_only-f59e0b?style=flat-square">
@@ -74,7 +74,7 @@ The installer copies the commands, skills, subagents, docs and hooks into `.clau
 
 | Pack | Commands | Skills | For |
 |---|---|---|---|
-| **core** | 45 | 26 | the engineering pipeline, memory, research, review and verification, the agent team, the harness commands |
+| **core** | 43 | 26 | the engineering pipeline, memory, research, review and verification, the agent team, the harness commands |
 | **studio** | 5 | 10 | films (`/bq-motion`), decks (`/bq-presentation`), content (`/bq-content`, `/bq-watch`, `/bq-dna`) |
 | **business** | 5 | 2 | offers and proposals (`/bq-offer`), earning routes, jobs, turning work into a product |
 
@@ -121,7 +121,7 @@ The full list with arguments is in [commands.md](commands.md); `/bq-help` prints
 
 ## Skills
 
-38 skills hold the procedures: architecture and research, backend, database, security, DevOps and release, testing and debugging, a frontend design system with its quality checks, localization for Arabic and right-to-left layouts, automation (official API first, Scrapling as the scraping default), delegation between models, the human-taste and writing-voice skills, the film team (director, kinetic type, sound and voice, render pipeline), the content skills, the agent team, and the business skills. All but six of them were rewritten for v1 and name their sources and the date they were last checked; six still have to be brought up to that rule (the four film skills, the skill auditor and the updater). Registry: [SKILL_REGISTRY.md](templates/bequite/skills/SKILL_REGISTRY.md).
+38 skills hold the procedures: architecture and research, backend, database, security, DevOps and release, testing and debugging, a frontend design system with its quality checks, localization for Arabic and right-to-left layouts, automation (official API first, Scrapling as the scraping default), delegation between models, the human-taste and writing-voice skills, the film team (director, kinetic type, sound and voice, render pipeline), the content skills, the agent team, and the business skills. Every skill names its sources and the date they were last read, and the self-check fails a skill whose sources are older than 120 days. Registry: [SKILL_REGISTRY.md](templates/bequite/skills/SKILL_REGISTRY.md).
 
 ## Docs and contributing
 

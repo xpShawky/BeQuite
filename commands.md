@@ -1,6 +1,6 @@
 # BeQuite commands (v1)
 
-55 commands in three packs (core, studio, business). Each command is a markdown playbook in `.claude/commands/`; run it in Claude Code as `/<name>`. Catalog IDs: `.bequite/commands/COMMAND_ID_MAP.md` (in the BeQuite repo: `templates/bequite/commands/COMMAND_ID_MAP.md`).
+53 commands in three packs (core, studio, business). Each command is a markdown playbook in `.claude/commands/`; run it in Claude Code as `/<name>`. Catalog IDs: `.bequite/commands/COMMAND_ID_MAP.md` (in the BeQuite repo: `templates/bequite/commands/COMMAND_ID_MAP.md`).
 
 ## How every command behaves
 
@@ -36,8 +36,6 @@ Combine them (`/bq-auto deep delegate "..."`). If two conflict (deep + fast), Be
 | W0.3 | `/bq-discover` | inspect the repo → `DISCOVERY_REPORT.md` |
 | W0.4 | `/bq-doctor` | environment health check |
 | W0.5 | `/bq-mode` | pick a workflow mode (New Project, Existing Audit, Add Feature, Fix, Research Only, Release Readiness) |
-| W0.6 | `/bq-new` | start a new project |
-| W0.7 | `/bq-existing` | start an existing-project audit |
 | W0.8 | `/bq-work new "<title>" [type=…]` · `list` · `switch <id>` · `status` · `close` | work folders; `close` = converge → merge spec deltas → archive |
 
 ## W1 Framing

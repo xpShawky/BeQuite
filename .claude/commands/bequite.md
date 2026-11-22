@@ -38,8 +38,8 @@ Recommended next
   2. /<command>   <why>
   3. /<command>   <why>
 
-Commands (55; IDs in .bequite/commands/COMMAND_ID_MAP.md, details in /bq-help)
-  Setup      /bequite /bq-init /bq-discover /bq-doctor /bq-mode /bq-new /bq-existing /bq-work
+Commands (53; IDs in .bequite/commands/COMMAND_ID_MAP.md, details in /bq-help)
+  Setup      /bequite /bq-init /bq-discover /bq-doctor /bq-mode /bq-work
   Framing    /bq-clarify /bq-research /bq-scope /bq-spec /bq-plan /bq-multi-plan
   Build      /bq-assign /bq-implement /bq-feature /bq-fix /bq-uiux-variants /bq-live-edit
   Quality    /bq-test /bq-audit /bq-review /bq-red-team

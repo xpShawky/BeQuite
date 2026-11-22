@@ -11,7 +11,7 @@ BeQuite relaunched. One pipeline instead of a pile of commands, three packs, a p
 - **Plugin** (`.claude-plugin/plugin.json`, `marketplace.json`): install with `/plugin marketplace add xpShawky/BeQuite` then `/plugin install bequite@bequite`. `claude plugin validate .` passes.
 - **Hooks**: SessionStart injects the active work, open gates, the last run, the five newest lessons, the taste rules and the capability summary; Stop refuses a "done" with no evidence or with a banned weasel word; UserPromptSubmit logs the user's corrections to `TASTE_INBOX.md`. Automatic in the plugin, opt-in for script installs (`/bq-hooks`).
 - **Subagents** (`agents/`): `bq-researcher`, `bq-verifier`, `bq-red-team`, `bq-scout`, with the cost rule in the orchestrator (a subagent only when the reading is wider than five sources, a check must be independent, or the output would flood the context).
-- **Packs**: core (45 commands, 26 skills), studio (5, 10), business (5, 2). `install-bequite.sh --packs core,studio` or `$env:BEQUITE_PACKS`; the choice is remembered for updates.
+- **Packs**: core (43 commands, 26 skills), studio (5, 10), business (5, 2). `install-bequite.sh --packs core,studio` or `$env:BEQUITE_PACKS`; the choice is remembered for updates.
 - **Automatic updates**: every command first runs `.claude/bequite/bin/bq-update.sh` (hourly); when a new official GitHub Release is published (the owner tags it and the strict self-check passes), it backs up, installs that release from one clone, puts the old files back if anything fails, and carries on; a push to `main` never reaches users by itself; other repos and paths inside the project are reported, never run; offline it continues; memory is never overwritten. `scripts/test_update.sh` tests this path in CI. Pack files a version removes are moved to `.bequite/backups/`, never deleted.
 - **Content studio** (studio): `/bq-content` (radar, study, script, produce, package, queue, from-work, brand-kit, community, course), `/bq-watch`, `/bq-dna`; skills `bequite-video-intel`, `bequite-trend-radar`, `bequite-format-dna`, `bequite-hooks-and-copy`, `bequite-publish-prep`.
 - **Agent team** (core): `/bq-team` (roles on heartbeats, per-role budgets, an editor that can reject, approvals before any post or spend) and `/bq-operator` (a Telegram bridge with an allow-list, read-only runs and Approve/Decline); skill `bequite-agent-team` with its ledger and 56 offline tests.
@@ -27,11 +27,16 @@ BeQuite relaunched. One pipeline instead of a pile of commands, three packs, a p
 - `/bq-auto` 527 to 102 lines; `/bq-feature` 288 to 55; `/bq-fix` 406 to 55.
 - Model names replaced by roles (strong, balanced, fast) in one file, `MODEL_ROLES.md`.
 - Ten small capability commands folded into modes of `/bq-knowledge`, `/bq-content` and `/bq-offer`.
+- `/bq-new` and `/bq-existing` folded into `/bq-mode new` and `/bq-mode existing`.
+- Every command is within its size budget: the 21 longest were rewritten to the v1 shape and the repeated alpha-era sections were removed from all of them (10,691 lines down to about 4,200).
+- All 38 skills carry `last_verified` and at least five sources that were read; `bequite-updater` and `bequite-skill-auditor` were rewritten.
+- `WORKFLOW_GATES.md` and `AUTO_MODE_STRATEGY.md` rewritten; reports go to the work folder (`review.md`, `verify.md`), not to loose files.
 
 ### Removed
 - The seven phase redirects (`/bq-now`, `/bq-p0` to `/bq-p5`).
 - Six skills merged into `bequite-delegation`, `bequite-automation` and `bequite-orchestrator`.
 - The PowerShell version of the Stop hook (the bash hook covers Windows through Git Bash).
+- 17 v3/v4 reference docs that nothing cited (they stay in the repository under `docs/history/v4-docs/` and no longer ship).
 
 ### Upgrading from v4
 Run the installer once with `--force` (`$env:BEQUITE_FORCE=1` on Windows): v4 has no update check, so it cannot update itself to v1. After that, updates are automatic. Your `.bequite/` memory is never overwritten.

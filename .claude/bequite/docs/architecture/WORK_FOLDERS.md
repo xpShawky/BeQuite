@@ -1,4 +1,4 @@
-# Work folders (v4)
+# Work folders
 
 Every piece of work gets its own folder. One folder per feature, fix, film, course, research question or release, holding its brief, research, spec, plan, tasks, gates, evidence and log. Nothing overwrites another piece of work, and finished work is archived, not deleted.
 
@@ -47,7 +47,7 @@ Work types: `feature` · `fix` · `motion` · `web` · `research` · `course` ·
 7. **Close = merge + archive.** On close, the spec deltas in `spec.md` merge into `.bequite/specs/<area>.md`, `README.md` gets the outcome, and the folder moves to `archive/<date>-<id>-<slug>/`. Archived work is read-only history.
 8. **Several open items are fine.** `ACTIVE.md` points at one; `/bq-work list` shows all open ones; `/bq-work switch <id>` changes focus.
 
-## Old flat files (before v4)
+## Old flat files (older projects)
 
 | Before | Now |
 |---|---|

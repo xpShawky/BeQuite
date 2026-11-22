@@ -10,7 +10,7 @@ Append-only chronicle of every `/bq-update` run. Newest at top.
   ## <ISO 8601 UTC> — update from <source>
 
   **Mode:** safe | check | force | local-source | github-source
-  **Version:** v3.0.0-alpha.X → v3.0.0-alpha.Y
+  **Version:** v<old> → v<new>
   **Source:** <repo / path>
 
   **Files added:** <count>

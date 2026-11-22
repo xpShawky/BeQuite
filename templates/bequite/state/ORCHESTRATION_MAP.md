@@ -46,7 +46,7 @@ No fitting command/skill ⇒ emit `Missing Capability Detected:` block (needed �
 ## 13. Next-command recommendation rules
 Contract step 12 (`COMMAND_EXECUTION_CONTRACT.md`); IDs are the shared vocabulary; capability suggestions only on task signals; gates never bypassed, blocked items appear under do-not-run-yet with the gate named.
 
-## 16. Work folders + motion (v4)
+## 16. Work folders + motion
 Every piece of work lives in `.bequite/work/NNNN-slug/` (brief · research · spec · plan · tasks · gates · evidence · review · verify · log); `ACTIVE.md` points at it; gates are per work; `/bq-work close` converges, merges spec deltas into `.bequite/specs/` and archives. Spec: `.claude/bequite/docs/architecture/WORK_FOLDERS.md`. Video/film requests route to C18 `/bq-motion` (skills motion-director + kinetic-type + sound-voice + render-pipeline); website motion routes to frontend-design-system `web-motion.md` (PERF_BUDGET_PASS). Creative work is plan-first even in auto mode.
 
 ## 15. Skills-first + execution profile + post-phase verify

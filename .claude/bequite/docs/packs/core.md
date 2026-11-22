@@ -1,10 +1,10 @@
 # The core pack
 
-Always installed. The engineering pipeline and everything that keeps work honest: memory, research, plans, review, verification, the agent team and the harness commands. 45 commands and 26 skills; the authoritative lists are `templates/bequite/commands/COMMAND_ID_MAP.md` and `templates/bequite/skills/SKILL_REGISTRY.md` (Pack column).
+Always installed. The engineering pipeline and everything that keeps work honest: memory, research, plans, review, verification, the agent team and the harness commands. 43 commands and 26 skills; the authoritative lists are `templates/bequite/commands/COMMAND_ID_MAP.md` and `templates/bequite/skills/SKILL_REGISTRY.md` (Pack column).
 
 ## What it does
 
-- **Setup and memory:** `/bequite`, `/bq-init`, `/bq-discover`, `/bq-doctor` (also writes `CAPABILITIES.md`), `/bq-mode`, `/bq-new`, `/bq-existing`, `/bq-work`, `/bq-memory`, `/bq-recover`, `/bq-handoff`.
+- **Setup and memory:** `/bequite`, `/bq-init`, `/bq-discover`, `/bq-doctor` (also writes `CAPABILITIES.md`), `/bq-mode` (with `new` and `existing`), `/bq-work`, `/bq-memory`, `/bq-recover`, `/bq-handoff`.
 - **Framing:** `/bq-clarify`, `/bq-research`, `/bq-scope`, `/bq-spec`, `/bq-plan` (with the options board), `/bq-multi-plan`.
 - **Build:** `/bq-assign`, `/bq-implement`, `/bq-feature`, `/bq-fix`, `/bq-uiux-variants`, `/bq-live-edit`, `/bq-auto`.
 - **Quality and release:** `/bq-test`, `/bq-audit`, `/bq-review`, `/bq-red-team`, `/bq-verify`, `/bq-release`, `/bq-changelog`.

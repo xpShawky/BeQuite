@@ -44,8 +44,8 @@ Auto mode pauses for an explicit yes before each of these, in every mode:
 15. Three consecutive failures on one task.
 16. Picking the winning UI or presentation variant.
 17. A release push or tag (always run by the user).
-18. For creative work: the script, the style, the render plan, picture lock, the final render and delivery.
-19. Anything that leaves the machine in the user's name: a post, a message, an upload, an account, accepted terms.
+
+Two families ride on the same rule and are not numbered separately. **Creative work** stops at the script, the style, the render plan, picture lock, the final render and delivery (gates 11 and 16 in creative form). **Anything that leaves the machine in the user's name** (a post, a message, an upload, a new account, accepted terms) is the user's to do or to approve each time.
 
 A mode changes depth, speed and cost. No mode removes a gate.
 

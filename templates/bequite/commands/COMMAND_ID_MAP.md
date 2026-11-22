@@ -1,7 +1,7 @@
 # BeQuite Command ID Map (canonical, v1)
 
 Display-only catalog IDs (files are never renamed). Strategy: `.claude/bequite/docs/architecture/COMMAND_NUMBERING_AND_ORDERING_STRATEGY.md`.
-**55 commands** in three packs: core 45 · studio 5 · business 5. Shapes: WF workflow · CAP capability · NAV navigation · ORC orchestrator · MNT maintenance; ARG marks argument modes. Folded commands live on as modes (rows with a `·` after the parent).
+**53 commands** in three packs: core 43 · studio 5 · business 5. Shapes: WF workflow · CAP capability · NAV navigation · ORC orchestrator · MNT maintenance; ARG marks argument modes. Folded commands live on as modes (rows with a `·` after the parent).
 
 | ID | Command | Pack | Category | Phase | Purpose | Usually next | Auto-run? | Shape |
 |---|---|---|---|---|---|---|---|---|
@@ -10,8 +10,6 @@ Display-only catalog IDs (files are never renamed). Strategy: `.claude/bequite/d
 | W0.3 | `/bq-discover` | core | setup | P0 | inspect repo | W0.4 doctor | yes | WF |
 | W0.4 | `/bq-doctor` | core | setup | P0 | environment health check | W1.1 clarify | yes | WF |
 | W0.5 | `/bq-mode` | core | setup | P0 | select workflow mode | per mode | yes | WF |
-| W0.6 | `/bq-new` | core | setup | P0 | start a new project | W0.3 | yes | WF |
-| W0.7 | `/bq-existing` | core | setup | P0 | start an existing-project audit | W0.3 | yes | WF |
 | W0.8 | `/bq-work` | core | setup | any | work folders: new / list / switch / status / close | W1.1 / C18 | yes | WF |
 | W1.1 | `/bq-clarify` | core | framing | P1 | 3-5 high-value questions | W1.2 research | no (needs user) | WF |
 | W1.2 | `/bq-research` | core | framing | P1 | verified evidence | W1.3 scope | yes | WF |

@@ -102,7 +102,7 @@ People use the same pipeline for things that are not software:
 
 ## Staying up to date
 
-Every command starts with a short update check (at most once an hour). When the version published on GitHub differs from yours, BeQuite backs up its own files, updates them and carries on with your command; offline it simply continues. Set `**Auto update:** off` in `.bequite/state/UPDATE_SOURCE.md` to be told instead, and run `/bq-update` when you want. Plugin installs update through `/plugin`.
+Every command starts with a short update check (at most once an hour). When a new BeQuite release is published on GitHub, BeQuite backs up its own files, installs the release and carries on with your command; if the install fails, the old files are put back. Only tagged releases that passed the strict self-check install this way, never unreleased commits; offline it simply continues. Set `**Auto update:** off` in `.bequite/state/UPDATE_SOURCE.md` to be told instead, and run `/bq-update` when you want. Plugin installs update through `/plugin`.
 
 ## Commands
 

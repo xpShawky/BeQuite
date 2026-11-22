@@ -38,6 +38,13 @@ jobs:
           test -f .bequite/state/WORKFLOW_GATES.md
           echo "commands: $(ls .claude/commands/*.md | wc -l)  skills: $(ls -d .claude/skills/bequite-*/ | wc -l)"
 
+  update-path:
+    name: automatic update behaviour (offline)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash scripts/test_update.sh
+
   install-powershell:
     name: installer smoke test (irm | iex path)
     runs-on: windows-latest

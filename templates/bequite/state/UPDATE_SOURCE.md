@@ -7,46 +7,36 @@ Used by the automatic update check (`.claude/bequite/bin/bq-update.sh`, step 1 o
 **Source type:** github
 **Repo URL or local path:** https://github.com/xpShawky/BeQuite.git
 **Default branch:** main
-**Default strategy:** safe (backup + merge; no overwrite of local edits)
 **Auto update:** on
 
 ## Automatic updates
 
-Every BeQuite command first runs the update check (at most once an hour). It reads the `VERSION` file at the source above and compares it with `.bequite/state/BEQUITE_VERSION.md`. When they differ and **Auto update** is `on`, it backs up `.claude/commands`, the BeQuite skills, `.claude/bequite`, `CLAUDE.md` and `commands.md` into `.bequite/backups/<time>-v<old>/`, re-runs the installer from the source, and the command carries on. Your `.bequite/` memory is never overwritten. Offline, it says "skipped" and the work goes on.
+Every BeQuite command first runs the update check (at most once an hour; a failed install is retried once a day). It installs, by itself, only:
 
-Set **Auto update** to `off` to be told about new versions instead (then run `/bq-update` yourself). A pinned tag below also stops automatic updates.
+- the latest **published GitHub Release** of the official repo (`xpShawky/BeQuite`). A release exists only after the owner tags a version and the strict self-check passes, so a push to `main` never reaches your project on its own;
+- the **Pinned tag** below, when one is set;
+- for `Source type: local`, the **last commit** of a BeQuite clone at an absolute path outside this project (never its uncommitted files).
+
+Any other repo, a path inside this project, or a value that does not validate is reported and never run; use `/bq-update` for those.
+
+When a new version is installed, BeQuite first copies `.claude/commands`, the BeQuite skills, `.claude/bequite`, `.claude/hooks`, `.claude/agents`, `CLAUDE.md`, `commands.md` and the version file into `.bequite/backups/<time>-v<old>/`. Pack files are replaced by the new version's copies, so an edit you made to a BeQuite command or skill is in that backup, not in the new file. If the install does not finish, the previous files are copied back. Your `.bequite/` memory is never overwritten. Offline, it says "skipped" and the work goes on.
+
+Set **Auto update** to `off` to be told about new releases instead, then run `/bq-update` yourself (it merges around your edits file by file).
 
 ## Pinned tag (optional)
 
-Leave blank to track latest commits on default branch. Set to a tag (e.g.
-`v3.0.0-alpha.9`) to pin to a stable release.
+Leave blank to follow the latest release. Set a release tag (for example `v1.0.0`) to stay on it; BeQuite then installs exactly that tag.
 
-**Pinned tag:** (blank — tracks latest commits on main)
-
-## Last update
-
-- **Last checked:** never
-- **Last updated:** never
-- **Result:** seed file, no update yet
+**Pinned tag:** (blank: follows the latest release)
 
 ## Overrides
 
-You can override per-run via `/bq-update` arguments:
+`/bq-update` takes per-run arguments (it does not change this file unless you add `save=true`):
 
 ```
-/bq-update source=local path="../BeQuite-dev"
+/bq-update source=local path="C:/dev/BeQuite"
+/bq-update source=github repo="xpShawky/BeQuite" tag=v1.0.0
 /bq-update source=github repo="xpShawky/BeQuite" branch=main
-/bq-update source=github repo="xpShawky/BeQuite" tag=v3.0.0-alpha.9
 ```
 
-These overrides don't change this file unless the user runs:
-
-```
-/bq-update source=github repo="..." save=true
-```
-
-## Notes
-
-- For BeQuite contributors developing locally, set `source type` to `local` and point at your dev clone
-- For production-stable installs, pin to a tag (so you don't get unintended updates from main)
-- For the most-recent features, leave the pinned tag blank
+`branch=` installs unreleased commits. It is for BeQuite contributors, and only by hand; the automatic check never follows a branch.

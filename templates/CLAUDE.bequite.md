@@ -18,6 +18,6 @@ This project uses **BeQuite**, a lightweight Claude Code workflow pack (slash co
 5. **Write back:** after real actions, update `.bequite/logs/AGENT_LOG.md`, `.bequite/state/LAST_RUN.md`, and `.bequite/state/MISTAKE_MEMORY.md` when a lesson was learned.
 6. **Tool neutrality:** named tools are examples; pick per project with reasons (`.bequite/principles/TOOL_NEUTRALITY.md`).
 7. **Gates:** refuse out-of-order commands; hard human gates (destructive ops, production, secrets, paid services, releases) always wait for a yes.
-8. **Up to date:** every BeQuite command first runs `bash .claude/bequite/bin/bq-update.sh`, which updates BeQuite when a newer version is published (backup first, memory untouched; off switch in `.bequite/state/UPDATE_SOURCE.md`).
+8. **Up to date:** every BeQuite command first runs `bash .claude/bequite/bin/bq-update.sh`, which installs a new official BeQuite release by itself (backup first, restore on failure, memory untouched; off switch in `.bequite/state/UPDATE_SOURCE.md`).
 
 <!-- /BEQUITE -->

@@ -108,6 +108,10 @@ function Install-BeQuite([string]$FromLocal, [bool]$Force, [string]$Packs) {
         $p = $line.Trim()
         if ($p -eq "" -or $p.StartsWith("#") -or $p.Contains("..")) { continue }
         $old = Join-Path ".\.claude" $p
+        if ($p.StartsWith("hooks/")) {
+          $usedBy = @(".\.claude\settings.json", ".\.claude\settings.local.json") | Where-Object { (Test-Path $_) -and ([System.IO.File]::ReadAllText((Resolve-Path $_).Path).Contains($p)) }
+          if ($usedBy) { Write-Host "  kept .claude\$p : your Claude Code settings still run it (remove it from the settings, then delete the file)"; continue }
+        }
         if (Test-Path $old) {
           $dst = Join-Path ".\.bequite\backups\$Stamp-removed\.claude" $p
           New-Item -ItemType Directory -Force (Split-Path $dst -Parent) | Out-Null
@@ -168,8 +172,9 @@ function Install-BeQuite([string]$FromLocal, [bool]$Force, [string]$Packs) {
       $m = [regex]::Match($vt, '(?m)^\*\*Version:\*\* *([^\r\n]*)')
       $oldV = if ($m.Success) { $m.Groups[1].Value.Trim() } else { "" }
       if ($oldV -ne $Version) {
-        $vt = [regex]::Replace($vt, '(?m)^\*\*Version:\*\*[^\r\n]*', "**Version:** $Version")
-        $vt = [regex]::Replace($vt, '(?m)^\*\*Previous version:\*\*[^\r\n]*', "**Previous version:** $oldV")
+        # '$' in a replacement string is a .NET substitution token, so the values are escaped
+        $vt = [regex]::Replace($vt, '(?m)^\*\*Version:\*\*[^\r\n]*', ("**Version:** " + $Version.Replace('$', '$$')))
+        $vt = [regex]::Replace($vt, '(?m)^\*\*Previous version:\*\*[^\r\n]*', ("**Previous version:** " + $oldV.Replace('$', '$$')))
         $vt = [regex]::Replace($vt, '(?m)^\(none yet\)\r?\n', "")
         $vt = $vt.TrimEnd() + "`n- " + (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ") + ": $oldV -> $Version`n"
         [System.IO.File]::WriteAllText($vf, $vt, $Utf8NoBom)
@@ -178,12 +183,20 @@ function Install-BeQuite([string]$FromLocal, [bool]$Force, [string]$Packs) {
     }
     # a first install from a local clone keeps updating from that clone (change it in UPDATE_SOURCE.md)
     $sf = Join-Path $Target ".bequite\state\UPDATE_SOURCE.md"
-    if (-not $hadSourceMd -and $FromLocal -ne "" -and (Test-Path $sf)) {
+    if (-not $hadSourceMd -and $FromLocal -ne "" -and -not $env:BEQUITE_INSTALLED_FROM -and (Test-Path $sf)) {
       $st = [System.IO.File]::ReadAllText($sf)
       $st = [regex]::Replace($st, '(?m)^\*\*Source type:\*\*[^\r\n]*', "**Source type:** local")
-      $st = [regex]::Replace($st, '(?m)^\*\*Repo URL or local path:\*\*[^\r\n]*', ("**Repo URL or local path:** " + $Source.Replace('\', '/')))
+      $st = [regex]::Replace($st, '(?m)^\*\*Repo URL or local path:\*\*[^\r\n]*', ("**Repo URL or local path:** " + $Source.Replace('\', '/').Replace('$', '$$')))
       [System.IO.File]::WriteAllText($sf, $st, $Utf8NoBom)
       Write-Host "  updates will come from $Source (UPDATE_SOURCE.md)"
+    }
+    # the automatic update switch is always visible (older memory files have no such line)
+    if (Test-Path $sf) {
+      $st = [System.IO.File]::ReadAllText($sf)
+      if (-not [regex]::IsMatch($st, '(?m)^\*\*Auto update:\*\*')) {
+        [System.IO.File]::WriteAllText($sf, $st.TrimEnd() + "`n`n**Auto update:** on (BeQuite installs new official releases by itself; set to off to be told instead)`n", $Utf8NoBom)
+        Write-Host "  added the Auto update switch to UPDATE_SOURCE.md (on)"
+      }
     }
 
     $cmdRef = Join-Path $Source "commands.md"
@@ -219,7 +232,7 @@ function Install-BeQuite([string]$FromLocal, [bool]$Force, [string]$Packs) {
     Write-Host "    /bequite        menu: project state + next recommended commands"
     Write-Host "    /bq-help        full command reference (also commands.md)"
     Write-Host "    /bq-auto `"..`"   autonomous runner; stops only at hard gates"
-    Write-Host "  Every BeQuite command first checks for a newer version and updates itself (off switch: .bequite\state\UPDATE_SOURCE.md)."
+    Write-Host "  Every BeQuite command first checks for a new official release and installs it (off switch: .bequite\state\UPDATE_SOURCE.md)."
     Write-Host ""
   } finally {
     if ($Tmp -and (Test-Path $Tmp)) { Remove-Item $Tmp -Recurse -Force -ErrorAction SilentlyContinue }

@@ -17,7 +17,7 @@ Update BeQuite commands, skills, docs templates, and version metadata **inside a
 
 **Safe by default.** Backs up `.claude/commands/` + `.claude/skills/` before touching anything. Never overwrites your project memory (`PROJECT_STATE.md`, `DECISIONS.md`, `MISTAKE_MEMORY.md`, `.bequite/jobs/`, `.bequite/money/`, `.bequite/research/`).
 
-**Usually you do not need to run it.** Step 1 of every command already runs `bash .claude/bequite/bin/bq-update.sh`, which updates automatically when **Auto update** is `on` in `.bequite/state/UPDATE_SOURCE.md` (the default). Use `/bq-update` when Auto update is `off`, when a tag is pinned, to preview with `check` (`bash .claude/bequite/bin/bq-update.sh --check`), or to merge around local edits file by file.
+**Usually you do not need to run it.** Step 1 of every command already runs `bash .claude/bequite/bin/bq-update.sh`, which installs a new **official GitHub Release** (or the pinned tag) by itself when **Auto update** is `on` in `.bequite/state/UPDATE_SOURCE.md` (the default). It never follows a branch, never installs from another repo, and never from a path inside the project; those are only reported. Use `/bq-update` when Auto update is `off`, for a fork or a branch, to preview with `check` (`bash .claude/bequite/bin/bq-update.sh --check`), or to merge around local edits file by file.
 
 ## When to use it
 

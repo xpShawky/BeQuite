@@ -103,6 +103,10 @@ if [[ -f "$SOURCE/.claude/bequite/REMOVED.txt" ]]; then
   while IFS= read -r p || [[ -n "$p" ]]; do
     p="$(printf '%s' "$p" | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
     [[ -z "$p" || "$p" == \#* || "$p" == *..* ]] && continue
+    if [[ "$p" == hooks/* ]] && grep -qsF "$p" ./.claude/settings.json ./.claude/settings.local.json; then
+      echo "  kept .claude/$p: your Claude Code settings still run it (remove it from the settings, then delete the file)"
+      continue
+    fi
     if [[ -e "./.claude/$p" ]]; then
       mkdir -p "$(dirname "./.bequite/backups/$STAMP-removed/.claude/$p")"
       mv "./.claude/$p" "./.bequite/backups/$STAMP-removed/.claude/$p" && moved=$((moved + 1))
@@ -149,17 +153,35 @@ vf=./.bequite/state/BEQUITE_VERSION.md
 if [[ -f "$vf" ]]; then
   old_v="$(sed -n 's/^\*\*Version:\*\* *//p' "$vf" | head -n 1 | tr -d '\r' | sed 's/[[:space:]]*$//')"
   if [[ "$old_v" != "$BEQUITE_VERSION" ]]; then
-    sed -e "s/^\*\*Version:\*\*.*/**Version:** $BEQUITE_VERSION/" -e "s/^\*\*Previous version:\*\*.*/**Previous version:** $old_v/" -e '/^(none yet)\r\{0,1\}$/d' "$vf" > "$vf.bqtmp" && mv "$vf.bqtmp" "$vf"
-    printf -- '- %s: %s -> %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$old_v" "$BEQUITE_VERSION" >> "$vf"
-    echo "  version metadata: $old_v -> $BEQUITE_VERSION"
+    # awk takes the values from the environment, so no program is ever built from file contents
+    if BQ_NEW="$BEQUITE_VERSION" BQ_OLD="$old_v" awk '
+         /^\*\*Version:\*\*/ {print "**Version:** " ENVIRON["BQ_NEW"]; next}
+         /^\*\*Previous version:\*\*/ {print "**Previous version:** " ENVIRON["BQ_OLD"]; next}
+         /^\(none yet\)/ {next}
+         {print}
+       ' "$vf" > "$vf.bqtmp.$$" && mv "$vf.bqtmp.$$" "$vf"; then
+      printf -- '- %s: %s -> %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$old_v" "$BEQUITE_VERSION" >> "$vf"
+      echo "  version metadata: $old_v -> $BEQUITE_VERSION"
+    else
+      rm -f "$vf.bqtmp.$$"; echo "  $(red "could not rewrite") $vf" >&2; exit 1
+    fi
   fi
 fi
 # a first install from a local clone keeps updating from that clone (change it in UPDATE_SOURCE.md)
 sf=./.bequite/state/UPDATE_SOURCE.md
-if [[ "$had_source_md" == false && -n "$FROM_LOCAL" && -f "$sf" ]]; then
-  esc="$(printf '%s' "$SOURCE" | sed 's/[&#]/\\&/g')"
-  sed -e "s#^\*\*Source type:\*\*.*#**Source type:** local#" -e "s#^\*\*Repo URL or local path:\*\*.*#**Repo URL or local path:** $esc#" "$sf" > "$sf.bqtmp" && mv "$sf.bqtmp" "$sf"
+# (not when the automatic update runs this installer from its own temporary copy)
+if [[ "$had_source_md" == false && -n "$FROM_LOCAL" && -z "${BEQUITE_INSTALLED_FROM:-}" && -f "$sf" ]]; then
+  BQ_SRC="$SOURCE" awk '
+    /^\*\*Source type:\*\*/ {print "**Source type:** local"; next}
+    /^\*\*Repo URL or local path:\*\*/ {print "**Repo URL or local path:** " ENVIRON["BQ_SRC"]; next}
+    {print}
+  ' "$sf" > "$sf.bqtmp.$$" && mv "$sf.bqtmp.$$" "$sf"
   echo "  updates will come from $SOURCE (UPDATE_SOURCE.md)"
+fi
+# the automatic update switch is always visible (older memory files have no such line)
+if [[ -f "$sf" ]] && ! grep -q '^\*\*Auto update:\*\*' "$sf"; then
+  printf '\n**Auto update:** on (BeQuite installs new official releases by itself; set to off to be told instead)\n' >> "$sf"
+  echo "  added the Auto update switch to UPDATE_SOURCE.md (on)"
 fi
 
 if [[ -f "$SOURCE/commands.md" ]]; then cp "$SOURCE/commands.md" ./commands.md; fi
@@ -170,7 +192,7 @@ block="$(sed "s/{{VERSION}}/$BEQUITE_VERSION/g" "$SOURCE/templates/CLAUDE.bequit
 if [[ ! -f ./CLAUDE.md ]]; then
   printf '# CLAUDE.md\n\n%s\n' "$block" > ./CLAUDE.md
   echo "  created CLAUDE.md"
-elif grep -q "<!-- BEQUITE -->" ./CLAUDE.md; then
+elif grep -q "<!-- BEQUITE -->" ./CLAUDE.md && grep -q "<!-- /BEQUITE -->" ./CLAUDE.md; then
   BQ_BLOCK="$block" awk '
     /<!-- BEQUITE -->/ {print ENVIRON["BQ_BLOCK"]; skip=1; next}
     /<!-- \/BEQUITE -->/ {skip=0; next}
@@ -189,5 +211,5 @@ echo "  In Claude Code, start with:"
 echo "    /bequite        menu: project state + next recommended commands"
 echo "    /bq-help        full command reference (also commands.md)"
 echo "    /bq-auto \"..\"   autonomous runner; stops only at hard gates"
-echo "  Every BeQuite command first checks for a newer version and updates itself (off switch: .bequite/state/UPDATE_SOURCE.md)."
+echo "  Every BeQuite command first checks for a new official release and installs it (off switch: .bequite/state/UPDATE_SOURCE.md)."
 echo

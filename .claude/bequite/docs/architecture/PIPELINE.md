@@ -6,7 +6,7 @@ The one description of how work flows. Every action command is an entry point in
 
 | # | Stage | Does | Writes | Sets | Skills (usual) | Skipped when |
 |---|---|---|---|---|---|---|
-| 0 | **Up to date** | `bash .claude/bequite/bin/bq-update.sh`: hourly check, automatic update when a newer BeQuite is published (backup first, memory untouched, never blocks offline) | `.bequite/state/UPDATE_CHECK.md` | - | updater | never |
+| 0 | **Up to date** | `bash .claude/bequite/bin/bq-update.sh`: hourly check; installs a new official GitHub Release (or the pinned tag) by itself, backup first, restore on failure, memory untouched, never blocks offline | `.bequite/state/UPDATE_CHECK.md` | - | updater | never |
 | 1 | **Orient** | read `ACTIVE.md`, the work folder, `LAST_RUN.md`, the top `MISTAKE_MEMORY.md` lessons, `CAPABILITIES.md`; decide active work or new work; restate the goal and what done means | `work/<id>/brief.md` (new work) | `BEQUITE_INITIALIZED` if missing | orchestrator, context-engineer | never |
 | 2 | **References** (creative work only) | study real human references before any creative output: sites, films, posts, decks; measure them | `work/<id>/research.md` § References | `REFERENCES_STUDIED` | human-taste, video-intel, frontend-design-system | code-only work |
 | 3 | **Research** | facts that change (versions, prices, platform rules, competitors) from primary sources, dated; a subagent when the reading is wider than five sources | `work/<id>/research.md` | `RESEARCH_COMPLETE` | researcher (`bq-researcher` subagent) | fast mode on a known stack; the facts are already in memory and under 120 days old |

@@ -1,0 +1,195 @@
+{
+  "version": "bq-kinetic/1",
+  "title": "BeQuite — Research. Plan. Prove.",
+  "format": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30
+  },
+  "tempo": {
+    "bpm": 120,
+    "first_beat": 0.5
+  },
+  "style": "night-gold",
+  "scenes": [
+    {
+      "rows": [
+        [
+          {
+            "text": "Before",
+            "size": "M",
+            "beat": 0
+          },
+          {
+            "text": "coding,",
+            "size": "L",
+            "beat": 0.5
+          }
+        ],
+        [
+          {
+            "text": "check",
+            "size": "M",
+            "beat": 1.5
+          },
+          {
+            "text": "sources.",
+            "size": "L",
+            "beat": 2
+          }
+        ],
+        [
+          {
+            "text": "RESEARCH.",
+            "size": "XL",
+            "accent": true,
+            "beat": 4
+          }
+        ]
+      ],
+      "hold_beats": 2,
+      "camera": "static",
+      "exit": "whip-up"
+    },
+    {
+      "rows": [
+        [
+          {
+            "text": "Define",
+            "size": "M",
+            "beat": 0
+          },
+          {
+            "text": "scope.",
+            "size": "L",
+            "beat": 0.5
+          }
+        ],
+        [
+          {
+            "text": "Spot",
+            "size": "M",
+            "beat": 1.5
+          },
+          {
+            "text": "risks.",
+            "size": "L",
+            "beat": 2.5
+          }
+        ],
+        [
+          {
+            "text": "Map",
+            "size": "M",
+            "beat": 4
+          },
+          {
+            "text": "steps.",
+            "size": "L",
+            "beat": 5
+          }
+        ],
+        [
+          {
+            "text": "PLAN.",
+            "size": "XL",
+            "accent": true,
+            "beat": 6
+          }
+        ]
+      ],
+      "hold_beats": 2,
+      "camera": "follow",
+      "exit": "cut"
+    },
+    {
+      "rows": [
+        [
+          {
+            "text": "BUILD.",
+            "size": "M",
+            "beat": 0
+          }
+        ],
+        [
+          {
+            "text": "RUN",
+            "size": "M",
+            "beat": 0.5
+          },
+          {
+            "text": "TESTS.",
+            "size": "L",
+            "beat": 1
+          }
+        ],
+        [
+          {
+            "text": "SHOW",
+            "size": "M",
+            "beat": 1.5
+          },
+          {
+            "text": "PROOF.",
+            "size": "L",
+            "beat": 2.5
+          }
+        ],
+        [
+          {
+            "text": "SHIP.",
+            "size": "XL",
+            "accent": true,
+            "beat": 4
+          }
+        ]
+      ],
+      "hold_beats": 2,
+      "camera": "follow",
+      "exit": "whip-up"
+    },
+    {
+      "rows": [
+        [
+          {
+            "text": "Open-source",
+            "size": "M",
+            "beat": 0
+          }
+        ],
+        [
+          {
+            "text": "AI",
+            "size": "M",
+            "beat": 1.5
+          },
+          {
+            "text": "workflows.",
+            "size": "M",
+            "beat": 3
+          }
+        ],
+        [
+          {
+            "parts": [
+              {
+                "text": "Be",
+                "accent": false
+              },
+              {
+                "text": "Quite",
+                "accent": true
+              }
+            ],
+            "size": "XL",
+            "beat": 6,
+            "slam": true
+          }
+        ]
+      ],
+      "hold_beats": 3,
+      "camera": "static",
+      "exit": "fade"
+    }
+  ]
+}

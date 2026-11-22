@@ -2,270 +2,53 @@
 description: Lightweight section-by-section frontend live edit. Maps visible sections to source files (SECTION_MAP.md), applies targeted code edits, verifies via build + screenshots (if browser automation available). Not a heavy Studio. Browser automation used only if frontend exists and tool is already available.
 ---
 
-# /bq-live-edit — agent-assisted live edits
+# /bq-live-edit: change one section, measure before and after
 
 <!-- bq:contract -->
 > **This command runs inside the BeQuite pipeline** (`.claude/bequite/docs/architecture/PIPELINE.md`):
-> 1. **Up to date:** first run `bash .claude/bequite/bin/bq-update.sh` and say its one line (hourly; never blocks).
+> 1. **Up to date:** if `.claude/bequite/bin/bq-update.sh` exists, first run `bash .claude/bequite/bin/bq-update.sh` and say its one line (hourly; never blocks). A plugin install has no such file: it updates through `/plugin`, and the docs, templates and scripts this command cites are under `${CLAUDE_PLUGIN_ROOT}`.
 > 2. **Orient:** announce the `Skill Selection:` block; resolve the work (`.bequite/ACTIVE.md`, `.bequite/work/<id>/`, or `/bq-work new`); refuse and name any missing gate (`.bequite/state/WORKFLOW_GATES.md`, `work/<id>/gates.md`).
 > 3. **Prove and write back:** plan first for non-trivial work and stop at hard human gates; every check goes to `work/<id>/evidence.md` or is `UNVERIFIED:`; write back (work log, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, `.bequite/state/MISTAKE_MEMORY.md` on a lesson) and end with the Next Command Recommendations.
 <!-- /bq:contract -->
 
-## Purpose
-
-Modify a frontend section through prompts while the site is running. The agent maps visible sections to source files, applies the smallest possible edit, re-runs / refreshes, verifies the section visually if possible, and logs the change.
-
-**Lightweight.** No heavy Studio. No separate app. No Figma clone. Slash command + skill.
-
-Full strategy: `.claude/bequite/docs/architecture/LIVE_EDIT_STRATEGY.md`.
-
-## When to use it
-
-- Targeted edits (text, spacing, font size, color, layout, motion)
-- Visual fixes (overflow, contrast, alignment, responsive issues)
-- Improving one section (hero, navbar, footer, card, panel, form)
-- Iterating on a chosen UI direction (after `/bq-uiux-variants` selected)
-
-## When NOT to use it
-
-- Generating multiple design directions (use `/bq-uiux-variants`)
-- New components / pages (use `/bq-feature`)
-- Backend / API changes (use `/bq-fix backend` or `/bq-feature`)
-- Major rewrites (use `/bq-fix` or `/bq-feature`)
-- No frontend in the project → command exits gracefully
+For small visible changes to an existing frontend: text, spacing, type, colour, a crowded card, a broken phone layout, an empty state. The procedure is `bequite-live-edit` (which eyes to use, the eight steps, the edit recipes); design values come from `.bequite/design/DESIGN_DNA.md` through `bequite-frontend-design-system`.
 
 ## Syntax
 
 ```
-/bq-live-edit "<task>"
+/bq-live-edit                        ask what to edit
+/bq-live-edit "<what to change>"     e.g. "make the pricing cards less crowded"
 ```
 
-Examples:
-- `/bq-live-edit` — interactive mode; ask the user what to edit
-- `/bq-live-edit "Edit hero section text and spacing"`
-- `/bq-live-edit "Make card titles bigger and fix mobile layout"`
-- `/bq-live-edit "Make pricing cards less crowded"`
-- `/bq-live-edit "Improve empty state on /dashboard"`
-- `/bq-auto live-edit "Open live edit workflow for dashboard"` — same, via auto-mode dispatch
+Not for a new page or feature (`/bq-feature`), several design directions (`/bq-uiux-variants`), a redesign (`/bq-auto uiux`), or a logic bug (`/bq-fix`).
 
-## Preconditions
+## Gates
 
-- `BEQUITE_INITIALIZED`
-- Frontend exists in the project
-
-## Required previous gates
-
-- `BEQUITE_INITIALIZED`
-
-## Files to read
-
-- `package.json` / equivalent (detect framework + dev script)
-- `.bequite/uiux/SECTION_MAP.md` (if exists)
-- `.bequite/uiux/LIVE_EDIT_LOG.md` (prior edits for context)
-- `.bequite/state/DECISIONS.md` (design system, tokens)
-- Existing `tokens.css` / theme file
-- Source files for the target section
-
-## Files to write
-
-- The edit (source file)
-- `.bequite/uiux/SECTION_MAP.md` (refresh / add section if missing)
-- `.bequite/uiux/LIVE_EDIT_LOG.md` (append entry)
-- `.bequite/uiux/screenshots/before-<ts>-<section>.png` (if browser automation)
-- `.bequite/uiux/screenshots/after-<ts>-<section>.png` (if browser automation)
-- `.bequite/state/LAST_RUN.md`
-- `.bequite/logs/AGENT_LOG.md`
+Needs `BEQUITE_INITIALIZED` and a frontend in the project. An edit that touches more than one section re-runs the Design Continuity Gate on those sections (`DESIGN_CONTINUITY_PASS`). No browser tool is installed for this command: it uses the best one this session already has and says which.
 
 ## Steps
 
-### 1. Detect frontend stack
+1. **Detect** the stack and the dev command from the manifest; start the dev server only if the project has one and it needs no secrets the agent lacks.
+2. **Locate the section** on the page and in source (visible text, component name, class). Record it in `.bequite/uiux/SECTION_MAP.md`. Several matches: ask one question.
+3. **Before:** a screenshot at desktop and phone width, the measured values the request is about (sizes, weights, colours, overflow), console errors.
+4. **Target:** the value comes from the Design DNA or a measured reference, not from taste, and is written down.
+5. **Smallest edit** in the file that owns the section; a token changes only when the issue is system-wide. The old snippet goes into `.bequite/uiux/LIVE_EDIT_LOG.md` first.
+6. **After:** repeat step 3 exactly and compare numbers, not impressions.
+7. **Guard:** build, run the existing tests, check the neighbouring sections did not move.
+8. **Log** the entry: request, `file:line`, before and after values, screenshots, commands and exit codes. Undo is restoring the logged snippet.
 
-Read `package.json` / equivalent. Identify framework, dev command, styling approach.
-
-If no frontend detected → exit:
-> "No frontend in this project. `/bq-live-edit` requires a frontend. Try `/bq-feature` or `/bq-fix` instead."
-
-### 2. Detect dev server
-
-Look for dev script (`npm run dev`, `pnpm dev`, `bun dev`, etc.).
-
-Ask the user:
-> "Is the dev server already running? If yes, what's the URL? If no, want me to print the command to start it?"
-
-**Do not auto-start the dev server** without user OK (changes process state).
-
-### 3. Browser inspection
-
-Use the best available tier (`.claude/skills/bequite-live-edit/SKILL.md` §3 - 1 built-in browser pane (local previews) · 2 the user's real browser, e.g. Claude in Chrome (deployed/staging, GIF of the scroll) · 3 scripted browser already available (Playwright MCP / project Playwright) · 4 computer use (native apps, device mirrors) · 5 code inspection + user screenshots.)
-- Open the dev URL (the built-in browser pane is the default for local servers; ask before starting a dev server).
-- Take the before screenshot of the section (desktop and phone width) → `.bequite/work/<id>/outputs/screenshots/before-<ts>-<section>.png`.
-- No tier available → code inspection, ask the user for a screenshot, and write manual verification steps.
-
-**Do NOT auto-install Playwright** or any browser tool.
-
-### 4. Map sections (build or refresh SECTION_MAP.md)
-
-If `SECTION_MAP.md` is empty or stale:
-- Walk source tree (components, pages, layouts)
-- Identify named sections (Hero, Navbar, Footer, PricingCards, DashboardPanel, etc.)
-- Record source paths, key classes, props, responsive concerns, editable fields
-
-If the map exists → use it; add the requested section if missing.
-
-### 5. Match user request to a section
-
-User says: "Make pricing cards less crowded."
-
-Match to `PricingCards` entry → source file `components/PricingCards.tsx`.
-
-If no match → ask **one** clarifying question:
-> "Which section? I see: Hero, Features, Pricing, Testimonials, Footer."
-
-If still unclear after one question → "I need to inspect the component tree before editing." → walk source, then proceed.
-
-### 6. Apply targeted edit
-
-- Read the relevant source file(s)
-- Make the smallest edit that addresses the request
-- Use design tokens (no inline `padding: 13px`)
-- Preserve existing design system (unless changing it is the explicit goal)
-- Don't rewrite the whole page
-
-### 7. Verify
-
-- (If browser automation) refresh + take after-screenshot
-- Run frontend build (`npm run build`, `next build`, etc.) to catch typeerrors
-- Run frontend tests if any
-- Check 360px (mobile) + 1440px (desktop) if responsive matters
-- Confirm no other sections regressed
-
-### 8. Log the edit
-
-Append to `.bequite/uiux/LIVE_EDIT_LOG.md`:
-
-```markdown
-## <ISO 8601 UTC> — <one-line request>
-
-**Section:** PricingCards
-**File(s) changed:** components/PricingCards.tsx
-**Before:**
-```css
-padding: var(--space-2);
-gap: var(--space-1);
-```
-**After:**
-```css
-padding: var(--space-4);
-gap: var(--space-3);
-```
-**Test/check:** npm run build → OK; visual inspect at 360 + 1440 → no overflow
-**Screenshots:**
-  - .bequite/uiux/screenshots/before-2026-05-12T10:30Z-pricing.png
-  - .bequite/uiux/screenshots/after-2026-05-12T10:35Z-pricing.png
-**Notes:** none
-```
-
-### 9. Final report
+## Output
 
 ```
-✓ Live edit complete — <request>
-
-Section:        <name>
-Files changed:  <list>
-Build:          OK (or specific output)
-Visual check:   <tier used: browser pane | real browser | scripted | computer use | code-only + screenshots requested>
-Screenshots:    <paths if any>
-
-Logged:
-  .bequite/uiux/SECTION_MAP.md  (refreshed)
-  .bequite/uiux/LIVE_EDIT_LOG.md
-
-Next: another /bq-live-edit "<task>" — or /bq-test for full suite
+Live edit: <section> in <file:line>    <property>: <before> -> <after>
+Checked: <browser tier used, or "code only: UNVERIFIED visually">   build: exit <n>   tests: <pass>/<total>
+Log: .bequite/uiux/LIVE_EDIT_LOG.md
 ```
-
-## Edit categories supported
-
-- **Text:** change copy, rewrite for tone, fix typos
-- **Sizing:** font sizes, button sizes, icon sizes, container widths
-- **Spacing:** padding, margin, gap (via tokens)
-- **Colors:** update tokens.css or component-level (per design system)
-- **Typography:** font weights, line heights, letter spacing
-- **Layout:** flex / grid adjustments, alignment, ordering
-- **Motion:** add / remove / tune transitions
-- **Imagery:** replace images, adjust aspect ratios
-- **Responsive:** fix mobile overflow, fix desktop sparseness
-- **Accessibility:** focus states, ARIA labels, color contrast
-- **States:** empty, loading, error
-- **Copy style:** "make this button match that one"
-
-## Output format
-
-Narrate steps 1-9. Pause **only** to ask the user for dev-server URL or section disambiguation (one question each at most).
 
 ## Quality gate
 
-- Section identified before editing (no random file edits)
-- Smallest possible change (no full-page rewrite for a 1-section ask)
-- Existing design system preserved (unless changing it is the goal)
-- Build / tests pass after edit
-- LIVE_EDIT_LOG.md entry written with before/after diff
-- SECTION_MAP.md refreshed if needed
-- No banned weasel words
+One section, one cause; before and after were measured the same way; neighbours unchanged; the build is green; a visual claim without a browser is marked `UNVERIFIED:`.
 
-## Failure behavior
+## Next Command Recommendations (typical)
 
-- No frontend → exit cleanly with redirect to `/bq-feature` or `/bq-fix`
-- Dev server won't start → pause; ask for correct command + env
-- Section ambiguous → one question; then proceed
-- Build red after edit → roll back via `git stash` → re-attempt with smaller scope
-- Visual regression → roll back; ask user to confirm intent
-- User says "undo" → read LIVE_EDIT_LOG, restore from "Before" snippet
-- Section not in map AND not findable in source → "I need more context. Can you share a screenshot or describe what's on the page?"
-
-## Mistake memory update
-
-When a live edit surfaces a **frontend pattern worth remembering**, append a MISTAKE_MEMORY entry:
-
-- Design-system slips ("we keep applying `--color-fg-muted` on colored backgrounds; fails AA")
-- Responsive misses ("nav overflows at 360px; cards inside `<details>` don't reflow")
-- Token-discipline violations ("inline `padding: 13px` found in 4 components; refactor when touched")
-- Accessibility patterns ("focus rings missing on icon-only buttons")
-- Section-mapping fixes ("PricingCards.tsx was wrong file; actual section is `app/(marketing)/pricing/page.tsx`")
-
-Tag with `[fe]` + sub-tags (`[design]`, `[a11y]`, `[responsive]`, `[token]`). Update SECTION_MAP.md if the mapping changed.
-
-Skip for purely cosmetic preferences (color tweaks the user requested).
-
-See `.bequite/state/MISTAKE_MEMORY.md` template.
-
----
-
-## Design Continuity Gate (alpha.17)
-
-`/bq-live-edit` edits one section — but it must not let that section drift away from the rest of the page.
-
-- **Before editing:** read `.bequite/design/DESIGN_DNA.md` (or the compact `.bequite/state/FRONTEND_CONTEXT_SUMMARY.md`) — the edited section must still match the DNA, not just satisfy the literal request.
-- **After editing:** re-check the edited section AND its neighbors against `.claude/skills/bequite-frontend-design-system/references/design-continuity-checklist.md` — confirm the edit didn't introduce all-caps misuse, wide tracking, gray-on-color, overflow, or off-DNA spacing/radius.
-- **Motion edits:** if the edit adds or changes scroll motion, video or 3D, re-run the web-motion performance pass (`PERF_BUDGET_PASS`: Lighthouse mobile within the budget in `.claude/skills/bequite-frontend-design-system/references/web-motion.md`, CPU 4x scroll trace, real phone or `UNVERIFIED: no device`) for that page.
-- If structure changed, update `SECTION_MAP.md`. Log any `[fe][design]` lesson to `MISTAKE_MEMORY.md`. Update `FRONTEND_CONTEXT_SUMMARY.md` after the edit.
-
-This is the **section-level half** of the gate; the **full-page** gate runs at `/bq-feature`, `/bq-auto`, and `/bq-verify`. Owner skill: `bequite-frontend-design-system`. Spec: `.claude/bequite/docs/architecture/DESIGN_CONTINUITY_GATE.md`.
-
-## Tool neutrality (global rule)
-
-⚠ **Every tool named in this command (Playwright, Chromatic, Percy, Storybook, axe-core, Tailwind, etc.) is an EXAMPLE, not a default.**
-
-Browser automation (Playwright / Puppeteer / WebDriver) is a **candidate** for visual verification. Use only if already installed or if the task genuinely requires visual confirmation. **Do not auto-install.**
-
-CSS frameworks, motion libraries, and design tokens — use what the project already has. If the edit requires a new library, write a decision section (Problem / Options / Sources / Best option / Why it fits / Why others rejected / Risk / Cost / Test plan / Rollback plan) before installing.
-
-The 10 decision questions still apply:
-1. Project type? 2. Actual problem? 3. Scale? 4. Constraints? 5. Existing stack? 6. UX needed? 7. Failure risks? 8. Proven tools? 9. Overkill? 10. Best output / least complexity?
-
-See `.bequite/principles/TOOL_NEUTRALITY.md`.
-
-## Usual next command
-
-- `/bq-live-edit "<next task>"` — keep iterating
-- `/bq-test` — full test pass after a batch of edits
-- `/bq-verify` — full gate matrix
+`/bq-live-edit "<next section>"` · `/bq-review` for a larger batch · `/bq-verify` before shipping.

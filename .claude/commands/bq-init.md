@@ -1,262 +1,59 @@
 ---
-description: Initialize BeQuite in this repo. Creates .bequite/ memory dirs, baseline state files, and a BeQuite section in CLAUDE.md. Use `bq-init new` for a brand-new empty folder.
+description: Initialize BeQuite in this project. Makes sure the .bequite/ memory scaffold and the BeQuite section in CLAUDE.md exist (the script installer creates them; a plugin install gets them here), then writes the baseline state files. Use `bq-init new` for a brand-new empty folder.
 ---
 
-# /bq-init — initialize BeQuite
+# /bq-init: give the project its memory
 
 <!-- bq:contract -->
 > **This command runs inside the BeQuite pipeline** (`.claude/bequite/docs/architecture/PIPELINE.md`):
-> 1. **Up to date:** first run `bash .claude/bequite/bin/bq-update.sh` and say its one line (hourly; never blocks).
+> 1. **Up to date:** if `.claude/bequite/bin/bq-update.sh` exists, first run `bash .claude/bequite/bin/bq-update.sh` and say its one line (hourly; never blocks). A plugin install has no such file: it updates through `/plugin`, and the docs, templates and scripts this command cites are under `${CLAUDE_PLUGIN_ROOT}`.
 > 2. **Orient:** announce the `Skill Selection:` block; resolve the work (`.bequite/ACTIVE.md`, `.bequite/work/<id>/`, or `/bq-work new`); refuse and name any missing gate (`.bequite/state/WORKFLOW_GATES.md`, `work/<id>/gates.md`).
 > 3. **Prove and write back:** plan first for non-trivial work and stop at hard human gates; every check goes to `work/<id>/evidence.md` or is `UNVERIFIED:`; write back (work log, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, `.bequite/state/MISTAKE_MEMORY.md` on a lesson) and end with the Next Command Recommendations.
 <!-- /bq:contract -->
 
-You are establishing BeQuite's footprint inside the user's repo.
+The first command in a project. It never overwrites anything that exists: every step adds what is missing and leaves the rest alone.
 
-## Modes
-
-The user may invoke this as:
-- `/bq-init` (default) — assume an existing repo
-- `/bq-init new` — brand-new empty folder
-
-## Step 1 — Detect the state
-
-Check these (with the Read or Glob tools, do not run shell):
-
-- `package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`, `composer.json`, `Gemfile` → existing repo signals
-- `.git/` → git initialized
-- `.bequite/` → already initialized (refuse to overwrite without confirmation)
-- `CLAUDE.md` → host instructions
-
-If `.bequite/` exists and isn't empty, ask:
-> "BeQuite memory already exists at `.bequite/`. Re-initialize? (y/N)"
-
-Do not touch existing memory without explicit y.
-
-## Step 2 — Create the memory scaffold
-
-Create these directories (use mkdir-equivalent via Write tool):
+## Syntax
 
 ```
-.bequite/state/
-.bequite/logs/
-.bequite/prompts/user_prompts/
-.bequite/prompts/generated_prompts/
-.bequite/prompts/model_outputs/
-.bequite/audits/
-.bequite/plans/
-.bequite/tasks/
+/bq-init          an existing repo
+/bq-init new      a brand-new, empty folder
 ```
 
-## Step 3 — Write baseline state files
+## Gates
 
-Author with sensible defaults. Each is a markdown file.
+None needed. Sets `BEQUITE_INITIALIZED`.
 
-### `.bequite/state/PROJECT_STATE.md`
+## Steps
 
-```markdown
-# Project state
+1. **Detect the state** with Read and Glob: manifests (`package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod` ...), `.git/`, `CLAUDE.md`, and whether `.bequite/` exists.
+2. **The scaffold.**
+   - Script install: `.bequite/` is already there (the installer copied it). Go to step 3.
+   - Plugin install, or `.bequite/` is missing: copy the scaffold from `${CLAUDE_PLUGIN_ROOT}/templates/bequite/` into `.bequite/`, file by file, skipping every file that already exists and replacing `{{VERSION}}` with the plugin's version (its `VERSION` file). If that folder is not readable either, stop and tell the user to run the installer from the README.
+3. **Baseline state files**, each only if it does not exist:
+   - `.bequite/state/PROJECT_STATE.md`: the date, the project name (the folder's), one line on what it is ("unknown until `/bq-discover`" for an existing repo), the stack if a manifest shows it.
+   - `.bequite/state/CURRENT_MODE.md`: "Not selected" (set by `/bq-mode`).
+   - `.bequite/state/CURRENT_PHASE.md`: "P0 Setup".
+   - `.bequite/state/LAST_RUN.md`: this run.
+   - `.bequite/state/DECISIONS.md`: a first entry, "BeQuite initialized", with the date.
+   - `.bequite/state/OPEN_QUESTIONS.md`: empty, with its heading.
+   - `.bequite/logs/AGENT_LOG.md`: append the first entry.
+4. **`CLAUDE.md`.** If it has no `<!-- BEQUITE -->` block, add the block from `${CLAUDE_PLUGIN_ROOT}/templates/CLAUDE.bequite.md` (script installs already have it): create the file if it is missing, otherwise append the block after a `---` line. Never rewrite the user's own sections. A plugin install also says in that block that commands are called `/bequite:<name>`.
+5. **Git hygiene, ask first:** in a git repository, offer to add `.bequite/backups/` and `.bequite/state/UPDATE_CHECK.md` to `.gitignore`. Do not edit `.gitignore` without a yes.
+6. **Mark `BEQUITE_INITIALIZED`** in `.bequite/state/WORKFLOW_GATES.md` and report.
 
-**Initialized:** <today's date YYYY-MM-DD>
-**Project type:** <existing repo | new project>
-**Stack detected:** <from manifests — Node/Python/Rust/Go/etc., or "unknown — run /bq-doctor">
-**Repository:** <git remote URL, if available>
-
-## Project summary
-
-(Write 2-3 sentences from README.md if present, else "(no summary yet — run /bq-discover)")
-
-## What BeQuite tracks for this project
-
-- `state/CURRENT_PHASE.md` — workflow phase (Phase 0 → Phase 5)
-- `state/LAST_RUN.md` — most recent BeQuite command run + result
-- `state/DECISIONS.md` — running list of decisions made
-- `state/OPEN_QUESTIONS.md` — questions awaiting answers
-- `logs/AGENT_LOG.md` — every command, append-only
-- `audits/`, `plans/`, `tasks/`, `prompts/` — per-command artifacts
-```
-
-### `.bequite/state/CURRENT_PHASE.md`
-
-```markdown
-# Current phase
-
-**Phase:** Phase 0 — Setup and Understanding
-
-**Next step:** Run /bq-discover to inspect the repo, then /bq-doctor for environment.
-
-**Phases:**
-- Phase 0 — Setup and Understanding (you are here)
-- Phase 1 — Problem Framing
-- Phase 2 — Build
-- Phase 3 — Quality
-- Phase 4 — Ship
-- Phase 5 — Continue Later
-```
-
-### `.bequite/state/LAST_RUN.md`
-
-```markdown
-# Last BeQuite command
-
-**Command:** /bq-init
-**Timestamp:** <ISO 8601 UTC, today>
-**Result:** BeQuite initialized successfully
-**Next suggested:** /bq-discover
-```
-
-### `.bequite/state/DECISIONS.md`
-
-```markdown
-# Decisions log
-
-Append decisions as the project evolves. Newest at top.
-
-## <date> — BeQuite installed
-Decision: Use BeQuite skill pack for this project's coding-agent workflow.
-Rationale: Improve output quality with fewer errors via spec-driven gates.
-```
-
-### `.bequite/state/OPEN_QUESTIONS.md`
-
-```markdown
-# Open questions
-
-Tracked questions awaiting answers. Set status to **resolved** when answered.
-
-(none yet — run /bq-clarify when ready to surface high-value questions)
-```
-
-### `.bequite/logs/AGENT_LOG.md`
-
-```markdown
-# Agent log
-
-Append-only chronicle of every BeQuite command run. Newest at top.
-
-## <ISO 8601 UTC>
-**Command:** /bq-init
-**Mode:** <existing repo | new project>
-**Files touched:** created .bequite/ memory tree + state baselines
-**Next:** /bq-discover
-```
-
-### `CHANGELOG.md`
-
-```markdown
-# Project changelog
-
-Tracked by BeQuite. Use `/bq-changelog` to add entries.
-
-## [Unreleased]
-
-(no changes yet)
-```
-
-### `.bequite/work/<id>/log.md`
-
-```markdown
-# Error log
-
-Tracked by `/bq-fix`. Each entry: timestamp, error, root cause, fix, verification.
-
-(empty)
-```
-
-## Step 4 — Update CLAUDE.md
-
-If `CLAUDE.md` does not exist, create it with this minimal content:
-
-```markdown
-# CLAUDE.md
-
-This project uses **BeQuite** — a lightweight Claude Code skill pack.
-
-## How to use BeQuite here
-
-- Run `/bequite` to see the menu and what to do next.
-- Run `/bq-help` for the full command reference.
-- BeQuite memory lives in `.bequite/`.
-- BeQuite commands live in `.claude/commands/bequite.md` + `.claude/commands/bq-*.md`.
-- BeQuite skills live in `.claude/skills/bequite-*/`.
-
-## Core operating rules
-
-- Never claim a task is "done" unless `/bq-verify` passes.
-- Always update `.bequite/logs/AGENT_LOG.md` when you take a real action.
-- Always update `.bequite/state/CURRENT_PHASE.md` when the workflow phase changes.
-- Banned weasel words in completion reports: should, probably, seems to, appears to, I think it works, might, hopefully, in theory.
-```
-
-If `CLAUDE.md` already exists, APPEND a new section to it (do not overwrite):
-
-```markdown
-
----
-
-# BeQuite
-
-This project uses **BeQuite** — a lightweight Claude Code skill pack.
-
-Run `/bequite` to see the menu. See `.bequite/` for memory + state.
-```
-
-## Step 5 — Report back
-
-Print this to the chat:
+## Output
 
 ```
-✓ BeQuite initialized in <current directory>
-
-Created:
-  .bequite/state/{PROJECT_STATE,CURRENT_PHASE,LAST_RUN,DECISIONS,OPEN_QUESTIONS}.md
-  .bequite/logs/{AGENT_LOG,CHANGELOG,ERROR_LOG}.md
-  .bequite/{prompts,audits,plans,tasks}/
-
-CLAUDE.md: <created | section appended | unchanged>
-
-Phase: Phase 0 — Setup and Understanding
-Next:  /bq-discover     inspect the repo + write DISCOVERY_REPORT.md
-       /bq-doctor       check Node / Python / Docker / etc.
-       /bq-clarify      (new projects only) ask the user 3-5 questions
+BeQuite initialized (<script | plugin> install, v<version>)
+Scaffold: <n> files added, <n> already there    CLAUDE.md: <created | block added | unchanged>
+Next: /bq-discover (existing repo) or /bq-clarify (bq-init new)
 ```
 
-## Standardized command fields (alpha.6)
+## Quality gate
 
-**Phase:** P0 — Setup and Discovery
-**When NOT to use:** `.bequite/` is already initialized and has real content — use `/bq-recover` instead to avoid overwriting memory.
-**Preconditions:** writable working directory; not running inside `node_modules`/`vendor`/etc.
-**Required previous gates:** none (this is the entry point)
-**Quality gate:**
-- `.bequite/` tree exists with all 8 subdirs
-- All 8 baseline state files written
-- `CLAUDE.md` has BeQuite section
-- Marks `BEQUITE_INITIALIZED ✅` in `WORKFLOW_GATES.md`
-**Failure behavior:**
-- `.bequite/` exists with content → refuse + ask user before overwriting; suggest `/bq-recover`
-- Write fails on any file → log + exit; do NOT partial-init
-**Memory updates:** Sets `BEQUITE_INITIALIZED ✅`. Creates all baseline state files.
-**Log updates:** First entry in `AGENT_LOG.md`. CHANGELOG `[Unreleased]` initialized.
+Nothing that existed was overwritten; every baseline state file exists; the gate is set; a second run changes nothing.
 
-## Memory files this command reads
+## Next Command Recommendations (typical)
 
-- `CLAUDE.md` (if exists)
-- `package.json`, `pyproject.toml`, etc. (to detect stack)
-- `README.md` (for the project-summary line)
-
-## Memory files this command writes
-
-- `.bequite/state/PROJECT_STATE.md` (new)
-- `.bequite/state/CURRENT_PHASE.md` (new)
-- `.bequite/state/LAST_RUN.md` (new)
-- `.bequite/state/DECISIONS.md` (new)
-- `.bequite/state/OPEN_QUESTIONS.md` (new)
-- `.bequite/logs/AGENT_LOG.md` (new — first entry)
-- `CHANGELOG.md` (new — empty Unreleased)
-- `.bequite/work/<id>/log.md` (new — empty)
-- `CLAUDE.md` (created or appended)
-
-## Usual next command
-
-- **Existing repo:** `/bq-discover`
-- **New project (`bq-init new`):** `/bq-clarify`
+Existing repo: `/bq-mode`, then `/bq-discover` and `/bq-doctor`. New project: `/bq-mode`, then `/bq-clarify`.

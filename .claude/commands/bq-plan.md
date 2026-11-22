@@ -1,418 +1,61 @@
 ---
-description: Write a complete implementation plan — vision, architecture, stack, file plan, phase plan, task plan, test plan, risks, acceptance criteria, rollback, open questions. Activates senior-engineer / architect / security / devops thinking. No code yet.
+description: Write the implementation plan for the active work - options board built from what this machine has, the chosen option as architecture, stack, file map, phases, tasks, tests, risks, security, deployment, acceptance criteria and rollback. No code. Waits for the user's approval. Arguments - from-issues, migration.
 ---
 
-# /bq-plan — write the definitive plan
+# /bq-plan: options, then one plan the user approves
 
 <!-- bq:contract -->
 > **This command runs inside the BeQuite pipeline** (`.claude/bequite/docs/architecture/PIPELINE.md`):
-> 1. **Up to date:** first run `bash .claude/bequite/bin/bq-update.sh` and say its one line (hourly; never blocks).
+> 1. **Up to date:** if `.claude/bequite/bin/bq-update.sh` exists, first run `bash .claude/bequite/bin/bq-update.sh` and say its one line (hourly; never blocks). A plugin install has no such file: it updates through `/plugin`, and the docs, templates and scripts this command cites are under `${CLAUDE_PLUGIN_ROOT}`.
 > 2. **Orient:** announce the `Skill Selection:` block; resolve the work (`.bequite/ACTIVE.md`, `.bequite/work/<id>/`, or `/bq-work new`); refuse and name any missing gate (`.bequite/state/WORKFLOW_GATES.md`, `work/<id>/gates.md`).
 > 3. **Prove and write back:** plan first for non-trivial work and stop at hard human gates; every check goes to `work/<id>/evidence.md` or is `UNVERIFIED:`; write back (work log, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, `.bequite/state/MISTAKE_MEMORY.md` on a lesson) and end with the Next Command Recommendations.
 <!-- /bq:contract -->
 
-## Purpose
+Stages 4, 5 and 6 of `PIPELINE.md`. Markdown only: no code is written here. Skills: `bequite-project-architect` always; `bequite-backend-architect`, `bequite-database-architect`, `bequite-ux-ui-designer`, `bequite-frontend-quality` when the work has those parts; `bequite-security-reviewer`, `bequite-devops-cloud`, `bequite-testing-gate`; `bequite-delegation` when the build will be split between models.
 
-Write the **definitive implementation plan** that all downstream work hangs from. No code in this command — markdown only. The plan is the contract; tasks (`/bq-assign`) and implementation (`/bq-implement`) execute against it.
+## Syntax
 
-A good plan answers: what are we building, with what stack, in what order, with what tests, what could go wrong, how do we know we shipped.
+```
+/bq-plan [from-issues "<source>" | migration "<from -> to>"]
+```
 
-## When to use it
+`from-issues` turns issues, feedback or feature requests into a Now / Next / Later roadmap (`.bequite/plans/ROADMAP.md`), each item with its source link and a stated reason for its priority. `migration` writes an upgrade blueprint: dependency diff, breaking-change map, phased plan, rollback.
 
-- After `/bq-research` (and ideally `/bq-scope`)
-- Before `/bq-assign` and `/bq-implement`
-- Whenever you need a single source of truth other engineers can read
+## Gates
 
-## Preconditions
-
-- `BEQUITE_INITIALIZED ✅`
-- `MODE_SELECTED ✅`
-- For most modes: `SCOPE_LOCKED ✅` (you have to know what's in/out before planning how to build it)
-
-## Required previous gates
-
-- `BEQUITE_INITIALIZED`
-- `MODE_SELECTED`
-- `CLARIFY_ANSWERED` (recommended)
-- `RESEARCH_COMPLETE` (recommended; for solo prototypes you can skip — write the plan, flag the unverified items)
-- `SCOPE_LOCKED` (strongly recommended)
-
-## Files to read
-
-- `.bequite/audits/DISCOVERY_REPORT.md`
-- `.bequite/work/<id>/research.md`
-- `.bequite/audits/DOCTOR_REPORT.md`
-- `.bequite/work/<id>/spec.md`
-- `.bequite/state/CURRENT_MODE.md`
-- `.bequite/state/DECISIONS.md`
-- `.bequite/state/OPEN_QUESTIONS.md`
-- `.bequite/state/PROJECT_STATE.md`
-
-If any required file is missing, suggest running the prerequisite command and exit early.
-
-## Files to write
-
-- `.bequite/work/<id>/plan.md` (new — 13 sections)
-- `.bequite/state/DECISIONS.md` (plan approval appended)
-- `.bequite/state/WORKFLOW_GATES.md` (`PLAN_APPROVED ⚪ pending user`)
-- `.bequite/state/LAST_RUN.md`
-- `.bequite/logs/AGENT_LOG.md`
+Needs `BEQUITE_INITIALIZED` and `MODE_SELECTED`. `SCOPE_LOCKED` is expected (a plan without a scope plans the wrong thing); `CLARIFY_ANSWERED` and `RESEARCH_COMPLETE` are recommended, and anything the plan assumes without them is listed as unverified. Sets `PLAN_APPROVED` only after the user's yes.
 
 ## Steps
 
-### 1. Activate the right thinking modes
+1. **Read:** `work/<id>/brief.md`, `spec.md`, `research.md`; `.bequite/state/DECISIONS.md`, `OPEN_QUESTIONS.md`, `PROJECT_DNA.md`, `CAPABILITIES.md` (run `/bq-doctor` if it is empty); `.bequite/audits/DISCOVERY_REPORT.md`.
+2. **Options board.** Two to four real options built from `CAPABILITIES.md`, never from defaults:
 
-This command consults multiple skills at once:
+   | Option | Uses (from CAPABILITIES) | Cost (money, credits, time) | Risk | Cannot do | Verdict |
+   |---|---|---|---|---|---|
 
-- `bequite-project-architect` — overall architecture, stack ADR
-- `bequite-backend-architect` — server-side design (if applicable)
-- `bequite-database-architect` — data model + schema (if applicable)
-- `bequite-security-reviewer` — threat model + controls
-- `bequite-devops-cloud` — deployment + CI/CD strategy
-- `bequite-ux-ui-designer` — page/component plan (if UI)
-- `bequite-frontend-quality` — frontend file structure (if frontend)
-- `bequite-testing-gate` — test plan + pyramid
+   Each option answers the ten decision questions (`.bequite/principles/TOOL_NEUTRALITY.md`). Recommend one and say why the others lost. Every package named was checked in its registry this session.
+3. **Write `work/<id>/plan.md`** for the chosen option:
+   - Vision in two sentences, current context, non-goals.
+   - Architecture and stack decision, with the scale tier and the reason.
+   - **File-responsibility map:** each file, its one responsibility, which way it may import, its covering tests, and an explicit "do not touch" list. `/bq-assign` refuses to write tasks without it.
+   - Phase plan and task plan. Every task has one acceptance criterion; a task without one is too vague.
+   - For each phase: the skills it needs, the model role (strong, balanced, fast per `MODEL_ROLES.md`; BeQuite recommends, it never switches), effort, and a confidence with its evidence level.
+   - Test plan, risks with mitigations, security considerations, deployment and operations, acceptance criteria for shipping, rollback, open questions.
+4. **System Design Risk Check.** When the work touches payments, inventory, bookings, auth, permissions or tenancy, database writes, concurrency, queues, external APIs, webhooks, uploads, admin actions or production, include the block from `.claude/bequite/docs/architecture/SYSTEM_DESIGN_REASONING_STANDARD.md`. The canonical test: one item in stock, two simultaneous buyers. A risk without a named test is an unfinished plan; a blocking unknown stops the build. Outside those domains write "Not applicable" and the reason.
+5. **Present and wait.** Show the options board and the plan summary. The user approves, asks for changes, or asks for a second opinion (`/bq-multi-plan`). Record the answer in `work/<id>/log.md` and `DECISIONS.md`; only then set `PLAN_APPROVED`.
 
-Read each skill's SKILL.md as needed during plan authoring.
-
-### 2. Write IMPLEMENTATION_PLAN.md (13 sections)
-
-```markdown
-# Implementation Plan
-
-**Generated:** <ISO 8601 UTC>
-**Target:** <version, e.g. v1 first ship>
-**Mode:** <New Project | Add Feature | ...>
-
-## 1. Vision
-
-(2-3 sentences: what is this product, what problem does it solve, who is it for.)
-
-## 2. Current context
-
-- Stack detected: <from DISCOVERY>
-- Decisions locked: <count> (see DECISIONS.md)
-- Research dimensions covered: <count> (see RESEARCH_REPORT.md)
-- Open questions remaining: <count> (see OPEN_QUESTIONS.md)
-- Scope locked: <date in SCOPE.md>
-
-## 3. Non-goals
-
-(List from SCOPE.md NON-GOALS — verbatim. Important to surface here.)
-
-## 4. Architecture
-
-```text
-<ASCII or markdown diagram of high-level architecture>
-```
-
-(2-4 paragraphs explaining the architecture, data flow, deployment model.)
-
-## 4b. Options board (pipeline stage 4)
-
-Two to four real options, built from `.bequite/state/CAPABILITIES.md` (what this machine and this user actually have; run `/bq-doctor` if it is empty). Per option: what it uses, cost (money, credits, time), risk, what it cannot do, and the ten decision questions. Recommend one and say why the others lost.
-
-| Option | Uses (from CAPABILITIES) | Cost | Risk | Can't do | Verdict |
-|---|---|---|---|---|---|
-| A | | | | | |
-| B | | | | | |
-
-## 5. Stack decision
-
-| Layer | Choice | Why (from RESEARCH §1) |
-|---|---|---|
-| Runtime | <e.g. Node 22 + TypeScript 5.6> | <reason> |
-| Web framework | <e.g. Next.js 15 App Router> | <reason> |
-| Database | <e.g. Postgres via Supabase> | <reason> |
-| ORM | <e.g. Drizzle> | <reason> |
-| Auth | <e.g. Better-Auth> | <reason> |
-| Styling | <e.g. Tailwind v4 + shadcn/ui> | <reason> |
-| Test runner | <e.g. Vitest + Playwright> | <reason> |
-| Hosting | <e.g. Vercel> | <reason> |
-| CI/CD | <e.g. GitHub Actions> | <reason> |
-| Monitoring | <e.g. Sentry + Vercel Analytics> | <reason> |
-
-## 6. File plan
-
-```text
-<tree of directories + files this version creates / modifies>
-
-app/
-├── (auth)/
-│   ├── signin/page.tsx                              NEW
-│   └── signup/page.tsx                              NEW
-├── api/
-│   └── auth/[...all]/route.ts                       NEW
-├── dashboard/
-│   ├── page.tsx                                     NEW
-│   └── layout.tsx                                   NEW
-lib/
-├── auth.ts                                          NEW (Better-Auth init)
-├── db.ts                                            NEW (Drizzle client)
-└── ...
-```
-
-Mark each: NEW / MODIFIED / DELETED.
-
-### 6b. File-Responsibility Map (alpha.18 — anti-spaghetti)
-
-Before the phase/task plan, emit a **File-Responsibility Map** → `.bequite/work/<id>/plan.md`: each file → one responsibility + allowed import direction (dependency direction) + covering tests, plus an explicit "out of scope — do NOT touch" list. Name files + interfaces (Anthropic: "the most useful specs name the files and interfaces"; superpowers: "map files before tasks; one responsibility per file"). New code must match `.bequite/state/PROJECT_DNA.md` conventions. `/bq-assign` refuses to write tasks without this map. Owner: `bequite-context-engineer`.
-
-## 7. Phase plan
-
-| Phase | Outcome | Acceptance evidence | Est. time |
-|---|---|---|---|
-| P1 | Scaffold + DB up | `npm run dev` boots; migrations succeed | 30m |
-| P2 | Auth flow | sign-up + sign-in tested via Playwright | 1h |
-| P3 | Domain CRUD | <feature> list + create endpoint pass tests | 2h |
-| P4 | Admin panel | /admin route renders today's <feature> | 1h |
-| P5 | Email | Resend integration; sign-up sends a real email | 30m |
-| P6 | Verify | All Playwright walks + axe + smoke pass | 30m |
-
-## 8. Task plan
-
-Atomic tasks (≤5 min each), dependency-ordered. Each task has ONE acceptance criterion.
-
-| ID | Task | Depends on | Acceptance |
-|---|---|---|---|
-| T-1.1 | Init Next.js 15 app | none | `npm run dev` boots on :3000 |
-| T-1.2 | Set up Drizzle + Supabase client | T-1.1 | `migrations/` exists; `db:migrate` runs |
-| T-2.1 | Install Better-Auth | T-1.1 | `lib/auth.ts` exports `auth` |
-| T-2.2 | Sign-up page | T-2.1 | Form submits; user appears in DB |
-| ... | ... | ... | ... |
-
-## 9. Test plan
-
-| Phase | Test type | Specific tests |
-|---|---|---|
-| P1 | Smoke | `GET /` → 200 |
-| P2 | Integration | Playwright: sign-up creates user; sign-in works |
-| P3 | API | `POST /api/<x>` creates row; `GET` returns it |
-| ... | ... | ... |
-
-Test pyramid: 70% unit, 20% integration, 10% E2E. Coverage target: 80% on touched files.
-
-## 10. Risks + mitigations
-
-| Risk | Likelihood | Impact | Mitigation |
-|---|---|---|---|
-| <e.g. Better-Auth v1 migration breaks> | low | medium | pin minor version; lockfile committed |
-| <e.g. Supabase free tier hits row limits> | medium | low | document upgrade path |
-| ... | ... | ... | ... |
-
-## 11. Security considerations
-
-(from `bequite-security-reviewer` — OWASP Top 10 mapping, threat model, secrets handling, auth flow)
-
-| Area | Controls |
-|---|---|
-| Auth | Better-Auth + email verification + rate limit |
-| Secrets | env vars; no `.env` committed; production via host's secret manager |
-| Input validation | Zod schemas at every API boundary |
-| OWASP | (mapping per RESEARCH §8) |
-
-## 12. Deployment + DevOps considerations
-
-(from `bequite-devops-cloud`)
-
-| Area | Plan |
-|---|---|
-| Environments | local / preview / production |
-| CI gates | lint, typecheck, unit, integration, build |
-| Preview deploys | Vercel preview per PR |
-| Production deploy | merge to main → Vercel auto-deploy |
-| Rollback | revert commit + redeploy; DB migrations forward-only |
-| Monitoring | Sentry errors; Vercel Analytics page-views; uptime check via Better Stack |
-| Secrets management | Vercel env vars per environment |
-
-## 13. Acceptance criteria for v1 ship
-
-- All "IN scope" items from SCOPE.md ship
-- `/bq-verify` passes (full gate matrix)
-- README explains install + run + test in <5 min
-- One Playwright walk per user-facing flow
-- No banned weasel words in commit messages or completion reports
-- Lighthouse / axe baseline met (if UI)
-- Security checklist complete (per §11)
-
-## 14. Rollback plan
-
-If v1 needs to roll back:
-- Tag `git revert <commit>` and redeploy
-- Database: schema is forward-only (no destructive migrations in v1)
-- Auth: sessions invalidated on env-var rotation
-- Communication: status page update + email to affected users
-
-## 15. Open questions
-
-(Items from OPEN_QUESTIONS.md not yet resolved. Flag prominently — the plan is provisional in those areas.)
-
-| Question | Owner | Blocking? |
-|---|---|---|
-```
-
-### 3. Present + confirm
-
-Show the user the plan structure. Ask:
-
-> "Plan written. (a) approve and run `/bq-assign` — (b) iterate on a specific section — (c) get a second opinion via `/bq-multi-plan` — your call?"
-
-Wait for explicit user response. **Do not proceed past this point without approval.**
-
-### 4. Update state on approval
-
-If user approves:
-- Mark `PLAN_APPROVED ✅` in `WORKFLOW_GATES.md`
-- Append "Plan approved on <date>" to `DECISIONS.md`
-- `LAST_RUN.md` updated
-- `AGENT_LOG.md` appended
-
-If user iterates:
-- Apply requested changes, re-present, wait again
-- Keep gate as `PLAN_APPROVED ❌ pending user`
-
-If user wants multi-plan:
-- Mark `PLAN_APPROVED ❌ pending`
-- Suggest `/bq-multi-plan` and exit
-
-### 5. Report back
+## Output
 
 ```
-✓ Plan written
-
-Sections: 15
-Phases:   <count>
-Tasks:    <count>
-Risks:    <count>
-Open Qs:  <count>
-
-Plan: .bequite/work/<id>/plan.md
-
-Next: /bq-assign       break plan into actionable tasks
-      /bq-multi-plan   get a second opinion before committing
+Plan: .bequite/work/<id>/plan.md    option chosen: <A/B/C> (<one-line reason>)
+Phases: <n>   Tasks: <n>   Open questions: <n>   Confidence: <NN%> (<evidence level>)
+Waiting for approval. Next after a yes: /bq-assign
 ```
-
-## Output format
-
-Print summary + ask for approval. Full plan in the file.
 
 ## Quality gate
 
-- All 15 sections written (no "TODO" placeholders in shipped plan)
-- Every task has ONE acceptance criterion
-- No banned weasel words
-- Section §11 (security) coverage matches RESEARCH §8
-- Section §12 (devops) matches RESEARCH §10
-- Open questions in §15 match unresolved items in OPEN_QUESTIONS.md
-- User has explicitly approved (or chosen iterate / multi-plan)
+No placeholder sections; every task has an acceptance criterion; unresolved items sit in open questions rather than being papered over; no banned weasel words; the user's approval is recorded before any code.
 
-## Failure behavior
+## Next Command Recommendations (typical)
 
-- Required upstream file missing → suggest the prerequisite command and exit
-- User keeps rejecting → don't auto-iterate past 3 rounds; ask the user to pair-debug the disagreement
-- Critical RESEARCH gap (e.g. deprecated central dep) → flag in §10 risks and pause for user decision
-
-## Rules
-
-- **No code in /bq-plan.** Markdown only.
-- **Every task has an acceptance criterion.** If you can't think of one, the task is too vague.
-- **Mark unresolved questions in §15.** Don't pretend the plan is complete.
-- **No banned weasel words** — `should / probably / seems to / appears to / I think it works / might / hopefully / in theory`.
-
-## Skills activated (multi)
-
-- `bequite-project-architect`
-- `bequite-backend-architect` (if backend)
-- `bequite-database-architect` (if DB)
-- `bequite-security-reviewer`
-- `bequite-devops-cloud`
-- `bequite-ux-ui-designer` (if UI)
-- `bequite-frontend-quality` (if frontend)
-- `bequite-testing-gate`
-
-## Usual next command
-
-- `/bq-multi-plan` — second opinion (recommended for high-stakes plans)
-- `/bq-assign` — break plan into actionable tasks
-
----
-
-## Tool neutrality (global rule)
-
-⚠ **Every tool, library, framework, design system, or workflow this command names in its stack table is an EXAMPLE, not a mandatory default.**
-
-§5 (Stack decision) of IMPLEMENTATION_PLAN.md must produce **decision sections** for each major pick — not bare names.
-
-**Do not write in the plan:** "Use Next.js 15."
-**Write:** "Next.js 15 is one candidate. Compared against alternatives [list]; chosen because [reasons tied to the 10 questions]; risk [X]; rollback plan [Y]."
-
-The 10 decision questions every stack pick must answer:
-1. What is the project type?
-2. What is the actual problem?
-3. What scale is expected?
-4. What constraints exist?
-5. What stack already exists?
-6. What user experience is required?
-7. What failure risks exist?
-8. What tools are proven for this case?
-9. What tools are overkill?
-10. What tool gives the best output with the least complexity?
-
-For each major pick, embed a decision section (Problem / Options / Sources / Best option / Why it fits / Why others rejected / Risk / Cost / Test plan / Rollback plan) in §5 or §11/§12 of the plan. For large or regulated projects, write a full ADR at `.bequite/decisions/ADR-XXX-<tool>-choice.md` instead.
-
-**Do not auto-install.** The plan declares what tools the project will adopt; `/bq-implement` only installs deps after the decision section is present and approved.
-
-See `.bequite/principles/TOOL_NEUTRALITY.md` for the full rule.
-
----
-
-## Automatic skill routing (alpha.20)
-
-This command runs the Skill Router BEFORE acting (execution-contract steps 2–4):
-
-1. Load `.bequite/skills/SKILL_REGISTRY.md` (the token-cheap routing index — NOT the skill files)
-2. Classify the task into domains per `.bequite/skills/SKILL_ROUTER.md` (user text → command → files present → mode/phase → memory → risk tier → output type)
-3. Auto-select skills: domain primaries + cross-cutting auto-attach (anti-hallucination on claims · testing-gate on code · context-engineer on >5 files or >1 session · security-reviewer on R3 paths · frontend-design-system on >1 UI section) + mode sizing (fast = smallest safe set · deep = broader · token-saver = lazy-load · delegate = skills named in task pack)
-4. Emit the selection block in the output, then load ONLY the selected SKILL.md files:
-
-```
-Skill Selection:
-- Selected: bequite-<skill> — <one-line reason tied to this task>
-- Not selected: bequite-<skill> — <why considered and skipped>
-```
-
-**The user never has to name skills** — describe the goal; the router picks the disciplines. An explicit user skill choice overrides routing (log the override). At writeback, append the selection + outcome to `.bequite/skills/SKILL_USAGE_LOG.md`.
-
-Strategy: `.claude/bequite/docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.
-
----
-
-## Confidence Forecast (alpha.21)
-
-For each phase / task / feature this command handles, report calibrated confidence per `.claude/bequite/docs/architecture/CONFIDENCE_CALIBRATION_STRATEGY.md`:
-
-```
-Confidence: NN% (band) — <one-line why>
-Evidence level: verified | inferred | assumed | unknown
-Lowers it: <factors>      Raises it: <checks that would>
-Unknowns/blockers: <list or none>      Next: <recommended action>
-```
-
-Bands: 90–100 routine · 75–89 likely · 50–74 needs exploration · 25–49 spike first · 0–24 blocked/insufficient info. **Confidence is not a feeling — it is a report** (evidence, tests, scope clarity, familiarity, dependency risk, verification). It must MOVE as evidence arrives (before-inspection → after-reading → after-implementation → after-verification; recorded per task in `.bequite/work/<id>/tasks.md`). Never 100% — and ≥95% only with all tests passing + zero unresolved assumptions + EVIDENCE_LOG entry. Apply project modifiers from `.bequite/state/CONFIDENCE_RULES.md`; at verify/release, log forecast-vs-actual to `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`.
-
-## Argument workflows (alpha.22)
-
-- **`/bq-plan from-issues "<issues source>"`** — GitHub issues / feedback dumps / feature requests → Now/Next/Later roadmap inside `IMPLEMENTATION_PLAN.md` (+ `.bequite/plans/ROADMAP.md`). Each item keeps a source link; priorities justified, not vibes.
-- **`/bq-plan migration "<from → to>"`** — framework/version upgrade blueprint: deps diff, breaking-change map, phased plan, rollback (Discovery V3 #2).
-
-## Next Command Recommendations (alpha.22)
-
-Per contract step 12: end with the router block (Required next: W2.1 `/bq-assign` on PASS · set per `COMMAND_ROUTER.md` · IDs from `COMMAND_ID_MAP.md`).
-
-## System Design Risk Check (alpha.22 orchestration update — mandatory when relevant)
-
-When the task touches payments · inventory · bookings · auth · permissions/tenancy · database writes · concurrency · queues · external APIs · webhooks · uploads · UGC · admin actions · production · security logic, the output MUST include the structured block from `.claude/bequite/docs/architecture/SYSTEM_DESIGN_REASONING_STANDARD.md` (Domain · Critical entities · State transitions · Concurrent user risks · Data consistency · Failure modes · Recovery · Security · Edge cases · Tests required · Confidence · Unknowns). Canonical test: one item in stock, two simultaneous buyers — if the plan can't answer reservation/locking/idempotency/order-states/user-visible-outcome, implementation does not start. Outside these domains: `Not applicable — reason:`. Risk without a named test = unfinished plan. Blocking unknowns stop the build.
-
-## Per-phase Execution Profile (alpha.25)
-
-`IMPLEMENTATION_PLAN.md` records, for EACH phase, an Execution Profile (`.claude/bequite/docs/architecture/TASK_EXECUTION_PROFILE.md`): **Selected skills** for the phase · **Recommended model** + tier (A frontier / B mid / C small) · **Effort** (quick/standard/high/max) · **Confidence** (banded % + evidence). Skills are chosen here at plan time and refined per task in `/bq-assign`. Honest: BeQuite *recommends* the model, it does not switch it (the user/harness sets the model; never-give-small list forces tier A or A-reviewed for security/migrations/auth/payments/destructive/broad-refactor/release work).
+`/bq-assign` after approval · `/bq-multi-plan` for a high-stakes second opinion · `/bq-red-team` to attack the plan before building.

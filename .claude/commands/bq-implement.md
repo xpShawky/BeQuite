@@ -6,7 +6,7 @@ description: Implement ONE approved task at a time. Inspect first, minimal safe 
 
 <!-- bq:contract -->
 > **This command runs inside the BeQuite pipeline** (`.claude/bequite/docs/architecture/PIPELINE.md`):
-> 1. **Up to date:** first run `bash .claude/bequite/bin/bq-update.sh` and say its one line (hourly; never blocks).
+> 1. **Up to date:** if `.claude/bequite/bin/bq-update.sh` exists, first run `bash .claude/bequite/bin/bq-update.sh` and say its one line (hourly; never blocks). A plugin install has no such file: it updates through `/plugin`, and the docs, templates and scripts this command cites are under `${CLAUDE_PLUGIN_ROOT}`.
 > 2. **Orient:** announce the `Skill Selection:` block; resolve the work (`.bequite/ACTIVE.md`, `.bequite/work/<id>/`, or `/bq-work new`); refuse and name any missing gate (`.bequite/state/WORKFLOW_GATES.md`, `work/<id>/gates.md`).
 > 3. **Prove and write back:** plan first for non-trivial work and stop at hard human gates; every check goes to `work/<id>/evidence.md` or is `UNVERIFIED:`; write back (work log, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, `.bequite/state/MISTAKE_MEMORY.md` on a lesson) and end with the Next Command Recommendations.
 <!-- /bq:contract -->
@@ -118,7 +118,7 @@ Next: /bq-fix or /bq-clarify (or just answer the blocker question yourself, then
 - **Stop on blocker.** Never skip a blocker silently.
 - **Update TASK_LIST.md after every state change.**
 
-## Standardized command fields (alpha.6)
+## Gates and failure behaviour
 
 **Phase:** P2 — Planning and Build
 **When NOT to use:** no tasks pending (TASK_LIST empty) — use `/bq-feature` or `/bq-fix` for new work. Or you want to do a feature-shaped or bug-shaped task that isn't on the list — use those commands directly.
@@ -162,84 +162,14 @@ Next: /bq-fix or /bq-clarify (or just answer the blocker question yourself, then
 
 ---
 
-## Gate check + memory preflight (alpha.15)
-
-Before doing any work:
-
-1. **Gate check.** Read `.bequite/state/WORKFLOW_GATES.md`. If this command's required gates aren't `✅`, refuse:
-   > "You're trying to run this command, but `<required-gate>` is pending. Run `<prerequisite-command>` first."
-
-   Don't proceed when a required gate is missing. Recommend the prerequisite + how to resume.
-
-2. **Memory preflight.** Read these files first (per `.claude/bequite/docs/architecture/MEMORY_FIRST_BEHAVIOR.md`):
-
-   - `.bequite/state/PROJECT_STATE.md`
-   - `.bequite/state/CURRENT_MODE.md`
-   - `.bequite/state/CURRENT_PHASE.md`
-   - `.bequite/state/LAST_RUN.md`
-   - `.bequite/state/MISTAKE_MEMORY.md` — top 10–20 entries (skip mistakes already learned)
-   - Other state files only when relevant to this command's scope (`DECISIONS.md` for architectural questions, `OPEN_QUESTIONS.md` for phase transitions, `MODE_HISTORY.md` when invoked via `/bq-auto`-style flows)
-
-   **Use focused reads.** Don't load all of `.bequite/` every command.
-
-## Memory writeback (alpha.15)
-
-After successful completion:
-
-- `.bequite/state/LAST_RUN.md` — this command + outcome
-- `.bequite/state/WORKFLOW_GATES.md` — set this command's gate to `✅` if applicable
-- `.bequite/state/CURRENT_PHASE.md` — advance if phase transitioned
-- `.bequite/logs/AGENT_LOG.md` — append entry
-- `CHANGELOG.md` `[Unreleased]` — only when material files changed (skip for read-only commands)
-- `.bequite/state/MISTAKE_MEMORY.md` — append when a project-specific lesson surfaced
-- `.bequite/state/MODE_HISTORY.md` — append mode + outcome (when invoked via `/bq-auto`-style mode)
-
-**Failure behavior:** don't claim `✅ done` if any of the above wasn't completed. Report PARTIAL with the specific gap.
-
----
-
-## Automatic skill routing (alpha.20)
-
-This command runs the Skill Router BEFORE acting (execution-contract steps 2–4):
-
-1. Load `.bequite/skills/SKILL_REGISTRY.md` (the token-cheap routing index — NOT the skill files)
-2. Classify the task into domains per `.bequite/skills/SKILL_ROUTER.md` (user text → command → files present → mode/phase → memory → risk tier → output type)
-3. Auto-select skills: domain primaries + cross-cutting auto-attach (anti-hallucination on claims · testing-gate on code · context-engineer on >5 files or >1 session · security-reviewer on R3 paths · frontend-design-system on >1 UI section) + mode sizing (fast = smallest safe set · deep = broader · token-saver = lazy-load · delegate = skills named in task pack)
-4. Emit the selection block in the output, then load ONLY the selected SKILL.md files:
-
-```
-Skill Selection:
-- Selected: bequite-<skill> — <one-line reason tied to this task>
-- Not selected: bequite-<skill> — <why considered and skipped>
-```
-
-**The user never has to name skills** — describe the goal; the router picks the disciplines. An explicit user skill choice overrides routing (log the override). At writeback, append the selection + outcome to `.bequite/skills/SKILL_USAGE_LOG.md`.
-
-Strategy: `.claude/bequite/docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.
-
----
-
-## Confidence Forecast (alpha.21)
-
-For each phase / task / feature this command handles, report calibrated confidence per `.claude/bequite/docs/architecture/CONFIDENCE_CALIBRATION_STRATEGY.md`:
-
-```
-Confidence: NN% (band) — <one-line why>
-Evidence level: verified | inferred | assumed | unknown
-Lowers it: <factors>      Raises it: <checks that would>
-Unknowns/blockers: <list or none>      Next: <recommended action>
-```
-
-Bands: 90–100 routine · 75–89 likely · 50–74 needs exploration · 25–49 spike first · 0–24 blocked/insufficient info. **Confidence is not a feeling — it is a report** (evidence, tests, scope clarity, familiarity, dependency risk, verification). It must MOVE as evidence arrives (before-inspection → after-reading → after-implementation → after-verification; recorded per task in `.bequite/work/<id>/tasks.md`). Never 100% — and ≥95% only with all tests passing + zero unresolved assumptions + EVIDENCE_LOG entry. Apply project modifiers from `.bequite/state/CONFIDENCE_RULES.md`; at verify/release, log forecast-vs-actual to `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`.
-
-## Next Command Recommendations (alpha.22)
+## Next Command Recommendations
 
 Per contract step 12: more tasks open → Required next W2.2 `/bq-implement` (next task); last task done → W3.1 `/bq-test`. Guard Pass (code guard) runs when the implementation batch completes. Router block per `COMMAND_ROUTER.md`.
 
-## System Design Risk Check (alpha.22 orchestration update — mandatory when relevant)
+## System Design Risk Check
 
 When the task touches payments · inventory · bookings · auth · permissions/tenancy · database writes · concurrency · queues · external APIs · webhooks · uploads · UGC · admin actions · production · security logic, the output MUST include the structured block from `.claude/bequite/docs/architecture/SYSTEM_DESIGN_REASONING_STANDARD.md` (Domain · Critical entities · State transitions · Concurrent user risks · Data consistency · Failure modes · Recovery · Security · Edge cases · Tests required · Confidence · Unknowns). Canonical test: one item in stock, two simultaneous buyers — if the plan can't answer reservation/locking/idempotency/order-states/user-visible-outcome, implementation does not start. Outside these domains: `Not applicable — reason:`. Risk without a named test = unfinished plan. Blocking unknowns stop the build.
 
-## Post-phase test + verify gate (alpha.25)
+## Post-phase test + verify gate
 
 After implementing each task/phase, do NOT advance until it's verified: select the verification skills first (testing-gate always; guard-pass on the produced diff; security-reviewer + system-design check for risky domains; frontend-quality for UI), then run the phase's named tests + relevant build/lint and record command + exit code + output in `EVIDENCE_LOG.md`. Phase "done" = its tests pass with evidence (no weasel words). A failure routes to `/bq-fix`, not to the next phase. Confidence updates per the forecast; concurrency/consistency risk stays ≤89% until its tests pass.

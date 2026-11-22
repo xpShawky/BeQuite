@@ -1,306 +1,50 @@
 ---
-description: Inspect the repo before planning. Writes .bequite/audits/DISCOVERY_REPORT.md with detected stack, apps, entry points, ports, docs, tests, risks, missing information.
+description: Inspect the repo before planning. Writes .bequite/audits/DISCOVERY_REPORT.md (stack, apps, entry points, commands, ports, docs, tests, CI, risks, missing information) and the project's conventions to .bequite/state/PROJECT_DNA.md.
 ---
 
-# /bq-discover — repo discovery
+# /bq-discover: know what this is before planning
 
 <!-- bq:contract -->
 > **This command runs inside the BeQuite pipeline** (`.claude/bequite/docs/architecture/PIPELINE.md`):
-> 1. **Up to date:** first run `bash .claude/bequite/bin/bq-update.sh` and say its one line (hourly; never blocks).
+> 1. **Up to date:** if `.claude/bequite/bin/bq-update.sh` exists, first run `bash .claude/bequite/bin/bq-update.sh` and say its one line (hourly; never blocks). A plugin install has no such file: it updates through `/plugin`, and the docs, templates and scripts this command cites are under `${CLAUDE_PLUGIN_ROOT}`.
 > 2. **Orient:** announce the `Skill Selection:` block; resolve the work (`.bequite/ACTIVE.md`, `.bequite/work/<id>/`, or `/bq-work new`); refuse and name any missing gate (`.bequite/state/WORKFLOW_GATES.md`, `work/<id>/gates.md`).
 > 3. **Prove and write back:** plan first for non-trivial work and stop at hard human gates; every check goes to `work/<id>/evidence.md` or is `UNVERIFIED:`; write back (work log, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, `.bequite/state/MISTAKE_MEMORY.md` on a lesson) and end with the Next Command Recommendations.
 <!-- /bq:contract -->
 
-You are inspecting the repository to understand WHAT IT IS before any planning happens. The output is the foundation for every later command.
+Read-only. Discovery exists to make later context smaller: later commands read its report instead of walking the tree again. Skills: `bequite-context-engineer`, `bequite-project-architect` (stack signals), `bequite-security-reviewer` when auth or secrets appear.
 
-## Step 1 — Scan the repo
+## Gates
 
-Use Glob + Read + Grep (NOT shell `find` or `grep`):
+Needs `BEQUITE_INITIALIZED`. Sets `DISCOVERY_COMPLETE`. An empty folder has nothing to discover: use `/bq-new`.
 
-### Manifests + package managers
+## Steps
 
-- `package.json` → Node project. Note `"scripts"`, `"dependencies"`, `"devDependencies"`, `"engines"`.
-- `pyproject.toml` / `requirements.txt` / `setup.py` → Python.
-- `Cargo.toml` → Rust.
-- `go.mod` → Go.
-- `composer.json` → PHP.
-- `Gemfile` → Ruby.
-- Multiple = monorepo or polyglot. Note each.
+1. **Scan** with Read, Glob and Grep only (no shell commands, no code changes):
+   - manifests, lockfiles and package managers, with exact versions ("Next.js 15.5.18", not "a React app");
+   - code structure: apps, packages, entry points, routes, layers;
+   - infrastructure: Docker, CI workflows, deploy config, migrations;
+   - configuration: env files by name only. Never read `.env*` or any file named like a secret or key; note that it exists.
+   - documentation: README, docs folders, ADRs, how current they look.
+2. **Runtime and commands:** the run, build, test and lint commands as the manifest defines them; the ports and URLs the code names.
+3. **Tests:** frameworks, where tests live, roughly what they cover.
+4. **Risk surface:** missing or stale README; `.env` referenced with no example file; no tests or CI; many TODO or FIXME marks (count them); pre-1.0 dependencies; committed `node_modules`; secret-looking strings in source (never print the value); a missing lockfile or more than one.
+5. **Conventions into `.bequite/state/PROJECT_DNA.md`:** how this codebase names things, handles errors, layers code and which way dependencies point, how tests are written, and exemplar files ("when adding X, follow `<file>`"). New code is judged against it later.
+6. **Write `.bequite/audits/DISCOVERY_REPORT.md`:** project shape, apps detected, package managers, commands, ports, documentation, tests, CI, infrastructure, risks, missing information (questions for `/bq-clarify`), an architecture guess labelled as a guess, and a ranked "read these first" list (files the work will touch, their callers, covering tests, exemplars).
+7. **Stamp it:** the commit hash and date at the top of both files. A stale map is worse than none; refresh after large changes.
 
-### Code structure
-
-- Top-level dirs (`src/`, `lib/`, `app/`, `apps/`, `packages/`, `cmd/`, `internal/`, etc.)
-- `pages/` or `app/` (Next.js / Nuxt / SvelteKit) → web framework
-- `routes/` (Hono / Express / FastAPI conventions)
-- `tests/` or `__tests__/` or `spec/` → test layout
-
-### Infrastructure
-
-- `Dockerfile`, `docker-compose.yml`, `.dockerignore` → containerized
-- `.github/workflows/*.yml` → GitHub Actions
-- `.gitlab-ci.yml`, `.circleci/`, `azure-pipelines.yml` → other CI
-- `terraform/`, `infra/`, `k8s/` → IaC
-
-### Configuration
-
-- `.env.example`, `.env.local.example` → expected env vars (DO NOT read `.env` itself)
-- `tsconfig.json`, `eslint.config.*`, `biome.json`, `.prettierrc*` → JS/TS tooling
-- `mypy.ini`, `pyproject.toml::[tool.ruff]` → Python tooling
-- `playwright.config.*`, `vitest.config.*`, `jest.config.*` → JS test runners
-- `pytest.ini`, `conftest.py` → Python test config
-
-### Documentation
-
-- `README.md` (read fully)
-- `docs/`, `documentation/`, `wiki/`
-- `CHANGELOG.md`, `RELEASES/`
-- `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`
-- `HANDOFF.md`, `ARCHITECTURE.md`, `DECISIONS.md` / `adr/`
-
-## Step 2 — Sniff the runtime
-
-Look for entry-point clues:
-
-- `package.json::"main"`, `"module"`, `"bin"`, `"scripts.dev"`, `"scripts.start"`, `"scripts.build"`, `"scripts.test"`
-- `pyproject.toml::[project.scripts]`, `[tool.poetry.scripts]`, `__main__.py`, `manage.py`
-- Cargo: `Cargo.toml::[[bin]]`
-- Go: `main.go`, `cmd/*/main.go`
-
-## Step 3 — Find ports + URLs
-
-Grep for `:3000`, `:8000`, `:8080`, `:5173`, `localhost:`, `127.0.0.1:`. Note any port the project clearly uses.
-
-## Step 4 — Find tests
-
-- `package.json::"scripts.test"` → the canonical test command
-- `*.test.{js,ts,tsx}`, `*.spec.{js,ts,tsx}` → JS tests
-- `test_*.py`, `*_test.py` → pytest discovery
-- `*_test.go` → Go tests
-
-## Step 5 — Risk surface
-
-Note anything risky from a "vibe coder reading this fresh" perspective:
-
-- README is missing OR clearly stale
-- No `.env.example` but `.env` referenced in code
-- No tests directory
-- No CI
-- Many `// TODO`, `FIXME`, `XXX` comments (Grep + count)
-- Dependencies with `^0.x.x` or `^0.0.x` versions (pre-1.0 → fragile)
-- `node_modules/` committed (bad)
-- Secrets in source (search for `api_key =`, `password =`, `AKIA`, `sk_live_`, etc. — DO NOT print full values)
-- Lockfile missing
-- Multiple package managers (yarn.lock + package-lock.json + pnpm-lock.yaml) — pick-one needed
-
-## Step 6 — Write DISCOVERY_REPORT.md
-
-Author `.bequite/audits/DISCOVERY_REPORT.md`:
-
-```markdown
-# Discovery Report
-
-**Generated:** <ISO 8601 UTC>
-**Repo path:** <absolute path>
-**Stack detected:** <e.g. Next.js 15 + TypeScript + Tailwind v4; Node 20+; pnpm>
-
-## 1. Project shape
-
-(2-3 sentences explaining what this project is, based on README + structure.)
-
-## 2. Apps detected
-
-| App | Path | Stack | Entry point | Status |
-|---|---|---|---|---|
-| <app-1> | <path> | <stack> | <entry> | <healthy / unknown> |
-...
-
-## 3. Package managers
-
-- Primary: <npm / pnpm / yarn / poetry / cargo / etc.>
-- Lockfile: <present + sane | missing | conflicting>
-
-## 4. Run / build / test commands
-
-| Action | Command | Notes |
-|---|---|---|
-| Install | <e.g. pnpm install> |   |
-| Dev | <e.g. pnpm dev>     |   |
-| Build | <e.g. pnpm build> |   |
-| Test | <e.g. pnpm test>   |   |
-| Lint | <e.g. pnpm lint>   | (optional) |
-| Typecheck | <e.g. tsc --noEmit> | (optional) |
-
-## 5. Ports used
-
-- <port>: <service>
-
-## 6. Documentation
-
-- README: <present + useful | present + stale | missing>
-- CHANGELOG: <yes / no>
-- docs/: <described structure>
-- Other docs noted: <list>
-
-## 7. Tests
-
-- Framework: <vitest / jest / playwright / pytest / etc.>
-- Test directory: <path>
-- Test count: <approximate, by Glob count of test files>
-
-## 8. CI
-
-- Platform: <GitHub Actions / GitLab / CircleCI / none>
-- Workflow files: <list>
-
-## 9. Infrastructure
-
-- Docker: <Dockerfile + docker-compose | no>
-- IaC: <terraform / k8s manifests / none>
-
-## 10. Risks / smells
-
-- (Bulleted list of items from Step 5)
-
-## 11. Missing information (asks for /bq-clarify)
-
-- (Bulleted list of things we couldn't determine and need the user to clarify)
-
-## 12. Architecture guess
-
-(2-4 sentences: based on the file layout + manifests, what's the system architecture? Get it close, mark as "guess" — `/bq-clarify` will confirm.)
-
-## 13. Recommended next command
-
-- If risks/smells were found → `/bq-audit` for the full picture
-- If everything looks healthy → `/bq-doctor` for environment health
-- If many things are unclear → `/bq-clarify` to ask the user 3-5 questions
-```
-
-## Step 7 — Update state
-
-After writing the report:
-
-1. Update `.bequite/state/PROJECT_STATE.md` with the detected stack + apps.
-2. Update `.bequite/state/CURRENT_PHASE.md` — still Phase 0, but note "discovery complete".
-3. Update `.bequite/state/LAST_RUN.md` to `/bq-discover` + timestamp + outcome.
-4. Append a line to `.bequite/logs/AGENT_LOG.md`.
-
-## Step 8 — Report back
-
-Print to chat:
+## Output
 
 ```
-✓ Discovery complete
-
-Stack:    <one-liner summary>
-Apps:     <count>
-Ports:    <list>
-Tests:    <count> tests via <framework>
-Risks:    <count> items flagged
-
-Full report: .bequite/audits/DISCOVERY_REPORT.md
-
-Next:  /bq-doctor          environment health check
-       /bq-clarify         ask user about <count of missing-info items>
-       /bq-audit           full project audit (if risks were flagged)
+Discovery: <project shape in one line>    stack: <versions>
+Risks: <n>   Missing information: <n>
+Report: .bequite/audits/DISCOVERY_REPORT.md   Conventions: .bequite/state/PROJECT_DNA.md
+Next: /bq-doctor
 ```
 
-## Rules
+## Quality gate
 
-- Use Read / Glob / Grep tools. Do NOT run shell commands.
-- Do NOT read `.env`, `.env.local`, or any file with `secret` / `private` / `key` in the name (you may note its EXISTENCE without reading content).
-- Do NOT make any code changes during discovery.
-- Be specific: say "Next.js 15.5.18" not "React app".
-- Be honest: if you can't determine something, list it in section 11.
+Every report section is filled or says "unknown"; versions are exact; nothing was read from a secret file; a file that could not be read is noted and skipped, not fatal. If the domain needs expertise BeQuite has no skill for, the report says so.
 
-## Standardized command fields (alpha.6)
+## Next Command Recommendations (typical)
 
-**Phase:** P0 — Setup and Discovery
-**When NOT to use:** completely empty folder with no source code — use `/bq-new` instead.
-**Preconditions:** `BEQUITE_INITIALIZED`
-**Required previous gates:** `BEQUITE_INITIALIZED`
-**Quality gate:**
-- `DISCOVERY_REPORT.md` written with all 11 sections
-- Stack detected (or explicitly marked "unknown")
-- Risks + missing-info surfaced
-- Marks `DISCOVERY_COMPLETE ✅`
-**Failure behavior:**
-- No manifests + no source → write minimal report; suggest `/bq-new`
-- Read fails on a file → skip + note in report; don't abort the whole discover
-**Memory updates:** Sets `DISCOVERY_COMPLETE ✅`. Writes `DISCOVERY_REPORT.md`.
-**Log updates:** `AGENT_LOG.md` entry with summary.
-
-## Memory files this command reads
-
-- All package manifests
-- README.md
-- CLAUDE.md
-- All `.bequite/state/*.md`
-
-## Memory files this command writes
-
-- `.bequite/audits/DISCOVERY_REPORT.md` (new)
-- `.bequite/state/PROJECT_STATE.md` (updated)
-- `.bequite/state/CURRENT_PHASE.md` (updated)
-- `.bequite/state/LAST_RUN.md` (updated)
-- `.bequite/logs/AGENT_LOG.md` (appended)
-
-## Usual next command
-
-- `/bq-doctor` if discovery was clean
-- `/bq-clarify` if discovery left questions
-- `/bq-audit` if discovery flagged risks
-
----
-
-## Map before act + Project DNA (alpha.18)
-
-Discovery's job is to **reduce** later context, not inflate it ("more context is not better context"; "a stale map is worse than no map"). Beyond the report sections above:
-
-- **Extract conventions, not just structure.** Record how THIS codebase does things — naming, error-handling, layering + **dependency direction**, test style, exemplar files ("when adding X, follow `<file>`") — into `.bequite/state/PROJECT_DNA.md` (the workflow-agnostic cousin of the frontend Design DNA). New code is later judged against it (anti-spaghetti).
-- **Token-budget the "read these first" list:** rank by (1) files touching the change → (2) immediate callers/deps → (3) covering tests → (4) layer constraints → (5) domain context → (6) exemplars. Surface that ranked list in the report so later commands don't re-walk the tree.
-- **Stamp freshness:** every discovery/DNA artifact carries a commit hash + timestamp + a refresh rule. Trust it only while fresh.
-
-Owner skill: `bequite-context-engineer`. See `.claude/bequite/docs/architecture/CONTEXT_ENGINEERING.md`.
-
-## Gate check + memory preflight (alpha.15)
-
-Before doing any work:
-
-1. **Gate check.** Read `.bequite/state/WORKFLOW_GATES.md`. If this command's required gates aren't `✅`, refuse:
-   > "You're trying to run this command, but `<required-gate>` is pending. Run `<prerequisite-command>` first."
-
-   Don't proceed when a required gate is missing. Recommend the prerequisite + how to resume.
-
-2. **Memory preflight.** Read these files first (per `.claude/bequite/docs/architecture/MEMORY_FIRST_BEHAVIOR.md`):
-
-   - `.bequite/state/PROJECT_STATE.md`
-   - `.bequite/state/CURRENT_MODE.md`
-   - `.bequite/state/CURRENT_PHASE.md`
-   - `.bequite/state/LAST_RUN.md`
-   - `.bequite/state/MISTAKE_MEMORY.md` — top 10–20 entries (skip mistakes already learned)
-   - Other state files only when relevant to this command's scope (`DECISIONS.md` for architectural questions, `OPEN_QUESTIONS.md` for phase transitions, `MODE_HISTORY.md` when invoked via `/bq-auto`-style flows)
-
-   **Use focused reads.** Don't load all of `.bequite/` every command.
-
-## Memory writeback (alpha.15)
-
-After successful completion:
-
-- `.bequite/state/LAST_RUN.md` — this command + outcome
-- `.bequite/state/WORKFLOW_GATES.md` — set this command's gate to `✅` if applicable
-- `.bequite/state/CURRENT_PHASE.md` — advance if phase transitioned
-- `.bequite/logs/AGENT_LOG.md` — append entry
-- `CHANGELOG.md` `[Unreleased]` — only when material files changed (skip for read-only commands)
-- `.bequite/state/MISTAKE_MEMORY.md` — append when a project-specific lesson surfaced
-- `.bequite/state/MODE_HISTORY.md` — append mode + outcome (when invoked via `/bq-auto`-style mode)
-
-**Failure behavior:** don't claim `✅ done` if any of the above wasn't completed. Report PARTIAL with the specific gap.
-
-## Orchestrator reference (alpha.22 orchestration update)
-
-This command consults the global orchestration brain: `bequite-orchestrator` skill + `.bequite/state/ORCHESTRATION_MAP.md` — the source of truth when commands/skills conflict, workflows seem duplicated, the next step is unclear, or a task matches no existing capability (Missing Capability protocol).
-
-## Skills-first (alpha.25)
-
-Before inspecting anything, select + announce the skills this discovery needs (emit the `Skill Selection:` block first — contract step 4). Discovery routinely loads researcher (+ project-architect for stack signals, security-reviewer if secrets/auth present, frontend-design-system if a UI exists). While discovering, also note skill GAPS: if the repo's domain needs expertise BeQuite lacks, flag it for `/bq-research` to evaluate a verified external skill (safe path in AUTO_SKILL_ROUTING_STRATEGY §alpha.25) — never auto-install.
+`/bq-doctor` · `/bq-clarify` when questions remain · `/bq-audit` when discovery flagged risks.

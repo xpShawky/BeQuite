@@ -6,7 +6,7 @@ description: Skill quality loop — audit all BeQuite skills for bloat, shallown
 
 <!-- bq:contract -->
 > **This command runs inside the BeQuite pipeline** (`.claude/bequite/docs/architecture/PIPELINE.md`):
-> 1. **Up to date:** first run `bash .claude/bequite/bin/bq-update.sh` and say its one line (hourly; never blocks).
+> 1. **Up to date:** if `.claude/bequite/bin/bq-update.sh` exists, first run `bash .claude/bequite/bin/bq-update.sh` and say its one line (hourly; never blocks). A plugin install has no such file: it updates through `/plugin`, and the docs, templates and scripts this command cites are under `${CLAUDE_PLUGIN_ROOT}`.
 > 2. **Orient:** announce the `Skill Selection:` block; resolve the work (`.bequite/ACTIVE.md`, `.bequite/work/<id>/`, or `/bq-work new`); refuse and name any missing gate (`.bequite/state/WORKFLOW_GATES.md`, `work/<id>/gates.md`).
 > 3. **Prove and write back:** plan first for non-trivial work and stop at hard human gates; every check goes to `work/<id>/evidence.md` or is `UNVERIFIED:`; write back (work log, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, `.bequite/state/MISTAKE_MEMORY.md` on a lesson) and end with the Next Command Recommendations.
 <!-- /bq:contract -->
@@ -34,7 +34,7 @@ Core pack + `MEMORY_INDEX.md` + previous `SKILL_QUALITY_AUDIT.md` (compare again
 
 ### 3–6. Scope: all `.claude/skills/bequite-*/SKILL.md` (or `only=<skill>` argument)
 
-### 7a. Registry refresh (alpha.20 — now the FIRST audit action)
+### 7a. Registry refresh
 
 Before per-skill checks, refresh `.bequite/skills/SKILL_REGISTRY.md`:
 - Glob `.claude/skills/bequite-*/` and probe `~/.claude/skills/` (document if inaccessible/empty)
@@ -84,14 +84,6 @@ User reviews `SKILL_QUALITY_AUDIT.md` → `/bq-skill-audit apply=true` for appro
 - **Drift inputs:** also reads `.bequite/commands/COMMAND_ID_MAP.md` + `COMMAND_ROUTER.md` + `NEXT_COMMAND_LOG.md` — flags: commands missing IDs, router routes to nonexistent commands, recommendations that are always ignored (demote) or follow-ups users run unrecommended (add).
 - **Future (V2, not built):** `generate-pack` — Agent Pack Generator candidate (V1 #12) parked until Guard Pass + this audit mature one more cycle.
 
-## Next Command Recommendations (alpha.22)
+## Next Command Recommendations
 
 Per contract step 12: router block per `COMMAND_ROUTER.md` (typically: fixes on approval → W4.1 `/bq-verify drift` to confirm).
-
-## Orchestrator reference (alpha.22 orchestration update)
-
-This command consults the global orchestration brain: `bequite-orchestrator` skill + `.bequite/state/ORCHESTRATION_MAP.md` — the source of truth when commands/skills conflict, workflows seem duplicated, the next step is unclear, or a task matches no existing capability (Missing Capability protocol).
-
-## Remaining-work queries (canonical source rule)
-
-When the user asks any form of: *what remains? / what is left? / what should we do next? / what version is next? / what is parked? / what is alpha.23? / what is V2? / what is built but untested?* — READ `.bequite/tasks/REMAINING_WORK_MASTER.md` (sections A–G) and answer from it. Do not answer from memory alone; if the file is missing, say so and offer to rebuild it from the trackers.

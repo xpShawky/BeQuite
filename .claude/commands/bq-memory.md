@@ -6,7 +6,7 @@ description: Read or write BeQuite memory snapshots. Use to inspect what BeQuite
 
 <!-- bq:contract -->
 > **This command runs inside the BeQuite pipeline** (`.claude/bequite/docs/architecture/PIPELINE.md`):
-> 1. **Up to date:** first run `bash .claude/bequite/bin/bq-update.sh` and say its one line (hourly; never blocks).
+> 1. **Up to date:** if `.claude/bequite/bin/bq-update.sh` exists, first run `bash .claude/bequite/bin/bq-update.sh` and say its one line (hourly; never blocks). A plugin install has no such file: it updates through `/plugin`, and the docs, templates and scripts this command cites are under `${CLAUDE_PLUGIN_ROOT}`.
 > 2. **Orient:** announce the `Skill Selection:` block; resolve the work (`.bequite/ACTIVE.md`, `.bequite/work/<id>/`, or `/bq-work new`); refuse and name any missing gate (`.bequite/state/WORKFLOW_GATES.md`, `work/<id>/gates.md`).
 > 3. **Prove and write back:** plan first for non-trivial work and stop at hard human gates; every check goes to `work/<id>/evidence.md` or is `UNVERIFIED:`; write back (work log, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, `.bequite/state/MISTAKE_MEMORY.md` on a lesson) and end with the Next Command Recommendations.
 <!-- /bq:contract -->
@@ -150,7 +150,7 @@ Next: <command-suggestion based on what's in memory>
 - **Don't truncate the user's view.** If they say `show state.decisions`, print all of it.
 - **Snapshot files are timestamped + immutable.** Never overwrite a SNAPSHOT-*.md.
 
-## Standardized command fields (alpha.6)
+## Gates and failure behaviour
 
 **Phase:** P5 — Memory and Handoff (or anytime)
 **When NOT to use:** mid-implementation when state is in flux (snapshot first, then continue); use `/bq-recover` to read snapshots, not `/bq-memory`.
@@ -184,43 +184,3 @@ Next: <command-suggestion based on what's in memory>
 ## Usual next command
 
 Depends on what the memory shows — `/bequite` for the menu, or the specific command relevant to what's open.
-
----
-
-## Gate check + memory preflight (alpha.15)
-
-Before doing any work:
-
-1. **Gate check.** Read `.bequite/state/WORKFLOW_GATES.md`. If this command's required gates aren't `✅`, refuse:
-   > "You're trying to run this command, but `<required-gate>` is pending. Run `<prerequisite-command>` first."
-
-   Don't proceed when a required gate is missing. Recommend the prerequisite + how to resume.
-
-2. **Memory preflight.** Read these files first (per `.claude/bequite/docs/architecture/MEMORY_FIRST_BEHAVIOR.md`):
-
-   - `.bequite/state/PROJECT_STATE.md`
-   - `.bequite/state/CURRENT_MODE.md`
-   - `.bequite/state/CURRENT_PHASE.md`
-   - `.bequite/state/LAST_RUN.md`
-   - `.bequite/state/MISTAKE_MEMORY.md` — top 10–20 entries (skip mistakes already learned)
-   - Other state files only when relevant to this command's scope (`DECISIONS.md` for architectural questions, `OPEN_QUESTIONS.md` for phase transitions, `MODE_HISTORY.md` when invoked via `/bq-auto`-style flows)
-
-   **Use focused reads.** Don't load all of `.bequite/` every command.
-
-## Memory writeback (alpha.15)
-
-After successful completion:
-
-- `.bequite/state/LAST_RUN.md` — this command + outcome
-- `.bequite/state/WORKFLOW_GATES.md` — set this command's gate to `✅` if applicable
-- `.bequite/state/CURRENT_PHASE.md` — advance if phase transitioned
-- `.bequite/logs/AGENT_LOG.md` — append entry
-- `CHANGELOG.md` `[Unreleased]` — only when material files changed (skip for read-only commands)
-- `.bequite/state/MISTAKE_MEMORY.md` — append when a project-specific lesson surfaced
-- `.bequite/state/MODE_HISTORY.md` — append mode + outcome (when invoked via `/bq-auto`-style mode)
-
-**Failure behavior:** don't claim `✅ done` if any of the above wasn't completed. Report PARTIAL with the specific gap.
-
-## Remaining-work queries (canonical source rule)
-
-When the user asks any form of: *what remains? / what is left? / what should we do next? / what version is next? / what is parked? / what is alpha.23? / what is V2? / what is built but untested?* — READ `.bequite/tasks/REMAINING_WORK_MASTER.md` (sections A–G) and answer from it. Do not answer from memory alone; if the file is missing, say so and offer to rebuild it from the trackers.

@@ -1,280 +1,50 @@
 ---
-description: Environment health check — Node / Python / Docker / package managers / ports / scripts / env files / CI. Reports blockers and the next recommended command.
+description: Environment health check - Node / Python / Docker / package managers / ports / scripts / env files / CI / hooks - and the capability inventory of this machine (.bequite/state/CAPABILITIES.md). Reports blockers and the next recommended command.
 ---
 
-# /bq-doctor — environment health
+# /bq-doctor: can this machine build and run it, and what does it have
 
 <!-- bq:contract -->
 > **This command runs inside the BeQuite pipeline** (`.claude/bequite/docs/architecture/PIPELINE.md`):
-> 1. **Up to date:** first run `bash .claude/bequite/bin/bq-update.sh` and say its one line (hourly; never blocks).
+> 1. **Up to date:** if `.claude/bequite/bin/bq-update.sh` exists, first run `bash .claude/bequite/bin/bq-update.sh` and say its one line (hourly; never blocks). A plugin install has no such file: it updates through `/plugin`, and the docs, templates and scripts this command cites are under `${CLAUDE_PLUGIN_ROOT}`.
 > 2. **Orient:** announce the `Skill Selection:` block; resolve the work (`.bequite/ACTIVE.md`, `.bequite/work/<id>/`, or `/bq-work new`); refuse and name any missing gate (`.bequite/state/WORKFLOW_GATES.md`, `work/<id>/gates.md`).
 > 3. **Prove and write back:** plan first for non-trivial work and stop at hard human gates; every check goes to `work/<id>/evidence.md` or is `UNVERIFIED:`; write back (work log, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, `.bequite/state/MISTAKE_MEMORY.md` on a lesson) and end with the Next Command Recommendations.
 <!-- /bq:contract -->
 
-You are checking that the local environment can actually build + run this project. Surfaces missing tools, missing env files, port conflicts, and install-clarity issues.
+Read-only probes. It never installs a tool and never opens `.env`. Safe to run at any time.
 
-## Step 1 — Read DISCOVERY_REPORT.md
+## Gates
 
-If it doesn't exist, suggest `/bq-discover` first and exit early.
+Needs `BEQUITE_INITIALIZED`. Sets `DOCTOR_COMPLETE` (also when blockers were found: the report is the result).
 
-Otherwise, read its "Stack detected" + "Apps detected" + "Package managers" + "Ports" sections.
+## Steps
 
-## Step 2 — Probe required tools
+1. **Read** `.bequite/audits/DISCOVERY_REPORT.md` for the stack (run `/bq-discover` first if it is missing and the folder has code).
+2. **Probe the tools the stack needs** with `command -v <tool>` (`where.exe` on Windows) and note each version: Node and its package manager, Python and pip, Rust, Go, Bun, Docker with a reachable daemon, Playwright when it is a dependency. Warn when a version is below what the project documents.
+3. **Ports:** which ports the project uses and whether something already listens there.
+4. **Env clarity:** which variables the code reads, whether an example file documents them. Names only.
+5. **Scripts and README:** do the run, build and test scripts exist, and could a new person start the project from the README alone.
+6. **CI:** which workflows exist and what they run.
+7. **BeQuite hooks:** present (`.claude/hooks/`) and active (a `hooks` block in `.claude/settings.json` or `settings.local.json`, or the plugin). Not active: say "run `/bq-hooks status`". Never enable them here.
+8. **Capability inventory** into `.bequite/state/CAPABILITIES.md`, so every plan's options board offers routes that can run on this machine:
+   - **Detect, do not ask:** programs on PATH or in their usual folders (git, Python, Node, ffmpeg, yt-dlp, Whisper; After Effects, Premiere, Blender, DaVinci Resolve, Photoshop, Illustrator), browsers, the browser and computer-use tools this session has, the MCP servers connected. Each with its version or "found, version unknown".
+   - **Ask once, then never again:** paid tools and subscriptions the user already has, accounts the work may use, and anything they do not want used. Names only: never a password, key or token.
+   - Refresh it when the user says something changed, or a plan needs a capability the file does not list. In a public repository, ask before committing it.
+9. **Write `.bequite/audits/DOCTOR_REPORT.md`:** each probe with a status (ok, warning, missing) and an install hint, then blockers, recommendations, and the next command.
 
-For each tool the discovered stack needs, check whether it's on PATH.
-
-Use the **Bash** tool with `command -v <tool>` (the only shell exception — single tool probes are safe).
-
-Cross-reference what's needed:
-
-| Stack | Tools required |
-|---|---|
-| Node-based (any) | `node`, `npm` (or `pnpm` / `yarn` per package manager detected) |
-| Python | `python` or `python3`, `pip` |
-| Rust | `cargo`, `rustc` |
-| Go | `go` |
-| Bun runtime in package.json | `bun` |
-| Docker compose present | `docker` + daemon reachable |
-| Playwright in deps | `npx playwright --version` |
-
-Note version for each tool found. Warn if version is below documented minimum (e.g. Node < 20 for Next.js 15).
-
-## Step 3 — Probe ports
-
-For each port DISCOVERY_REPORT.md listed (e.g. 3000, 3001, 3002), check whether it's currently bound.
-
-Use Bash: `netstat -ano | grep ':3000 '` on Windows or `lsof -i :3000` on Unix. Note PID if bound. Don't kill anything — just report.
-
-## Step 4 — Check env-var clarity
-
-- If `.env.example` exists → read it, list the env vars expected.
-- If `.env.example` is missing BUT code references `process.env.X` or `os.environ.get("Y")` (Grep) → flag as a risk: "App reads env vars but no .env.example".
-- Do NOT read `.env` itself.
-
-## Step 5 — Check scripts clarity
-
-For Node projects, read `package.json::"scripts"`:
-
-- Are `dev`, `start`, `build`, `test` defined?
-- Any cryptic scripts (heavy shell incantations) without comments?
-
-For Python projects:
-
-- Is there a clear `pip install -e .` path? `requirements.txt` resolved?
-- Are tests discoverable via `pytest`?
-
-## Step 6 — Check README usefulness
-
-Specifically: does README answer these questions?
-
-- How to install
-- How to run dev
-- How to test
-- How to build
-
-Score each: present / partial / missing.
-
-## Step 7 — Check CI
-
-Look in `.github/workflows/`, `.gitlab-ci.yml`, etc.
-
-- Is there a CI workflow that runs the test command on push?
-- Is there a CI workflow that runs install + build?
-
-## Step 7b — Check BeQuite hooks (alpha.18)
-
-Report whether the opt-in BeQuite hooks are present + active:
-- **Present:** `.claude/hooks/*.{sh,ps1}` exist (shipped + reviewable).
-- **Active:** the project's `.claude/settings.json` (or `settings.local.json`) has a `hooks` block referencing them.
-- If present-but-not-active → note "hooks available but not enabled — review + merge `.claude/settings.json.example` (or `.windows.`) to turn on; see `.claude/bequite/docs/architecture/CLAUDE_CODE_HOOKS_STRATEGY.md`." **Never enable them automatically** (security: review-before-enable).
-
-## Step 7c — Capability inventory (v1)
-
-Write `.bequite/state/CAPABILITIES.md` (template in `templates/bequite/state/CAPABILITIES.md`): what this machine and this user really have, so every plan's options board (pipeline stage 4) offers routes that can actually run here.
-- **Detect, do not ask:** programs on PATH or in their usual install folders (git, Python, Node, ffmpeg, yt-dlp, Whisper; After Effects, Premiere, Blender, DaVinci Resolve, Photoshop, Illustrator), browsers, the browser and computer-use tools this session has, and the MCP servers connected (the session's tool list, `.mcp.json`, `claude mcp list` when it works). Record each with its version or "found, version unknown".
-- **Ask once, then never again:** paid tools and subscriptions the user already has (for example a ChatGPT plan, Google AI Studio access, a design or video service), accounts the work may use, and anything they do not want used. Names only: never a password, key or token.
-- Refresh it when the user says something changed, or when a plan needs a capability the file does not list.
-- The file holds capabilities, never credentials. If the project is a public repository, ask before committing it.
-
-## Step 8 — Write the report
-
-Print to chat AND write `.bequite/audits/DOCTOR_REPORT.md`:
-
-```markdown
-# Doctor Report
-
-**Generated:** <ISO 8601 UTC>
-**Probed against:** <one-line stack summary from PROJECT_STATE.md>
-
-## 1. Required tools
-
-| Tool | Status | Version | Notes |
-|---|---|---|---|
-| node | OK | v24.12.0 |  |
-| npm | OK | 11.9.0 |  |
-| docker | OK | 29.1.3 | daemon: running |
-| bun | MISSING |  | needed for studio/api; install: irm bun.sh/install.ps1 \| iex |
-...
-
-## 2. Ports
-
-| Port | State | Bound by (PID) | Notes |
-|---|---|---|---|
-| 3000 | free |  |  |
-| 3001 | in-use | 18856 | likely running dev server |
-...
-
-## 3. Environment variables
-
-- `.env.example`: present / missing / partial
-- App references: count
-- Risk: <description>
-
-## 4. Scripts (package.json or equivalent)
-
-- `dev`: <one-liner> (clarity: clear / cryptic)
-- `start`: <one-liner>
-- `build`: <one-liner>
-- `test`: <one-liner>
-
-## 5. README usefulness
-
-| Section | Status |
-|---|---|
-| Install | present / partial / missing |
-| Run | ... |
-| Test | ... |
-| Build | ... |
-
-## 6. CI
-
-- Platform: <GitHub Actions / etc. / none>
-- Test runs on push: yes / no
-- Build runs on push: yes / no
-
-## 7. Docker (if present)
-
-- Dockerfile: present / no
-- docker-compose.yml: present / no
-- Heavy or light: <judgment based on services count + image sizes>
-
-## 8. Blockers (must fix before building)
-
-1. <e.g. "bun not installed — required for studio/api">
-2. <...>
-
-## 9. Recommendations
-
-1. <e.g. "Add .env.example for the env vars referenced in src/lib/db.ts">
-2. <...>
-
-## 10. Recommended next command
-
-- If blockers exist: `/bq-fix` for each one
-- If only recommendations: `/bq-clarify` or `/bq-plan`
-- If everything is clean: `/bq-plan`
-```
-
-## Step 9 — Update state
-
-- `.bequite/state/PROJECT_STATE.md` — append the environment snapshot
-- `.bequite/state/LAST_RUN.md` — `/bq-doctor` + timestamp
-- `.bequite/logs/AGENT_LOG.md` — append
-
-## Step 10 — Report back
-
-Print to chat:
+## Output
 
 ```
-✓ Doctor complete
-
-Tools required: <count> · OK: <count> · MISSING: <count>
-Ports: <count probed> · free: <count> · in-use: <count>
-Blockers: <count>
-
-Full report: .bequite/audits/DOCTOR_REPORT.md
-
-Next: </bq-fix or /bq-clarify or /bq-plan based on blocker count>
+Doctor: <n> ok, <n> warnings, <n> missing    blockers: <list or none>
+Capabilities: .bequite/state/CAPABILITIES.md (<n> programs, <n> tools)
+Report: .bequite/audits/DOCTOR_REPORT.md
+Next: /bq-clarify
 ```
 
-## Rules
+## Quality gate
 
-- Only one shell-tool exception: probing `command -v <tool>` (or Windows `where.exe`) + `netstat`/`lsof` for port checks. No other shell commands during doctor.
-- Do NOT install missing tools — report only.
-- Do NOT touch `.env`.
+Every probe has an explicit status; a probe that fails marks that one tool and the rest continue; nothing was installed; no secret was read or written.
 
-## Standardized command fields (alpha.6)
+## Next Command Recommendations (typical)
 
-**Phase:** P0 — Setup and Discovery
-**When NOT to use:** never blocked — environment probe is read-only and safe at any time. Skip only if you're confident the env is fine and want to save a few seconds.
-**Preconditions:** `BEQUITE_INITIALIZED`
-**Required previous gates:** `BEQUITE_INITIALIZED`
-**Quality gate:**
-- `DOCTOR_REPORT.md` written
-- Each probe has explicit green/yellow/red status
-- Missing tools / ports / env vars listed with install hints
-- Marks `DOCTOR_COMPLETE ✅`
-**Failure behavior:**
-- Critical tool missing (e.g. Node when project is Next.js) → write report; advance gate; user fixes env separately
-- Bash probe fails on a single tool → mark that tool red; continue with the rest
-**Memory updates:** Sets `DOCTOR_COMPLETE ✅`. Writes `DOCTOR_REPORT.md`.
-**Log updates:** `AGENT_LOG.md`.
-
-## Memory files this command reads
-
-- `.bequite/audits/DISCOVERY_REPORT.md`
-- `.bequite/state/PROJECT_STATE.md`
-- `package.json`, `pyproject.toml`, `.env.example`, `README.md`, CI workflow files
-
-## Memory files this command writes
-
-- `.bequite/audits/DOCTOR_REPORT.md` (new)
-- `.bequite/state/PROJECT_STATE.md` (updated — env snapshot section)
-- `.bequite/state/LAST_RUN.md` (updated)
-- `.bequite/logs/AGENT_LOG.md` (appended)
-
-## Usual next command
-
-- Blockers present → `/bq-fix`
-- Recommendations only → `/bq-clarify`
-- All clean → `/bq-plan`
-
----
-
-## Gate check + memory preflight (alpha.15)
-
-Before doing any work:
-
-1. **Gate check.** Read `.bequite/state/WORKFLOW_GATES.md`. If this command's required gates aren't `✅`, refuse:
-   > "You're trying to run this command, but `<required-gate>` is pending. Run `<prerequisite-command>` first."
-
-   Don't proceed when a required gate is missing. Recommend the prerequisite + how to resume.
-
-2. **Memory preflight.** Read these files first (per `.claude/bequite/docs/architecture/MEMORY_FIRST_BEHAVIOR.md`):
-
-   - `.bequite/state/PROJECT_STATE.md`
-   - `.bequite/state/CURRENT_MODE.md`
-   - `.bequite/state/CURRENT_PHASE.md`
-   - `.bequite/state/LAST_RUN.md`
-   - `.bequite/state/MISTAKE_MEMORY.md` — top 10–20 entries (skip mistakes already learned)
-   - Other state files only when relevant to this command's scope (`DECISIONS.md` for architectural questions, `OPEN_QUESTIONS.md` for phase transitions, `MODE_HISTORY.md` when invoked via `/bq-auto`-style flows)
-
-   **Use focused reads.** Don't load all of `.bequite/` every command.
-
-## Memory writeback (alpha.15)
-
-After successful completion:
-
-- `.bequite/state/LAST_RUN.md` — this command + outcome
-- `.bequite/state/WORKFLOW_GATES.md` — set this command's gate to `✅` if applicable
-- `.bequite/state/CURRENT_PHASE.md` — advance if phase transitioned
-- `.bequite/logs/AGENT_LOG.md` — append entry
-- `CHANGELOG.md` `[Unreleased]` — only when material files changed (skip for read-only commands)
-- `.bequite/state/MISTAKE_MEMORY.md` — append when a project-specific lesson surfaced
-- `.bequite/state/MODE_HISTORY.md` — append mode + outcome (when invoked via `/bq-auto`-style mode)
-
-**Failure behavior:** don't claim `✅ done` if any of the above wasn't completed. Report PARTIAL with the specific gap.
-
-## Hooks status (alpha.24)
-
-When reporting environment health, also note whether BeQuite's opt-in safety hooks are wired: check for a `hooks` block in `.claude/settings.json` / `settings.local.json`. If absent, report "safety hooks: DISABLED (opt-in) - run `/bq-hooks enable` to turn on; `/bq-hooks status` for detail." Hooks are never required; this is informational.
+Blockers: fix the environment, then re-run. Clean: `/bq-clarify` or `/bq-plan`.

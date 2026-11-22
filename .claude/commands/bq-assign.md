@@ -6,7 +6,7 @@ description: Break the implementation plan into atomic tasks with IDs, prioritie
 
 <!-- bq:contract -->
 > **This command runs inside the BeQuite pipeline** (`.claude/bequite/docs/architecture/PIPELINE.md`):
-> 1. **Up to date:** first run `bash .claude/bequite/bin/bq-update.sh` and say its one line (hourly; never blocks).
+> 1. **Up to date:** if `.claude/bequite/bin/bq-update.sh` exists, first run `bash .claude/bequite/bin/bq-update.sh` and say its one line (hourly; never blocks). A plugin install has no such file: it updates through `/plugin`, and the docs, templates and scripts this command cites are under `${CLAUDE_PLUGIN_ROOT}`.
 > 2. **Orient:** announce the `Skill Selection:` block; resolve the work (`.bequite/ACTIVE.md`, `.bequite/work/<id>/`, or `/bq-work new`); refuse and name any missing gate (`.bequite/state/WORKFLOW_GATES.md`, `work/<id>/gates.md`).
 > 3. **Prove and write back:** plan first for non-trivial work and stop at hard human gates; every check goes to `work/<id>/evidence.md` or is `UNVERIFIED:`; write back (work log, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, `.bequite/state/MISTAKE_MEMORY.md` on a lesson) and end with the Next Command Recommendations.
 <!-- /bq:contract -->
@@ -128,7 +128,7 @@ Next: /bq-implement — pick off T-1.1
 - **Each task carries an embedded validation command + expected output and ends at a commit (alpha.18).** Reject any task containing "TBD", "implement later", or "similar to Task N" — every step has the content an engineer with zero context needs.
 - **Logic tasks are failing-test-first (alpha.18).** Write + confirm the failing test, then implement until green. Never edit/delete tests to pass.
 
-## Standardized command fields (alpha.6)
+## Gates and failure behaviour
 
 **Phase:** P2 — Planning and Build
 **When NOT to use:** no plan exists yet (run `/bq-plan` first); or you're in Add Feature / Fix Problem mode (use `/bq-feature` / `/bq-fix` instead — those are self-contained).
@@ -165,56 +165,7 @@ Next: /bq-implement — pick off T-1.1
 
 ---
 
-## Gate check + memory preflight (alpha.15)
-
-Before doing any work:
-
-1. **Gate check.** Read `.bequite/state/WORKFLOW_GATES.md`. If this command's required gates aren't `✅`, refuse:
-   > "You're trying to run this command, but `<required-gate>` is pending. Run `<prerequisite-command>` first."
-
-   Don't proceed when a required gate is missing. Recommend the prerequisite + how to resume.
-
-2. **Memory preflight.** Read these files first (per `.claude/bequite/docs/architecture/MEMORY_FIRST_BEHAVIOR.md`):
-
-   - `.bequite/state/PROJECT_STATE.md`
-   - `.bequite/state/CURRENT_MODE.md`
-   - `.bequite/state/CURRENT_PHASE.md`
-   - `.bequite/state/LAST_RUN.md`
-   - `.bequite/state/MISTAKE_MEMORY.md` — top 10–20 entries (skip mistakes already learned)
-   - Other state files only when relevant to this command's scope (`DECISIONS.md` for architectural questions, `OPEN_QUESTIONS.md` for phase transitions, `MODE_HISTORY.md` when invoked via `/bq-auto`-style flows)
-
-   **Use focused reads.** Don't load all of `.bequite/` every command.
-
-## Memory writeback (alpha.15)
-
-After successful completion:
-
-- `.bequite/state/LAST_RUN.md` — this command + outcome
-- `.bequite/state/WORKFLOW_GATES.md` — set this command's gate to `✅` if applicable
-- `.bequite/state/CURRENT_PHASE.md` — advance if phase transitioned
-- `.bequite/logs/AGENT_LOG.md` — append entry
-- `CHANGELOG.md` `[Unreleased]` — only when material files changed (skip for read-only commands)
-- `.bequite/state/MISTAKE_MEMORY.md` — append when a project-specific lesson surfaced
-- `.bequite/state/MODE_HISTORY.md` — append mode + outcome (when invoked via `/bq-auto`-style mode)
-
-**Failure behavior:** don't claim `✅ done` if any of the above wasn't completed. Report PARTIAL with the specific gap.
-
----
-
-## Confidence Forecast (alpha.21)
-
-For each phase / task / feature this command handles, report calibrated confidence per `.claude/bequite/docs/architecture/CONFIDENCE_CALIBRATION_STRATEGY.md`:
-
-```
-Confidence: NN% (band) — <one-line why>
-Evidence level: verified | inferred | assumed | unknown
-Lowers it: <factors>      Raises it: <checks that would>
-Unknowns/blockers: <list or none>      Next: <recommended action>
-```
-
-Bands: 90–100 routine · 75–89 likely · 50–74 needs exploration · 25–49 spike first · 0–24 blocked/insufficient info. **Confidence is not a feeling — it is a report** (evidence, tests, scope clarity, familiarity, dependency risk, verification). It must MOVE as evidence arrives (before-inspection → after-reading → after-implementation → after-verification; recorded per task in `.bequite/work/<id>/tasks.md`). Never 100% — and ≥95% only with all tests passing + zero unresolved assumptions + EVIDENCE_LOG entry. Apply project modifiers from `.bequite/state/CONFIDENCE_RULES.md`; at verify/release, log forecast-vs-actual to `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`.
-
-## Per-task Execution Profile (alpha.25)
+## Per-task Execution Profile
 
 Each task in `TASK_LIST.md` carries skills-first selection AND an Execution Profile (`.claude/bequite/docs/architecture/TASK_EXECUTION_PROFILE.md`):
 

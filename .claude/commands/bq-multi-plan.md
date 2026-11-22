@@ -2,333 +2,49 @@
 description: Unbiased multi-model planning via manual paste. External-model prompts contain ZERO mention of Claude's plan — each model starts from the same raw briefing and proposes independently. Merges into a final plan. ToS-clean, zero provider auth.
 ---
 
-# /bq-multi-plan — independent multi-model planning
+# /bq-multi-plan: a second plan that never saw the first
 
 <!-- bq:contract -->
 > **This command runs inside the BeQuite pipeline** (`.claude/bequite/docs/architecture/PIPELINE.md`):
-> 1. **Up to date:** first run `bash .claude/bequite/bin/bq-update.sh` and say its one line (hourly; never blocks).
+> 1. **Up to date:** if `.claude/bequite/bin/bq-update.sh` exists, first run `bash .claude/bequite/bin/bq-update.sh` and say its one line (hourly; never blocks). A plugin install has no such file: it updates through `/plugin`, and the docs, templates and scripts this command cites are under `${CLAUDE_PLUGIN_ROOT}`.
 > 2. **Orient:** announce the `Skill Selection:` block; resolve the work (`.bequite/ACTIVE.md`, `.bequite/work/<id>/`, or `/bq-work new`); refuse and name any missing gate (`.bequite/state/WORKFLOW_GATES.md`, `work/<id>/gates.md`).
 > 3. **Prove and write back:** plan first for non-trivial work and stop at hard human gates; every check goes to `work/<id>/evidence.md` or is `UNVERIFIED:`; write back (work log, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, `.bequite/state/MISTAKE_MEMORY.md` on a lesson) and end with the Next Command Recommendations.
 <!-- /bq:contract -->
 
-## Purpose
+For high-stakes plans. A second model that is shown the first plan reviews it and anchors on it; a second model given the same raw briefing proposes its own. The user carries the prompt and the answer by hand between their own subscriptions: no API key, no provider login, no extra cost. Procedure: `bequite-delegation` (the collaboration modes: parallel, specialist, debate, judge, red team).
 
-Get a genuinely **independent second opinion** on the plan. The external model (ChatGPT / Gemini / other) is given the **same raw briefing** Claude received — and **explicitly NOT told what Claude proposed**. This is the unbiased-merge protocol: each model thinks alone, BeQuite reconciles afterwards.
+## Gates
 
-This is the key fix vs. naïve "ask another model to review the plan" — those reviews are biased toward agreement. Independent proposals reveal real disagreement.
-
-ToS-clean — manual paste only, no provider API, costs $0 (uses your subscription tabs).
-
-## When to use it
-
-- High-stakes architectural decisions (DB choice, auth provider, scaling tier)
-- Stack picks where two options have genuine trade-offs
-- When `/bq-plan` produces output but you sense bias
-- When `/bq-research` left a tie
-
-**Don't use for**: trivial features, fix cycles, prototypes. Use `/bq-plan` alone.
-
-## Preconditions
-
-- `BEQUITE_INITIALIZED ✅`
-- `MODE_SELECTED ✅`
-- `RESEARCH_COMPLETE ✅` (you need verified research to brief external models)
-- `SCOPE_LOCKED ✅`
-
-## Required previous gates
-
-- `BEQUITE_INITIALIZED`
-- `MODE_SELECTED`
-- `CLARIFY_ANSWERED`
-- `RESEARCH_COMPLETE`
-- `SCOPE_LOCKED`
-
-## Files to read
-
-- `.bequite/audits/DISCOVERY_REPORT.md`
-- `.bequite/work/<id>/research.md`
-- `.bequite/work/<id>/spec.md`
-- `.bequite/state/DECISIONS.md`
-- `.bequite/state/OPEN_QUESTIONS.md`
-- `.bequite/work/<id>/plan.md` (if exists — used internally for comparison ONLY; **not** included in external prompts)
-
-## Files to write
-
-- `.bequite/prompts/generated_prompts/PROMPT_CLAUDE.md`
-- `.bequite/prompts/generated_prompts/PROMPT_EXTERNAL.md` (for ChatGPT / Gemini / etc.)
-- `.bequite/prompts/model_outputs/RESPONSE_CLAUDE.md` (user pastes Claude.ai response here, or you save it)
-- `.bequite/prompts/model_outputs/RESPONSE_EXTERNAL.md` (user pastes external model response here)
-- `.bequite/plans/MULTI_MODEL_COMPARISON.md`
-- `.bequite/work/<id>/plan.md` (rewritten — merged version)
-- `.bequite/work/<id>/plan-pre-merge.md` (the single-model plan, preserved)
-- `.bequite/state/WORKFLOW_GATES.md` (`MULTI_PLAN_DECISION ✅` once user picks: yes-merged / no-skipped)
-- `.bequite/state/DECISIONS.md`
-- `.bequite/state/LAST_RUN.md`
-- `.bequite/logs/AGENT_LOG.md`
-
-## The unbiased-prompt protocol
-
-**Critical:** the external-model prompt MUST contain:
-
-✅ The same project context Claude has (stack, scope, decisions, open questions)
-✅ The same research briefing (RESEARCH_REPORT.md excerpts)
-✅ The same output schema (13 sections, per `/bq-plan`)
-✅ The same constraints (be specific, cite versions, mark uncertainty)
-
-❌ **No mention of Claude's plan**
-❌ **No mention of Claude's recommendations**
-❌ **No mention of what BeQuite already proposed**
-❌ **No phrases like "review", "improve", "critique" — the external model is a primary proposer, not a reviewer**
-
-The external model starts from zero. It writes its own plan independently.
+Needs `BEQUITE_INITIALIZED`, `MODE_SELECTED`, `CLARIFY_ANSWERED`, `RESEARCH_COMPLETE`, `SCOPE_LOCKED` (the briefing is built from verified research and a locked scope). Sets `MULTI_PLAN_DECISION` when the user picks: merged, or skipped.
 
 ## Steps
 
-### 1. Generate two prompts
+1. **Read** `work/<id>/spec.md`, `research.md`, `plan.md` if one exists, `.bequite/state/DECISIONS.md`, `OPEN_QUESTIONS.md`.
+2. **Write one briefing, twice:** `.bequite/prompts/generated_prompts/PROMPT_CLAUDE.md` and `PROMPT_EXTERNAL.md`, identical except for the file name. Each holds the project context (stack, scope, decisions, open questions), the research excerpts, the output schema (the same sections as `/bq-plan`), and the constraints (be specific, cite versions, mark uncertainty).
+3. **Keep the external prompt clean.** It must not mention any existing plan, recommendation or earlier proposal, and must not contain "review", "improve" or "critique": the external model is a first proposer, not a reviewer.
+4. **Tell the user what to do:** paste `PROMPT_EXTERNAL.md` into the other model (ChatGPT, Gemini or another), and paste its full answer back or save it to `.bequite/prompts/model_outputs/RESPONSE_EXTERNAL.md`. Claude's own answer to the same prompt goes to `RESPONSE_CLAUDE.md`. Then wait.
+5. **Compare** into `.bequite/plans/MULTI_MODEL_COMPARISON.md`: where they agree, soft disagreements (same goal, different route), hard disagreements, and what only one of them thought of.
+6. **Resolve every hard disagreement**, showing both arguments in their own words, in this order:
+   1. an option that breaks a hard rule (leaks data, hides a failure, skips a human gate) loses;
+   2. a recorded project decision beats generic best practice;
+   3. the freshest verified research beats memory;
+   4. anything still tied is the user's choice.
+7. **Write the merged plan** to `work/<id>/plan.md`, keeping the single-model plan as `work/<id>/plan-pre-merge.md` so the two can be compared. Each tie-break is logged with its reason in the comparison file and `DECISIONS.md`.
+8. **Present** the merged plan and wait for approval, as `/bq-plan` does.
 
-#### Prompt for Claude (`PROMPT_CLAUDE.md`)
-
-```markdown
-You are a senior software architect. Write an implementation plan for the project below.
-
-## Project context
-
-<excerpts from DISCOVERY_REPORT.md, SCOPE.md, DECISIONS.md>
-
-## Verified research
-
-<excerpts from RESEARCH_REPORT.md, all 11 dimensions>
-
-## Open questions
-
-<list from OPEN_QUESTIONS.md>
-
-## Output schema (15 sections)
-
-1. Vision
-2. Current context
-3. Non-goals
-4. Architecture
-5. Stack decision
-6. File plan
-7. Phase plan
-8. Task plan (atomic ≤5min tasks)
-9. Test plan
-10. Risks
-11. Security considerations
-12. Deployment + DevOps
-13. Acceptance criteria
-14. Rollback plan
-15. Open questions
-
-## Constraints
-
-- Be specific. Cite library versions. Mark uncertainty explicitly.
-- No "should / probably / seems to / appears to / I think it works / might".
-- Each task has ONE acceptance criterion.
-- No code — markdown only.
-```
-
-#### Prompt for external model (`PROMPT_EXTERNAL.md`)
-
-**Identical to Claude's prompt** — same context, same research, same questions, same schema, same constraints.
-
-**Do NOT include any of these phrases:**
-- "Claude proposed..."
-- "Improve on the existing plan..."
-- "Review the following..."
-- "Critique..."
-- "Anthropic..." / "Claude..." / "BeQuite..." anywhere in the prompt
-
-The external model is a **primary proposer**, not a reviewer.
-
-### 2. Tell the user what to do
-
-Print in chat:
+## Output
 
 ```
-Two prompts generated:
-
-  .bequite/prompts/generated_prompts/PROMPT_CLAUDE.md
-  .bequite/prompts/generated_prompts/PROMPT_EXTERNAL.md
-
-Both prompts are IDENTICAL except for which model gets which file.
-Neither prompt mentions the other model. Both start from zero.
-
-Steps:
-  1. Open Claude (claude.ai or claude.com) in your browser
-  2. Paste PROMPT_CLAUDE.md → wait for response → copy response
-  3. Save Claude's response to: .bequite/prompts/model_outputs/RESPONSE_CLAUDE.md
-  4. Open ChatGPT (chat.openai.com) OR Gemini (gemini.google.com) — your call
-  5. Paste PROMPT_EXTERNAL.md → wait for response → copy response
-  6. Save external response to: .bequite/prompts/model_outputs/RESPONSE_EXTERNAL.md
-  7. Come back here and run /bq-multi-plan merge
-
-(Or paste both responses here in chat — I'll save them for you.)
+Multi-plan: agreed <n>, soft disagreements <n>, hard disagreements <n> (all resolved), unique additions <n>
+Merged plan: .bequite/work/<id>/plan.md   before the merge: plan-pre-merge.md
+Comparison: .bequite/plans/MULTI_MODEL_COMPARISON.md
+Next after approval: /bq-assign
 ```
-
-### 3. Wait for the user
-
-The user pastes both responses (either to disk or in chat).
-
-Once both files exist:
-
-### 4. Read both responses + compare
-
-Section by section, identify:
-
-- **Agreements** — both models propose the same thing
-- **Soft disagreements** — different details, same intent
-- **Hard disagreements** — fundamentally different approach
-- **Unique additions** — one model raised something the other missed
-
-Build the comparison table:
-
-```markdown
-| Section | Claude proposed | External proposed | Agreement? |
-|---|---|---|---|
-| Stack: framework | Next.js 15 | Next.js 15 | ✓ same |
-| Stack: ORM | Drizzle | Prisma | ✗ hard disagree |
-| Auth | Better-Auth | Clerk | ✗ hard disagree |
-| Test runner | Vitest | Vitest | ✓ same |
-| Hosting | Vercel | Fly.io | ✗ hard disagree |
-| Database | Supabase Postgres | Neon Postgres | ⚠ soft disagree (same DB, different host) |
-| Email | Resend | Postmark | ✗ hard disagree |
-| ... | | | |
-```
-
-### 5. Resolve disagreements via tie-break order
-
-**Tie-break order:**
-
-1. **Iron Law beats Doctrine** — if one option violates an Iron Law (e.g. exfiltrates PII, breaks honest reporting), reject it
-2. **Doctrine beats convention** — active doctrine wins over generic best practice
-3. **Latest-verified-research beats memory** — if RESEARCH says option A is fresher / safer / cheaper in 2026, prefer A
-4. **User picks the rest** — for genuine ties or user-preference items
-
-For each hard disagreement:
-- Present BOTH arguments verbatim
-- Pull in related RESEARCH evidence
-- Apply tie-break order
-- If still tied → ask user
-
-### 6. Write the merged plan
-
-`.bequite/work/<id>/plan.md` (overwrites; the single-model version is preserved as `IMPLEMENTATION_PLAN_PRE_MERGE.md`):
-
-```markdown
-# Implementation Plan (multi-model merge)
-
-**Generated:** <ISO 8601 UTC>
-**Models consulted:** Claude, <External model name>
-**Disagreements:** <count>
-**Tie-breaks applied:** <count>
-**User picks:** <count>
-
-## ... (15 sections, same structure as /bq-plan)
-```
-
-For sections where models disagreed, note which model proposed what + why we picked the chosen option.
-
-### 7. Write the comparison file
-
-`.bequite/plans/MULTI_MODEL_COMPARISON.md`:
-
-```markdown
-# Multi-model plan comparison
-
-**Date:** <date>
-**Models:** Claude, <External>
-
-## Agreement areas
-
-(items both models agreed on — copy verbatim)
-
-## Soft-disagreement areas
-
-| Topic | Claude | External | Resolution |
-|---|---|---|---|
-
-## Hard-disagreement areas
-
-| Topic | Claude argument | External argument | Resolution | Rationale |
-|---|---|---|---|---|
-
-## Tie-breaks applied
-
-- (Iron Law III → use option that integrates with .bequite/state)
-- (Doctrine web-saas → axe-core CI gate required)
-- (RESEARCH §1 freshness → Drizzle (2026-04) over Prisma (2026-02))
-- (User pick: Vercel over Fly.io)
-
-## Unique additions
-
-- (Claude raised X that External missed)
-- (External raised Y that Claude missed)
-```
-
-### 8. Update state
-
-- Append "Multi-model plan merged on <date>" to `DECISIONS.md`
-- Mark `MULTI_PLAN_DECISION ✅` in `WORKFLOW_GATES.md`
-- `LAST_RUN.md` updated
-- `AGENT_LOG.md` appended
-
-### 9. Report back
-
-```
-✓ Multi-model planning complete
-
-Models consulted:    Claude, <External>
-Sections agreed:     <count>
-Hard disagreements:  <count>
-Tie-breaks applied:  <count>
-User picks:          <count>
-
-Final plan:    .bequite/work/<id>/plan.md
-Pre-merge:     .bequite/work/<id>/plan-pre-merge.md
-Comparison:    .bequite/plans/MULTI_MODEL_COMPARISON.md
-
-Next: /bq-assign — break the merged plan into actionable tasks
-```
-
-## Output format
-
-Step-by-step narration. User confirms each tie-break that requires their pick.
 
 ## Quality gate
 
-- Both prompts are byte-identical except for filename
-- External prompt does NOT mention Claude / BeQuite / "review" / "critique"
-- Both responses saved as files
-- Every disagreement resolved (none left "TBD")
-- Tie-breaks logged with rationale
-- Merged plan has same 15-section structure as `/bq-plan` output
-- `IMPLEMENTATION_PLAN_PRE_MERGE.md` preserved for diff review
+The two prompts are identical; the external prompt names no model, tool or earlier plan; both answers are saved as files; no disagreement is left open; the pre-merge plan is preserved.
 
-## Failure behavior
+## Next Command Recommendations (typical)
 
-- User can't paste responses (browser issues, etc.) → save the prompts to disk and continue manually later
-- External model refuses or produces low-quality output → save what we got + note quality concern; fall back to single-model plan
-- Hard disagreement that user can't resolve → pause, document in OPEN_QUESTIONS.md, exit gracefully
-- More than 50% disagreement → suggest the user pause and re-run `/bq-research` (fundamental gap)
-
-## Rules
-
-- **Manual paste, not API.** Respects Anthropic and OpenAI ToS.
-- **Both prompts identical.** No bias contamination from either side.
-- **Tie-break order is fixed.** Don't ad-hoc.
-- **Preserve the pre-merge plan** as `IMPLEMENTATION_PLAN_PRE_MERGE.md` so users can diff.
-- **Cost: $0** (uses subscription plans, not API tokens).
-
-See `.claude/skills/bequite-delegation/SKILL.md` for the deep procedure (5 collaboration modes: Parallel / Specialist / Debate / Judge / Red-Team).
-
-## Skills activated
-
-- `bequite-delegation` (the core procedure)
-- `bequite-project-architect` (for architecture reconciliation)
-
-## Usual next command
-
-- `/bq-assign` — break the merged plan into actionable tasks
-- `/bq-implement` — start the workhorse loop
+`/bq-assign` after approval · `/bq-red-team "plan"` to attack the merged plan.

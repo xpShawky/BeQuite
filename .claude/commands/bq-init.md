@@ -28,9 +28,9 @@ None needed. Sets `BEQUITE_INITIALIZED`.
 
 1. **Detect the state** with Read and Glob: manifests (`package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod` ...), `.git/`, `CLAUDE.md`, and whether `.bequite/` exists.
 2. **The scaffold.**
-   - Script install: `.bequite/` is already there (the installer copied it). Go to step 3.
+   - Script install: `.bequite/` is already there (the installer copied it, baseline state files included), so the project is initialized. Go to step 3 to fill in what is known.
    - Plugin install, or `.bequite/` is missing: copy the scaffold from `${CLAUDE_PLUGIN_ROOT}/templates/bequite/` into `.bequite/`, file by file, skipping every file that already exists and replacing `{{VERSION}}` with the plugin's version (its `VERSION` file). If that folder is not readable either, stop and tell the user to run the installer from the README.
-3. **Baseline state files**, each only if it does not exist:
+3. **Baseline state files.** The scaffold already carries them; write any that is still missing, and never replace one that exists:
    - `.bequite/state/PROJECT_STATE.md`: the date, the project name (the folder's), one line on what it is ("unknown until `/bq-discover`" for an existing repo), the stack if a manifest shows it.
    - `.bequite/state/CURRENT_MODE.md`: "Not selected" (set by `/bq-mode`).
    - `.bequite/state/CURRENT_PHASE.md`: "P0 Setup".

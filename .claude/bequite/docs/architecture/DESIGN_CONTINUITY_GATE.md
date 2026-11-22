@@ -1,6 +1,6 @@
 # Design Continuity Gate
 
-**Status:** active (v3.0.0-alpha.17)
+**Status:** active
 **Owner skill:** `bequite-frontend-design-system`
 **Gate name:** `DESIGN_CONTINUITY_PASS`
 **Report:** `.bequite/design/DESIGN_CONTINUITY_REPORT.md`
@@ -24,7 +24,7 @@ Root cause (verified against research — see `references/` in the master skill)
 
 **The fix is structural, not cosmetic:** persist the design DNA, build section-by-section, and run this gate to compare every section against the DNA and against the strongest section.
 
-> **The quality promise (alpha.17):** Hero quality is not enough. Every visible section must meet the Design DNA. No section is allowed to look like filler. No visible UI is "complete" without a Design Continuity pass and a Visual QA pass.
+> **The quality promise:** Hero quality is not enough. Every visible section must meet the Design DNA. No section is allowed to look like filler. No visible UI is "complete" without a Design Continuity pass and a Visual QA pass.
 
 ---
 

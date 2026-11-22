@@ -1,4 +1,4 @@
-# Reference Engine — `/bq-knowledge reference` (C3) — alpha.22
+# Reference Engine — `/bq-knowledge reference` (C3)
 
 Turn visual/product inspiration into an original, buildable design direction. **Clone-safe by charter**: the command is named *reference*, never "clone-style"; language throughout is reference / inspiration / design extraction / rebuild plan / originality guardrails.
 

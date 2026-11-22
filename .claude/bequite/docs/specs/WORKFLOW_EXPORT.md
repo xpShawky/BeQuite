@@ -1,4 +1,4 @@
-# Workflow Export — `/bq-handoff workflow-export` (alpha.24)
+# Workflow Export — `/bq-handoff workflow-export`
 
 Export a BeQuite workflow into reusable, **secret-safe** instructions/playbooks. Shape: **argument under `/bq-handoff`** (it is a handoff variant — no standalone command needed). Skill: context-engineer + security-reviewer (secret scan).
 
@@ -12,4 +12,4 @@ WORKFLOW_PLAYBOOK (the steps as a reusable playbook) · PROMPT_PACK (Claude/Code
 
 ## Mandatory secret/privacy scan (before any export)
 
-Run the scan checklist FIRST. **Never export:** secrets · API keys · private client data · personal data · hidden credentials · internal paths (unless safe) · env values · copyrighted/private content without permission. The export is blocked until SAFETY_AND_SECRET_SCAN passes (R3-grade gate). AGENTS.md-ready output reuses the cross-agent bridge format. **Built alpha.24 — NOT live-tested.**
+Run the scan checklist FIRST. **Never export:** secrets · API keys · private client data · personal data · hidden credentials · internal paths (unless safe) · env values · copyrighted/private content without permission. The export is blocked until SAFETY_AND_SECRET_SCAN passes (R3-grade gate). AGENTS.md-ready output reuses the cross-agent bridge format. **Not live-tested yet.**

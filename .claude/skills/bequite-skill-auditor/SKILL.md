@@ -13,7 +13,7 @@ A skill pack rots in predictable ways: descriptions bloat past activation-matchi
 ## The healthy-skill profile
 
 - Frontmatter: valid `name`/`description`/`allowed-tools`; description ≤ ~300 chars, written as ACTIVATION TRIGGERS (when should this load?) not marketing
-- Body: 60–400 lines; depth beyond that goes to `references/` (master-skill pattern, alpha.17)
+- Body: 60–400 lines; depth beyond that goes to `references/`
 - Required sections present: purpose · when to use · when NOT to use · procedure/checklist · output format (artifact-producing skills) · quality gate · common mistakes · failure handling · memory/log rules (where relevant)
 - Tool neutrality language present where tools are named
 - Referenced by ≥1 command; reflected in orchestrator's knowledge + repo counts

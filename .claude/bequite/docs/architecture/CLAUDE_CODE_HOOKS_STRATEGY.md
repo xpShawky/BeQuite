@@ -1,6 +1,6 @@
 # Claude Code Hooks Strategy
 
-**Status:** active (v3.0.0-alpha.18) — implements ADR-005
+**Status:** active — implements ADR-005
 **Scope:** opt-in, machine-enforced safety. The single highest-leverage harness upgrade available to a markdown skill-pack.
 **Sources:** verified against the official [Claude Code Hooks reference](https://code.claude.com/docs/en/hooks) + [Hooks guide](https://code.claude.com/docs/en/hooks-guide).
 
@@ -85,7 +85,7 @@ The scripts are written to the **documented protocol** (exit codes, stdin JSON s
 ## 7. Relationship to the gates + the self-verify pattern
 
 - These hooks **enforce** a subset of the 17 hard human gates; they don't replace the gate ledger. The gates remain the source of truth; hooks are the deterministic backstop for the most dangerous ones.
-- For teams that want a **`Stop`-hook self-verify loop** ("don't end the turn until build + tests pass"), see the recipe in `.claude/bequite/docs/runbooks/USING_BEQUITE_COMMANDS.md` — it's the same protocol (`Stop` + `stop_hook_active` guard) pointed at the project's own test command. Shipped as a documented opt-in, not a default (BeQuite can't know your test command).
+- For a **`Stop`-hook self-verify loop** ("do not end the turn until build and tests pass"), copy the shipped Stop hook (`.claude/hooks/stop-banned-weasel-words.sh`: it shows the input parsing and the `stop_hook_active` guard) and make it run your project's own test command. It is an opt-in you write, not a default, because BeQuite cannot know your test command.
 
 See also: ADR-005 (the decision), `.claude/bequite/docs/architecture/WORKFLOW_GATES.md` (the gates), `bequite-security-reviewer` (secret-handling discipline).
 

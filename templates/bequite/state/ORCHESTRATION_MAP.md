@@ -49,11 +49,8 @@ Contract step 12 (`COMMAND_EXECUTION_CONTRACT.md`); IDs are the shared vocabular
 ## 16. Work folders + motion (v4)
 Every piece of work lives in `.bequite/work/NNNN-slug/` (brief · research · spec · plan · tasks · gates · evidence · review · verify · log); `ACTIVE.md` points at it; gates are per work; `/bq-work close` converges, merges spec deltas into `.bequite/specs/` and archives. Spec: `.claude/bequite/docs/architecture/WORK_FOLDERS.md`. Video/film requests route to C18 `/bq-motion` (skills motion-director + kinetic-type + sound-voice + render-pipeline); website motion routes to frontend-design-system `web-motion.md` (PERF_BUDGET_PASS). Creative work is plan-first even in auto mode.
 
-## 15. Skills-first + execution profile + post-phase verify (alpha.25)
+## 15. Skills-first + execution profile + post-phase verify
 Every command (workflow + capability + maintenance; trivial reads exempt) announces its `Skill Selection:` block BEFORE acting. `/bq-plan` records skills per phase; `/bq-assign` records per task + an Execution Profile (recommended model+tier · effort · confidence — `.claude/bequite/docs/architecture/TASK_EXECUTION_PROFILE.md`). `/bq-discover`+`/bq-research` may recommend a VERIFIED external skill on a real gap (user-approved install only). After each phase/task: select verification skills + run tests/verify with evidence before advancing (failure → `/bq-fix`). BeQuite recommends models, never switches them.
 
 **Maintainer rule:** command/skill/rule changes update this map in the same commit (drift-checked by `/bq-verify drift` + skill-audit).
 
-## 14. Remaining-work source of truth
-
-All "what remains / what's next / what's parked / what's alpha.23 / built-but-untested" questions are answered from `.bequite/tasks/REMAINING_WORK_MASTER.md` (sections: A built-untested · B maintenance · C alpha.23 /bq-offer · D V1 arguments · E V2 parked · F rejected · G recently completed). Never from memory alone. Wired into: bequite · now · suggest · recover · memory · skill-audit.

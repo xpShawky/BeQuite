@@ -2,7 +2,7 @@
 description: Writing DNA — build a reusable writing profile from goals + examples, then generate or rewrite content in that voice. Human-quality, style-consistent, source-faithful writing for academic / blog / brand / lecture / report / script / email work. Ethical writing assistance only — never fabricates sources, never promises AI-detector evasion.
 ---
 
-# /bq-writing-dna — human-quality writing with a reusable style profile (alpha.19)
+# /bq-writing-dna — human-quality writing with a reusable style profile
 
 <!-- bq:contract -->
 > **This command runs inside the BeQuite pipeline** (`.claude/bequite/docs/architecture/PIPELINE.md`):

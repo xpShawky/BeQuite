@@ -1,4 +1,4 @@
-# Knowledge Engine — `/bq-knowledge` (C4) — alpha.22
+# Knowledge Engine — `/bq-knowledge` (C4)
 
 Turn a docs pile into a usable knowledge product: knowledge pack, FAQ, glossary, troubleshooting trees, chatbot-ready KB, RAG blueprint, source-grounded Q&A with answer confidence.
 

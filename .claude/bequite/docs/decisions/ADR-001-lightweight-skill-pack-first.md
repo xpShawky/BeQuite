@@ -114,10 +114,10 @@ This ADR was accepted alongside the implementation:
 - `scripts/install-bequite.{ps1,sh}` — light installer
 - Rewritten `README.md` — leads with skill-pack install
 - Shortened `CLAUDE.md` — points at new structure
-- `.claude/bequite/docs/architecture/LIGHTWEIGHT_SKILL_PACK_ARCHITECTURE.md` — deeper architectural overview
-- `.claude/bequite/docs/specs/MVP_LIGHTWEIGHT_SCOPE.md` — exact MVP scope
-- `.claude/bequite/docs/runbooks/INSTALL_BEQUITE_IN_PROJECT.md` — install runbook
-- `.claude/bequite/docs/runbooks/USING_BEQUITE_COMMANDS.md` — command usage runbook
+- `docs/history/v4-docs/LIGHTWEIGHT_SKILL_PACK_ARCHITECTURE.md` (retired in v1; BeQuite repo only) — deeper architectural overview
+- `docs/history/v4-docs/MVP_LIGHTWEIGHT_SCOPE.md` (retired in v1) — exact MVP scope
+- `docs/history/v4-docs/INSTALL_BEQUITE_IN_PROJECT.md` (retired in v1; the README covers installing) — install runbook
+- `docs/history/v4-docs/USING_BEQUITE_COMMANDS.md` (retired in v1; `commands.md` and `/bq-help` replace it) — command usage runbook
 
 ## Verification
 

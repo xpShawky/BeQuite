@@ -1,6 +1,6 @@
 # BeQuite commands (v1)
 
-55 commands in three packs (core, studio, business). Each command is a markdown playbook in `.claude/commands/`; run it in Claude Code as `/<name>`. Catalog IDs: `.bequite/commands/COMMAND_ID_MAP.md` (in the BeQuite repo: `templates/bequite/commands/COMMAND_ID_MAP.md`). Detailed walkthroughs: `.claude/bequite/docs/runbooks/USING_BEQUITE_COMMANDS.md`.
+55 commands in three packs (core, studio, business). Each command is a markdown playbook in `.claude/commands/`; run it in Claude Code as `/<name>`. Catalog IDs: `.bequite/commands/COMMAND_ID_MAP.md` (in the BeQuite repo: `templates/bequite/commands/COMMAND_ID_MAP.md`).
 
 ## How every command behaves
 

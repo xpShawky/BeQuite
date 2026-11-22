@@ -2,7 +2,7 @@
 description: Skill quality loop — audit all BeQuite skills for bloat, shallowness, duplication, missing sections (output format / quality gate / memory rules / failure handling), stale counts, and oversized activation descriptions. Reports by default; edits only on user approval. Writes SKILL_QUALITY_AUDIT.md.
 ---
 
-# /bq-skill-audit — the self-evolving skill quality loop (alpha.19)
+# /bq-skill-audit — the self-evolving skill quality loop
 
 <!-- bq:contract -->
 > **This command runs inside the BeQuite pipeline** (`.claude/bequite/docs/architecture/PIPELINE.md`):
@@ -11,7 +11,7 @@ description: Skill quality loop — audit all BeQuite skills for bloat, shallown
 > 3. **Prove and write back:** plan first for non-trivial work and stop at hard human gates; every check goes to `work/<id>/evidence.md` or is `UNVERIFIED:`; write back (work log, `.bequite/state/LAST_RUN.md`, `.bequite/logs/AGENT_LOG.md`, `.bequite/skills/SKILL_USAGE_LOG.md`, `.bequite/state/MISTAKE_MEMORY.md` on a lesson) and end with the Next Command Recommendations.
 <!-- /bq:contract -->
 
-You are **BeQuite's skill auditor**. Skills must not stagnate: counts drift, descriptions bloat past activation-matching limits, sections go missing as the pack grows. This command institutionalizes the structural review that previously happened ad-hoc (alpha.14/16 audits).
+You are **BeQuite's skill auditor**. Skills must not stagnate: counts drift, descriptions bloat past activation-matching limits, sections go missing as the pack grows. This command institutionalizes the structural review that previously happened ad-hoc.
 
 ## When to use it
 
@@ -50,7 +50,7 @@ Before per-skill checks, refresh `.bequite/skills/SKILL_REGISTRY.md`:
 |---|---|
 | **Bloat** | SKILL.md > ~400 lines → split candidate (move depth to `references/` per master-skill pattern) |
 | **Shallowness** | < ~60 lines or no worked procedure → deepen or merge candidate |
-| **Duplication** | overlapping purpose with another skill → merge/role-split proposal (cite the alpha.17 quality-vs-design-system precedent) |
+| **Duplication** | overlapping purpose with another skill → merge/role-split proposal |
 | **Frontmatter** | valid `name` + `description` + `allowed-tools`; description ≤ ~300 chars, trigger-focused |
 | **Required sections** | When to use · When NOT to use · Quality gate · failure handling · output format (where the skill produces artifacts) · memory/log rules (where relevant) |
 | **Tool neutrality** | named tools framed as candidates |
@@ -79,10 +79,9 @@ Skill dir unreadable → list + skip + note · ambiguous merge call → propose 
 
 User reviews `SKILL_QUALITY_AUDIT.md` → `/bq-skill-audit apply=true` for approved repairs → `/bq-update` consumers pick up improvements next refresh
 
-## alpha.22 additions
+## Drift inputs
 
 - **Drift inputs:** also reads `.bequite/commands/COMMAND_ID_MAP.md` + `COMMAND_ROUTER.md` + `NEXT_COMMAND_LOG.md` — flags: commands missing IDs, router routes to nonexistent commands, recommendations that are always ignored (demote) or follow-ups users run unrecommended (add).
-- **Future (V2, not built):** `generate-pack` — Agent Pack Generator candidate (V1 #12) parked until Guard Pass + this audit mature one more cycle.
 
 ## Next Command Recommendations
 

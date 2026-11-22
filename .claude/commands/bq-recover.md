@@ -35,11 +35,11 @@ Read in this order:
 
 1. `LAST_RUN.md` → what was the most recent command?
 2. `CURRENT_PHASE.md` → what workflow phase are we in?
-3. `TASK_LIST.md` (if present) → what's `[~] in-progress`, what's `[!] blocked`, what's `[ ] next-pending`?
+3. `work/<id>/tasks.md` (if present) → what's `[~] in-progress`, what's `[!] blocked`, what's `[ ] next-pending`?
 4. `OPEN_QUESTIONS.md` → any unresolved blockers?
 5. Last 5 entries of `AGENT_LOG.md` → recent history
 6. `ERROR_LOG.md` last 3 entries → recent fixes (in case a regression matters)
-7. `IMPLEMENTATION_PLAN.md` (if present) → goal we're working toward
+7. `work/<id>/plan.md` (if present) → goal we're working toward
 
 ## Step 3 — Detect what's safe to do next
 
@@ -91,7 +91,7 @@ Open questions: 1
   Q: "Use Resend or SES for transactional email?" → unresolved
 
 Goal (from plan):
-  <one-line summary of vision from IMPLEMENTATION_PLAN.md>
+  <one-line summary of vision from `work/<id>/plan.md`>
 
 Recommended next step:
 

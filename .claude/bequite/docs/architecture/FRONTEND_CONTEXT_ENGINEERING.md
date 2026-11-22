@@ -1,6 +1,6 @@
 # Frontend Context Engineering
 
-**Status:** active (v3.0.0-alpha.17)
+**Status:** active
 **Companion to:** `DESIGN_CONTINUITY_GATE.md`, `MEMORY_FIRST_BEHAVIOR.md`
 
 ---

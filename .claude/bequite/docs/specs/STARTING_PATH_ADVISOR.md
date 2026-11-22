@@ -1,4 +1,4 @@
-# Starting Path Advisor — `/bq-start` (C17) — alpha.24
+# Starting Path Advisor — `/bq-start` (C17)
 
 Help a user choose **how to start** — most people fail at starting/choosing, not building. Command: `bq-start.md`. Skills: product-strategist + make-money + job-finder + writing-dna + researcher + localization-rtl.
 
@@ -21,4 +21,4 @@ START_CONTEXT · OPTION_MAP · AUDIENCE_AND_PLATFORM_ANALYSIS · ACCOUNT_STRATEG
 
 ## Output + hard rules
 
-FINAL_RECOMMENDATION = recommended option · why · what NOT to do · 7-day start · 30-day experiment · profile setup checklist · content pillars · first 10 post/video ideas · metrics (saves/DMs/comments, not just likes) · pivot trigger · next commands. Concrete decisions, not "be consistent/post value/know your audience." Neutral (disagree when evidence says so); use the user's actual assets; respect privacy/audience-mismatch; always end with a recommendation + action. **Built alpha.24 — NOT live-tested.**
+FINAL_RECOMMENDATION = recommended option · why · what NOT to do · 7-day start · 30-day experiment · profile setup checklist · content pillars · first 10 post/video ideas · metrics (saves/DMs/comments, not just likes) · pivot trigger · next commands. Concrete decisions, not "be consistent/post value/know your audience." Neutral (disagree when evidence says so); use the user's actual assets; respect privacy/audience-mismatch; always end with a recommendation + action. **Not live-tested yet.**

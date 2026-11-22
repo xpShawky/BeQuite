@@ -1,4 +1,4 @@
-# Brand Kit Engine — `/bq-content brand-kit` (C14) — alpha.24
+# Brand Kit Engine — `/bq-content brand-kit` (C14)
 
 Build a **non-generic** brand identity from niche + audience + competitors + positioning. Command: `/bq-content brand-kit` (in `bq-content.md`). Skills: ux-ui-designer + frontend-design-system + researcher + writing-dna + localization-rtl. Reference-safe (shares C3's originality discipline).
 
@@ -12,4 +12,4 @@ BRAND_BRIEF · AUDIENCE_AND_POSITIONING · COMPETITOR_AND_REFERENCE_SCAN · NAMI
 
 ## Anti-generic discipline
 
-Every color/type choice carries **why-it-fits-this-niche** reasoning (no default Inter + purple-blue gradient); naming gives several directions with rationale, not one bland name; a competitor/reference scan finds the sameness gap and the brand differentiates from it; reference-safe (patterns not pixels, no cloning); platform fit (YouTube/LinkedIn/X/FB/IG/website/packaging). LOGO_BRIEF is a brief for a designer/tool — BeQuite specs identity, does not fabricate a final logo image. **Built alpha.24 — NOT live-tested.**
+Every color/type choice carries **why-it-fits-this-niche** reasoning (no default Inter + purple-blue gradient); naming gives several directions with rationale, not one bland name; a competitor/reference scan finds the sameness gap and the brand differentiates from it; reference-safe (patterns not pixels, no cloning); platform fit (YouTube/LinkedIn/X/FB/IG/website/packaging). LOGO_BRIEF is a brief for a designer/tool — BeQuite specs identity, does not fabricate a final logo image. **Not live-tested yet.**

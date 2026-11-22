@@ -2,7 +2,7 @@
 
 **The coordination map for BeQuite's frontend skills.** One master, three supporting. No clutter, no duplication by designation.
 
-**Last updated:** 2026-06-04 (v3.0.0-alpha.17)
+**Last updated:** 2026-06-04
 
 ---
 
@@ -51,7 +51,7 @@ The master does NOT restate the supporting skills' canonical lists — it **call
 
 - `.claude/bequite/docs/architecture/DESIGN_CONTINUITY_GATE.md` — the gate the master runs
 - `.claude/bequite/docs/architecture/FRONTEND_CONTEXT_ENGINEERING.md` — why design is persisted, not held in chat
-- `.claude/bequite/docs/architecture/LIVE_EDIT_STRATEGY.md`, `.claude/bequite/docs/architecture/UIUX_VARIANTS_STRATEGY.md` — the two FE workflows
+- `bequite-live-edit` and `bequite-ux-ui-designer` (its Variants section): the two frontend workflows, run by `/bq-live-edit` and `/bq-uiux-variants`
 - `.claude/bequite/docs/architecture/MEMORY_FIRST_BEHAVIOR.md` — read design memory before acting
 
 ## Anti-clutter rule

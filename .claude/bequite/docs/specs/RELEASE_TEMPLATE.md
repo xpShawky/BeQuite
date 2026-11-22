@@ -1,6 +1,6 @@
-# Release Template — `/bq-release template` (alpha.24)
+# Release Template — `/bq-release template`
 
-Turn a finished project into a reusable starter/template/product. Shape: **argument under `/bq-release`** (launch-kit family, approved alpha.22). Skills: release-gate + security-reviewer + database-architect (tenancy).
+Turn a finished project into a reusable starter/template/product. Shape: **argument under `/bq-release`**. Skills: release-gate + security-reviewer + database-architect (tenancy).
 
 ## Outputs — `.bequite/templates/`
 
@@ -16,4 +16,4 @@ Remove secrets (scan) · env examples only · **seed/demo data only — never re
 
 ## System-design risk (the headline)
 
-**Multi-tenant data isolation is a first-class requirement** (SYSTEM_DESIGN_REASONING_STANDARD): two pharmacies on the same system must NOT access each other's data; restaurant A's data must not leak to restaurant B; the multi-tenant-vs-single-tenant decision must be **explicit** in TENANCY_AND_DATA_ISOLATION, with the isolation mechanism named and tested. Demo data must contain zero real client data. **Built alpha.24 — NOT live-tested.**
+**Multi-tenant data isolation is a first-class requirement** (SYSTEM_DESIGN_REASONING_STANDARD): two pharmacies on the same system must NOT access each other's data; restaurant A's data must not leak to restaurant B; the multi-tenant-vs-single-tenant decision must be **explicit** in TENANCY_AND_DATA_ISOLATION, with the isolation mechanism named and tested. Demo data must contain zero real client data. **Not live-tested yet.**

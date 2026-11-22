@@ -1,6 +1,6 @@
 # Superpowers — researched reference notes
 
-**Source:** Jesse Vincent (obra) — https://github.com/obra/superpowers. Launch post: https://blog.fsck.com/2025/10/09/superpowers/ . Verified against the repo README + raw `skills/<name>/SKILL.md` files (alpha.17 research pass).
+**Source:** Jesse Vincent (obra) — https://github.com/obra/superpowers. Launch post: https://blog.fsck.com/2025/10/09/superpowers/ . Verified against the repo README + raw `skills/<name>/SKILL.md` files.
 
 > Reference, not a dependency. BeQuite ports the *methodology* (plan → checkpoint → verify; concise skills) — it already has its own gate system.
 

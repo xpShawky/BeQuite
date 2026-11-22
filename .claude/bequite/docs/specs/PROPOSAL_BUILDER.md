@@ -1,4 +1,4 @@
-# Proposal Builder — `/bq-offer proposal` (C8) — alpha.22
+# Proposal Builder — `/bq-offer proposal` (C8)
 
 Turn a job post, client request, RFP, or discovered opportunity (C6/C9 output) into a tailored, honest proposal.
 
@@ -16,4 +16,4 @@ PROPOSAL · CLIENT_NEEDS · MILESTONES · PRICING_OPTIONS · RISK_NOTES · QUEST
 
 ## Routing
 
-Skills: writing-dna + product-strategist + job-finder/make-money intake discipline + anti-hallucination. Usually follows C9 job-finder or C6 pain-radar; **sending the proposal is always user-performed** (external publishing = human action, never automated). Sibling: C11 `/bq-offer` (built alpha.23) — the standing productized package this command pitches per-client; an offer pack’s PROPOSAL_ANGLE.md feeds this builder directly.
+Skills: writing-dna + product-strategist + job-finder/make-money intake discipline + anti-hallucination. Usually follows C9 job-finder or C6 pain-radar; **sending the proposal is always user-performed** (external publishing = human action, never automated). Sibling: C11 `/bq-offer` — the standing productized package this command pitches per-client; an offer pack’s PROPOSAL_ANGLE.md feeds this builder directly.

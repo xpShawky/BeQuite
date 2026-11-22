@@ -1,154 +1,58 @@
-# Workflow gates strategy
+# Workflow gates
 
-**Status:** active
-**Adopted:** 2026-05-11 (ADR-002)
-**Updated:** 2026-05-12 (alpha.4 added UI variant + release gates → 17 hard human gates in `/bq-auto`); 2026-05-17 (alpha.14 added Feature-addition workflow rule + gate aliases + orthogonal workflows section)
-**Reference:** ADR-002, AUTO_MODE_STRATEGY.md, COMMAND_CATALOG.md
+Decision record: ADR-002. The list of gates lives in one place per level: project gates in `.bequite/state/WORKFLOW_GATES.md`, per-work gates in `.bequite/work/<id>/gates.md` (in the BeQuite repo: `templates/bequite/state/WORKFLOW_GATES.md` and `templates/bequite/work/_template/gates.md`).
 
----
+## What a gate is
 
-## Feature-addition workflow (alpha.14 — global rule)
+A named condition that says whether a command may run. Each gate has one state:
 
-> **Every new BeQuite feature MUST follow this 15-step workflow.** Even when the user provides a detailed spec inline. The agent must not shortcut to implementation.
-
-| Step | Action | Output |
-|---|---|---|
-| 1 | Add feature request to memory | `OPEN_QUESTIONS.md` or `FEATURE_EXPANSION_ROADMAP.md` |
-| 2 | Run targeted research when feature touches a new domain | `.bequite/research/<DOMAIN>_RESEARCH_REPORT.md` (min 3 dims for fast; 11 for deep) |
-| 3 | Define scope | `SCOPE.md` — IN / OUT / NON-GOALS |
-| 4 | Create plan | `IMPLEMENTATION_PLAN.md` — files to create/modify, decisions, risks |
-| 5 | Break into tasks (when > 5 files) | `TASK_LIST.md` |
-| 6 | Implement command / skill / docs / memory | source files |
-| 7 | Update README | docs |
-| 8 | Update `commands.md` | docs |
-| 9 | Update `/bequite` root menu | `.claude/commands/bequite.md` |
-| 10 | Update `/bq-help` | `.claude/commands/bq-help.md` |
-| 11 | Update `.claude/bequite/docs/specs/COMMAND_CATALOG.md` | docs |
-| 12 | Update `.bequite/logs/AGENT_LOG.md` | log |
-| 13 | Update `docs/changelogs/CHANGELOG.md` | log |
-| 14 | Run `/bq-verify` post-implementation | `VERIFY_REPORT.md` |
-| 15 | Bump `BEQUITE_VERSION.md` + update `LAST_RUN.md` | state |
-
-**Exemptions:**
-- **Hotfixes** can skip steps 2-5 but must still 6-15
-- **Doc-only changes** can skip 2-5
-- **Adding a skill** that activates only via an existing command can skip 2-5 (but must scope what the skill does)
-
-**Why this rule exists:** alpha.13's Presentation Builder shipped without going through discover→research→scope→plan→tasks. The output was solid, but the discipline was wrong. alpha.14 codifies the rule. See `.bequite/audits/FEATURE_WORKFLOW_AUDIT.md` for the precedent.
-
----
-
-## One name per gate
-
-Each gate has exactly one name: the one in the project ledger (`templates/bequite/state/WORKFLOW_GATES.md`) or in the work template (`templates/bequite/work/_template/gates.md`). `scripts/bq_check.py` fails on any other spelling.
-
----
-
-## Orthogonal workflows (alpha.14 — don't change mode)
-
-The following commands operate **outside the 6 dev lifecycle modes**. They don't advance phase, don't set mode, don't require phase-gates beyond `BEQUITE_INITIALIZED`:
-
-- `/bq-presentation` — creative + content (PPTX / HTML / variants)
-- `/bq-job-finder` — opportunity discovery
-- `/bq-make-money` — earning discovery
-- `/bq-suggest` — workflow advisor (read-only)
-- `/bequite short` — orientation (read-only)
-- `/bq-explain` — explainer (read-only)
-- `/bq-help` — reference (read-only)
-- `/bq-update` — BeQuite self-maintenance
-
-If you're mid-implementation in `Add Feature` mode and you run `/bq-presentation`, the system stays in `Add Feature` mode. The presentation workflow runs in parallel + writes to its own memory folder (`.bequite/presentations/`).
-
----
-
----
-
-## What gates are
-
-Workflow gates are **named conditions** tracked in `.bequite/state/WORKFLOW_GATES.md` that determine when a command can run.
-
-States:
-- `✅ done` — gate is met
-- `❌ pending` — gate not yet met
-- `⚪ optional` — gate is optional; can be skipped
-- `[!] blocked` — gate cannot be met (blocker found; needs resolution)
+| State | Meaning |
+|---|---|
+| done | met, with the evidence (a file or a command) recorded next to it |
+| pending | not met yet |
+| n/a - reason | does not apply to this work; the reason is written |
+| blocked | cannot be met until something named is resolved |
 
 ## How gates work
 
-Every BeQuite command declares:
+- Every command names the gates it **needs** and the gates it **sets** (its "Gates" section).
+- A command whose needed gate is not done **refuses** and names the gate and the command that closes it:
 
-- **Required previous gates** — gates that must be `✅` before the command runs
-- **Quality gate** — gates the command marks `✅` on successful completion
+  ```
+  /bq-implement
+  Blocked: PLAN_APPROVED is pending for work 0007. Run /bq-plan first.
+  ```
 
-When a user invokes a command whose required gates aren't met, the command **refuses** and tells the user which gate is missing + suggests the prerequisite command.
+- A command sets its gate only when it finished and its evidence exists. A failed command sets nothing.
+- Gates are read at the start of every command (the Orient step of the pipeline). `/bq-recover` uses the ledger to find the last good checkpoint.
 
-Example:
-```
-You:      /bq-implement
-BeQuite:  Blocked — PLAN_APPROVED is ❌ pending.
-          Run /bq-plan first.
-```
+## One name per gate
 
-## The gates
+A gate has exactly one spelling: the one in the ledger or the work template. `scripts/bq_check.py` fails the pack on any other name. A new gate is added to the ledger or the work template first, then used.
 
-The list lives in one place: project gates in the ledger (`templates/bequite/state/WORKFLOW_GATES.md`), per-work gates in `templates/bequite/work/_template/gates.md`. Phases: P0 setup and discovery, P1 framing and research, P2 build, P3 quality and review, P4 release, P5 memory and handoff. The design-continuity gates apply only when a frontend exists ([`DESIGN_CONTINUITY_GATE.md`](DESIGN_CONTINUITY_GATE.md)); creative work adds the motion gates in the work template.
+## Which gates each mode needs
 
-## Mode-specific overrides
-
-Not every gate applies to every mode:
-
-| Mode | Required P0 | Required P1 | Required P2 | Required P3 | Required P4 | Required P5 |
+| Mode | P0 setup | P1 framing | P2 build | P3 quality | P4 release | P5 memory |
 |---|---|---|---|---|---|---|
-| New Project | All | All | All | All | All | All |
-| Existing Audit | All | CLARIFY + RESEARCH | (none; audit only) | TEST + REVIEW | (none) | MEMORY_SNAPSHOT |
-| Add Feature | BEQUITE + MODE | (none; self-contained) | FEATURE_TESTED | TEST + REVIEW | (optional) | MEMORY_SNAPSHOT |
-| Fix Problem | BEQUITE + MODE | (none; reproduce-first) | FIX_VERIFIED | TEST + REVIEW | (optional) | MEMORY_SNAPSHOT |
-| Research Only | BEQUITE + MODE | CLARIFY + RESEARCH | (none) | (none) | (none) | MEMORY_SNAPSHOT |
-| Release Readiness | BEQUITE + MODE | (none) | (none) | All + AUDIT | All | MEMORY_SNAPSHOT |
+| New Project | all | all | all | all | all | all |
+| Existing Audit | all | clarify, research | none (audit only) | tests, review | none | snapshot |
+| Add Feature | initialized, mode | none (the feature cycle carries its own) | `FEATURE_TESTED` | tests, review | optional | snapshot |
+| Fix Problem | initialized, mode | none (reproduce first) | `FIX_VERIFIED` | tests, review | optional | snapshot |
+| Research Only | initialized, mode | clarify, research | none | none | none | snapshot |
+| Release Readiness | initialized, mode | none | none | all, plus audit | all | snapshot |
 
-## Hard human gates (auto-mode only)
+Creative work adds its own: `REFERENCES_STUDIED` before any creative output, `HUMAN_TEST_PASSED` before delivery, and for films `SCRIPT_APPROVED`, `STYLE_LOCKED`, `RENDER_PLAN_APPROVED`, `PICTURE_LOCKED`, `AUDIO_APPROVED`, `FINAL_QC_PASS`, `DELIVERY_APPROVED`.
 
-`/bq-auto` adds 17 hard human gates on top of workflow gates. These are places auto-mode **must pause** for explicit user confirmation:
+## Commands outside the lifecycle
 
-1. Destructive file deletion
-2. Database migration against shared/prod DBs
-3. Production server change
-4. VPS / Nginx / SSL change
-5. Paid service activation
-6. Secret / key handling
-7. Changing auth/security model
-8. Changing project architecture
-9. Deleting old implementation with active callers
-10. Scope contradiction
-11. User explicit manual-approval request
-12. Cost ceiling reached
-13. Wall-clock ceiling reached
-14. Banned-weasel-word trip
-15. 3 consecutive failures on the same task
-16. UI variant winner selection (after `/bq-uiux-variants`)
-17. Release `git push` / `git tag`
+These need only `BEQUITE_INITIALIZED`, set no phase and do not change the mode: `/bequite`, `/bq-help`, `/bq-explain`, `/bq-suggest` (read-only); `/bq-presentation`, `/bq-content`, `/bq-watch`, `/bq-dna`, `/bq-job-finder`, `/bq-make-money`, `/bq-offer`, `/bq-start` (their own memory folders); `/bq-update`, `/bq-hooks`, `/bq-budget`, `/bq-taste`, `/bq-forge`, `/bq-eval`, `/bq-skill-audit` (maintenance). Running one in the middle of a feature leaves the feature's mode and gates as they are.
 
-See [`AUTO_MODE_STRATEGY.md`](AUTO_MODE_STRATEGY.md) for full discussion.
+## Hard human gates
 
-## How gates are updated
+Separate from workflow gates: actions that always wait for the user's explicit yes, in every mode, including `/bq-auto`. The list is in `.claude/bequite/docs/architecture/AUTO_MODE_STRATEGY.md`.
 
-Every command's spec lists which gates it updates. The updates happen atomically on successful completion. Failed commands don't update gates.
+## Not allowed
 
-The agent re-reads `.bequite/state/WORKFLOW_GATES.md` at the start of every command to determine eligibility.
-
-## Resume after break
-
-When `/bq-recover` runs, it reads the gate ledger to find the last green checkpoint and recommend the next safe step.
-
-## Anti-patterns
-
-- ❌ Manually editing `WORKFLOW_GATES.md` to mark gates `✅` without running the command
-- ❌ Adding new gates without documenting in this file + ADR-002
-- ❌ Treating optional gates as required (or vice versa)
-- ❌ Skipping gates with `--force` flags (those don't exist; gates are non-negotiable)
-
-## See also
-
-- ADR-002 — the decision to introduce mandatory gates
-- COMMAND_CATALOG.md — which gates each command requires + sets
-- AUTO_MODE_STRATEGY.md — hard human gates in `/bq-auto`
+- Editing a gate to done by hand without running the command that sets it.
+- Treating an optional gate as required, or a required one as optional.
+- A "force" flag for gates. There is none.

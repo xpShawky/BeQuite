@@ -1,4 +1,4 @@
-# Offer Engine — `/bq-offer` (C11) — alpha.23
+# Offer Engine — `/bq-offer` (C11)
 
 Turn a skill, service, automation, product idea, course idea, niche, or pain point into a **sellable productized offer** — the standing package a buyer can say yes to, distinct from C8 `/bq-offer proposal` (the per-client pitch of that package).
 
@@ -30,4 +30,4 @@ Output language = the user's requested language (Arabic ⇒ Arabic pack with loc
 
 ## Routing
 
-Skills: product-strategist · writing-dna · make-money · anti-hallucination · researcher (market claims) · localization-rtl (Arabic/MENA) · presentation-builder (deck) · frontend-design-system (landing). Usually follows: C6 · C10 · C8 · C5 · or a user-provided idea. Usually next: C8 · W4.2 proof · C1 · C2 · W1.3 intake · W2.3 landing. **Status: built alpha.23 — NOT live-tested** (first trial: one real offer idea).
+Skills: product-strategist · writing-dna · make-money · anti-hallucination · researcher (market claims) · localization-rtl (Arabic/MENA) · presentation-builder (deck) · frontend-design-system (landing). Usually follows: C6 · C10 · C8 · C5 · or a user-provided idea. Usually next: C8 · W4.2 proof · C1 · C2 · W1.3 intake · W2.3 landing. **Not live-tested yet** (first trial: one real offer idea).

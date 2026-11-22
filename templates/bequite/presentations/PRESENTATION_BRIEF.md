@@ -37,7 +37,7 @@
 - **Brand kit:** (path or "none")
 - **Language:** (default English; supports Arabic / RTL via `mena-bilingual` doctrine)
 
-## Operating mode (alpha.12)
+## Operating mode
 
 - **Mode:** `<deep | fast | token-saver (lean) | delegate | balanced>`
 - **Reason:**

@@ -75,13 +75,13 @@ Show the requested area, formatted. Topics:
 - `logs` → AGENT_LOG + CHANGELOG + ERROR_LOG (truncated to recent entries)
 - `logs.errors` → just ERROR_LOG.md
 - `logs.agent` → just AGENT_LOG.md (last 20 entries)
-- `plans` → IMPLEMENTATION_PLAN.md + SCOPE.md
-- `tasks` → TASK_LIST.md (formatted with progress bar)
+- `plans` → `work/<id>/plan.md` + `work/<id>/spec.md`
+- `tasks` → `work/<id>/tasks.md` (formatted with progress bar)
 - `audits` → list each audit file by date + size
 - `audits.discovery` → DISCOVERY_REPORT.md
 - `audits.doctor` → DOCTOR_REPORT.md
 - `audits.full` → FULL_PROJECT_AUDIT.md
-- `audits.verify` → VERIFY_REPORT.md
+- `audits.verify` → `work/<id>/verify.md`
 
 ## `/bq-memory snapshot`
 
@@ -112,7 +112,7 @@ Capture the entire state at this moment for future recovery. Write:
 ### OPEN_QUESTIONS.md (resolved only)
 <content>
 
-### TASK_LIST.md status overview
+### `work/<id>/tasks.md` status overview
 <count by status>
 ```
 

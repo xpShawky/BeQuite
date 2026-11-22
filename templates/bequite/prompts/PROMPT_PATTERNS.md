@@ -1,4 +1,4 @@
-# Prompt Patterns (alpha.19)
+# Prompt Patterns
 
 > Reusable skeletons per `.claude/bequite/docs/architecture/PROMPT_ENGINEERING_STANDARD.md`. Fill the brackets; delete unused lines. Most important constraint goes FIRST.
 

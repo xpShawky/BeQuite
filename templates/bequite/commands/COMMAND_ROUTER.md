@@ -1,4 +1,4 @@
-# Command Router — operational routing map (alpha.22)
+# Command Router — operational routing map
 
 Strategy: `.claude/bequite/docs/architecture/WORKFLOW_COMMAND_ROUTER.md` · IDs: `COMMAND_ID_MAP.md` · log: `NEXT_COMMAND_LOG.md`.
 Commands answer **what next**; skills answer **how well** (see `.bequite/skills/SKILL_ROUTER.md`).
@@ -78,8 +78,8 @@ Auto mode instead reports: `Internal workflow executed: <ID list>` then the same
 | "how much should I charge?" | `/bq-offer proposal price` (+ product-strategist pricing) |
 | "record a walkthrough" / live demo | `/bq-release demo-video` (demo-script profile) |
 | "package this project for resale" | `/bq-release template` (V2 — not yet built; say so) |
-| "build me a sellable offer" / productize my skill | **C11 `/bq-offer`** (built alpha.23 — needs an idea/niche; without one, C6 pain-radar or C10 make-money first) |
+| "build me a sellable offer" / productize my skill | **C11 `/bq-offer`** |
 
-## 7. Conflict + missing-capability rule (alpha.22 orchestration update)
+## 7. Conflict + missing-capability rule
 
 Two routes seem right / categories blur / task fits nothing: STOP choosing by similarity. Open .bequite/state/ORCHESTRATION_MAP.md (near-miss boundaries sections 1-5, missing-capability protocol section 12) via the bequite-orchestrator skill. Nothing fits: emit the Missing Capability Detected block — never stretch a wrong command.

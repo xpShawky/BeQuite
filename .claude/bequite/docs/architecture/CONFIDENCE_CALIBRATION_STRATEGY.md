@@ -1,8 +1,7 @@
-# Confidence Calibration Strategy (alpha.21)
+# Confidence Calibration Strategy
 
 > **Confidence is not a feeling. It is a report** based on evidence, tests, scope clarity, project familiarity, dependency risk, and verification. BeQuite doesn't only say what it will do — it estimates how likely it is to succeed, why, what is uncertain, and what must be verified.
 
-**Status:** active · **Adopted:** alpha.21
 **Integrated into:** `/bq-plan` · `/bq-assign` · `/bq-auto` · `/bq-feature` · `/bq-fix` · `/bq-implement` · `/bq-review` · `/bq-verify` · `/bq-release` (no separate `/bq-confidence` command — integration beats clutter; revisit only if demand appears)
 **Rules file (per-project tunable):** `.bequite/state/CONFIDENCE_RULES.md` · **Task fields:** `.bequite/work/<id>/tasks.md` · **Calibration tracking:** `.bequite/audits/CONFIDENCE_CALIBRATION_REPORT.md`
 

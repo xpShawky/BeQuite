@@ -1,7 +1,7 @@
 # BeQuite tool neutrality — global principle
 
 **Status:** active doctrine (binding on every BeQuite skill, command, doctrine, plan, ADR, and conversation)
-**Adopted:** 2026-05-11 (v3.0.0-alpha.3)
+**Adopted:** 2026-05-11
 **ADR:** `.claude/bequite/docs/decisions/ADR-003-tool-neutrality.md`
 
 ---
@@ -63,7 +63,7 @@ This applies to:
 - Skill files
 - Command files
 - Doctrine files
-- Plans (IMPLEMENTATION_PLAN.md)
+- Plans (`work/<id>/plan.md`)
 - ADRs
 - Spec docs
 - Commit messages
@@ -97,7 +97,7 @@ Every major tool, library, framework, or method pick must produce a decision sec
 | Project size / sensitivity | Decision format |
 |---|---|
 | Small / prototype / spike | Short inline section in the plan or commit message |
-| Standard SaaS / app | Full decision section in IMPLEMENTATION_PLAN §11 or §12 |
+| Standard SaaS / app | Full decision section in the plan §11 or §12 |
 | Large / regulated / mission-critical | Full ADR at `.bequite/decisions/ADR-XXX-<tool>-choice.md` |
 
 ADR path convention (for project-level tool ADRs, inside the target project): `.bequite/decisions/ADR-<NNN>-<short-slug>.md`. Increment NNN per project.

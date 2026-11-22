@@ -39,7 +39,7 @@ Get-Content tmp.json -Raw | powershell -NoProfile -ExecutionPolicy Bypass -File 
 # secret -> expect exit 2: {"tool_input":{"file_path":"x.env","content":"AWS_SECRET=AKIA...EXAMPLE"}}
 # weasel Stop -> expect exit 2: {"response":"the fix is complete and it should work now"}
 ```
-macOS/Linux: `printf '<json>' | bash .claude/hooks/<hook>.sh ; echo $?`. Report PASS/FAIL per hook (matched expected exit code). Use temp JSON files inside the project dir to avoid shell quote/path issues; clean them up. Verified pattern (alpha.24): all 3 PS1 hooks returned the correct codes.
+macOS/Linux: `printf '<json>' | bash .claude/hooks/<hook>.sh ; echo $?`. Report PASS/FAIL per hook (matched expected exit code). Use temp JSON files inside the project dir to avoid shell quote/path issues; clean them up. Verified pattern: all 3 PS1 hooks returned the correct codes.
 
 ## enable (asks for confirmation first — security-sensitive)
 

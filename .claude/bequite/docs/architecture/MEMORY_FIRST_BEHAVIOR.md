@@ -1,14 +1,14 @@
 # Memory-First Behavior
 
 **Status:** active
-**Adopted:** 2026-05-12 (alpha.10)
+**Adopted:** 2026-05-12
 **Reference:** ADR-002 (workflow gates), TOOL_NEUTRALITY.md, AUTO_MODE_STRATEGY.md
 
-**Related strategies (alpha.16 cross-refs):**
+**Related strategies:**
 - `AUTO_MODE_STRATEGY.md` §11 "Operating modes" — **Token Saver Mode** is the operating mode that most rewards good memory-first discipline (reuse cached state instead of re-fetching)
-- `RESEARCH_DEPTH_STRATEGY.md` — research outputs (RESEARCH_REPORT.md) are exactly what Token Saver Mode reuses
-- `MULTI_MODEL_PLANNING_STRATEGY.md` + `bequite-delegation` skill — **Delegate Mode** reuses cached state across sessions; memory-first is what makes the strong→cheap→strong handoff work
-- `WORKFLOW_GATES.md` § "Feature-addition workflow (alpha.14)" — step 1 is "add feature request to memory"; memory-first is how the next session resumes that work
+- `RESEARCH_DEPTH_STRATEGY.md` — research outputs (`work/<id>/research.md`) are exactly what Token Saver Mode reuses
+- `bequite-delegation` skill — **Delegate Mode** reuses cached state across sessions; memory-first is what makes the strong→cheap→strong handoff work
+- `WORKFLOW_GATES.md` § "Feature-addition workflow" — step 1 is "add feature request to memory"; memory-first is how the next session resumes that work
 
 ---
 
@@ -47,8 +47,8 @@ These are always read at the start of any non-trivial command:
 - `.bequite/uiux/SECTION_MAP.md` — `/bq-live-edit`, `/bq-uiux-variants`, frontend `/bq-fix`
 - `.bequite/uiux/LIVE_EDIT_LOG.md` — `/bq-live-edit`
 - `.bequite/uiux/UIUX_VARIANTS_REPORT.md` — `/bq-uiux-variants`
-- `.bequite/design/DESIGN_DNA.md` — **every frontend command, read before any UI work** (alpha.17)
-- `.bequite/state/FRONTEND_CONTEXT_SUMMARY.md` — **every frontend task** — the cheap 1-screen design digest; read this before escalating to the full DNA (alpha.17)
+- `.bequite/design/DESIGN_DNA.md` — **every frontend command, read before any UI work**
+- `.bequite/state/FRONTEND_CONTEXT_SUMMARY.md` — **every frontend task** — the cheap 1-screen design digest; read this before escalating to the full DNA
 - `.bequite/design/DESIGN_CONTINUITY_REPORT.md` — `/bq-audit`, `/bq-review`, `/bq-red-team`, `/bq-verify`, `/bq-auto` (frontend)
 - `.bequite/audits/VISUAL_QA_REPORT.md` — `/bq-verify`, `/bq-auto`, `/bq-feature` (frontend)
 - `.bequite/jobs/JOB_PROFILE.md` — `/bq-job-finder` (re-use if recent)
@@ -81,20 +81,20 @@ These commands read only what they need; not all core memory:
 | `/bq-discover` | Project files broadly | `DISCOVERY_REPORT.md` |
 | `/bq-doctor` | Project manifests, env | `DOCTOR_REPORT.md` |
 | `/bq-clarify` | DISCOVERY, ASSUMPTIONS | `OPEN_QUESTIONS.md`, `DECISIONS.md` |
-| `/bq-research` | OPEN_QUESTIONS, DISCOVERY | `RESEARCH_REPORT.md` |
-| `/bq-scope` | OPEN_QUESTIONS, RESEARCH | `SCOPE.md` |
+| `/bq-research` | OPEN_QUESTIONS, DISCOVERY | `work/<id>/research.md` |
+| `/bq-scope` | OPEN_QUESTIONS, RESEARCH | `work/<id>/spec.md` |
 | `/bq-spec` | SCOPE, PROJECT_STATE | `specs/<slug>/spec.md`, `.bequite/plans/spec-<slug>.md` |
-| `/bq-plan` | All P0-P1 outputs | `IMPLEMENTATION_PLAN.md` |
+| `/bq-plan` | All P0-P1 outputs | `work/<id>/plan.md` |
 | `/bq-multi-plan` | All P0-P1 outputs | prompts + responses + merged plan |
-| `/bq-assign` | IMPLEMENTATION_PLAN | `TASK_LIST.md` |
-| `/bq-implement` | TASK_LIST, IMPLEMENTATION_PLAN, code | Source files, tests, `CHANGELOG [Unreleased]` |
+| `/bq-assign` | the plan | `work/<id>/tasks.md` |
+| `/bq-implement` | TASK_LIST, the plan, code | Source files, tests, `CHANGELOG [Unreleased]` |
 | `/bq-feature` | (self-contained) | feature mini-spec, source, tests |
 | `/bq-fix` | ERROR_LOG, recent git log, source | source fix, regression test, `ERROR_LOG.md`, `MISTAKE_MEMORY.md` |
 | `/bq-test` | (test framework) | new test files |
 | `/bq-audit` | Repo broadly | `FULL_PROJECT_AUDIT.md`, `MISTAKE_MEMORY.md` |
 | `/bq-review` | Git diff, PLAN | `REVIEW-<ts>.md`, `MISTAKE_MEMORY.md` |
 | `/bq-red-team` | Diff, PLAN, RESEARCH | `RED_TEAM-<ts>.md`, `MISTAKE_MEMORY.md` |
-| `/bq-verify` | All applicable test runners | `VERIFY_REPORT.md`, `MISTAKE_MEMORY.md` |
+| `/bq-verify` | All applicable test runners | `work/<id>/verify.md`, `MISTAKE_MEMORY.md` |
 | `/bq-release` | VERIFY, CHANGELOG | version bump, CHANGELOG move |
 | `/bq-changelog` | git log, feature specs | CHANGELOG |
 | `/bq-memory` | All `.bequite/state/*` | `MEMORY_SNAPSHOT_<date>.md` |
@@ -116,7 +116,7 @@ When the user is on a tight session budget (e.g. `--mode token-saver` on `/bq-au
 
 1. **Read only what's needed for this step.** Don't load the full plan if you're only running one task.
 2. **Summarize older log entries.** `AGENT_LOG.md` can be 200 entries deep; load the last 5-10 unless the user is debugging.
-3. **Cache research.** If `RESEARCH_REPORT.md` was written this session, don't re-fetch the same WebFetch responses.
+3. **Cache research.** If `work/<id>/research.md` was written this session, don't re-fetch the same WebFetch responses.
 4. **Use focused skills.** Don't load all 18 skills every time; only load skills the current task activates.
 5. **Avoid loading all docs every session.** `commands.md` (~1500 lines) doesn't need to be in context if the agent already knows the surface from skill descriptions.
 6. **Re-derive from snapshots.** If `MEMORY_SNAPSHOT_<date>.md` exists, prefer it over reading 10 source files for the same context.
@@ -155,7 +155,7 @@ Write to it only when:
 
 ---
 
-## Frontend design memory strategy (alpha.17)
+## Frontend design memory strategy
 
 Design intent is the part of memory that drifts fastest — it's why middle sections degrade. Treat it with extra memory-first discipline (see `FRONTEND_CONTEXT_ENGINEERING.md`):
 

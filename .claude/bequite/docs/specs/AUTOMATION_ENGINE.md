@@ -1,4 +1,4 @@
-# Automation Engine — `/bq-knowledge automation` (C12) — alpha.24
+# Automation Engine — `/bq-knowledge automation` (C12)
 
 Turn a workflow or bot idea into a **tool-neutral automation blueprint**. Command: `/bq-knowledge automation` (in `bq-knowledge.md`). Skill: `bequite-automation` (distilled from the retired v2 automation-architect + ai-automation references; see LEGACY_SKILL_FOLDER_AUDIT). **Installs nothing — designs only.**
 
@@ -20,4 +20,4 @@ Telegram/Discord/WhatsApp(official API only)/web/admin: permission scopes · com
 
 ## Honesty + neutrality
 
-UNVERIFIED for unconfirmed platform behavior; every tool is a candidate with a decision rationale; no install, no provider keys, no daemon. **Built alpha.24 — NOT live-tested.**
+UNVERIFIED for unconfirmed platform behavior; every tool is a candidate with a decision rationale; no install, no provider keys, no daemon. **Not live-tested yet.**

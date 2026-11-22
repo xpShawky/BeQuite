@@ -1,4 +1,4 @@
-# Command Numbering & Ordering Strategy (alpha.22)
+# Command Numbering & Ordering Strategy
 
 **Decision: Option A — display-only catalog IDs. No file renames. No alias files.**
 Feasibility audit: `.bequite/audits/COMMAND_NAVIGATION_AND_CAPABILITY_CONSOLIDATION_AUDIT.md` §4.
@@ -24,7 +24,7 @@ Gained capability: zero. **REJECTED.**
 
 ## Option A — how it works
 
-- IDs live in **docs and output only**: README, commands.md, `/bequite`, `/bq-help`, COMMAND_CATALOG, Command Router recommendations.
+- IDs live in **docs and output only**: README, commands.md, `/bequite`, `/bq-help`, COMMAND_ID_MAP, Command Router recommendations.
 - Files and slash names are untouched.
 - IDs are the **router's vocabulary**: "Required next: **W4.1 `/bq-verify`**".
 - Auto mode reports internally executed steps by ID: "Internal workflow executed: W0.3 → W1.2 → W1.4 → W4.1".

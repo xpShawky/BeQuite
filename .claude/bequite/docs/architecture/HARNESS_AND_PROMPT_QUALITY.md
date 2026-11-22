@@ -128,7 +128,7 @@ BeQuite has no daemon, so its harness is these five surfaces. Use the lightest o
 
 ## 7. New command / skill authoring checklist
 
-Run this before shipping any new command or skill. Pair with the alpha.14 15-step feature-addition workflow (this checklist covers the *quality* of the artifact; that workflow covers the *process*).
+Run this before shipping any new command or skill. Pair with the rules for adding a command or a skill in the BeQuite repo's `CONTRIBUTING.md` (this checklist covers the *quality* of the artifact; that workflow covers the *process*).
 
 ### For a new COMMAND (`.claude/commands/bq-*.md`)
 
@@ -142,7 +142,7 @@ Run this before shipping any new command or skill. Pair with the alpha.14 15-ste
 - [ ] No banned weasel words anywhere in the body or its report template.
 - [ ] Declares which gates it requires + which gate(s) it satisfies (refuses if prerequisites unmet — rule #11).
 - [ ] Reads core memory first (state/mode/phase/gates/last-run); writes back with freshness stamp — §6.
-- [ ] Registered in `/bequite` menu, `/bq-help`, `commands.md`, `COMMAND_CATALOG.md` (alpha.14 steps 9-11).
+- [ ] Registered in `/bequite` menu, `/bq-help`, `commands.md`, `COMMAND_ID_MAP.md`.
 
 ### For a new SKILL (`.claude/skills/bequite-*/SKILL.md`)
 
@@ -150,7 +150,7 @@ Run this before shipping any new command or skill. Pair with the alpha.14 15-ste
 - [ ] `description` STARTS with "Use when …" and states ONLY triggers — never the workflow.
 - [ ] Body focused; heavy reference pushed to a sibling file (`reference.md`).
 - [ ] Most load-bearing content first; canonical examples over edge cases — §4.
-- [ ] Ends with `## When NOT to use this skill` + `## Quality gate` sections (alpha.15 convention).
+- [ ] Ends with `## When NOT to use this skill` + `## Quality gate` sections.
 - [ ] Right-altitude — strong heuristics, not a fragile script — §4.
 - [ ] Triggers are specific enough to avoid false activation, broad enough to catch real cases (ACI clarity — §1).
 

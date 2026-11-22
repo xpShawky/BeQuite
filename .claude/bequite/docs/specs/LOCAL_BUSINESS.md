@@ -1,4 +1,4 @@
-# Local Business Digitizer — `/bq-offer local-business` (C13) — alpha.24
+# Local Business Digitizer — `/bq-offer local-business` (C13)
 
 Turn an offline/low-tech local business into a **practical minimum digital system** — not an enterprise build. Command: `/bq-offer local-business` (in `bq-offer.md`). Skills: automation + product-strategist + localization-rtl + make-money. Reuses C6/C11/C12 rather than duplicating them.
 
@@ -12,4 +12,4 @@ BUSINESS_PROFILE · PAIN_MAP · DIGITAL_OPPORTUNITY_MAP · MINIMUM_DIGITAL_SYSTE
 
 ## Principle
 
-**Minimum viable digital system first** — usually a simple menu/catalog page + WhatsApp ordering + booking/reminders, NOT a full custom app. Phased roadmap. Local-market realism over tech maximalism. RISK_AND_COMPLIANCE covers data/privacy (PDPL/MENA where relevant). OFFER_ANGLE feeds C11 so the digitizer becomes a sellable service. **Built alpha.24 — NOT live-tested.**
+**Minimum viable digital system first** — usually a simple menu/catalog page + WhatsApp ordering + booking/reminders, NOT a full custom app. Phased roadmap. Local-market realism over tech maximalism. RISK_AND_COMPLIANCE covers data/privacy (PDPL/MENA where relevant). OFFER_ANGLE feeds C11 so the digitizer becomes a sellable service. **Not live-tested yet.**

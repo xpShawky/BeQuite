@@ -1,6 +1,6 @@
 # Auto Mode Rules (operational card)
 
-Strategy: `.claude/bequite/docs/architecture/AUTO_MODE_STRATEGY.md` (+ base `AUTO_MODE_STRATEGY.md` for intents/gates). Auto Mode = orchestrator, never "continue coding".
+Strategy: `.claude/bequite/docs/architecture/AUTO_MODE_STRATEGY.md` (intents and modes: `/bq-auto`; stages: `PIPELINE.md`). Auto Mode = orchestrator, never "continue coding".
 
 ## The 15-step sequence (no silent skips)
 

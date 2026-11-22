@@ -1,6 +1,6 @@
 # Impeccable — researched reference notes
 
-**Source:** Paul Bakaus — https://github.com/pbakaus/impeccable (Apache-2.0). Tagline: *"The vocabulary you didn't know you needed. 1 skill, 23 commands, and curated anti-patterns for impeccable frontend design."* Verified against README, `skill/SKILL.src.md`, and the `skill/reference/*.md` command files (alpha.17 research pass).
+**Source:** Paul Bakaus — https://github.com/pbakaus/impeccable (Apache-2.0). Tagline: *"The vocabulary you didn't know you needed. 1 skill, 23 commands, and curated anti-patterns for impeccable frontend design."* Verified against README, `skill/SKILL.src.md`, and the `skill/reference/*.md` command files.
 
 > Reference, not a dependency. BeQuite studies Impeccable and ports principles — it does not install or copy it.
 

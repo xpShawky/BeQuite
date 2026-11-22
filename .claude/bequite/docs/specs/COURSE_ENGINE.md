@@ -1,4 +1,4 @@
-# Course Engine — `/bq-content course` (C5) — alpha.22
+# Course Engine — `/bq-content course` (C5)
 
 A serious Course Engine — not an outline generator. Runs validation → persona → promise → offer → curriculum → lessons → assessment → production → marketing → launch.
 
@@ -30,7 +30,7 @@ researcher (always) · writing-dna (scripts/narration) · presentation-builder (
 
 Curriculum before slides, always. Every lesson states: outcome, practical task, proof of learning. Completion psychology designed in (quick wins early, momentum loops, gamification where it serves learning — not points-for-points). Paid courses get offer + objections + funnel sections; free courses get lead-magnet positioning. Strict mode = full source fidelity (no invented facts, citations preserved); ethics rules of Writing DNA apply (no fabricated citations, no academic dishonesty).
 
-## Course Source Intake (scanned/OCR PDF handling — alpha.22 stabilization)
+## Course Source Intake
 
 Source PDFs may be: text PDFs · scanned/image-based · mixed Arabic/English · OCR-messy · badly ordered · RTL · slides-exported-as-PDF · screenshots-inside-PDF. Intake rules (run before any curriculum work when source files exist):
 

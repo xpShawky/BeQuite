@@ -103,6 +103,6 @@ Recommended next 3 commands:
 | Research Only | `/bq-discover` (then `/bq-research`) |
 | Release Readiness | `/bq-verify` |
 
-## Mode-decision matrix (alpha.24 pointer)
+## Mode-decision matrix
 
 Workflow modes (New / Existing / Add Feature / Fix / Research-only / Release) set which gates apply. Orthogonal **operating** modes (deep / fast / token-saver / delegate) set depth+cost — see `.claude/bequite/docs/architecture/AUTO_MODE_STRATEGY.md` for the full matrix (best-for / avoid-when / research-depth / testing-depth / output-length). On any conflict about what to run next, defer to `.bequite/state/ORCHESTRATION_MAP.md`.

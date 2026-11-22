@@ -1,8 +1,7 @@
-# Feature Type Taxonomy (alpha.21)
+# Feature Type Taxonomy
 
 > Ends the internal-vs-user-facing confusion permanently. Every BeQuite feature gets exactly one PRIMARY type; every FUTURE feature must declare its type (and shape) before building.
 
-**Status:** active · **Adopted:** alpha.21 (per FABLE_5_FOLLOWUP_AUDIT findings)
 
 ## The 8 types
 
@@ -42,7 +41,7 @@ Ship command + skill + memory pack + docs per the 15-step workflow.
 3. Discovery sprints (V2 onward) only count type-1 candidates as "new capabilities."
 4. When in doubt: "what can the user do AFTER this that they couldn't before?" No answer → not type 1.
 
-## alpha.22 worked shape decisions (precedents)
+## Worked shape decisions (precedents)
 
 | Request | Shape ruling | Why |
 |---|---|---|

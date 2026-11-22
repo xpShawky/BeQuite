@@ -45,7 +45,7 @@ When an assumption is wrong, downstream work is wrong. This file makes assumptio
   **Confidence:** medium
   **Source:** user statement (no validated traction yet)
   **Sunset condition:** real MAU exceeds 1K → re-verify scale tier; or product pivots to enterprise → scale up
-  **Affects:** IMPLEMENTATION_PLAN §5 (stack — Supabase free tier OK; PgBouncer not needed yet), §9 (no Redis cache in v1)
+  **Affects:** the plan §5 (stack — Supabase free tier OK; PgBouncer not needed yet), §9 (no Redis cache in v1)
 -->
 
 (no assumptions recorded yet — populated as `/bq-discover`, `/bq-clarify`, `/bq-research` run)

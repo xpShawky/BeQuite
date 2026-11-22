@@ -1,6 +1,6 @@
-# Workflow Command Router / Next Command Advisor (alpha.22)
+# Workflow Command Router / Next Command Advisor
 
-**The second routing layer.** The Skill Router (alpha.20) answers *"which expert procedures should BeQuite use?"* The **Command Router** answers *"which command or workflow step should happen next?"* Never confuse the two: commands = what happens next; skills = how it's done well.
+**The second routing layer.** The Skill Router answers *"which expert procedures should BeQuite use?"* The **Command Router** answers *"which command or workflow step should happen next?"* Never confuse the two: commands = what happens next; skills = how it's done well.
 
 Operational map: `.bequite/commands/COMMAND_ROUTER.md` · ID vocabulary: `.bequite/commands/COMMAND_ID_MAP.md` · decisions logged to `.bequite/commands/NEXT_COMMAND_LOG.md`.
 
@@ -69,6 +69,6 @@ Non-trivial routing decisions append one line to `NEXT_COMMAND_LOG.md` (date · 
 
 New command ⇒ add: ID map row + router routes + "usually next" links from neighbors. Removing ⇒ retire ID, purge routes. Skipping this = drift violation.
 
-## Orchestration linkage (alpha.22 orchestration update)
+## Orchestration linkage
 
 The Command Router is one layer of the global orchestration model (BEQUITE_ORCHESTRATION_MODEL.md). On conflict, duplication, or unclear next step, routing defers to .bequite/state/ORCHESTRATION_MAP.md (source of truth) via the bequite-orchestrator skill. When no command fits, the router emits the Missing Capability block instead of forcing a nearest-match.

@@ -1,4 +1,4 @@
-# Recording-to-Assets — `/bq-knowledge recording` (C16) — alpha.24
+# Recording-to-Assets — `/bq-knowledge recording` (C16)
 
 Turn long videos/lectures/webinars/meetings into structured knowledge. Command: `/bq-knowledge recording` (in `bq-knowledge.md`). Skills: researcher + (C4 knowledge) + anti-hallucination + localization-rtl. **Workflow/spec-first; heavy tools OPTIONAL + tool-dependent; nothing installed by default; no ToS-violating downloads.**
 
@@ -19,4 +19,4 @@ SOURCE_INTAKE · TRANSCRIPT · CHAPTER_MAP · VISUAL_KEYFRAMES · DEDUPLICATION_
 
 ## Tools (candidates, never defaults; re-verify; nothing installed)
 
-subtitle extraction · yt-dlp (legal + ToS-compliant only) · ffmpeg · scene detection · keyframe extraction · slide OCR · transcript alignment · Whisper-class transcription · local/cheap multimodal (Gemini/Gemma-class) · perceptual hashing · screenshot-diff thresholds. **No heavy dependency by default; prefer user-provided transcript/official export.** **Built alpha.24 — NOT live-tested.**
+subtitle extraction · yt-dlp (legal + ToS-compliant only) · ffmpeg · scene detection · keyframe extraction · slide OCR · transcript alignment · Whisper-class transcription · local/cheap multimodal (Gemini/Gemma-class) · perceptual hashing · screenshot-diff thresholds. **No heavy dependency by default; prefer user-provided transcript/official export.** **Not live-tested yet.**

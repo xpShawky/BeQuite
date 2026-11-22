@@ -1,6 +1,6 @@
 # Using BeQuite Outside Claude Code
 
-BeQuite's commands are markdown playbooks and its memory is plain files — so you can use it with Codex/ChatGPT-style agents, Cursor, Antigravity-class IDE agents, autonomous agent harnesses, or any LLM with file access. This runbook is the practical how-to; the reasoning lives in `.claude/bequite/docs/architecture/CROSS_AGENT_COMPATIBILITY_STRATEGY.md`; per-agent details in `.claude/bequite/docs/specs/AGENT_COMPATIBILITY_MATRIX.md`.
+BeQuite's commands are markdown playbooks and its memory is plain files — so you can use it with Codex/ChatGPT-style agents, Cursor, Antigravity-class IDE agents, autonomous agent harnesses, or any LLM with file access. This runbook is the practical how-to; per-agent details are in `.claude/bequite/docs/specs/AGENT_COMPATIBILITY_MATRIX.md`.
 
 ## The universal recipe (works with any capable agent)
 

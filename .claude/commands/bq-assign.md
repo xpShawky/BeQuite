@@ -19,7 +19,7 @@ You convert `.bequite/work/<id>/plan.md` into a list of **atomic tasks** the age
 - `.bequite/work/<id>/spec.md`
 - `.bequite/state/DECISIONS.md`
 
-If IMPLEMENTATION_PLAN.md is missing, suggest `/bq-plan` first and exit.
+If `work/<id>/plan.md` is missing, suggest `/bq-plan` first and exit.
 
 ## Step 2 — Break the plan into tasks
 
@@ -37,7 +37,7 @@ Good: "T-2.1: Create `lib/auth.ts` exporting `auth` from `better-auth` with emai
 - Number within phase (T-1.1, T-1.2, T-2.1, ...)
 - Mark parallel-safe tasks with `parallel: true` (per AkitaOnRails 2026: only when applying the same change to many files, OR generating similar CRUD endpoints — N > 5 threshold)
 
-## Step 4 — Write TASK_LIST.md
+## Step 4 — Write `work/<id>/tasks.md`
 
 `.bequite/work/<id>/tasks.md`:
 
@@ -124,9 +124,9 @@ Next: /bq-implement — pick off T-1.1
 - **Every task must have an acceptance criterion.**
 - **Mark dependencies explicitly.** "T-2.2 depends on T-2.1" is part of the task entry.
 - **Only mark parallel: true when N > 5 + truly independent.** Otherwise, serial is safer (AkitaOnRails 2026).
-- **Require the File-Responsibility Map first (alpha.18).** Refuse to write tasks if `.bequite/work/<id>/plan.md` is missing — it defines each file's single responsibility + allowed import direction.
-- **Each task carries an embedded validation command + expected output and ends at a commit (alpha.18).** Reject any task containing "TBD", "implement later", or "similar to Task N" — every step has the content an engineer with zero context needs.
-- **Logic tasks are failing-test-first (alpha.18).** Write + confirm the failing test, then implement until green. Never edit/delete tests to pass.
+- **Require the File-Responsibility Map first.** Refuse to write tasks if `.bequite/work/<id>/plan.md` is missing — it defines each file's single responsibility + allowed import direction.
+- **Each task carries an embedded validation command + expected output and ends at a commit.** Reject any task containing "TBD", "implement later", or "similar to Task N" — every step has the content an engineer with zero context needs.
+- **Logic tasks are failing-test-first.** Write + confirm the failing test, then implement until green. Never edit/delete tests to pass.
 
 ## Gates and failure behaviour
 
@@ -135,7 +135,7 @@ Next: /bq-implement — pick off T-1.1
 **Preconditions:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`, `PLAN_APPROVED`
 **Required previous gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`, `PLAN_APPROVED`
 **Quality gate:**
-- `TASK_LIST.md` exists
+- `work/<id>/tasks.md` exists
 - Every task is ≤5 minutes of focused work
 - Every task has ONE acceptance criterion
 - Tasks are dependency-ordered
@@ -143,7 +143,7 @@ Next: /bq-implement — pick off T-1.1
 **Failure behavior:**
 - Plan is too vague to extract atomic tasks → return to `/bq-plan` for clarification; do not advance
 - Tasks accumulate dependencies (T-2.1 needs T-1.3 needs T-2.7) → flag circular dep; re-order or split
-**Memory updates:** Sets `TASKS_ASSIGNED ✅`. Writes `TASK_LIST.md`.
+**Memory updates:** Sets `TASKS_ASSIGNED ✅`. Writes `work/<id>/tasks.md`.
 **Log updates:** `AGENT_LOG.md`.
 
 ## Memory files this command reads
@@ -167,7 +167,7 @@ Next: /bq-implement — pick off T-1.1
 
 ## Per-task Execution Profile
 
-Each task in `TASK_LIST.md` carries skills-first selection AND an Execution Profile (`.claude/bequite/docs/architecture/TASK_EXECUTION_PROFILE.md`):
+Each task in `work/<id>/tasks.md` carries skills-first selection AND an Execution Profile (`.claude/bequite/docs/architecture/TASK_EXECUTION_PROFILE.md`):
 
 ```
 T<n>  <task>   skills: <registry skills> · recommended: <model id> (tier A|B|C) · effort: <quick|standard|high|max> · confidence: <band % + evidence>

@@ -1,6 +1,6 @@
 # Context Compaction Strategy
 
-Long tasks die of context rot, not lack of skill. This strategy adds **pressure-triggered compaction** to the alpha.18 context-engineering layer (`CONTEXT_ENGINEERING.md` + `bequite-context-engineer` — still canonical for the primitives; this doc adds the thresholds and the compact format). Operational copy: `.bequite/state/CONTEXT_COMPACTION_RULES.md`.
+Long tasks die of context rot, not lack of skill. This strategy adds **pressure-triggered compaction** to the context-engineering layer (`CONTEXT_ENGINEERING.md` + `bequite-context-engineer` — still canonical for the primitives; this doc adds the thresholds and the compact format). Operational copy: `.bequite/state/CONTEXT_COMPACTION_RULES.md`.
 
 ## 1. Pressure thresholds (approximate — act early, not exactly)
 

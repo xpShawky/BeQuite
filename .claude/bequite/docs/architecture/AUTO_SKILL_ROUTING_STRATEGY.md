@@ -1,8 +1,7 @@
-# Auto Skill Routing Strategy (alpha.20)
+# Auto Skill Routing Strategy
 
 > **You describe the goal. BeQuite chooses the expert procedures.** Users never need to name skills manually — the router infers them from the request, command, context, mode, phase, files present, repo type, memory, risk level, and requested output type.
 
-**Status:** active · **Adopted:** alpha.20
 **Artifacts:** `.bequite/skills/SKILL_REGISTRY.md` (routing index) · `SKILL_ROUTER.md` (domain map + algorithm) · `SKILL_USAGE_LOG.md` (selections + outcomes)
 **Wired into:** `COMMAND_EXECUTION_CONTRACT.md` steps 2–4 (registry check → task classification → automatic selection) and the action commands (auto / feature / fix / plan / implement / review / verify / suggest / skill-audit).
 
@@ -52,19 +51,19 @@ Current pack has no hard skill conflicts (registry column tracks this). Arbitrat
 
 Registry missing → rebuild from Glob (slow path) + flag for `/bq-skill-audit` · classification ambiguous between 2 domains → select both primaries if budget allows, else ask ONE question · user names a skill that doesn't exist → list nearest matches from registry
 
-## alpha.22 extension — capability domains + the second router
+## Capability domains and the command router
 
-Eight routing domains added for the alpha.22 capability commands + cross-cutting skills (see `SKILL_ROUTER.md`): Arabic/MENA/RTL → **localization-rtl** (auto-attach, any workflow) · post-work quality → **guard-pass** (auto-attach after implement/test, before verify/release) · plus the C3–C8 command domains (reference / knowledge / course / pain-radar / integrate / proposal). Registry now indexes **29 skills**.
+Eight routing domains for the capability commands + cross-cutting skills (see `SKILL_ROUTER.md`): Arabic/MENA/RTL → **localization-rtl** (auto-attach, any workflow) · post-work quality → **guard-pass** (auto-attach after implement/test, before verify/release) · plus the C3–C8 command domains (reference / knowledge / course / pain-radar / integrate / proposal). Registry now indexes **29 skills**.
 
-**Two routers, two questions:** the Skill Router (this strategy) answers *which expert procedures*; the **Workflow Command Router** (`WORKFLOW_COMMAND_ROUTER.md`, alpha.22) answers *which command next*. They run together in contract steps 2–4 (skills) and 12 (commands) and must never be conflated in output: `Skill Selection:` block vs `Next Command Recommendations:` block.
+**Two routers, two questions:** the Skill Router (this strategy) answers *which expert procedures*; the **Workflow Command Router** answers *which command next*. They run together in contract steps 2–4 (skills) and 12 (commands) and must never be conflated in output: `Skill Selection:` block vs `Next Command Recommendations:` block.
 
-## Skills-first global rule + research-discovered skills (alpha.25)
+## Skills-first global rule + research-discovered skills
 
 **Skills-first (global, every command).** Selecting + announcing skills is the FIRST substantive step of every command — workflow, capability (course/presentation/reference/offer/automation/brand-kit/community/recording/start/…), and maintenance alike. No plan, content, edit, or task-tool call happens for the task before the `Skill Selection:` block is emitted (contract step 4). Capability commands are not exempt: e.g. `/bq-content course` announces researcher + writing-dna + presentation-builder (+localization-rtl/anti-hallucination as signalled) before touching the curriculum; `/bq-presentation` announces presentation-builder + ux-ui-designer first. Trivial reads (now/help/explain) are exempt.
 
-**Per-phase / per-task skills (alpha.25).** `/bq-plan` records the selected skills for EACH phase inside `IMPLEMENTATION_PLAN.md`; `/bq-assign` records them per task in `TASK_LIST.md` (alongside the Execution Profile — model + effort + confidence, `TASK_EXECUTION_PROFILE.md`). So skills are chosen at plan time, refined at assign time, and confirmed at run time.
+**Per-phase / per-task skills.** `/bq-plan` records the selected skills for EACH phase inside `work/<id>/plan.md`; `/bq-assign` records them per task in `work/<id>/tasks.md` (alongside the Execution Profile — model + effort + confidence, `TASK_EXECUTION_PROFILE.md`). So skills are chosen at plan time, refined at assign time, and confirmed at run time.
 
-**Research-discovered external skills (alpha.25, safe path).** During `/bq-discover` and `/bq-research`, BeQuite first checks its OWN registry (`SKILL_REGISTRY.md`) for a fitting skill. If a genuine gap exists and a public skill (e.g. a Claude Code skill pack on GitHub) would fill it, research MAY recommend installing it — but only via the safe path:
+**Research-discovered external skills.** During `/bq-discover` and `/bq-research`, BeQuite first checks its OWN registry (`SKILL_REGISTRY.md`) for a fitting skill. If a genuine gap exists and a public skill (e.g. a Claude Code skill pack on GitHub) would fill it, research MAY recommend installing it — but only via the safe path:
 1. **Verify before trust** (anti-hallucination + PhantomRaven): the repo exists, is reasonably recent + maintained, has a real author, and the SKILL.md is read and inspected — no blind install.
 2. **Tool-neutrality decision**: run the 10 questions; justify this skill over alternatives + over building a thin in-repo skill.
 3. **Best-practice fit**: it must match the project's stack/needs, be inspectable markdown (no opaque scripts/network/credentials by default), and not duplicate an existing BeQuite skill.

@@ -1,15 +1,14 @@
-# Frontier Model Operating Playbook (alpha.21)
+# Frontier Model Operating Playbook
 
-> **Make any model — cheaper, smaller, or different — operate with frontier-model discipline by forcing the right workflow.** This captures the EXTERNAL operating patterns of a frontier-class pass (the alpha.14–21 lineage), not private chain-of-thought. These are checklists and execution patterns any model can follow.
+> **Make any model — cheaper, smaller, or different — operate with frontier-model discipline by forcing the right workflow.** This captures the EXTERNAL operating patterns of a frontier-class pass, not private chain-of-thought. These are checklists and execution patterns any model can follow.
 
-**Status:** active · **Adopted:** alpha.21 · **Companion skill:** `bequite-orchestrator` · **10-rule card:** `.bequite/state/FRONTIER_REASONING_SUMMARY.md`
 
 ---
 
 ## 1. Approaching a complex task
 
 - **Recover before acting.** Read CONTEXT_SUMMARY → LAST_RUN → WORKING_NOTES → gates before touching anything. Acting on a stale picture is the #1 cheap-model failure.
-- **Verify current reality before modifying docs/code.** The repo may have moved since the request was written (the alpha.19 audit found alpha.17/18 had already done half the asked work). Inventory first; never duplicate under a new filename.
+- **Verify current reality before modifying docs/code.** The repo may have moved since the request was written. Inventory first; never duplicate under a new filename.
 - **Audit before adding.** When a request says "add X," first check whether X (or 80% of X) exists. The answer changes the task from "build" to "verify + fill gaps."
 - **Restate the goal in one sentence** + list what DONE looks like, before any tool call.
 

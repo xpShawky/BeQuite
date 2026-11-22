@@ -136,5 +136,5 @@ For users on alpha.1:
 
 - `BEQUITE_BOOTSTRAP_BRIEF.md` — original brief requiring "prevent skipping important steps"
 - `.bequite/audits/DIRECTION_RESET_AUDIT.md` (Cycle 2) — full keep/pause/delete inventory for v3.0.0-alpha.2
-- `.claude/bequite/docs/specs/COMMAND_CATALOG.md` — full catalog of all 34 commands with their gates
+- `docs/history/v4-docs/COMMAND_CATALOG.md` — the catalog at the time of this decision (retired in v1; each command now states its own gates)
 - ADR-001 — the lightweight-skill-pack-first reset

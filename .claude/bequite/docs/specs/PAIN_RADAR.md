@@ -1,4 +1,4 @@
-# Pain Radar — `/bq-offer pain-radar` (C6) — alpha.22
+# Pain Radar — `/bq-offer pain-radar` (C6)
 
 Mine **public** pain and turn it into buildable opportunities: MVPs, services, automations, bots, course ideas. Distinct from C10 `/bq-make-money` (which finds earning tracks); pain-radar finds *problems worth building for* — they chain naturally (pain → opportunity → proposal/course).
 

@@ -24,7 +24,7 @@ You are preparing the **ship** step. Verify has passed. Now: update CHANGELOG, p
 ## Step 2 — Block if not ready
 
 Don't proceed unless:
-- `VERIFY_REPORT.md` exists AND says PASS
+- `work/<id>/verify.md` exists AND says PASS
 - No `[!] blocked` tasks
 - No `[~] in-progress` tasks
 
@@ -102,7 +102,7 @@ To publish to PyPI / npm (if applicable):
 
 - **Never auto-push or auto-publish.** Tags and publishes are one-way doors. The user does them.
 - **CHANGELOG must be sharp.** No "(no changes yet)". If you don't know what changed, read the commit log.
-- **Verify must have passed.** Don't release if VERIFY_REPORT.md is FAIL or stale (>7 days old).
+- **Verify must have passed.** Don't release if `work/<id>/verify.md` is FAIL or stale (>7 days old).
 - **No "should be ready" claims.** Either verify passed or it didn't.
 
 See `.claude/skills/bequite-release-gate/SKILL.md` for the deeper procedure (CI parity, signing, npm 2FA, etc.).

@@ -1,4 +1,4 @@
-# Task Execution Profile (alpha.25)
+# Task Execution Profile
 
 Every task in `/bq-assign` (and every phase in `/bq-plan`) carries an **execution profile**: which model to run it on, at what effort, with what confidence, using which skills. This makes delegation explicit and lets the user route each task to the right-cost model.
 
@@ -30,4 +30,4 @@ T3  Update docs + changelog        skills: anti-hallucination · recommended: cl
 
 ## Where it's written
 
-`/bq-plan` → an execution profile per **phase** inside `IMPLEMENTATION_PLAN.md`. `/bq-assign` → an execution profile per **task** inside `TASK_LIST.md` (+ `TASK_CONFIDENCE.md` for the confidence trajectory). Delegate mode (`bequite-delegation`) consumes the per-task model recommendation: tier-A model writes the pack, the recommended tier-B/C model executes each task, tier-A reviews.
+`/bq-plan` → an execution profile per **phase** inside `work/<id>/plan.md`. `/bq-assign` → an execution profile per **task** inside `work/<id>/tasks.md` (+ `TASK_CONFIDENCE.md` for the confidence trajectory). Delegate mode (`bequite-delegation`) consumes the per-task model recommendation: tier-A model writes the pack, the recommended tier-B/C model executes each task, tier-A reviews.

@@ -75,7 +75,7 @@ If yes:
 - Add to the same naming convention the repo uses
 - Run the new tests + confirm green
 
-## Step 6 — Write VERIFY_REPORT.md updates
+## Step 6 — Write `work/<id>/verify.md` updates
 
 Don't write a standalone `TEST_REPORT.md` — that level of detail is in `/bq-verify`. Just update state.
 

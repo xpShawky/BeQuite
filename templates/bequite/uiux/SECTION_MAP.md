@@ -19,7 +19,7 @@ Maps every visible frontend section to its source file **and its acceptance crit
 
 ---
 
-## Section entry template (richer — alpha.17)
+## Section entry template
 
 ```markdown
 ### <Section Name>

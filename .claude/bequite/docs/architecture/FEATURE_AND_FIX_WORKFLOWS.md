@@ -1,7 +1,7 @@
 # Feature & Fix workflows
 
 **Status:** active
-**Adopted:** 2026-05-11 (alpha.2 introduced 12-type feature router + 15-type fix router)
+**Adopted:** 2026-05-11
 **Reference:** `.claude/commands/bq-feature.md`, `.claude/commands/bq-fix.md`
 
 ---

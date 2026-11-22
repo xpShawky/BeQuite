@@ -4,7 +4,6 @@
 
 > **The single citable contract every BeQuite command follows.** When a command file says "per the execution contract," it means these 12 steps, in this order. Commands may compress steps that don't apply (read-only commands skip 7–9) but may never reorder or silently skip an applicable step.
 
-**Status:** active · **Adopted:** alpha.19; **upgraded alpha.20** — skill selection became automatic (steps 2–4); **upgraded alpha.22** — step 12 became the Command Router multi-recommendation block; **v4** — steps 1/5/11 work on per-work folders (`WORK_FOLDERS.md`) and every action command carries the standard contract block, checked by `scripts/bq_check.py`
 **Deep references:** `HARNESS_AND_PROMPT_QUALITY.md` (authoring standard) · `MEMORY_FIRST_BEHAVIOR.md` · `WORKFLOW_GATES.md` · `CONTEXT_ENGINEERING.md` · `AUTO_SKILL_ROUTING_STRATEGY.md` (steps 2–4) · `WORKFLOW_COMMAND_ROUTER.md` (step 12) · `CLAUDE_CODE_HOOKS_STRATEGY.md` (machine layer)
 
 ---
@@ -19,16 +18,16 @@ Read core state first, focused reads only: `PROJECT_STATE` · `CURRENT_MODE` · 
 
 **Then resolve the work (v4).** Read `.bequite/ACTIVE.md`. If the request belongs to the active work, use `.bequite/work/<id>/`. If there is no active work, or this is clearly a different piece of work, create the next work folder (`/bq-work new` semantics), switch `ACTIVE.md`, and say so in one line. Read that work's `brief.md`, `spec.md`, `plan.md`, `tasks.md` and `gates.md` as needed. Spec: `WORK_FOLDERS.md`.
 
-### 2. Skill registry check (alpha.20)
+### 2. Skill registry check
 Load `.bequite/skills/SKILL_REGISTRY.md` — the token-cheap routing index — NOT the skill files. If the registry is missing or drifted from the live skill dirs, rebuild via Glob and flag for `/bq-skill-audit`.
 
-### 3. Task classification (alpha.20)
+### 3. Task classification
 Classify the request into domains per `SKILL_ROUTER.md`, using (in priority order): user text → invoking command → files present / repo type → mode + phase → memory (PROJECT_DNA, MISTAKE_MEMORY, MODE_HISTORY) → risk tier of likely-touched paths → requested output type.
 
-### 4. Automatic skill selection (alpha.20; **skills-first, global — alpha.25**)
+### 4. Automatic skill selection
 Select skills per the domain map + cross-cutting auto-attach + mode sizing (fast = smallest safe set · deep = broader · token-saver = lazy-load · delegate = skills named in the task pack). **The user never has to name skills** — but an explicit user choice overrides routing. Emit the `Skill Selection:` block (selected + reasons; notable not-selected + reasons) in the output. Load only the selected SKILL.md files.
 
-**Skills-first is a GLOBAL hard rule (alpha.25):** this happens BEFORE any real work, for **every** command — workflow commands AND capability commands (course, presentation, reference, offer, automation, brand-kit, …) AND maintenance. The `Skill Selection:` block is the first substantive thing the command emits; you do not write a plan, generate content, edit a file, or call a tool for the task until skills are selected and announced. A command that acts before announcing its skills is a contract violation. (Trivial read-only commands — now/help/explain — are exempt.)
+**Skills-first is a GLOBAL hard rule:** this happens BEFORE any real work, for **every** command — workflow commands AND capability commands (course, presentation, reference, offer, automation, brand-kit, …) AND maintenance. The `Skill Selection:` block is the first substantive thing the command emits; you do not write a plan, generate content, edit a file, or call a tool for the task until skills are selected and announced. A command that acts before announcing its skills is a contract violation. (Trivial read-only commands — now/help/explain — are exempt.)
 
 ### 5. Gate check
 Verify this command's required gates are done: project gates in `.bequite/state/WORKFLOW_GATES.md`, work gates in `.bequite/work/<id>/gates.md` (the table in `WORKFLOW_GATES.md` says which is which). If not: **refuse**, name the missing gate, recommend the prerequisite command, stop. ("You're trying to run X, but Y must be completed first.")
@@ -40,18 +39,18 @@ Parse the user request. Separate **stated scope** from **inferred scope**. If sc
 Before researching: check `.bequite/research/` for an existing report covering this domain. Reuse + cite it; research only the delta. New research lands in `.bequite/research/<DOMAIN>_RESEARCH_REPORT.md` so the next run can reuse it. Depth per mode: deep = 11 dims · fast = 3 dims · token-saver = reuse-only unless gap is blocking.
 
 ### 8. Plan or task check → Action
-For multi-file work: confirm a plan exists (`IMPLEMENTATION_PLAN.md` or feature mini-spec) and a File-Responsibility Map for >5-file changes. New BeQuite features additionally follow the 15-step feature-addition workflow (CLAUDE.md rule 13). Plans carry a per-phase **Execution Profile** and task lists a per-task one (selected skills · recommended model+tier · effort · confidence — `TASK_EXECUTION_PROFILE.md`). Then act: smallest safe change · failing-test-first where tests exist · new code matches `PROJECT_DNA.md` · no drive-by refactors · file edits respect `FILE_RISK_RULES.md` — R3 paths require explicit user confirmation even in auto mode.
+For multi-file work: confirm a plan exists (`work/<id>/plan.md` or feature mini-spec) and a File-Responsibility Map for >5-file changes. New BeQuite features additionally follow the 15-step feature-addition workflow (CLAUDE.md rule 13). Plans carry a per-phase **Execution Profile** and task lists a per-task one (selected skills · recommended model+tier · effort · confidence — `TASK_EXECUTION_PROFILE.md`). Then act: smallest safe change · failing-test-first where tests exist · new code matches `PROJECT_DNA.md` · no drive-by refactors · file edits respect `FILE_RISK_RULES.md` — R3 paths require explicit user confirmation even in auto mode.
 
-### 9. Verification (+ **post-phase verify gate — alpha.25**)
+### 9. Verification
 Run the relevant checks (build/test/lint/visual per scope). **Evidence over claims:** record command + exit code + key output in `EVIDENCE_LOG.md` (or paste inline for small runs). No banned weasel words. If unverified, say `UNVERIFIED:` explicitly. **After implementing any phase or task, run test + verification for what was just built — before moving on** (select the verification skills first per step 4: testing-gate, guard-pass, security-reviewer/system-design for risky domains, frontend-quality for UI). Phase is not "done" until its named tests pass with evidence; a failure routes to `/bq-fix`, not to the next phase.
 
 ### 10. Report
 Lead with outcome. State: what was done · files changed · skill selection (step 4 block) · evidence · remaining issues · verification status (PASS / PARTIAL / FAIL — honestly).
 
 ### 11. Memory writeback
-**Work first:** an entry in `work/<id>/log.md` (always), evidence in `work/<id>/evidence.md`, gate changes in `work/<id>/gates.md`. **Then project-wide:** `LAST_RUN` · `WORKFLOW_GATES` (project gate changes) · `CURRENT_PHASE` (phase changes) · `AGENT_LOG` (always for real actions) · `CHANGELOG [Unreleased]` (when files/behavior changed — **the most-skipped step; do not skip it**) · `MISTAKE_MEMORY` (when a lesson surfaced) · `MODE_HISTORY` (mode runs) · **`SKILL_USAGE_LOG`** (selection + outcome, alpha.20) · `WORKING_NOTES` / `CONTEXT_SUMMARY` (long tasks, at task boundaries).
+**Work first:** an entry in `work/<id>/log.md` (always), evidence in `work/<id>/evidence.md`, gate changes in `work/<id>/gates.md`. **Then project-wide:** `LAST_RUN` · `WORKFLOW_GATES` (project gate changes) · `CURRENT_PHASE` (phase changes) · `AGENT_LOG` (always for real actions) · `CHANGELOG [Unreleased]` (when files/behavior changed — **the most-skipped step; do not skip it**) · `MISTAKE_MEMORY` (when a lesson surfaced) · `MODE_HISTORY` (mode runs) · **`SKILL_USAGE_LOG`** · `WORKING_NOTES` / `CONTEXT_SUMMARY` (long tasks, at task boundaries).
 
-### 12. Next Command Recommendations (Command Router, alpha.22)
+### 12. Next Command Recommendations
 Every non-trivial command ends with the router block — vocabulary = catalog IDs (`.bequite/commands/COMMAND_ID_MAP.md`), routes from `COMMAND_ROUTER.md`:
 
 ```

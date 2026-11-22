@@ -121,7 +121,7 @@ If found in a sentence claiming the work is done → exit 2; ask the agent to re
 
 2. **alpha.18 — Settings integration**
    - Provide `.claude/settings.json.example` template
-   - Document how to enable in `.claude/bequite/docs/runbooks/INSTALL_BEQUITE_IN_PROJECT.md`
+   - Document how to enable in `docs/history/v4-docs/INSTALL_BEQUITE_IN_PROJECT.md` (retired in v1; `/bq-hooks` and `.claude/hooks/README.md` cover it)
    - Add `/bq-doctor` check for hooks presence + version
 
 3. **alpha.19 — Documentation + opt-in default**

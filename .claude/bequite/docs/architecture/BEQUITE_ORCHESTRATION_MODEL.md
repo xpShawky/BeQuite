@@ -27,7 +27,7 @@ User intent
 | Skill Router | selects expert skills | SKILL_REGISTRY, SKILL_ROUTER | SKILL_USAGE_LOG | contract steps 2–4 | amateur output, forgotten expertise |
 | System Design Risk Check | structured failure reasoning | SYSTEM_DESIGN_REASONING_STANDARD | risk block in plan/spec | risky domains (payments, inventory, auth, concurrency…) | pretty-but-broken features |
 | Confidence Forecast | banded success % + evidence level | CONFIDENCE_RULES, TASK_CONFIDENCE | forecast blocks | every plan/task | overconfidence, hidden uncertainty |
-| Task Planning | file map + atomic tasks | plan/scope artifacts | IMPLEMENTATION_PLAN, TASK_LIST, CURRENT_TASK | W1.4/W2.1 | spaghetti, scope creep |
+| Task Planning | file map + atomic tasks | plan/scope artifacts | the plan, TASK_LIST, CURRENT_TASK | W1.4/W2.1 | spaghetti, scope creep |
 | Implementation | smallest safe change | task + FILE_RISK_RULES | code + logs | W2.x | drive-by refactors, R3 surprises |
 | Guard Pass | second-pass AI-failure hunt | guard-pass skill checklists | GUARD_PASS_REPORT | post-implement/test, pre-verify/release | hallucinated APIs, fake tests, doc drift |
 | Verification | evidence-backed checks | VERIFY procedures, regression ledger | VERIFY_REPORT, EVIDENCE_LOG | W4.1 | "should work" shipping |
@@ -50,12 +50,9 @@ Missing Capability Detected:
 - Confidence:
 ```
 
-…then log it to `OPEN_QUESTIONS.md` / `FEATURE_EXPANSION_ROADMAP.md` (feature-workflow step 1) and continue with the workaround only if safe. Wired into: `/bq-suggest`, `/bq-plan`, `/bq-auto`, `/bq-skill-audit`, both routers.
+…then log it to `OPEN_QUESTIONS.md` and continue with the workaround only if safe. Wired into: `/bq-suggest`, `/bq-plan`, `/bq-auto`, `/bq-skill-audit`, both routers.
 
 ## 4. Who must consult the orchestrator
 
 `/bequite` · `/bq-suggest` · `/bq-discover` · `/bq-plan` · `/bq-auto` · `/bq-implement` · `/bq-review` · `/bq-verify` · `/bq-skill-audit` — before choosing commands or skills, these check the Orchestration Map (cheap: it's a compact index, not the full corpus). All other commands inherit orchestration through contract step 12 + the routers. This is markdown-based — a skill plus a source-of-truth map, **not** a runtime.
 
-## 5. Remaining-work queryability (maintenance pass, 2026-06-12)
-
-The orchestration model includes a canonical remaining-work ledger: `.bequite/tasks/REMAINING_WORK_MASTER.md`. Any remaining/next/parked/untested question routes there (ORCHESTRATION_MAP §14) — answering such questions from chat memory alone is a drift violation. The ledger is updated in the same commit as any change to remaining work, and `/bq-verify drift` flags it when stale.

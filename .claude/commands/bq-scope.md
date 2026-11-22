@@ -61,7 +61,7 @@ Show the draft to the user. They can:
 
 Iterate once. After the user accepts, write the report.
 
-## Step 4 — Write SCOPE.md
+## Step 4 — Write `work/<id>/spec.md`
 
 `.bequite/work/<id>/spec.md`:
 
@@ -130,18 +130,18 @@ Next: /bq-plan — write the implementation plan from these boundaries
 ## Gates and failure behaviour
 
 **Phase:** P1 — Product Framing and Research
-**When NOT to use:** scope already locked and stable — use `/bq-feature` to add inside scope, or amend `SCOPE.md` directly + re-`/bq-scope` for scope changes.
+**When NOT to use:** scope already locked and stable — use `/bq-feature` to add inside scope, or amend `work/<id>/spec.md` directly + re-`/bq-scope` for scope changes.
 **Preconditions:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`
 **Required previous gates:** `BEQUITE_INITIALIZED`, `MODE_SELECTED`; `RESEARCH_COMPLETE` (recommended, not required)
 **Quality gate:**
-- `SCOPE.md` exists with IN / OUT / NON-GOALS clearly written
+- `work/<id>/spec.md` exists with IN / OUT / NON-GOALS clearly written
 - Every IN item has a concrete acceptance signal
 - User has explicitly confirmed
 - Marks `SCOPE_LOCKED ✅`
 **Failure behavior:**
 - User keeps moving items between IN/OUT → re-draft once; if disagreement persists, ask which underlying assumption is unresolved (log to `ASSUMPTIONS.md`)
 - Scope conflicts with prior `DECISIONS.md` entry → surface the conflict; require user resolution before advancing
-**Memory updates:** Sets `SCOPE_LOCKED ✅`. Writes `SCOPE.md`. Appends decision entry to `DECISIONS.md`.
+**Memory updates:** Sets `SCOPE_LOCKED ✅`. Writes `work/<id>/spec.md`. Appends decision entry to `DECISIONS.md`.
 **Log updates:** `AGENT_LOG.md`.
 
 ## Memory files this command reads

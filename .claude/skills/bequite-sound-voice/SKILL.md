@@ -1,6 +1,15 @@
 ---
 name: bequite-sound-voice
 description: 'Sound for promo, product and explainer films: voice-over choice and direction, scratch voice first and paid voice only after picture lock, auditions inside the mix, the de-robot fix (gentle WSOLA time-stretch up to 1.15x, light EQ, no heavy compressor), splitting / placing / phrase-syncing a read to an approved picture, music edited to picture with the drop on the logo hit, sparse tuned SFX, mixing and mastering to -14 LUFS and <= -1 dBTP, captions from word timings, and licence checks. Ships parameterised Python scripts (ffmpeg + numpy). Use whenever a film needs a voice-over, music, sound effects, a mix or captions, or when someone says the voice sounds robotic, slow, too emotional or out of sync, wants to compare voices, or asks which TTS or music is safe to use.'
+last_verified: 2026-11-22
+sources:
+  - https://support.spotify.com/us/artists/article/loudness-normalization/  # -14 LUFS, true peak below -1 dBTP for lossy formats
+  - https://tech.ebu.ch/publications/r128  # broadcast target -23 LUFS
+  - https://www.itu.int/rec/R-REC-BS.1770  # BS.1770-5: how loudness and true peak are measured
+  - https://ffmpeg.org/ffmpeg-filters.html  # loudnorm (two-pass master), atempo (tempo 0.5 to 100)
+  - https://aistudio.google.com/docs/speech-generation  # Gemini text to speech, single and multi speaker
+  - https://support.google.com/youtube/answer/2797370  # Content ID: matches uploads against rights holders' reference files
+  - https://github.com/SYSTRAN/faster-whisper  # speech to text used by check_take.py (MIT)
 allowed-tools: Read, Glob, Grep, Edit, Write, Bash, WebFetch, WebSearch
 ---
 
@@ -58,6 +67,8 @@ Every script prints a helpful install line if an optional dependency is missing.
 ## Files this skill writes
 
 Into the active work folder `.bequite/work/<id>/outputs/audio/`: `scratch/` (scratch voice + word timings), `takes/` (raw paid takes), `words/` (timings, `.srt`), `placed/` and `synced/` voice, `auditions/` (numbered in-mix options), `cues.json`, `stems/`, `mix_raw.wav`, `mix.wav`. Licence ledger rows in `plan.md`; voice/music picks and the user's verdicts in `review.md`; one entry per step in `log.md`.
+
+**Where this comes from.** The craft rules are measured: the studies and lab runs in `references/` are the primary evidence. The public standards in the frontmatter were read on 2026-11-22 and bound the numbers they are cited for (loudness targets, the ffmpeg filters, Content ID, the speech-to-text tool). Vendor pages that refused automated reading are not cited; check them in a browser before quoting a vendor's terms.
 
 ## Evidence rule
 

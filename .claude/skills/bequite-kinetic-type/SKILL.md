@@ -1,6 +1,13 @@
 ---
 name: bequite-kinetic-type
 description: 'Kinetic typography (text that moves) for films, promos, explainers, reels and animated web sections. Chooses a different treatment per line from its meaning (blur-in write-on, mask slide-up, directional smear, scale punch, word to icon swap, letter pop, swap in place, recolour sweep, inline icon, typing), owns reading-time and readability rules, and covers Arabic / RTL kinetic type (connected script, right-to-left reveals, kashida, mixed-direction lines, fonts). Implementable in After Effects, HTML/CSS/JS/GSAP, Remotion or any engine. Use whenever text has to animate, or when someone says the text animation feels cheap, static, monotone, too fast, too slow or "not smooth", or asks for Apple / Spotify / keynote-style type.'
+last_verified: 2026-11-22
+sources:
+  - https://partnerhelp.netflixstudios.com/hc/en-us/articles/217350977-English-Timed-Text-Style-Guide  # reading speed: up to 20 characters per second for adult programmes
+  - https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide.html  # moving content over 5 seconds on a page needs pause, stop or hide
+  - https://www.w3.org/International/articles/inline-bidi-markup/  # isolate opposite-direction inline text (dir, bdi)
+  - https://www.w3.org/TR/alreq/  # Arabic layout: cursive joining, kashida and tatweel
+  - https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API  # Element.animate(), used by assets/kinetic.js
 allowed-tools: Read, Glob, Grep, Edit, Write, Bash
 ---
 
@@ -66,6 +73,8 @@ Study references at 4 fps contact sheets and write per line: entrance, emphasis,
 ## Files this skill writes
 
 Into the active work folder `.bequite/work/<id>/`: the **treatment column** of the beat sheet in `spec.md` (one treatment + timing per line), type tokens in `spec.md` § Motion DNA, test stills/contact sheets of type moments in `outputs/previews/`, and a note per type change in `log.md`.
+
+**Where this comes from.** The craft rules are measured: the studies and lab runs in `references/` are the primary evidence. The public standards in the frontmatter were read on 2026-11-22 and bound the numbers they are cited for (reading speed, bidi isolation, Arabic joining, the browser animation API). Vendor pages that refused automated reading are not cited; check them in a browser before quoting a vendor's terms.
 
 ## Evidence rule
 

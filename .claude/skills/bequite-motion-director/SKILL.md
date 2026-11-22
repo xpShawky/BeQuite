@@ -1,6 +1,13 @@
 ---
 name: bequite-motion-director
 description: 'The director brain for motion films: product launch films, app/plugin promos, explainers, ads, reels, kinetic-type pieces, 3D product shots, "make a video like the Apple / Starbucks / Spotify ad". Runs the /bq-motion phases M0-M9 (brief, references, script + beats, style lock, tool decision + render plan, animatic, build + review rounds, voice/sound, render + QC, delivery + launch posts), owns story, pacing, style, transition grammar, camera language, honesty and the hard stops. Use whenever someone wants a video, animation, motion piece, promo, ad, reel, trailer, launch film, social cut or making-of guide, even if they only describe an idea. Routes craft to bequite-kinetic-type, bequite-sound-voice and bequite-render-pipeline.'
+last_verified: 2026-11-22
+sources:
+  - https://en.wikipedia.org/wiki/Twelve_basic_principles_of_animation  # anticipation, slow in and slow out, follow through, staging
+  - https://support.google.com/youtube/answer/10059070  # Shorts: vertical, up to 3 minutes
+  - https://support.google.com/youtube/answer/1722171  # upload encoding: MP4, H.264, AAC-LC or Opus
+  - https://www.w3.org/WAI/WCAG22/Understanding/three-flashes-or-below-threshold.html  # nothing flashes more than three times a second
+  - https://partnerhelp.netflixstudios.com/hc/en-us/articles/217350977-English-Timed-Text-Style-Guide  # on-screen text reading speed, 20 characters per second
 allowed-tools: Read, Glob, Grep, Edit, Write, Bash, WebFetch, WebSearch
 ---
 
@@ -82,6 +89,8 @@ All inside the active work folder `.bequite/work/<id>/` (layout: `.claude/bequit
 - `outputs/animatic/` · `outputs/previews/` · `outputs/audio/` · `outputs/final/` · `outputs/delivery/` (posts, captions, recuts, making-of)
 - `gates.md` (gate state + evidence pointer) · `log.md` (one entry per phase) · `evidence.md` (every render and check)
 - Lessons after the film: `.bequite/state/MISTAKE_MEMORY.md`; a new reference studied in M1 → `motion-library/refs/<slug>/breakdown.md` + a row in `motion-library/INDEX.md`.
+
+**Where this comes from.** The craft rules are measured: the studies and lab runs in `references/` are the primary evidence. The public standards in the frontmatter were read on 2026-11-22 and bound the numbers they are cited for (animation principles, platform limits, flash safety, reading speed). Vendor pages that refused automated reading are not cited; check them in a browser before quoting a vendor's terms.
 
 ## Evidence rule
 

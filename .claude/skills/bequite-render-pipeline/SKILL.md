@@ -1,6 +1,13 @@
 ---
 name: bequite-render-pipeline
 description: 'Choose and drive the engine that builds and renders a motion film, then QC and deliver it. Tool-neutral engine decision (10 questions) with adapters for After Effects (ExtendScript bridge + aerender, AE path from BEQUITE_AE_PATH or auto-detected), Remotion and HyperFrames (HTML/React to MP4), Blender (3D, render passes, headless), DaVinci Resolve (edit, grade, deliver; Studio scripting/MCP), ffmpeg (frame studies, previews, reframes, captions, mux) and AI video as plates. Owns the render plan, cache/GPU/disk safety, and the delivery QC checklist with commands (black frames, loudness, size/fps, banding, phone readability). Use whenever a film or animation must be built, rendered, previewed, reframed to 9:16 / 1:1 / 4:5, encoded or checked, or when a render shows banding, black frames, blurry zooms or a 3D camera that does nothing.'
+last_verified: 2026-11-22
+sources:
+  - https://ae-scripting.docsforadobe.dev/  # the After Effects scripting guide the .jsx library follows
+  - https://ffmpeg.org/ffmpeg-filters.html  # blackdetect, freezedetect, loudnorm, atempo (used by qc_report.py)
+  - https://docs.blender.org/manual/en/latest/advanced/command_line/arguments.html  # -b background, -a animation, -f frame
+  - https://www.remotion.dev/docs/license  # free for individuals and companies of up to 3 people; larger companies need a licence
+  - https://support.google.com/youtube/answer/1722171  # upload: MP4 container, H.264 video, AAC-LC or Opus audio
 allowed-tools: Read, Glob, Grep, Edit, Write, Bash
 ---
 
@@ -57,6 +64,8 @@ Checklist with commands: `references/qc-checklist.md` — automated (format, bla
 ## Files this skill writes
 
 In the active work folder `.bequite/work/<id>/`: `plan.md` (engine decision + render plan), `tasks.md` (per-scene build tasks), engine project files under `assets/` (e.g. `assets/ae/`, `assets/blender/`, `assets/remotion/`), `outputs/animatic/`, `outputs/previews/` (stills, contact sheets, 720p), `outputs/final/` (masters), `outputs/delivery/` (recuts, captions burned/side-car, covers), and `evidence.md` blocks for every render and check; one entry per run in `log.md`.
+
+**Where this comes from.** The craft rules are measured: the studies and lab runs in `references/` are the primary evidence. The public standards in the frontmatter were read on 2026-11-22 and bound the numbers they are cited for (engine command lines, the Remotion licence, the delivery encode). Vendor pages that refused automated reading are not cited; check them in a browser before quoting a vendor's terms.
 
 ## Evidence rule
 

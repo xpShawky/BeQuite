@@ -1,60 +1,66 @@
 ---
 name: bequite-skill-auditor
-description: Skill-pack quality discipline — structural review of all BeQuite skills for bloat, shallowness, duplication, missing required sections, stale counts, and activation-description quality. Evidence-cited findings; report-only by default; merge/split/archive proposals. Invoked by /bq-skill-audit.
-allowed-tools: Read, Glob, Grep, Edit, Write
+description: Use for /bq-skill-audit and /bq-eval, after adding or merging skills, before a release, or when a skill fires for the wrong request or fails to fire. Reviews every skill against the v1 rubric (trigger description, short body, references one level deep, dated sources that say what the skill claims, a worked example, a quality gate), finds overlaps and stale facts, and reports with quoted evidence; edits only after approval.
+last_verified: 2026-11-22
+sources:
+  - https://code.claude.com/docs/en/skills  # SKILL.md fields; the description decides when a skill loads; keep SKILL.md short, details in supporting files
+  - https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices  # third-person description (what + when), body under 500 lines, references one level deep
+  - https://agentskills.io/specification  # name 1-64 chars matching the folder, description 1-1024 chars
+  - https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills  # progressive disclosure: metadata, body, extra files
+  - https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents  # the smallest set of high-signal tokens
+  - https://github.com/anthropics/skills  # example skills to compare structure against
+allowed-tools: Read, Glob, Grep, Edit, Write, Bash
 ---
 
-# bequite-skill-auditor — keep the pack healthy
+# bequite-skill-auditor
 
-## Purpose
+A skill pack decays in known ways: descriptions stop matching how people ask, two skills claim the same job, facts and counts go stale, and a source is cited for something it never said. `scripts/bq_check.py` catches the mechanical part; this skill is the judgement the script cannot make.
 
-A skill pack rots in predictable ways: descriptions bloat past activation-matching usefulness, new skills overlap old ones, counts in docs drift from reality, sections added by one repair pass get omitted by the next feature. This skill encodes the structural review so it's repeatable, not heroic.
+## When to use
 
-## The healthy-skill profile
+- `/bq-skill-audit` (the whole pack) and `/bq-eval` (scenarios per skill).
+- After a skill is added, merged, split or forged; before a release.
+- A skill loaded for the wrong request, or did not load for the right one.
 
-- Frontmatter: valid `name`/`description`/`allowed-tools`; description ≤ ~300 chars, written as ACTIVATION TRIGGERS (when should this load?) not marketing
-- Body: 60–400 lines; depth beyond that goes to `references/`
-- Required sections present: purpose · when to use · when NOT to use · procedure/checklist · output format (artifact-producing skills) · quality gate · common mistakes · failure handling · memory/log rules (where relevant)
-- Tool neutrality language present where tools are named
-- Referenced by ≥1 command; reflected in orchestrator's knowledge + repo counts
+Not for: the project's own code (`/bq-audit`); a single edit the user already specified (just make it); command files (the self-check covers their contract, references and size).
 
-## The skill-tier model
+## The v1 rubric
 
-| Tier | Role | Example |
+| Part | A healthy skill | How to check |
 |---|---|---|
-| Master / coordinator | owns a domain, coordinates members, holds references/ | frontend-design-system |
-| Specialist | one domain's deep procedure | backend-architect, security-reviewer |
-| Cross-cutting | applies to many workflows | context-engineer, anti-hallucination |
-| Capability | powers one user-facing command | presentation-builder, writing-dna, job-finder |
+| `name` | lowercase with hyphens, at most 64 characters, same as the folder | read the frontmatter |
+| `description` | third person; says what it does **and when to use it**, in the words a user would type; at most 1,024 characters | read it as a router would: could two skills both claim this request? |
+| Body | at most 150 lines (BeQuite's budget; the harness guidance is under 500); a numbered procedure, not an essay | `bq_check.py` size check |
+| Depth | detail lives in `references/` or `scripts/`, one level below `SKILL.md`, loaded on demand | Glob the folder; every file is cited from `SKILL.md` |
+| Sources | `last_verified` within 120 days and at least five `sources`, each with what it was read for | open two sources per skill and confirm they say it |
+| Worked example | one real run with real values and a date | not "e.g. some project" |
+| Quality gate and boundaries | checkable statements; what the skill never does | each gate line can fail |
+| Reach | at least one command or the orchestrator's routing table names it; it is in `SKILL_REGISTRY.md` and, outside core, in `PACKS.txt` | Grep |
 
-Audit rule: a skill drifting across tiers (specialist accumulating coordination logic) is a split candidate.
+## Procedure
 
-## Severity model
+1. **Enumerate** with Glob (`.claude/skills/bequite-*/SKILL.md`), never from memory. Run `python3 scripts/bq_check.py` first and take its warnings as given.
+2. **Read every frontmatter** in one pass and lay the descriptions side by side. Mark pairs that would both answer the same request: that is an overlap finding, with the two quoted sentences.
+3. **Per skill**, walk the rubric. For sources, open two (the web-fetch route, or the browser when a site refuses scripts) and compare with the claim they are cited for. A source that did not load is not evidence: say "not read", and remove it or mark the claim `UNVERIFIED:`.
+4. **Stale facts:** versions, prices, platform limits and counts older than the skill's `last_verified`, files and commands the skill names that no longer exist.
+5. **Rate** each finding: HIGH (broken frontmatter, a skill nothing reaches, direct duplication, a source that contradicts the claim), MEDIUM (a missing rubric part, a stale fact, a description that does not say when), LOW (thin example, minor repetition).
+6. **Verdict per skill:** keep, improve, merge, split, or archive, with one line of reason. A merge must not erase a distinct trigger.
+7. **Report** to `.bequite/audits/SKILL_QUALITY_AUDIT.md`: the table of verdicts, findings with `skill:line` and the quoted text, and the trend against the previous audit. Report only: edits wait for the user's approval, then update the registry, the router, the packs file and the counts in the same change.
 
-- **HIGH** — broken frontmatter · skill orphaned (no command references it) · direct duplication
-- **MEDIUM** — missing required section · description > 300 chars · stale facts (wrong counts, gone files)
-- **LOW** — style drift, thin examples, minor bloat
+## Worked example (2026-11-22, the v1 review of this pack)
 
-## Evidence discipline
-
-Every finding: `skill:line` + quoted evidence. No evidence → struck (anti-hallucination citation-or-strike). Compare with previous SKILL_QUALITY_AUDIT to show trend (improving / stable / degrading).
-
-## When NOT to use this skill
-
-Project-code audits (`/bq-audit`) · single-skill quick fix the user already specified (just edit it) · command-file audits (alignment-audit pattern)
+- `bq_check.py --strict` listed six skills with no `last_verified` and no sources (the four film skills, this one, the updater). This skill's own profile still allowed "60-400 lines" while the pack budget was 150: a stale fact inside the auditor.
+- 39 candidate source pages were fetched for those six skills; 32 loaded and said what they were needed for, 7 refused automated reading or returned only a title (two Adobe help pages, a BBC guide, an ElevenLabs help article, two design-guideline pages, an Instagram help page). The seven were not cited.
+- One reading changed a design: GitHub's "latest release" excludes prereleases and drafts, which is exactly what the update script needs, so a release candidate tag never reaches users by itself.
+- Verdicts: improve (sources added) for the four film skills; rewrite for the auditor and the updater.
 
 ## Quality gate
 
-- [ ] All skills enumerated (Glob, not memory)
-- [ ] Every finding evidence-cited; none struck silently
-- [ ] Verdicts limited to: keep / improve / merge / split / archive — each with one-line rationale
-- [ ] Report-only honored unless user approved edits
-- [ ] Writeback done (LAST_RUN, AGENT_LOG; CHANGELOG only if edits applied)
+- Every skill was enumerated from the file system and has a verdict.
+- Every finding quotes its evidence; a finding without a quote is dropped.
+- At least two sources per skill were opened in this session, and the report says which.
+- Nothing was edited before approval; after approved edits the self-check passes.
 
-## Common mistakes
+## Boundaries
 
-Auditing from memory instead of reading files · proposing merges that erase a distinct activation trigger · "improving" prose style instead of structure (churn) · fixing findings inline in report-only mode · forgetting to update counts in orchestrator/README/CLAUDE.md after an approved merge
-
-## Failure handling
-
-Unreadable skill → skip + note · tie between merge/split options → present both · audit reveals a COMMAND problem → note it for the alignment audit, don't fix out-of-scope
+It does not rewrite prose for style, does not install third-party skills, and does not judge a creative skill's taste: that is the owner's verdict.

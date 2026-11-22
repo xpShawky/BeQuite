@@ -1,236 +1,70 @@
 ---
 name: bequite-updater
-description: Safe BeQuite-self-update discipline. Detects version + source + local edits, backs up before changes, merges updates non-destructively, NEVER overwrites project memory, surfaces conflicts as .bequite-update.md sibling files. Invoked by /bq-update.
+description: Use for /bq-update, when the automatic update check reports a new version it will not install by itself (Auto update off, a fork, a branch, a local clone), when an update failed, or when the user asks how BeQuite updates itself. Fetches one commit, backs up, merges around local edits, never touches project memory, and rolls back on failure.
+last_verified: 2026-11-22
+sources:
+  - https://docs.github.com/en/rest/releases/releases  # "latest release" = most recent non-prerelease, non-draft release
+  - https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api  # 60 unauthenticated requests per hour per address
+  - https://git-scm.com/docs/git-clone  # --depth 1 --branch <tag> (a tag detaches HEAD at that commit)
+  - https://git-scm.com/docs/git-archive  # exports the tree of a named commit, not the working tree
+  - https://semver.org/  # MAJOR, MINOR, PATCH
+  - https://keepachangelog.com/en/1.1.0/  # Added, Changed, Deprecated, Removed, Fixed, Security
+  - https://code.claude.com/docs/en/plugins-reference  # plugin installs are versioned and updated by the harness
 allowed-tools: Read, Glob, Grep, Edit, Write, Bash
 ---
 
-# bequite-updater — safe self-update discipline
+# bequite-updater
 
-## Purpose
+Two paths update BeQuite. The **automatic** one is a script and needs no judgement; this skill is the **manual** one, for everything the script refuses to do by itself.
 
-Encode the safety + diff + merge + conflict + backup discipline that `/bq-update` uses to refresh BeQuite **inside an existing project** without breaking the user's memory, customization, or workflow.
+## When to use
 
-Invoked by `/bq-update`.
+- `/bq-update`, in any mode.
+- The update line says "available" (Auto update is off, the source is a fork, a branch or a path the script will not run).
+- The update line says "failed", or files look half-updated.
+- The user edited BeQuite's own commands or skills and wants to keep those edits through an update.
 
----
+Not for: a first install (the installers in the README); plugin installs (the harness updates them through `/plugin`); the user's own project code.
 
-## When to use this skill
+## What the automatic path does (so you can explain and debug it)
 
-- BeQuite itself is being updated (via `/bq-update`)
-- A new alpha is released and the user wants the new commands/skills
-- A user is testing a local BeQuite dev branch against an installed project
+`.claude/bequite/bin/bq-update.sh` runs as step 1 of every command, at most once an hour (a failed install waits a day).
 
-## When NOT to use this skill
-
-- First-time install (use `scripts/install-bequite.{ps1,sh}`)
-- Updating user project code (this skill only updates BeQuite's own files)
-- Major version migration (alpha → 1.0) — out of scope until 1.0 ships
-
----
-
-## Version detection
-
-Source-of-truth order:
-
-1. `.bequite/state/BEQUITE_VERSION.md` (created on first `/bq-update`; carries `**Version:** v3.0.0-alpha.X`)
-2. `CLAUDE.md` BeQuite section (created by installer; carries the version in the heading)
-3. Falling back to "v3.0.0-alpha.unknown" if neither is parseable
-
-For the remote version:
-- **GitHub:** read `package.json` (if present) → `version` field; OR fetch `docs/changelogs/CHANGELOG.md` → most recent `## [v...]` heading
-- **Local clone:** same files, local filesystem
-
-## Source detection
-
-`.bequite/state/UPDATE_SOURCE.md` carries the configured source. If missing, default to GitHub `xpShawky/BeQuite` main.
-
-Modes:
-- `source=local path=X` (overrides config for this run)
-- `source=github repo=X branch=Y` or `tag=Y`
-
-## Backup strategy
-
-**Always run before changing files** (unless `force` mode + user accepts risk).
-
-```
-.bequite/backups/<ISO-8601-timestamp>/
-├── claude-commands/        # full copy of .claude/commands/ pre-update
-├── claude-skills/          # full copy of .claude/skills/ pre-update
-├── commands.md             # if present at root
-├── claude-md.md            # CLAUDE.md before edit
-└── version-pre-update.md   # BEQUITE_VERSION.md before edit
-```
-
-Verify backup integrity (file count matches; spot-check 2-3 files for content) before proceeding.
-
-## Diff strategy
-
-For each file the update wants to change:
-
-1. Compute SHA-256 of local file
-2. Compute SHA-256 of remote/source file
-3. If equal → no change needed
-4. If different → look for "local edit" signals:
-   - File mtime newer than "shipped baseline" (we don't have a baseline registry in v1 — proxy: file modified after the last `/bq-update` timestamp from `UPDATE_LOG.md`, OR the file's first line doesn't match the standard alpha.X frontmatter pattern)
-   - Custom markdown sections not present in the shipped version
-   - User added their own command-level content
-
-5. If "modified, no local edits" → safe to overwrite
-6. If "modified, local edits detected" → conflict; write to `.bequite-update.md` sibling; don't overwrite the local file
-
-## Merge strategy
-
-| Case | Action |
+| It installs by itself | It only reports |
 |---|---|
-| File in remote, missing locally | Copy from remote (new file) |
-| File in local, missing from remote | Skip (don't delete; user might be on an old version that has files removed; let them reconcile) |
-| File modified, no local edits | Overwrite from remote |
-| File modified, local edits detected | Conflict — write `.bequite-update.md` sibling |
-| File only differs in trailing whitespace / line endings | Normalize to remote and overwrite |
+| the latest published GitHub Release of the official repo (prereleases and drafts do not count) | any other repo |
+| the tag in "Pinned tag" | a branch (unreleased commits) |
+| the last commit of a local BeQuite clone at an absolute path outside the project | a path inside the project, a relative path, a value that fails validation |
 
-## Conflict handling
+It clones or archives **one commit**, checks that commit's `VERSION`, backs up, runs that commit's installer, checks the result, and copies the backup back if anything failed. A lock stops two sessions updating at once. Results and the reason for a skip are in `.bequite/state/UPDATE_CHECK.md`; every install is in `.bequite/logs/UPDATE_LOG.md`. In the BeQuite source repo itself it always skips.
 
-When a conflict surfaces:
+## Procedure (manual update)
 
-1. **Default behavior (safe mode):** write new version to `<file>.bequite-update.md`. Don't touch local file. Log in `UPDATE_LOG.md`.
-2. **Force mode:** overwrite anyway. Backup is still made. Full diff written to `UPDATE_LOG.md` so user can see exactly what was lost.
+1. **Read** `.bequite/state/BEQUITE_VERSION.md`, `UPDATE_SOURCE.md`, `PACKS.md`, and the last entries of `UPDATE_LOG.md`.
+2. **Name the source and get a yes when it is not an official release.** A fork, a branch or a local clone means running code nobody released: say which repo and which commit, and wait.
+3. **Fetch one commit into a temp folder:** `git clone --depth 1 --branch <tag or branch> <url>` or, for a local clone, `git -C <path> archive HEAD | tar -x -C <tmp>` (committed files only). Read its `VERSION`.
+4. **`check` mode:** list files that would be added, changed and removed (the source's `.claude/bequite/REMOVED.txt`), and which changed files the user edited (compare with the backup of the last update, or ask). Stop there.
+5. **Back up** to `.bequite/backups/<time>-v<old>/`: `.claude/commands`, the `bequite-*` skills, `.claude/bequite`, `.claude/hooks`, `.claude/agents`, `CLAUDE.md`, `commands.md`, `BEQUITE_VERSION.md`. No backup, no update.
+6. **Merge:**
+   - not edited locally: replace;
+   - edited locally: keep the user's file and write the new one beside it as `<file>.bequite-update.md`; list these for the user (`force` replaces, the backup keeps their copy);
+   - removed upstream: move to `.bequite/backups/<time>-removed/`; a hook the user's settings still run stays where it is;
+   - missing `.bequite/` templates: add; packs: follow `PACKS.md`.
+7. **Never touch:** anything the user or the agent wrote in `.bequite/` (state, logs, work folders, audits, plans, research, DNA files), `CHANGELOG.md`, and `CLAUDE.md` outside the `<!-- BEQUITE -->` block. The block is replaced only when both markers exist.
+8. **Check and record:** `.claude/commands/bequite.md` and `.claude/bequite/bin/bq-update.sh` exist and the version file matches the source's `VERSION`. Then write `UPDATE_LOG.md` (from, to, source and commit, counts, files kept with a sibling, the backup path). If the check fails, copy the backup back and report a failed update.
 
-Example sibling file naming:
+## Worked example (real runs, 2026-11-22)
 
-```
-.claude/commands/bq-fix.md                 ← your local edited version
-.claude/commands/bq-fix.md.bequite-update.md  ← new shipped version (sibling)
-```
+- **A v4 project moved to v1 by hand:** the project had `**Version:** v4.0.0` and GitHub as its source; v4 has no update script, so it cannot update itself. One forced install from a local clone: exit 0, "55 commands, 38 skills, 4 subagents", 17 files that v1 removed moved to `.bequite/backups/<time>-removed/`, version line `v4.0.0 -> v1.0.0`, memory and the user's own folders untouched. The next check printed "no release found" (nothing was released yet), exit 0.
+- **The automatic path under test** (`scripts/test_update.sh`, 21 checks, exit 0): an old version line containing `/` is rewritten correctly; uncommitted files in the source are not installed; a held lock stops a second install; a failing installer ends with the previous files put back and no retry the same day; a source inside the project, a relative path, another repo and a malformed repo are all refused.
 
-User reviews both, merges manually, then deletes the `.bequite-update.md` sibling.
+## Quality gate
 
-## Files SAFE to update
+- A backup existed before the first changed file.
+- No memory file changed; every local edit survived as the file or in the backup.
+- The installed version equals the fetched commit's `VERSION`, and that commit is named in the log.
+- A failed update was rolled back and reported as failed, never as done.
 
-- `.claude/commands/*.md` (with conflict handling)
-- `.claude/skills/bequite-*/SKILL.md` (with conflict handling)
-- `.claude/skills/bequite-*/references/*.md` (if shipped)
-- `commands.md` (project root) — reference doc, overwrite OK
-- `CLAUDE.md` — only the BeQuite section between `<!-- BEQUITE -->` markers
-- `.bequite/principles/*.md` — only if missing (don't overwrite once installed)
-- `.bequite/uiux/*.md` (templates) — only if missing
-- `.bequite/jobs/*.md` (templates) — only if missing
-- `.bequite/money/*.md` (templates) — only if missing
-- `.bequite/decisions/` — only template additions; never overwrite user ADRs
-- `.claude/hooks/*.{sh,ps1}` + `.claude/settings.json.example` + `.claude/settings.windows.json.example`. **NEVER touch the user's live `.claude/settings.json` / `.claude/settings.local.json`** — `/bq-update` must not silently change what executes on the user's machine; surface a `.bequite-update.md` note if the example changed and the user has hooks enabled.
+## Boundaries
 
-## Files NEVER to overwrite
-
-- `.bequite/state/PROJECT_STATE.md`
-- `.bequite/state/CURRENT_MODE.md`
-- `.bequite/state/CURRENT_PHASE.md`
-- `.bequite/state/WORKFLOW_GATES.md`
-- `.bequite/state/LAST_RUN.md`
-- `.bequite/state/DECISIONS.md`
-- `.bequite/state/OPEN_QUESTIONS.md`
-- `.bequite/state/ASSUMPTIONS.md`
-- `.bequite/state/MISTAKE_MEMORY.md`
-- `.bequite/state/MEMORY_SNAPSHOT_*.md`
-- `.bequite/logs/AGENT_LOG.md`
-- `CHANGELOG.md`
-- `.bequite/work/<id>/log.md`
-- `.bequite/audits/` (real audit reports)
-- `.bequite/plans/` (real plans + features — except templates if user confirms)
-- `.bequite/tasks/` (real TASK_LIST + CURRENT_TASK)
-- `.bequite/prompts/` (real prompt exchanges)
-- `.bequite/research/` (if exists)
-- `.bequite/jobs/` content (user search results)
-- `.bequite/money/` content (user search results + action plan)
-- User code outside BeQuite paths
-
-## Logging
-
-Per-update entry in `.bequite/logs/UPDATE_LOG.md`:
-
-```markdown
-## <ISO 8601 UTC> — update from <source>
-
-**Mode:** safe | check | force | local-source | github-source
-**Version:** v3.0.0-alpha.X → v3.0.0-alpha.Y
-**Source:** <repo / path>
-
-**Files added:** <count>
-  - <list>
-
-**Files updated (no conflict):** <count>
-  - <list with line-change summaries>
-
-**Files skipped (conflict):** <count>
-  - <file> — review .bequite-update.md sibling
-
-**Files NOT changed (in never-overwrite list):** <count>
-
-**Backup:** .bequite/backups/<timestamp>/
-
-**Result:** success | partial | failed
-**Notes:** <free-form>
-```
-
-Per-update entry in `AGENT_LOG.md` (summary):
-
-```markdown
-## <timestamp> — /bq-update <mode>
-Updated BeQuite to v3.0.0-alpha.Y. <N> files changed, <M> conflicts.
-Backup: .bequite/backups/<timestamp>/
-```
-
-## Rollback
-
-If user wants to undo an update:
-
-1. Open `.bequite/backups/<latest-timestamp>/`
-2. Run: `cp -r .bequite/backups/<timestamp>/claude-commands/* .claude/commands/`
-3. Same for `claude-skills/`
-4. Restore `commands.md` and `CLAUDE.md` from backup
-5. Restore `BEQUITE_VERSION.md` to the pre-update content
-
-A future `/bq-update rollback` command can automate this. For now, document the manual path in the report.
-
-## Test after update
-
-After a successful update:
-
-1. Check `.claude/commands/bequite.md` parses (YAML frontmatter intact)
-2. Check `.claude/skills/bequite-*/SKILL.md` files all have valid frontmatter
-3. Check `BEQUITE_VERSION.md` reflects the new version
-4. Print a summary; suggest `/bequite short` to verify state
-
-If anything looks corrupted → recommend rollback path.
-
-## Common mistakes to avoid
-
-- ❌ Overwriting `.bequite/state/MISTAKE_MEMORY.md` (user's project-specific lessons — never touch)
-- ❌ Skipping backup in safe mode
-- ❌ Auto-resolving conflicts on local-edited files (user's customizations would be silently lost)
-- ❌ Updating without checking git remote is reachable (partial updates corrupt state)
-- ❌ Forgetting to refresh `BEQUITE_VERSION.md` (next update can't detect what changed)
-
-## Failure handling
-
-| Failure | Recovery |
-|---|---|
-| GitHub unreachable | Log + exit; suggest local clone source |
-| `git clone` fails | Log + exit; check user's network + git auth |
-| Backup directory unwritable (permissions) | Log + exit; **do not proceed without backup** unless `force` |
-| Update transferred partial files (network drop) | Roll back from in-progress backup; mark update as failed |
-| File hash mismatch after copy (file system error) | Roll back; retry once; if persistent, exit |
-
-## What this skill does NOT do
-
-- Update user project code (out of scope)
-- Migrate user data between BeQuite major versions (different problem; future)
-- Auto-resolve conflicts on local-edited files (always surfaces; user decides)
-- Push changes to git (read-only on the source side)
-- Install new dependencies (per tool neutrality)
-
-## See also
-
-- `.claude/commands/bq-update.md` — the command spec
-- `.bequite/state/BEQUITE_VERSION.md` — version source-of-truth
-- `.bequite/state/UPDATE_SOURCE.md` — source configuration
-- `.bequite/logs/UPDATE_LOG.md` — detailed update history
-- `scripts/install-bequite.{ps1,sh}` — first-time installer (different concern)
+No install from a source the user did not approve when it is not an official release. No deletion: removed files are moved. No change to `.gitignore`, hooks settings or anything outside BeQuite's own files without a yes. Backups are never pruned automatically: they may hold the user's edits.

@@ -1,4 +1,4 @@
-# The BeQuite pipeline (v1)
+# The BeQuite pipeline
 
 The one description of how work flows. Every action command is an entry point into this pipeline: `/bq-auto` runs all of it for an intent, `/bq-feature`, `/bq-fix`, `/bq-motion` and `/bq-content` are routes that preset the stages, and the phase commands (`/bq-clarify`, `/bq-plan`, `/bq-implement`, `/bq-verify` ...) run one stage by hand. The short contract block at the top of each command points here; when the plugin's SessionStart hook is on, the state this pipeline needs is injected at the start of every session.
 

@@ -1,8 +1,8 @@
-# Skill Registry (v1)
+# Skill Registry (v5)
 
 > **The compact routing index over all BeQuite skills.** The Skill Router reads this first; a full SKILL.md loads only after selection. Each skill's own file is the source of truth for when to use it, its procedure and its sources; this registry holds routing metadata only.
 >
-> **Refreshed:** 2026-11-21 (v1 integration) · **38 skills** in three packs: core 26 · studio 10 · business 2. Refreshed by `/bq-skill-audit`; adding or removing a skill without updating this file in the same commit is a drift violation.
+> **Refreshed:** 2026-11-21 (v5 integration) · **38 skills** in three packs: core 26 · studio 10 · business 2. Refreshed by `/bq-skill-audit`; adding or removing a skill without updating this file in the same commit is a drift violation.
 
 Legend: **Cost** (weight when loaded): L under 80 lines · M 80-150 · H has `references/` or scripts. **Risk**: L docs and advice · M writes project files · H touches security, production or money.
 
@@ -56,6 +56,6 @@ Legend: **Cost** (weight when loaded): L under 80 lines · M 80-150 · H has `re
 - job-finder / make-money: `jobs/`, `money/` · skill-auditor: `audits/` and this registry · context-engineer: `state/{PROJECT_DNA,WORKING_NOTES,CONTEXT_SUMMARY}.md`
 - agent-team: the team folder (`.bequite/team/` by default) · publish-prep: `work/<id>/package/` and `APPROVAL.md`
 
-## Retired in v1
+## Retired in v5
 
 delegate-planner and multi-model-planning became `delegation`; scraping-automation and automation-engineer became `automation`; frontier-reasoning-coach and workflow-advisor folded into `orchestrator`. Updates move the old folders to `.bequite/backups/`.

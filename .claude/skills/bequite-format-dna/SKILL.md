@@ -35,7 +35,7 @@ Not for: one video's content (`bequite-video-intel`), topic ideas (`bequite-tren
 ## Worked example (2026-11-21, AI in Arabic, YouTube Shorts)
 
 - Candidates: 17 Arabic AI channels, last 30 Shorts each, 29 s of listing. Five chosen: Mohamed Ansary 30.9x, JORA TECH 10.4x, Yehia Tech 8.7x, Python Arabic Community 7.0x, Fathy & Abusrea 6.7x.
-- The resulting sheet is `BeQuite's v1 work notes, research/format/format-sheet-ai-arabic-shorts.md` (medians across the five, the never-list, a 60-90 s template).
+- The resulting sheet is `BeQuite's v5 work notes, research/format/format-sheet-ai-arabic-shorts.md` (medians across the five, the never-list, a 60-90 s template).
 
 ## Quality gate
 

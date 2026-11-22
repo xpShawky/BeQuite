@@ -13,7 +13,7 @@ sources:
 
 # bequite-human-taste
 
-This file is the model for every v1 skill: a trigger-style description, a dated source list, a short procedure, one worked example, a quality gate, and nothing the agent already knows.
+This file is the model for every BeQuite skill: a trigger-style description, a dated source list, a short procedure, one worked example, a quality gate, and nothing the agent already knows.
 
 ## When to use
 

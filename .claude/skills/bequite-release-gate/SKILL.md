@@ -37,7 +37,7 @@ Not for: deploy mechanics and production config (`bequite-devops-cloud`), the se
 
 ## Worked example (real dry run on this repo, 2026-11-21)
 
-Question: "Could BeQuite tag a release from `v1-dev` today?"
+Question: "Could BeQuite tag a release from the development branch today?"
 
 ```
 $ grep -n "bq_check" .github/workflows/release.yml   -> "run: python3 scripts/bq_check.py --strict"

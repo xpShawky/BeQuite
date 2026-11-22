@@ -1,4 +1,4 @@
-# BeQuite Orchestration Map: source of truth (v1)
+# BeQuite Orchestration Map: source of truth (v5)
 
 **When confused, conflicted, or a capability is missing: come here first.** A compact index of one-liners and pointers; details live in the files named. Model doc: `.claude/bequite/docs/architecture/BEQUITE_ORCHESTRATION_MODEL.md`. Used by: bequite, suggest, discover, plan, auto, implement, review, verify, skill-audit (and both routers on a conflict).
 

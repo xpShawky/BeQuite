@@ -13,7 +13,7 @@
 
 set -uo pipefail
 
-BEQUITE_VERSION="v1.0.0"
+BEQUITE_VERSION="v5.0.0"
 REPO_URL="https://github.com/xpShawky/BeQuite.git"
 TARGET="$(pwd)"
 FROM_LOCAL=""

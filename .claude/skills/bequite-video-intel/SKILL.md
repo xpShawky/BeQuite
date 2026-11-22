@@ -8,7 +8,7 @@ sources:
   - https://github.com/SYSTRAN/faster-whisper/blob/master/README.md  # GPU needs cuBLAS 12 + cuDNN 9; int8 on CPU (read 2026-11-21)
   - https://github.com/bradautomates/claude-video/blob/main/skills/watch/SKILL.md  # "transcript-only evidence cannot establish visual facts"; relay Gemini's answer as Gemini's (read 2026-11-21)
   - https://github.com/HUANGCHIHHUNGLeo/claude-real-video/blob/master/benchmark/benchmark.md  # fixed 1 fps can miss caption cards; scene-aware frames (read 2026-11-21)
-  - BeQuite's v1 work notes, research/video/  # local measurements and the watch-or-transcript test, 2026-11-21
+  - BeQuite's v5 work notes, research/video/  # local measurements and the watch-or-transcript test, 2026-11-21
 ---
 
 # bequite-video-intel

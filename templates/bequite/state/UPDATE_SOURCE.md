@@ -25,7 +25,7 @@ Set **Auto update** to `off` to be told about new releases instead, then run `/b
 
 ## Pinned tag (optional)
 
-Leave blank to follow the latest release. Set a release tag (for example `v1.0.0`) to stay on it; BeQuite then installs exactly that tag.
+Leave blank to follow the latest release. Set a release tag (for example `v5.0.0`) to stay on it; BeQuite then installs exactly that tag.
 
 **Pinned tag:** (blank: follows the latest release)
 
@@ -35,7 +35,7 @@ Leave blank to follow the latest release. Set a release tag (for example `v1.0.0
 
 ```
 /bq-update source=local path="C:/dev/BeQuite"
-/bq-update source=github repo="xpShawky/BeQuite" tag=v1.0.0
+/bq-update source=github repo="xpShawky/BeQuite" tag=v5.0.0
 /bq-update source=github repo="xpShawky/BeQuite" branch=main
 ```
 

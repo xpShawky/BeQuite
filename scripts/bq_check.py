@@ -450,7 +450,7 @@ def no_stale_models():
     return errors
 
 
-# ---------------------------------------------------------------- size budgets (warn until the v1 rewrites land)
+# ---------------------------------------------------------------- size budgets (strict mode fails on them)
 BUDGETS = (("command", ".claude/commands/*.md", 200), ("skill", ".claude/skills/bequite-*/SKILL.md", 150),
            ("doc", ".claude/bequite/docs/**/*.md", 250))
 

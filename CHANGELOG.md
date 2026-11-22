@@ -1,10 +1,10 @@
 # BeQuite changelog
 
-Format: [Keep a Changelog v1.1](https://keepachangelog.com/en/1.1.0/). Versioning: [Semantic Versioning](https://semver.org/). The history before the v1 relaunch is in [docs/history/CHANGELOG-before-v1.md](docs/history/CHANGELOG-before-v1.md).
+Format: [Keep a Changelog v1.1](https://keepachangelog.com/en/1.1.0/). Versioning: [Semantic Versioning](https://semver.org/). The history before the v5 relaunch is in [docs/history/CHANGELOG-before-v5.md](docs/history/CHANGELOG-before-v5.md).
 
-## [1.0.0] - unreleased (release candidate; the owner tags it)
+## [5.0.0] - 2026-11-22
 
-BeQuite relaunched. One pipeline instead of a pile of commands, three packs, a plugin, hooks that hold the rules, subagents where they pay, and skills rewritten from dated sources.
+BeQuite relaunched (the version after 4.0.0 "Titan"). One pipeline instead of a pile of commands, three packs, a plugin, hooks that hold the rules, subagents where they pay, and skills rewritten from dated sources.
 
 ### Added
 - **The pipeline** (`.claude/bequite/docs/architecture/PIPELINE.md`): up to date, orient, references (creative work), research, options board, plan, approval, build, guard, verify, write back. `/bq-auto`, `/bq-feature`, `/bq-fix`, `/bq-motion` and `/bq-content` are routes into it; each command carries a three-line pointer instead of an eight-line contract.
@@ -23,12 +23,12 @@ BeQuite relaunched. One pipeline instead of a pile of commands, three packs, a p
 - `bq_check.py`: nine checks that fail the run (installer safety, plugin JSON and version, shell scripts LF and bash, packs against the catalogs, command files cited by name, skill-relative paths, git-ignored paths) and two that warn (size budgets, skill sources).
 
 ### Changed
-- 21 skills rewritten to the v1 rubric with dated sources (engineering, frontend, research and context, business, writing); the orchestrator absorbed the routing table and the operating card.
+- 21 skills rewritten to the v5 rubric with dated sources (engineering, frontend, research and context, business, writing); the orchestrator absorbed the routing table and the operating card.
 - `/bq-auto` 527 to 102 lines; `/bq-feature` 288 to 55; `/bq-fix` 406 to 55.
 - Model names replaced by roles (strong, balanced, fast) in one file, `MODEL_ROLES.md`.
 - Ten small capability commands folded into modes of `/bq-knowledge`, `/bq-content` and `/bq-offer`.
 - `/bq-new` and `/bq-existing` folded into `/bq-mode new` and `/bq-mode existing`.
-- Every command is within its size budget: the 21 longest were rewritten to the v1 shape and the repeated alpha-era sections were removed from all of them (10,691 lines down to about 4,200).
+- Every command is within its size budget: the 21 longest were rewritten to the v5 shape and the repeated alpha-era sections were removed from all of them (10,691 lines down to about 4,200).
 - All 38 skills carry `last_verified` and at least five sources that were read; `bequite-updater` and `bequite-skill-auditor` were rewritten.
 - `WORKFLOW_GATES.md` and `AUTO_MODE_STRATEGY.md` rewritten; reports go to the work folder (`review.md`, `verify.md`), not to loose files.
 
@@ -39,4 +39,4 @@ BeQuite relaunched. One pipeline instead of a pile of commands, three packs, a p
 - 17 v3/v4 reference docs that nothing cited (they stay in the repository under `docs/history/v4-docs/` and no longer ship).
 
 ### Upgrading from v4
-Run the installer once with `--force` (`$env:BEQUITE_FORCE=1` on Windows): v4 has no update check, so it cannot update itself to v1. After that, updates are automatic. Your `.bequite/` memory is never overwritten.
+Run the installer once with `--force` (`$env:BEQUITE_FORCE=1` on Windows): v4 has no update check, so it cannot update itself to v5. After that, updates are automatic. Your `.bequite/` memory is never overwritten.

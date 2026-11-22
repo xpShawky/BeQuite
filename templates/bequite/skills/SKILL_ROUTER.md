@@ -1,4 +1,4 @@
-# Skill Router (v1)
+# Skill Router (v5)
 
 > The domain map + selection algorithm. Read AFTER `SKILL_REGISTRY.md`. Strategy: `.claude/bequite/docs/architecture/AUTO_SKILL_ROUTING_STRATEGY.md`.
 

@@ -26,7 +26,7 @@ Skills written from imagination rot; skills distilled from work that passed its 
 
 1. Read the work's evidence and log. List procedures that ran more than once or that ended a struggle (three failures then a fix that held).
 2. For each, check the pack first: an existing skill that should gain a step is an **improvement** proposal (a diff), not a new skill. Duplicates are refused.
-3. Draft the candidate in `.bequite/skills/forge/<name>/SKILL.md` to the v1 rubric (trigger-style description, numbered procedure, one worked example with the real values from this work, quality gate, boundaries) plus `forge.md`: `uses: 1/3`, the evidence link, the date, what would make it fail.
+3. Draft the candidate in `.bequite/skills/forge/<name>/SKILL.md` to the skill rubric (`bequite-skill-auditor`) (trigger-style description, numbered procedure, one worked example with the real values from this work, quality gate, boundaries) plus `forge.md`: `uses: 1/3`, the evidence link, the date, what would make it fail.
 4. Show the user the candidate list; nothing else changes.
 
 ## Promotion rule

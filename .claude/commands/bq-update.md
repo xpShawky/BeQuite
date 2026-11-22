@@ -19,7 +19,7 @@ description: 'Update BeQuite by hand (commands, skills, docs, memory templates) 
 /bq-update                                   safe: back up, then merge
 /bq-update check                             show what would change; touch nothing
 /bq-update force                             replace pack files (still backs up)
-/bq-update source=github tag=v1.0.0          a release tag of the official repo
+/bq-update source=github tag=v5.0.0          a release tag of the official repo
 /bq-update source=github repo="owner/name" branch=main    a fork or unreleased commits
 /bq-update source=local path="C:/dev/BeQuite"             a local clone (its last commit)
 ```

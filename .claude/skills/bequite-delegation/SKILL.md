@@ -47,7 +47,7 @@ Not for: a small fix (the overhead is larger than the saving); exploratory work 
 
 ## Worked example (this work, 2026-11-21)
 
-BeQuite v1 (work 0002) used shapes A and C. The strong model wrote `plan.md` (29.6 KB) and `tasks.md` (19.4 KB): five tracks with their own evidence, log and question files so no two sessions write the same file, and a rule that only track A edits registries. Balanced-model sessions then ran tracks A, B, C1C2, C345 and D in separate worktrees; each commits per task with the self-check green; track A integrates; the strong model returns for the final end-to-end pass. Shape B is reserved for the one-way door at release (the history choice), where the owner decides.
+The BeQuite v5 relaunch (work 0002) used shapes A and C. The strong model wrote `plan.md` (29.6 KB) and `tasks.md` (19.4 KB): five tracks with their own evidence, log and question files so no two sessions write the same file, and a rule that only track A edits registries. Balanced-model sessions then ran tracks A, B, C1C2, C345 and D in separate worktrees; each commits per task with the self-check green; track A integrates; the strong model returns for the final end-to-end pass. Shape B is reserved for the one-way door at release (the history choice), where the owner decides.
 
 ## Quality gate
 

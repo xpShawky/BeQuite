@@ -1,6 +1,6 @@
 ---
 name: bequite-skill-auditor
-description: Use for /bq-skill-audit and /bq-eval, after adding or merging skills, before a release, or when a skill fires for the wrong request or fails to fire. Reviews every skill against the v1 rubric (trigger description, short body, references one level deep, dated sources that say what the skill claims, a worked example, a quality gate), finds overlaps and stale facts, and reports with quoted evidence; edits only after approval.
+description: Use for /bq-skill-audit and /bq-eval, after adding or merging skills, before a release, or when a skill fires for the wrong request or fails to fire. Reviews every skill against the rubric (trigger description, short body, references one level deep, dated sources that say what the skill claims, a worked example, a quality gate), finds overlaps and stale facts, and reports with quoted evidence; edits only after approval.
 last_verified: 2026-11-22
 sources:
   - https://code.claude.com/docs/en/skills  # SKILL.md fields; the description decides when a skill loads; keep SKILL.md short, details in supporting files
@@ -24,7 +24,7 @@ A skill pack decays in known ways: descriptions stop matching how people ask, tw
 
 Not for: the project's own code (`/bq-audit`); a single edit the user already specified (just make it); command files (the self-check covers their contract, references and size).
 
-## The v1 rubric
+## The rubric
 
 | Part | A healthy skill | How to check |
 |---|---|---|
@@ -47,7 +47,7 @@ Not for: the project's own code (`/bq-audit`); a single edit the user already sp
 6. **Verdict per skill:** keep, improve, merge, split, or archive, with one line of reason. A merge must not erase a distinct trigger.
 7. **Report** to `.bequite/audits/SKILL_QUALITY_AUDIT.md`: the table of verdicts, findings with `skill:line` and the quoted text, and the trend against the previous audit. Report only: edits wait for the user's approval, then update the registry, the router, the packs file and the counts in the same change.
 
-## Worked example (2026-11-22, the v1 review of this pack)
+## Worked example (2026-11-22, the v5 review of this pack)
 
 - `bq_check.py --strict` listed six skills with no `last_verified` and no sources (the four film skills, this one, the updater). This skill's own profile still allowed "60-400 lines" while the pack budget was 150: a stale fact inside the auditor.
 - 39 candidate source pages were fetched for those six skills; 32 loaded and said what they were needed for, 7 refused automated reading or returned only a title (two Adobe help pages, a BBC guide, an ElevenLabs help article, two design-guideline pages, an Instagram help page). The seven were not cited.

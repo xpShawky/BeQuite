@@ -1,6 +1,6 @@
 # AI tells: the owner's list, validated against real sites (2026-11-21)
 
-The starting list comes from the owner (BeQuite v1 reference-first doctrine, section 6). Each tell was checked on three human-made reference pages with `tell-sweep.js` on 2026-11-21. Result: real sites also trip some tells, so **a hit is a question, not a verdict**. Fix it, or justify it in one line (brand colour, a deliberate choice taken from a named reference). A tell becomes a defect when it is a default nobody chose, or when it dominates (the hero, every heading, every card).
+The starting list comes from the owner (BeQuite v5 reference-first doctrine, section 6). Each tell was checked on three human-made reference pages with `tell-sweep.js` on 2026-11-21. Result: real sites also trip some tells, so **a hit is a question, not a verdict**. Fix it, or justify it in one line (brand colour, a deliberate choice taken from a named reference). A tell becomes a defect when it is a default nobody chose, or when it dominates (the hero, every heading, every card).
 
 ## Web pages
 

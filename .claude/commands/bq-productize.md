@@ -60,7 +60,7 @@ product-strategist (offer, price, risk) · make-money (channel and payout checks
 
 ## Worked example (dry run on work 0002, 2026-11-21)
 
-Source: work 0002 ("BeQuite v1"). Reusable: the five-track parallel task pack (`plan.md`, `tasks.md`), per-track evidence files, the Egypt payout verification method.
+Source: work 0002 (the BeQuite v5 relaunch). Reusable: the five-track parallel task pack (`plan.md`, `tasks.md`), per-track evidence files, the Egypt payout verification method.
 
 - Shape: **service** ("I set up a verified AI coding workflow in your repo in two days"), because the pack itself is free and open; the template comes after three client uses.
 - Case study evidence: "13 skills rewritten from dated sources; every Egypt payout claim read on the platform's own page; self-check green before every commit" (each line quotes `evidence-C345.md`).

@@ -4,7 +4,7 @@ Operating instructions for working **on the BeQuite repository** (the source of 
 
 ## What this repo is
 
-BeQuite is a lightweight workflow pack for Claude Code (and other agents): slash commands, skills, a `.bequite/` memory scaffold, gates and evidence rules, all markdown. Current version: **v1.0.0** (the relaunch; the old line ended at v4.0.0 "Titan"). Direction: lightweight only. No Studio, no heavy CLI/TUI, no dashboard, no Docker, no database (ADR-001, ADR-004).
+BeQuite is a lightweight workflow pack for Claude Code (and other agents): slash commands, skills, a `.bequite/` memory scaffold, gates and evidence rules, all markdown. Current version: **v5.0.0** (the relaunch after v4.0.0 "Titan"). Direction: lightweight only. No Studio, no heavy CLI/TUI, no dashboard, no Docker, no database (ADR-001, ADR-004).
 
 ## Layout
 

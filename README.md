@@ -4,7 +4,7 @@
 
 **A workflow pack for Claude Code that makes the agent research and plan before it builds, and prove its work before it says done.**
 
-**Version:** `1.0.0` · MIT · by [@xpShawky](https://github.com/xpShawky)
+**Version:** `5.0.0` · MIT · by [@xpShawky](https://github.com/xpShawky)
 
 <a href="commands.md"><img alt="53 commands" src="https://img.shields.io/badge/slash_commands-53-7c3aed?style=flat-square"></a>
 <a href="#skills"><img alt="38 skills" src="https://img.shields.io/badge/skills-38-10b981?style=flat-square"></a>
@@ -68,7 +68,7 @@ Then, in Claude Code:
 
 The installer copies the commands, skills, subagents, docs and hooks into `.claude/`, adds a `.bequite/` scaffold and a section in `CLAUDE.md`. Your project memory is never overwritten, not by a re-install and not by an update.
 
-**Coming from v4?** Run the installer once more with `--force` (`$env:BEQUITE_FORCE=1` on Windows). v4 has no update check, so it cannot move itself to v1; from v1 on, updates are automatic.
+**Coming from v4?** Run the installer once more with `--force` (`$env:BEQUITE_FORCE=1` on Windows). v4 has no update check, so it cannot move itself to v5; from v5 on, updates are automatic.
 
 ## Packs
 

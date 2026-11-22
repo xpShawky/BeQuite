@@ -55,7 +55,7 @@ It clones or archives **one commit**, checks that commit's `VERSION`, backs up, 
 
 ## Worked example (real runs, 2026-11-22)
 
-- **A v4 project moved to v1 by hand:** the project had `**Version:** v4.0.0` and GitHub as its source; v4 has no update script, so it cannot update itself. One forced install from a local clone: exit 0, "55 commands, 38 skills, 4 subagents", 17 files that v1 removed moved to `.bequite/backups/<time>-removed/`, version line `v4.0.0 -> v1.0.0`, memory and the user's own folders untouched. The next check printed "no release found" (nothing was released yet), exit 0.
+- **A v4 project moved to v5 by hand:** the project had `**Version:** v4.0.0` and GitHub as its source; v4 has no update script, so it cannot update itself. One forced install from a local clone: exit 0, "55 commands, 38 skills, 4 subagents", 17 files that v1 removed moved to `.bequite/backups/<time>-removed/`, version line `v4.0.0 -> v1.0.0` (the relaunch was numbered 1.0.0 then), memory and the user's own folders untouched. The next check printed "no release found" (nothing was released yet), exit 0.
 - **The automatic path under test** (`scripts/test_update.sh`, 21 checks, exit 0): an old version line containing `/` is rewritten correctly; uncommitted files in the source are not installed; a held lock stops a second install; a failing installer ends with the previous files put back and no retry the same day; a source inside the project, a relative path, another repo and a malformed repo are all refused.
 
 ## Quality gate

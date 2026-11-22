@@ -15,7 +15,7 @@
 # Any other repo, a path inside this project, or a value that fails validation is reported, never run.
 # The version check and the install read the same commit (one clone or one git archive).
 # Settings: .bequite/state/UPDATE_SOURCE.md (Source type, Repo URL or local path, Pinned tag, Auto update).
-# "New" means: the published VERSION differs from the installed one (a version can go 4.0.0 -> 1.0.0).
+# "New" means: the published VERSION differs from the installed one (not "higher": a pinned older tag is also a valid target).
 # The whole body sits in main(): bash reads it completely before running, so the update may replace this file.
 
 main() {

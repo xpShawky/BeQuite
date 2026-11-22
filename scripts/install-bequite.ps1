@@ -27,7 +27,7 @@ for ($i = 0; $i -lt $args.Count; $i++) {
 
 function Install-BeQuite([string]$FromLocal, [bool]$Force, [string]$Packs) {
   $ErrorActionPreference = "Stop"
-  $Version = "v1.0.0"
+  $Version = "v5.0.0"
   $RepoUrl = "https://github.com/xpShawky/BeQuite.git"
   $Target = (Get-Location).Path
   $Utf8NoBom = New-Object System.Text.UTF8Encoding $false

@@ -1,4 +1,4 @@
-# BeQuite commands (v1)
+# BeQuite commands (v5)
 
 53 commands in three packs (core, studio, business). Each command is a markdown playbook in `.claude/commands/`; run it in Claude Code as `/<name>`. Catalog IDs: `.bequite/commands/COMMAND_ID_MAP.md` (in the BeQuite repo: `templates/bequite/commands/COMMAND_ID_MAP.md`).
 
@@ -98,7 +98,7 @@ Combine them (`/bq-auto deep delegate "..."`). If two conflict (deep + fast), Be
 
 ## C Capabilities
 
-Folded in v1: the ten small capability commands are now modes of `/bq-knowledge`, `/bq-content` and `/bq-offer` (the old names move to `.bequite/backups/` on update).
+Folded in v5: the ten small capability commands are now modes of `/bq-knowledge`, `/bq-content` and `/bq-offer` (the old names move to `.bequite/backups/` on update).
 
 ### core
 

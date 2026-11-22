@@ -1,7 +1,7 @@
 {
   "name": "bequite",
   "displayName": "BeQuite",
-  "version": "1.0.0",
+  "version": "5.0.0",
   "description": "A workflow pack for Claude Code: one pipeline from research and plan to verified, written-back work; reference-first creative work that passes a human test; a content studio, a film studio and an agent team. Commands, skills, subagents and three hooks (session context, evidence before done, taste corrections).",
   "author": {
     "name": "xpShawky",
